@@ -102,13 +102,14 @@ public class GA_Problem_Parameter {
 			ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
 			DefaultEdge e=new DefaultEdge();
 			Iterator<DefaultEdge> iterator=perm.iterator();
+			ArrayList<DefaultEdge> remindEdges=(ArrayList<DefaultEdge>)perm;
 			while(iterator.hasNext()){
 				e=(DefaultEdge) iterator.next().clone();
 				iterator.remove();
-				//if(Math.random()<0.50){
+				if(remindEdges.contains(e)){
 					verifiedEadges.add(e);
-					update(potentilEdges,e,DAG_2);
-				//}
+					update(remindEdges,e,DAG_2);
+				}
 			}
 			
 			validSchedulings.add(verifiedEadges);
