@@ -3,16 +3,23 @@ package SCM_TA_V1;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+
 import org.moeaframework.algorithm.DBEA;
 import org.moeaframework.core.Solution;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.jgrapht.alg.ConnectivityInspector;
+
 import java.util.Iterator;
 import java.lang.Object;
-import org.apache.commons.math3.distribution.BinomialDistribution;
+
 import com.google.common.collect.Collections2;
+
+import org.paukov.combinatorics.Factory;
+import org.paukov.combinatorics.Generator;
+import org.paukov.combinatorics.ICombinatoricsVector;
+import org.paukov.combinatorics.permutations.*;
 
 
 public class GA_Problem_Parameter {
@@ -70,7 +77,10 @@ public class GA_Problem_Parameter {
 	}
 	
 	
-	public static ArrayList<DefaultEdge> getValidScheduling(DirectedAcyclicGraph<Bug, DefaultEdge> DAG){
+	public static ArrayList<ArrayList<DefaultEdge>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG){
+		//all valid schedulings(without any loop)
+		ArrayList<ArrayList<DefaultEdge>> validSchedulings=new ArrayList<ArrayList<DefaultEdge>>(null);
+		
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DAG_2=(DirectedAcyclicGraph<Bug, DefaultEdge>) DAG.clone();
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
@@ -83,27 +93,29 @@ public class GA_Problem_Parameter {
 				}
 			}
 		}
-		ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
 		
 		//find all permutation of potentialEdges list
-		ArrayList<ArrayList<DefaultEdge>> potenailEdge=Collections2.
-		for(int i=0;i<){
+		ICombinatoricsVector<DefaultEdge> IV=Factory.createVector(potentilEdges);
+		Generator<DefaultEdge> potentialPerm=Factory.createPermutationGenerator(IV);
+		for(ICombinatoricsVector<DefaultEdge> perm:potentialPerm){
+			DAG_2=(DirectedAcyclicGraph<Bug, DefaultEdge>) DAG.clone();
+			ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
+			DefaultEdge e=new DefaultEdge();
+			Iterator<DefaultEdge> iterator=perm.iterator();
+			while(iterator.hasNext()){
+				e=(DefaultEdge) iterator.next().clone();
+				iterator.remove();
+				//if(Math.random()<0.50){
+					verifiedEadges.add(e);
+					update(potentilEdges,e,DAG_2);
+				//}
+			}
 			
+			validSchedulings.add(verifiedEadges);
 		}
 		
 		
-		
-		DefaultEdge e=new DefaultEdge();
-		Iterator<DefaultEdge> iterator=potentilEdges.iterator();
-		while(iterator.hasNext()){
-			e=(DefaultEdge) iterator.next().clone();
-			iterator.remove();
-			//if(Math.random()<0.50){
-				verifiedEadges.add(e);
-				update(potentilEdges,e,DAG_2);
-			//}
-		}
-		return verifiedEadges;
+		return validSchedulings;
 	}
 	
 	

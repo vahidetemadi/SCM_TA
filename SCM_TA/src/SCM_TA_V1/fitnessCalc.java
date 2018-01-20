@@ -147,6 +147,7 @@ Developer developer){
  public static double getFlowD2D(Bug b, ArrayList<Developer> devs){
 	 // implement (Zi-Zj) and (all zones) 
 	 HashMap<Zone, Double> DevsDiff=new HashMap<Zone, Double>();
+	 
 	return 0;
 	 
  }
