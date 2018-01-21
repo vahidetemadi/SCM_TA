@@ -76,7 +76,7 @@ public class InformationDifussion extends AbstractProblem{
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
 		while(tso_evaluate.hasNext()) {
-			b=tso_evaluate.next();
+			 b=tso_evaluate.next();
 			 for(Zone  zone_bug:b.Zone_DEP){
 				double delayTime=0.0;
 				double compeletionTime=0.0;
