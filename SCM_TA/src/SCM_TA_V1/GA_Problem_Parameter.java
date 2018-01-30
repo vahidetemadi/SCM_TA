@@ -6,6 +6,7 @@ import java.util.Random;
 
 import org.moeaframework.algorithm.DBEA;
 import org.moeaframework.core.Solution;
+import org.moeaframework.core.variable.EncodingUtils;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -44,6 +45,7 @@ public class GA_Problem_Parameter {
 	public static double currentTimePeriodStartTime=0;
 	public static ArrayList<Integer> DevList=new ArrayList<Integer>();
 	public static ArrayList<Integer> DevList_forAssignment=new ArrayList<Integer>();
+	public static ArrayList<TopologicalOrderIterator<Bug, DefaultEdge>> candidateSchedulings=null;
 	/*public void setNum_of_Variables(){
 		Num_of_variables=Num_of_Bugs*Num_of_Zones;
 	}*/
@@ -158,4 +160,49 @@ public class GA_Problem_Parameter {
 	public static TopologicalOrderIterator<Bug, DefaultEdge> getTopologicalSorted(DirectedAcyclicGraph<Bug, DefaultEdge> dag){
 		return new TopologicalOrderIterator<Bug, DefaultEdge>(dag);
 	}
+	
+	
+	public static ArrayList<DirectedAcyclicGraph<Bug, DefaultEdge>> getReScheduledGraphs(DirectedAcyclicGraph<Bug, DefaultEdge> DAG 
+			, ArrayList<ArrayList<DefaultEdge>> validSchedulings){
+		ArrayList<DirectedAcyclicGraph<Bug, DefaultEdge>> schedulings=new ArrayList<DirectedAcyclicGraph<Bug,DefaultEdge>>();
+		for(ArrayList<DefaultEdge> candidateSchedule:validSchedulings){
+			DirectedAcyclicGraph<Bug, DefaultEdge> ReScheduledDAG=(DirectedAcyclicGraph<Bug, DefaultEdge>)DAG.clone();
+			for(DefaultEdge edge:candidateSchedule){
+			ReScheduledDAG.addEdge(DAG.getEdgeSource(edge), DAG.getEdgeTarget(edge));
+		}
+		schedulings.add(ReScheduledDAG);
+		}
+		
+		return schedulings;
+	}
+	
+	public static void resetParameters(DirectedAcyclicGraph<Bug, DefaultEdge> DEP,Solution s){
+		for(Bug b:DEP.vertexSet()){
+			b.startTime_evaluate=0.0;
+			b.endTime_evaluate=0.0;
+			for(Zone z:b.Zone_DEP.vertexSet()){
+				z.zoneStartTime_evaluate=0.0;
+				z.zoneEndTime_evaluate=0.0;
+			}
+				
+		}
+	}
+	public static void assignZoneDev(TopologicalOrderIterator<Bug, DefaultEdge> TSO,Solution s){
+		int numOfVar=0;
+		while(TSO.hasNext()){
+			Bug b=TSO.next();
+			for(Zone z:b.Zone_DEP){
+				z.assignedDevID=EncodingUtils.getInt(s.getVariable(numOfVar));
+			}
+		}
+	}
+	
+	public static void setCandidateSchedulings(ArrayList<DirectedAcyclicGraph<Bug, DefaultEdge>> validSchedulings ){
+		candidateSchedulings=new ArrayList<TopologicalOrderIterator<Bug,DefaultEdge>>();
+		for(DirectedAcyclicGraph<Bug, DefaultEdge> schedule:validSchedulings){
+			candidateSchedulings.add(getTopologicalSorted(schedule));
+		}
+		
+	}
+	
 }

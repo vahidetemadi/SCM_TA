@@ -19,7 +19,9 @@ public class Bug
 	HashMap<Zone, Double> BZone_Coefficient=new HashMap<Zone,Double>();
 	DirectedAcyclicGraph<Zone, DefaultEdge> Zone_DEP; 
 	double startTime;
+	double startTime_evaluate;
 	double endTime;
+	double endTime_evaluate;
 	int algorithmicDeveloperAssignmentID=0;
 	public int getAlgorithmicDeveloperAssignmentID() {
 		return algorithmicDeveloperAssignmentID;
