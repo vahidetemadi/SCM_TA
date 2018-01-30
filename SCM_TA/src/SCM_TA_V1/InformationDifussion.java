@@ -105,9 +105,9 @@ public class InformationDifussion extends AbstractProblem{
 			 f1=f1_1+f1_2;
 			 if(solution.getObjectives()[0]!=0){
 				 solution.setObjective(0, Math.min(f1,solution.getObjectives()[0]));
+				 //assigning the best schedule for the solution 
+				 
 			 }
-				 
-				 
 		}
 		
 		
