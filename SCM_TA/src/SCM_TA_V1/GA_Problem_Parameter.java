@@ -11,16 +11,10 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.jgrapht.alg.ConnectivityInspector;
-
 import java.util.Iterator;
-import java.lang.Object;
-
-import com.google.common.collect.Collections2;
-
 import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
-import org.paukov.combinatorics.permutations.*;
 
 
 public class GA_Problem_Parameter {
@@ -46,6 +40,7 @@ public class GA_Problem_Parameter {
 	public static ArrayList<Integer> DevList=new ArrayList<Integer>();
 	public static ArrayList<Integer> DevList_forAssignment=new ArrayList<Integer>();
 	public static ArrayList<TopologicalOrderIterator<Bug, DefaultEdge>> candidateSchedulings=null;
+	public static HashMap<Integer,TopologicalOrderIterator<Bug, DefaultEdge>> selectedSchedules=new HashMap<Integer, TopologicalOrderIterator<Bug,DefaultEdge>>();
 	/*public void setNum_of_Variables(){
 		Num_of_variables=Num_of_Bugs*Num_of_Zones;
 	}*/

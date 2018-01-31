@@ -26,19 +26,6 @@ public class InformationDifussion extends AbstractProblem{
 	
 	@Override
 	public Solution newSolution(){
-		/*
-		 		
-		int j=0;
-		//change the code
-		for( int i=0;i<GA_Problem_Parameter.Num_of_variables;i++){
-				int randDevId=GA_Problem_Parameter.getRandomDevId();
-				
-				solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
-				
-				j++;
-			}
-		
-		*/
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
@@ -85,8 +72,8 @@ public class InformationDifussion extends AbstractProblem{
 			
 			int numOfVar=0; 
 			Bug b;
-			while(tso_evaluate.hasNext()) {
-			 b=tso_evaluate.next();
+			while(tso_evaluate_scheduling.hasNext()) {
+			 b=tso_evaluate_scheduling.next();
 				 for(Zone zone_bug:b.Zone_DEP){
 						double delayTime=0.0;
 						double compeletionTime=0.0;
@@ -99,6 +86,7 @@ public class InformationDifussion extends AbstractProblem{
 						
 						//update developer nextAvailableHours
 						developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
+						//update bug endTime
 						b.endTime=Math.max(b.endTime, delayTime+compeletionTime);		
 				 }  
 		 }
@@ -106,7 +94,7 @@ public class InformationDifussion extends AbstractProblem{
 			 if(solution.getObjectives()[0]!=0){
 				 solution.setObjective(0, Math.min(f1,solution.getObjectives()[0]));
 				 //assigning the best schedule for the solution 
-				 
+				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),tso_evaluate_scheduling);
 			 }
 		}
 		

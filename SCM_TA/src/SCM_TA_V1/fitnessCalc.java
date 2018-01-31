@@ -9,7 +9,7 @@ public class fitnessCalc {
 
 
 public static double compeletionTime(Bug bug, Entry<Zone, Double> zone, Developer developer) {	
-	//compute total time for competency 
+	//compute total time for each competency 
 	double tct=bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey())/((developer.getDZone_Coefficient().get(zone.getKey()))+1);
 	return tct;
 }
@@ -91,7 +91,6 @@ Developer developer){
 	return tZoneSim/bugZone.size();
 	
  }
- 
  
  
  public static double getDataFlow(Bug bug, ArrayList<Developer> devs){

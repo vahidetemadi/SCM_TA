@@ -37,7 +37,7 @@ public class Test1 {
 			devInitialization();
 			int roundNum=5;
 			for(int i=1;i<=roundNum;i++){
-			Initialization(i);
+			bugInitialization(i);
 			NondominatedPopulation[] results = new NondominatedPopulation[2]; 
 			results=Assigning(results);
 			solution=results[1].get(results[1].size()/2);
@@ -55,10 +55,10 @@ public class Test1 {
 		//initialize developers
 				System.out.println("enter the developrs file");
 				Developer developer = null;
-				Scanner sc=new Scanner("src\\Karim\\bug-data\\bug-data\\JDTDeveloper.txt");
+				Scanner sc=new Scanner("src\\SCM_TA_V1\\bug-data\\bug-data\\JDTDeveloper.txt");
 				sc=new Scanner(new File(sc.nextLine()));
 				System.out.println("enter the devlopers wage file");
-				Scanner scan=new Scanner("src\\Karim\\bug-data\\bug-data\\JDTDeveloperWithWage.txt");
+				Scanner scan=new Scanner("src\\SCM_TA_V\\bug-data\\bug-data\\JDTDeveloperWithWage.txt");
 				scan=new Scanner(new File(scan.nextLine()));
 				int i=0;
 				int j=0;
@@ -115,7 +115,7 @@ public class Test1 {
 				
 	}
 	
-	public static void Initialization( int roundNum) throws IOException,NoSuchElementException{
+	public static void bugInitialization( int roundNum) throws IOException,NoSuchElementException{
 		
 		Scanner sc=new Scanner(System.in);
 		int i=0;
@@ -168,7 +168,7 @@ public class Test1 {
 							}
 							j++;
 						}
-					//create dag for zoneItems 	
+					//create DAG for zoneItems 	
 					bug.setZoneDEP();	
 					//add bug to bugset
 					bugs.put(bug.getID(), bug);
@@ -261,7 +261,7 @@ public class Test1 {
 		
 	}
 	
-	//assigning to developer
+	//find solution to assign tasks to the developers
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
 		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population)
@@ -269,6 +269,8 @@ public class Test1 {
 				.withProperty("pm.rate", GA_Problem_Parameter.pm_rate).withProperty("pm.distributionIndex", GA_Problem_Parameter.pm_distribution_index)
 				.run();
 		results[0]=result_Karim;
+		
+		System.out.println("finished second one");
 		
 	    NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population)
@@ -282,6 +284,7 @@ public class Test1 {
 	    
 	}
 	
+	//write results for testing
 	public static void writeResult(int runNum,int roundNum, NondominatedPopulation[] result) throws FileNotFoundException{
 		//write results to CSV for each round
 		PrintWriter pw=new PrintWriter(new File("results//solutions_Karim_round "+runNum+"_"+roundNum+".csv"));
@@ -305,6 +308,7 @@ public class Test1 {
 		pw.close();
 		
 	}
+	
 	
 	public static void afterRoundUpdating(Solution solution){
 		//update developers' zone
