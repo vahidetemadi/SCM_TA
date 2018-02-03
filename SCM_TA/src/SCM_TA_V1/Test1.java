@@ -55,10 +55,10 @@ public class Test1 {
 		//initialize developers
 				System.out.println("enter the developrs file");
 				Developer developer = null;
-				Scanner sc=new Scanner("src\\SCM_TA_V1\\bug-data\\bug-data\\JDTDeveloper.txt");
+				Scanner sc=new Scanner(System.in);
 				sc=new Scanner(new File(sc.nextLine()));
 				System.out.println("enter the devlopers wage file");
-				Scanner scan=new Scanner("src\\SCM_TA_V\\bug-data\\bug-data\\JDTDeveloperWithWage.txt");
+				Scanner scan=new Scanner(System.in);
 				scan=new Scanner(new File(scan.nextLine()));
 				int i=0;
 				int j=0;
@@ -124,7 +124,7 @@ public class Test1 {
 		System.out.println("enter the bugs files");
 		Bug bug=null;
 		//sc=new Scanner(System.in);
-		sc=new Scanner("src\\Karim\\bug-data\\JDT\\efforts");
+		sc=new Scanner(System.in);
 		int n=0;
 		Scanner sc1=null;
 		for(File fileEntry:new File(sc.nextLine()).listFiles()){
@@ -186,9 +186,10 @@ public class Test1 {
 		
 					
 		/*set bug dependencies*/
+		
 		System.out.println("enter the bug dependency files");
 		
-		sc=new Scanner("src\\Karim\\bug-data\\JDT\\dependencies");
+		sc=new Scanner(System.in);
 		String[] columns_bug=null;
 		for(File fileEntry:new File(sc.nextLine()).listFiles()){
 			
@@ -227,10 +228,11 @@ public class Test1 {
 		}
 		/* end setting bug dependencies*/
 		
-		/* set zone dependencies*/
+		/* set zone dependencies */
 		
+		/* end setting zone dependencies */
 		
-		/* end setting zone dependencies*/
+		System.out.println("end of setting dependencies");
 		
 		//initialize GA parameters
 		GA_Problem_Parameter.Num_of_variables=bugs.size();
@@ -250,7 +252,7 @@ public class Test1 {
 		//GA_Problem_Parameter
 		GA_Problem_Parameter.Num_of_Bugs=bugs.size();
 		GA_Problem_Parameter.Num_of_Active_Developers=developers.size();
-		GA_Problem_Parameter.Num_of_functions=2;
+		GA_Problem_Parameter.Num_of_functions_Multi=2;
 		GA_Problem_Parameter.Num_of_variables=0;
 		for(Entry<Integer, Bug>  b:bugs.entrySet()){
 			for(Map.Entry<Zone, Double>  zone:b.getValue().BZone_Coefficient.entrySet()){

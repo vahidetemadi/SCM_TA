@@ -19,7 +19,8 @@ import org.paukov.combinatorics.ICombinatoricsVector;
 
 public class GA_Problem_Parameter {
 	static int Num_of_variables;
-	static int Num_of_functions;
+	static int Num_of_functions_Single=1;
+	static int Num_of_functions_Multi;
 	static int Num_of_Active_Developers;
 	static int Num_of_Bugs;
 	static int Num_of_Zones;

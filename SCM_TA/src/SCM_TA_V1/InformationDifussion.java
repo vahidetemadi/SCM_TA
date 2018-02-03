@@ -18,7 +18,7 @@ public class InformationDifussion extends AbstractProblem{
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	public InformationDifussion(){
-		super(GA_Problem_Parameter.Num_of_variables,GA_Problem_Parameter.Num_of_functions);
+		super(GA_Problem_Parameter.Num_of_variables,GA_Problem_Parameter.Num_of_functions_Single);
 		//this.bugs=bugs;
 		//this.developers= new ArrayList<Developer>(Arrays.asList(developers));
 	}
@@ -40,7 +40,7 @@ public class InformationDifussion extends AbstractProblem{
 			}
 		}
 		//changed NUM of variables for the soltuion
-		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions);
+		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Single);
 		for(Zone z:genes){
 			int randDevId=GA_Problem_Parameter.getRandomDevId();
 			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
