@@ -20,7 +20,7 @@ import org.paukov.combinatorics.ICombinatoricsVector;
 public class GA_Problem_Parameter {
 	static int Num_of_variables;
 	static int Num_of_functions_Single=1;
-	static int Num_of_functions_Multi;
+	static int Num_of_functions_Multi=2;
 	static int Num_of_Active_Developers;
 	static int Num_of_Bugs;
 	static int Num_of_Zones;
@@ -42,9 +42,14 @@ public class GA_Problem_Parameter {
 	public static ArrayList<Integer> DevList_forAssignment=new ArrayList<Integer>();
 	public static ArrayList<TopologicalOrderIterator<Bug, DefaultEdge>> candidateSchedulings=null;
 	public static HashMap<Integer,TopologicalOrderIterator<Bug, DefaultEdge>> selectedSchedules=new HashMap<Integer, TopologicalOrderIterator<Bug,DefaultEdge>>();
-	/*public void setNum_of_Variables(){
-		Num_of_variables=Num_of_Bugs*Num_of_Zones;
-	}*/
+	
+	public static int setNum_of_Variables(Bug[] bugs){
+		Num_of_variables=0;
+		for(int i=0;i<bugs.length;i++){
+			Num_of_variables+=bugs[i].BZone_Coefficient.size();
+		}
+		return Num_of_variables;
+	}
 	
 	
 	public static void initializeDeveloperPool(){

@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="C:\Users\DistLab3\git\SCM_TA\MOEAFramework\src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/combinatoricslib-2.0.jar"/>
 	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/guava.jar"/>
 	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/jgrapht-ext-1.1.0-uber.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MOEAFramework"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/commons-codec-1.8.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/commons-lang3-3.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/commons-math3-3.4.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/jcommon-1.0.20.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/jfreechart-1.0.15.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/JMetal-4.3.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/MOEAFramework-2.12.jar"/>
+	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/moea libs/rsyntaxtextarea.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>

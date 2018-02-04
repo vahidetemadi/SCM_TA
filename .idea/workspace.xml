@@ -2,90 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="53746888-e6c4-42d6-8035-dc8d700f67e3" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/.gitignore" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/Bug.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/CompetenceMulti2_problem.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/DAGEdge.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/Developer.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/EClass.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/GA_Problem_Parameter.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/Individual.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/InformationDifussion.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/Project.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/Test1.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/Zone.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestone3.1.1.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestone3.1.2.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestone3.1.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM1.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM2.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM3.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM4.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM5.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM6.csv" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestone3.1.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestone3.1.2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestone3.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestoneM1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestoneM2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestoneM3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestoneM4.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestoneM5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestoneM6.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/CompetencyGraph.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTDeveloper.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTDeveloperWithWage.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestone 3.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestone3.1.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestone3.1.1.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestone3.1.2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestone3.1.2.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestone3.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestone3.1.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM1.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM2.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM3.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM4.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM4.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM5.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM6.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/JDTMilestoneM6.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformDeveloper.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformDeveloperWithWage.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestone3.0.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestone3.0.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestone3.1.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestone3.1.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM2.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM2.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM3.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM3.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM4.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM4.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM5.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM5.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM6.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM6.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM7.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM7.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM8.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM8.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM9.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/PlatformMilestoneM9.xls" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/Read Me.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/Read Me.txt.bak" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/bug-data/bug-data/stop_words.txt" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/dependencyEdge.class" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/bin/SCM_TA_V1/fitnessCalc.class" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/CompetenceMulti2_problem.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/CompetenceMulti2_problem.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/GA_Problem_Parameter.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/GA_Problem_Parameter.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MOEAFramework/.classpath" afterPath="$PROJECT_DIR$/MOEAFramework/.classpath" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/.classpath" afterPath="$PROJECT_DIR$/SCM_TA/.classpath" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/.settings/org.eclipse.jdt.core.prefs" afterPath="$PROJECT_DIR$/SCM_TA/.settings/org.eclipse.jdt.core.prefs" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/CompetenceMulti2_problem.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/CompetenceMulti2_problem.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/GA_Problem_Parameter.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/GA_Problem_Parameter.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/InformationDifussion.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/InformationDifussion.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -100,8 +24,8 @@
       <file leaf-file-name="Test1.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="231">
-              <caret line="47" column="13" lean-forward="true" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
+            <state relative-caret-position="42">
+              <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -117,7 +41,14 @@
       <projects_view />
     </option>
   </component>
-  <component name="ProjectFrameBounds">
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectFrameBounds" extendedState="1">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1616" />
@@ -138,10 +69,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="AndroidView" />
-      <pane id="Scope" />
       <pane id="Scratches" />
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -171,6 +99,9 @@
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
+      <pane id="AndroidView" />
+      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -289,7 +220,8 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="0" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="1" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -336,8 +268,16 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="231">
-          <caret line="47" column="13" lean-forward="true" selection-start-line="47" selection-start-column="13" selection-end-line="47" selection-end-column="13" />
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="42">
+          <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
           <folding />
         </state>
       </provider>

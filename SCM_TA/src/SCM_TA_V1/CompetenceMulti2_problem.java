@@ -9,6 +9,8 @@ import java.util.Map.Entry;
 
 import javax.sound.midi.Soundbank;
 
+import jmetal.metaheuristics.singleObjective.differentialEvolution.DE;
+
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -16,28 +18,25 @@ import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.core.variable.RealVariable;
 import org.moeaframework.problem.AbstractProblem;
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 public class CompetenceMulti2_problem extends AbstractProblem {
 	
-	Bug[] bugs=GA_Problem_Parameter.bugs;
+	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	public CompetenceMulti2_problem(){
-		super(GA_Problem_Parameter.Num_of_variables,GA_Problem_Parameter.Num_of_functions_Single);
-		//System.out.println(GA_Problem_Parameter.Num_of_variables);
-		//System.out.println(bugs.length+"-----"+developers.size()+"----"+GA_Problem_Parameter.Num_of_functions);
+		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
 	
 	
-	@Override
-	public Solution newSolution(){
+	public void init(){
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);
-		int j=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
@@ -46,11 +45,19 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 				genes.add(tso_zones.next());
 			}
 		}
-				//changed NUM of variables for the solution
-				Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Single);
-				for(Zone z:genes){
-					int randDevId=GA_Problem_Parameter.getRandomDevId();
-					solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
+	}
+	
+	@Override
+	public Solution newSolution(){
+		init();
+		//changed NUM of variables for the solution
+		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
+		int j=0;
+		for(Zone z:genes){
+			int randDevId=GA_Problem_Parameter.getRandomDevId();
+			System.out.println(randDevId);
+			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
+			j++;
 		}
 		return solution;
 	}
@@ -58,6 +65,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	
 	@Override 	
 	public void evaluate(Solution solution){
+		System.out.println("zzzzzzzzzzzzzzz");
 		double f1 = 0.0;
 		double f2 = 0.0;
 		Bug b;
@@ -108,7 +116,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 			 }
 		 }
 	*/	
-		solution.setObjective(0, f2);
+		solution.setObjective(0, f1);
 		//solution.setObjective(1, f2);
 		 }
 		

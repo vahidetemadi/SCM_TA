@@ -12,13 +12,13 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 
 public class InformationDifussion extends AbstractProblem{
-	Bug[] bugs=GA_Problem_Parameter.bugs;
+	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	public InformationDifussion(){
-		super(GA_Problem_Parameter.Num_of_variables,GA_Problem_Parameter.Num_of_functions_Single);
+		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 		//this.bugs=bugs;
 		//this.developers= new ArrayList<Developer>(Arrays.asList(developers));
 	}
@@ -40,7 +40,7 @@ public class InformationDifussion extends AbstractProblem{
 			}
 		}
 		//changed NUM of variables for the soltuion
-		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Single);
+		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		for(Zone z:genes){
 			int randDevId=GA_Problem_Parameter.getRandomDevId();
 			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));

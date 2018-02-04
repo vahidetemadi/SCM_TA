@@ -272,7 +272,7 @@ public class Test1 {
 				.run();
 		results[0]=result_Karim;
 		
-		System.out.println("finished second one");
+		System.out.println("finished first one");
 		
 	    NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population)
