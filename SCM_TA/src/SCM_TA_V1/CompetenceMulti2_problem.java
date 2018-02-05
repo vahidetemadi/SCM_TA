@@ -55,7 +55,6 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 		int j=0;
 		for(Zone z:genes){
 			int randDevId=GA_Problem_Parameter.getRandomDevId();
-			System.out.println(randDevId);
 			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
 			j++;
 		}
@@ -65,7 +64,6 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	
 	@Override 	
 	public void evaluate(Solution solution){
-		System.out.println("zzzzzzzzzzzzzzz");
 		double f1 = 0.0;
 		double f2 = 0.0;
 		Bug b;

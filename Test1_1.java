@@ -117,7 +117,8 @@ public class Test1 {
 				
 	}
 	
-	public static void bugInitialization(int roundNum) throws IOException,NoSuchElementException{		
+	public static void bugInitialization( int roundNum) throws IOException,NoSuchElementException{
+		
 		Scanner sc=new Scanner(System.in);
 		int i=0;
 		int j=0;
@@ -126,15 +127,24 @@ public class Test1 {
 		Bug bug=null;
 		//sc=new Scanner(System.in);
 		sc=new Scanner(System.in);
+		int n=0;
 		Scanner sc1=null;
-		int n=1;
 		for(File fileEntry:new File(sc.nextLine()).listFiles()){
+			System.out.println(fileEntry);
 			sc1=new Scanner(new File(fileEntry.toURI()));
+			BufferedReader reader = new BufferedReader(new FileReader(new File(fileEntry.toURI())));
+			int lines = 0;
+			while (reader.readLine() != null) lines++;
+			reader.close();
+			int numOfBugs=lines;
 			i=0;
 			j=0;
-			while(sc1.hasNextLine() && roundNum==n){
-				//counter "i" has set to record the name of each zone (the header of each file)
-				if(i==0){
+			int t=0;
+			n=0;
+			while(sc1.hasNextLine() ){
+				if( n<(numOfBugs/5)*(roundNum) && n>=((numOfBugs/5)*(roundNum-1))){
+					
+					if(i==0){
 						String[] items=sc1.nextLine().split("\t",-1);
 							for(int k=0;k<items.length;k++){
 								if(j>2){
@@ -167,35 +177,55 @@ public class Test1 {
 					}
 					i++;
 					j=0;
+				}
+				else{
+					sc1.nextLine();
+				}
+				n++;
 			}
-			n++;
+		n=0;
 		}
-
-		System.out.println(bugs.keySet());
+		
 					
 		/*set bug dependencies*/
 		
 		System.out.println("enter the bug dependency files");
+		
 		sc=new Scanner(System.in);
 		String[] columns_bug=null;
+		System.out.println(bugs.keySet());
 		for(File fileEntry:new File(sc.nextLine()).listFiles()){
+			
 			sc1=new Scanner(new File(fileEntry.toURI()));
+
+			//System.out.println(fileEntry.toURI());
+
 			i=0;
 			while(sc1.hasNextLine()){
 				if(i>0){
 					columns_bug=sc1.nextLine().split(",");
+					//for(int h=0;h<columns_bug.length;h++)
+						//System.out.println(columns_bug[h]);
 					int k=1;
-					if(columns_bug[k].toString().length()>1 && columns_bug[k]!=null ){
-						try{
-							bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(k));
-							System.out.println("bugDBSize: "+bugs.get(Integer.parseInt(columns_bug[k-1])).DB.size());
+					//for(int k=0;k<columns_bug.length-1;k++){
+						/*need to be check the existence of the item in bugs set-----------------------------------------------*/
+						if(columns_bug[k].toString().length()>1 && columns_bug[k]!=null ){
+							//System.out.println(columns_bug[k-1]);
+							try{
+							System.out.println(columns_bug[k-1]);
+							bugs.get(columns_bug[k-1]).DB.add(bugs.get(k));
+							System.out.println("bugDBSize: "+bugs.get(columns_bug[k-1]).DB.size());
+							}
+							catch(NullPointerException e){
+								
+							}
 						}
-						catch(NullPointerException e){
-							
-						}
-					}
+				
+					//}
+					j++;
 				}
 				else{
+
 					sc1.nextLine();
 				}
 				i++;

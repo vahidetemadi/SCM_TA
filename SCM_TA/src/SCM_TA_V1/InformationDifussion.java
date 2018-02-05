@@ -4,6 +4,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -39,26 +40,37 @@ public class InformationDifussion extends AbstractProblem{
 				genes.add(tso_zones.next());
 			}
 		}
-		//changed NUM of variables for the soltuion
+		//changed NUM of variables for the solution
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		for(Zone z:genes){
 			int randDevId=GA_Problem_Parameter.getRandomDevId();
 			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
 		}
 		
-
 		//generate all the candidate schdeuling
+		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
-		ArrayList<ArrayList<DefaultEdge>> validSchedulings=GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
+		System.out.println(DEP_evaluation_scheduling.hashCode());
+		ArrayList<ArrayList<DefaultEdge>> validSchedulings = null;
+		try {
+			validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
+		} catch (CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(validSchedulings.size());
 		GA_Problem_Parameter.setCandidateSchedulings(GA_Problem_Parameter.getReScheduledGraphs(DEP,validSchedulings));
+		System.out.println("passed");
 		return solution;
 	}
 		
 	
 	@Override 	
 	public void evaluate(Solution solution){
+		System.out.println("gives error");
 		double f1 = 0.0;
 		double f2=0.0;
+		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
 		//reset all the associate time for the bugs and their zones

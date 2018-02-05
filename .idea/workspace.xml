@@ -2,15 +2,26 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="53746888-e6c4-42d6-8035-dc8d700f67e3" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/efforts/JDTMilestone3.1.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/bug-data/JDTMilestone 3.1.txt" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Bug.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Bug.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/CompetenceMulti2_problem.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/CompetenceMulti2_problem.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/DAGEdge.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/DAGEdge.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/GA_Problem_Parameter.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/GA_Problem_Parameter.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/InformationDifussion.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/InformationDifussion.class" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.class" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.class" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestone3.1.2.csv" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestone3.1.2.csv" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/MOEAFramework/.classpath" afterPath="$PROJECT_DIR$/MOEAFramework/.classpath" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/.classpath" afterPath="$PROJECT_DIR$/SCM_TA/.classpath" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Bug.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Bug.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/CompetenceMulti2_problem.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/CompetenceMulti2_problem.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/DAGEdge.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/DAGEdge.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/GA_Problem_Parameter.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/GA_Problem_Parameter.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/InformationDifussion.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/InformationDifussion.java" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestone3.1.1.csv" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestone3.1.1.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM3.csv" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM3.csv" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM4.csv" afterPath="$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/bug-data/JDT/dependencies/JDTMilestoneM4.csv" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -24,8 +35,8 @@
       <file leaf-file-name="Test1.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="42">
-              <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
+            <state relative-caret-position="168">
+              <caret line="65" column="8" lean-forward="false" selection-start-line="65" selection-start-column="8" selection-end-line="65" selection-end-column="8" />
               <folding />
             </state>
           </provider>
@@ -48,7 +59,7 @@
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="1">
+  <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1616" />
@@ -220,7 +231,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1616" height="876" extended-state="1" />
+    <frame x="-8" y="-8" width="1616" height="876" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -276,8 +287,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/SCM_TA/src/SCM_TA_V1/Test1.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="42">
-          <caret line="63" column="8" lean-forward="false" selection-start-line="63" selection-start-column="8" selection-end-line="63" selection-end-column="8" />
+        <state relative-caret-position="168">
+          <caret line="65" column="8" lean-forward="false" selection-start-line="65" selection-start-column="8" selection-end-line="65" selection-end-column="8" />
           <folding />
         </state>
       </provider>

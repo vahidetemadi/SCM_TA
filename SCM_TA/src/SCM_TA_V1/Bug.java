@@ -7,8 +7,7 @@ import java.util.Map.Entry;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
-public class Bug 
-{
+public class Bug implements Cloneable{
 	public ArrayList<Bug> DB=new ArrayList<Bug>();
 	int competenceProfileCount;
 	int ID;
@@ -23,6 +22,10 @@ public class Bug
 	double endTime;
 	double endTime_evaluate;
 	int algorithmicDeveloperAssignmentID=0;
+	
+	public Object clone()throws CloneNotSupportedException{  
+		return (Bug)super.clone();  
+	   }
 	public int getAlgorithmicDeveloperAssignmentID() {
 		return algorithmicDeveloperAssignmentID;
 	}
