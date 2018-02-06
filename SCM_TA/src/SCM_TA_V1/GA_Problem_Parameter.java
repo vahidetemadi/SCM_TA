@@ -85,10 +85,9 @@ public class GA_Problem_Parameter {
 	
 	
 	public static ArrayList<ArrayList<DefaultEdge>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG) throws CloneNotSupportedException{
-		//all valid schedulings(without any loop)
+		//all valid schedules(without any loop)
 		ArrayList<ArrayList<DefaultEdge>> validSchedulings=new ArrayList<ArrayList<DefaultEdge>>();
-		@SuppressWarnings("unchecked")
-		DefaultDirectedGraph<Bug, DefaultEdge> DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(EClass);
+		DefaultDirectedGraph<Bug, DefaultEdge> DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 		DDG=convertToDirectedGraph(DAG, DDG);
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
@@ -108,12 +107,14 @@ public class GA_Problem_Parameter {
 		ICombinatoricsVector<DefaultEdge> IV=Factory.createVector(potentilEdges);
 		Generator<DefaultEdge> potentialPerm=Factory.createPermutationGenerator(IV);
 		for(ICombinatoricsVector<DefaultEdge> perm:potentialPerm){
-			DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(EClass);
+			DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 			DDG=convertToDirectedGraph(DAG, DDG);
 			ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
 			DefaultEdge e=new DefaultEdge();
 			Iterator<DefaultEdge> iterator=perm.iterator();
-			ArrayList<DefaultEdge> remindEdges=(ArrayList<DefaultEdge>)perm;
+			ArrayList<DefaultEdge> remindEdges=new ArrayList<DefaultEdge>();
+			while(iterator.hasNext())
+				remindEdges.add(iterator.next());
 			while(iterator.hasNext()){
 				e=(DefaultEdge) iterator.next().clone();
 				iterator.remove();
@@ -125,8 +126,6 @@ public class GA_Problem_Parameter {
 			
 			validSchedulings.add(verifiedEadges);
 		}
-		
-		
 		return validSchedulings;
 	}
 	
@@ -145,16 +144,19 @@ public class GA_Problem_Parameter {
 	}
 	
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> getDAGModel(Bug[] bugs){
-		DAGEdge de=new DAGEdge();
-		DirectedAcyclicGraph<Bug, DefaultEdge> dag=new DirectedAcyclicGraph<Bug, DefaultEdge>(de);
+		DirectedAcyclicGraph<Bug, DefaultEdge> dag=new DirectedAcyclicGraph<Bug, DefaultEdge>(DefaultEdge.class);
+		for(int k=0; k<bugs.length;k++){
+			dag.addVertex(bugs[k]);
+		}
 		for(int i=0;i<bugs.length;i++){
 			if(bugs[i].DB.size()>0){
-				System.out.println(bugs[i].ID+" the id of parent bug");
 				for(Bug b:bugs[i].DB){
-					if(dag.edgeSet().size()<1)
-						dag.addEdge(b,bugs[i]);
-					else if(!dag.containsEdge(bugs[i],b))
-						dag.addEdge(b,bugs[i]);
+					if(b!=null){
+						if(dag.edgeSet().size()<1)
+							dag.addEdge(b,bugs[i]);
+						else if(!dag.containsEdge(bugs[i],b))
+							dag.addEdge(b,bugs[i]);	
+					}
 				}
 			}
 			else{
