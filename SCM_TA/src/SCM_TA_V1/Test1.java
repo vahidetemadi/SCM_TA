@@ -7,6 +7,8 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +33,7 @@ public class Test1 {
 	static HashMap<Integer , Zone> columns=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{
 		for(int runNum=0;runNum<50;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
@@ -53,15 +55,15 @@ public class Test1 {
 		
 	}
 	
-	public static void devInitialization() throws IOException,NoSuchElementException{
+	public static void devInitialization() throws IOException,NoSuchElementException, URISyntaxException{
 		//initialize developers
 				System.out.println("enter the developrs file");
 				Developer developer = null;
 				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(sc.nextLine()));
+				sc=new Scanner(new File(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\bug-data\\JDTDeveloper.txt"));
 				System.out.println("enter the devlopers wage file");
 				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(scan.nextLine()));
+				scan=new Scanner(new File(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\bug-data\\JDTDeveloperWithWage.txt"));
 				int i=0;
 				int j=0;
 				while(sc.hasNextLine() && scan.hasNextLine()){
@@ -90,7 +92,7 @@ public class Test1 {
 								//System.out.println(columns.get(j));
 								developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
 								developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
-								System.out.println(Double.parseDouble(wage_items[k]));
+								//System.out.println(Double.parseDouble(wage_items[k]));
 							}
 							else{
 								developer=new Developer(0);
@@ -125,7 +127,7 @@ public class Test1 {
 		System.out.println("enter the bugs files");
 		Bug bug=null;
 		//sc=new Scanner(System.in);
-		sc=new Scanner(System.in);
+		sc=new Scanner(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\JDT\\efforts");
 		Scanner sc1=null;
 		int n=1;
 		for(File fileEntry:new File(sc.nextLine()).listFiles()){
@@ -148,7 +150,6 @@ public class Test1 {
 						String[] items=sc1.nextLine().split("\t",-1);
 						for(int k=0;k<items.length;k++){
 							if(j>2 && Double.parseDouble(items[k])!=0){
-								//bug.BZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
 								bug.BZone_Coefficient.put(project.zones.get(j-2),Double.parseDouble(items[k]));
 							}
 							else if(j==0){
@@ -176,19 +177,23 @@ public class Test1 {
 		/*set bug dependencies*/
 		
 		System.out.println("enter the bug dependency files");
-		sc=new Scanner(System.in);
+		sc=new Scanner(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\JDT\\dependencies");
 		String[] columns_bug=null;
+		for(Bug b:bugs.values()){
+			b.DB.clear();
+		}
 		for(File fileEntry:new File(sc.nextLine()).listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){
 				if(i>0){
-					columns_bug=sc1.nextLine().split(",");
+					String s=sc1.nextLine();
+					columns_bug=s.split(",");
 					int k=1;
-					if(columns_bug[k].toString().length()>1 && columns_bug[k]!=null ){
+					if(columns_bug[k].toString().length()>1 && columns_bug[k].trim().length() > 0){
 						try{
-							bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(k));
-							System.out.println("bugDBSize: "+bugs.get(Integer.parseInt(columns_bug[k-1])).DB.size());
+							bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(Integer.parseInt(columns_bug[k])));
+							System.out.println(bugs.get(Integer.parseInt(columns_bug[k])));
 						}
 						catch(NullPointerException e){
 							

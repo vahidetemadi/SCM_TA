@@ -84,14 +84,14 @@ public class GA_Problem_Parameter {
 	}
 	
 	
-	public static ArrayList<ArrayList<DefaultEdge>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG) throws CloneNotSupportedException{
+	public static ArrayList<ArrayList<DefaultEdge>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG){
 		//all valid schedules(without any loop)
 		ArrayList<ArrayList<DefaultEdge>> validSchedulings=new ArrayList<ArrayList<DefaultEdge>>();
 		DefaultDirectedGraph<Bug, DefaultEdge> DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 		DDG=convertToDirectedGraph(DAG, DDG);
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
-		System.out.println(DAG.edgeSet().size());
+		System.out.println(DDG.edgeSet().size());
 		for(Bug b1:DDG.vertexSet()){
 			for(Bug b2:DDG.vertexSet()){
 				if(b1.ID!=b2.ID && !CI.pathExists(b1, b2) && !CI.pathExists(b2, b1)){
@@ -151,12 +151,14 @@ public class GA_Problem_Parameter {
 		for(int i=0;i<bugs.length;i++){
 			if(bugs[i].DB.size()>0){
 				for(Bug b:bugs[i].DB){
-					if(b!=null){
-						if(dag.edgeSet().size()<1)
+						if(dag.edgeSet().size()<1){
 							dag.addEdge(b,bugs[i]);
-						else if(!dag.containsEdge(bugs[i],b))
+							System.out.println(dag.edgeSet());
+						}
+						else if(!dag.containsEdge(bugs[i],b)){
 							dag.addEdge(b,bugs[i]);	
-					}
+							System.out.println(dag.edgeSet());
+						}
 				}
 			}
 			else{

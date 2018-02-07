@@ -46,19 +46,13 @@ public class InformationDifussion extends AbstractProblem{
 			int randDevId=GA_Problem_Parameter.getRandomDevId();
 			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
 		}
-		
+
 		//generate all the candidate schdeuling
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		System.out.println(DEP_evaluation_scheduling.hashCode());
-		ArrayList<ArrayList<DefaultEdge>> validSchedulings = null;
-		try {
-			validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
-		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		System.out.println(validSchedulings.size());
+		ArrayList<ArrayList<DefaultEdge>> validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
+		System.out.println(validSchedulings.size()+"dwdwqdwqwq");
 		GA_Problem_Parameter.setCandidateSchedulings(GA_Problem_Parameter.getReScheduledGraphs(DEP,validSchedulings));
 		System.out.println("passed");
 		return solution;

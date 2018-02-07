@@ -94,8 +94,7 @@ public class Bug implements Cloneable{
 		this.totalEstimatedEffort = totalEstimatedEffort;
 	}
 	public void setZoneDEP(){
-		Class<? extends DefaultEdge> eclass=null;
-		Zone_DEP=new DirectedAcyclicGraph<Zone, DefaultEdge>(eclass);
+		Zone_DEP=new DirectedAcyclicGraph<Zone, DefaultEdge>(DefaultEdge.class);
 		for (Entry<Zone, Double>  zone:BZone_Coefficient.entrySet())
 		{
 			if(zone.getKey().DZ.size()>0){
