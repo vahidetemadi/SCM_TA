@@ -1,5 +1,6 @@
 package SCM_TA_V1;
 
+import java.rmi.dgc.DGC;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
@@ -16,6 +17,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 
 import java.util.Iterator;
 
+import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
@@ -91,55 +93,74 @@ public class GA_Problem_Parameter {
 		DDG=convertToDirectedGraph(DAG, DDG);
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
-		System.out.println(DDG.edgeSet().size());
+		//generate all valid schedules 
 		for(Bug b1:DDG.vertexSet()){
 			for(Bug b2:DDG.vertexSet()){
-				if(b1.ID!=b2.ID && !CI.pathExists(b1, b2) && !CI.pathExists(b2, b1)){
+				if(b1.ID!=b2.ID && !CI.pathExists(b1, b2)){
 					DDG.addEdge(b1, b2);
-					DDG.addEdge(b2,b1);
+					//DDG.addEdge(b2,b1);
 					potentilEdges.add(DDG.getEdge(b1, b2));
-					potentilEdges.add(DDG.getEdge(b2, b1));
 				}
 			}
 		}
-		
+		System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
 		//find all permutation of potentialEdges list
 		ICombinatoricsVector<DefaultEdge> IV=Factory.createVector(potentilEdges);
 		Generator<DefaultEdge> potentialPerm=Factory.createPermutationGenerator(IV);
 		for(ICombinatoricsVector<DefaultEdge> perm:potentialPerm){
-			DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
-			DDG=convertToDirectedGraph(DAG, DDG);
+			DefaultDirectedGraph<Bug, DefaultEdge> DDG2=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+			//DDG=convertToDirectedGraph(DAG, DDG);
+			DDG2=(DefaultDirectedGraph<Bug, DefaultEdge>)DDG.clone();
 			ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
 			DefaultEdge e=new DefaultEdge();
-			Iterator<DefaultEdge> iterator=perm.iterator();
+			Iterator<DefaultEdge> iterator_1=perm.iterator();
+			Iterator<DefaultEdge> iterator_2=perm.iterator();
 			ArrayList<DefaultEdge> remindEdges=new ArrayList<DefaultEdge>();
-			while(iterator.hasNext())
-				remindEdges.add(iterator.next());
-			while(iterator.hasNext()){
-				e=(DefaultEdge) iterator.next().clone();
-				iterator.remove();
+			remindEdges.clear();
+			while(iterator_1.hasNext())
+				remindEdges.add(iterator_1.next());
+			
+			while(iterator_2.hasNext()){
+				e=iterator_2.next();
+				iterator_2.remove();
 				if(remindEdges.contains(e)){
 					verifiedEadges.add(e);
-					update(remindEdges,e,DDG);
+					update(remindEdges,e,DDG2);
 				}
-			}
-			
+			}			
+			//System.out.println(remindEdges.size());
 			validSchedulings.add(verifiedEadges);
+			System.out.println(verifiedEadges.size());
 		}
 		return validSchedulings;
 	}
 	
 	
 	
-	public static void update(ArrayList<DefaultEdge> edges, DefaultEdge e, DefaultDirectedGraph<Bug, DefaultEdge> dAG_2){
-		DefaultEdge e_reverse=dAG_2.getEdge(dAG_2.getEdgeTarget(e), dAG_2.getEdgeSource(e));
-		edges.remove(e_reverse);
-		ConnectivityInspector<Bug, DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(dAG_2);
-		for(DefaultEdge ed: edges){
-			if(CI.pathExists(dAG_2.getEdgeSource(ed), dAG_2.getEdgeSource(ed))){
-				edges.remove(dAG_2.getEdge(dAG_2.getEdgeTarget(ed), dAG_2.getEdgeSource(ed)));
-				edges.remove(ed);
+	public static void update(ArrayList<DefaultEdge> edges, DefaultEdge e, DefaultDirectedGraph<Bug, DefaultEdge> DDG_2){
+		ArrayList<DefaultEdge> edges_2=(ArrayList<DefaultEdge>)edges.clone();
+		try {
+			DefaultEdge e_reverse=DDG_2.getEdge(DDG_2.getEdgeTarget(e), DDG_2.getEdgeSource(e));
+			edges.remove(e_reverse);
+			edges_2.remove(e_reverse);
+			DDG_2.removeEdge(DDG_2.getEdgeTarget(e), DDG_2.getEdgeSource(e));
+		} catch (Exception e2) {
+			//DDG_2.addEdge(, targetVertex)
+			e2.printStackTrace();
+		}
+		ConnectivityInspector<Bug, DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DDG_2);
+		for(DefaultEdge ed: edges_2){
+			if(DDG_2.getEdgeSource(ed).ID!=DDG_2.getEdgeSource(e).ID && DDG_2.getEdgeTarget(ed).ID!=DDG_2.getEdgeTarget(e).ID)
+			{
+				try {
+				if(CI.pathExists(DDG_2.getEdgeSource(ed), DDG_2.getEdgeTarget(ed)) && CI.pathExists(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed))){
+					edges.remove(DDG_2.getEdge(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed)));
+				}
+				} catch (Exception e2) {
+					e2.printStackTrace();
+				}
 			}
+			
 		}
 	}
 	

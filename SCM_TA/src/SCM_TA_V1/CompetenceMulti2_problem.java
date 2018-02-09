@@ -2,23 +2,14 @@ package SCM_TA_V1;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Map.Entry;
-
-import javax.sound.midi.Soundbank;
-
-import jmetal.metaheuristics.singleObjective.differentialEvolution.DE;
-
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
-import org.moeaframework.core.variable.RealVariable;
 import org.moeaframework.problem.AbstractProblem;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 
 public class CompetenceMulti2_problem extends AbstractProblem {
 	

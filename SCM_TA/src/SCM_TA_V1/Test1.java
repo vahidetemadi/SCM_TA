@@ -1,13 +1,9 @@
 package SCM_TA_V1;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.io.PrintWriter;
-import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -21,9 +17,6 @@ import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
-import org.moeaframework.core.variable.RealVariable;
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
-
 
 public class Test1 {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
@@ -50,9 +43,7 @@ public class Test1 {
 			afterRoundUpdating(solution);
 			removeDevelopers();
 			}
-		
 		}
-		
 	}
 	
 	public static void devInitialization() throws IOException,NoSuchElementException, URISyntaxException{
