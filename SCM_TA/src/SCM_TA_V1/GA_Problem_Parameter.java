@@ -93,16 +93,26 @@ public class GA_Problem_Parameter {
 		DDG=convertToDirectedGraph(DAG, DDG);
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
+		System.out.println(DDG.isDirected());
+		for(DefaultEdge e:DAG.edgeSet()){
+			System.out.print(DDG.getEdgeSource(e).ID+"-----"+DDG.getEdgeTarget(e).ID+",,,");
+		}
+		
+
+		System.out.println();
 		//generate all valid schedules 
-		for(Bug b1:DDG.vertexSet()){
-			for(Bug b2:DDG.vertexSet()){
-				if(b1.ID!=b2.ID && !CI.pathExists(b1, b2)){
+		for(Bug b1:DAG.vertexSet()){
+			for(Bug b2:DAG.vertexSet()){
+				System.out.print(b1.ID+">>>>"+b2.ID+"....."+CI.pathExists(b1, b2)+",,,");
+				if(b1.ID!=b2.ID && !(DAG.containsEdge(b1, b2) || DAG.containsEdge(b2, b1))){
 					DDG.addEdge(b1, b2);
 					//DDG.addEdge(b2,b1);
 					potentilEdges.add(DDG.getEdge(b1, b2));
 				}
 			}
 		}
+		
+		System.out.println();
 		System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
 		//find all permutation of potentialEdges list
 		ICombinatoricsVector<DefaultEdge> IV=Factory.createVector(potentilEdges);
@@ -112,6 +122,7 @@ public class GA_Problem_Parameter {
 			DDG2=convertToDirectedGraph(DAG, DDG2);
 			//DDG2=(DefaultDirectedGraph<Bug, DefaultEdge>).clone();
 			ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
+			verifiedEadges.clear();
 			DefaultEdge e=new DefaultEdge();
 			Iterator<DefaultEdge> iterator_1=perm.iterator();
 			Iterator<DefaultEdge> iterator_2=perm.iterator();
@@ -119,27 +130,33 @@ public class GA_Problem_Parameter {
 			remindEdges.clear();
 			while(iterator_1.hasNext())
 				remindEdges.add(iterator_1.next());
+
+			System.out.println(remindEdges.size());
 			while(iterator_2.hasNext()){
 				e=iterator_2.next();
 				iterator_2.remove();
 				if(remindEdges.contains(e)){
 					DDG2.addEdge(DDG.getEdgeSource(e), DDG.getEdgeTarget(e));
 					verifiedEadges.add(e);
-					update(remindEdges,e,DDG,DDG2);
+					update(remindEdges,e,DDG,DDG2, verifiedEadges);
 				}
-			}			
-			//System.out.println(remindEdges.size());
+			}		
+			System.out.println("REdges: "+remindEdges.size());
 			validSchedulings.add(verifiedEadges);
-			for(DefaultEdge d:verifiedEadges)
-				System.out.print(d+"-----");
-			System.out.println();
+			//for(DefaultEdge d:verifiedEadges)
+			//	System.out.print(d+"-----");
+			System.out.println("VEdges: "+verifiedEadges.size());
+			System.out.println("DDG2 Edge size: "+DDG2.edgeSet().size());
+
+			System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
 		}
 		return validSchedulings;
 	}
 	
 	
 	
-	public static void update(ArrayList<DefaultEdge> edges, DefaultEdge e, DefaultDirectedGraph<Bug, DefaultEdge> DDG ,DefaultDirectedGraph<Bug, DefaultEdge> DDG_2){
+	public static void update(ArrayList<DefaultEdge> edges, DefaultEdge e, DefaultDirectedGraph<Bug, DefaultEdge> DDG ,DefaultDirectedGraph<Bug, DefaultEdge> DDG_2
+			, ArrayList<DefaultEdge> verifiedEdges){
 		ArrayList<DefaultEdge> edges_2=(ArrayList<DefaultEdge>)edges.clone();
 		try {
 			DefaultEdge e_reverse=DDG.getEdge(DDG.getEdgeTarget(e), DDG.getEdgeSource(e));
@@ -152,21 +169,25 @@ public class GA_Problem_Parameter {
 			e2.printStackTrace();
 		}
 		ConnectivityInspector<Bug, DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DDG_2);
-		for(DefaultEdge ed: edges_2){
+		for(DefaultEdge ed: edges_2){	
 			DDG_2.addEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
+			//verifiedEdges.add(ed);
 			//if(DDG_2.getEdgeSource(ed).ID!=DDG_2.getEdgeSource(e).ID && DDG_2.getEdgeTarget(ed).ID!=DDG_2.getEdgeTarget(e).ID)
 			//{
 			try {
 				if(CI.pathExists(DDG_2.getEdgeSource(ed), DDG_2.getEdgeTarget(ed)) && CI.pathExists(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed))){
-					DDG_2.removeEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
 					edges.remove(DDG_2.getEdge(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed)));
+					//verifiedEdges.remove(ed);
 				}
 			} catch (Exception e2) {
 				System.out.println("error occured");
 				e2.printStackTrace();
 			}
+
+			DDG_2.removeEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
 			//}
 		}
+		System.out.println(edges.size());
 	}
 	
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> getDAGModel(Bug[] bugs){
@@ -179,11 +200,11 @@ public class GA_Problem_Parameter {
 				for(Bug b:bugs[i].DB){
 						if(dag.edgeSet().size()<1){
 							dag.addEdge(b,bugs[i]);
-							System.out.println(dag.edgeSet());
+							//System.out.println(dag.edgeSet());
 						}
 						else if(!dag.containsEdge(bugs[i],b)){
 							dag.addEdge(b,bugs[i]);	
-							System.out.println(dag.edgeSet());
+							//System.out.println(dag.edgeSet());
 						}
 				}
 			}
