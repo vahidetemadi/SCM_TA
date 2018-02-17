@@ -5,19 +5,18 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
-import org.moeaframework.algorithm.DBEA;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
-import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.jgrapht.alg.ConnectivityInspector;
+import org.jgrapht.alg.KosarajuStrongConnectivityInspector;
 import org.jgrapht.graph.DefaultDirectedGraph;
+import org.jgrapht.alg.CycleDetector;
 
 import java.util.Iterator;
 
-import org.omg.Messaging.SYNC_WITH_TRANSPORT;
 import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
@@ -93,6 +92,7 @@ public class GA_Problem_Parameter {
 		DDG=convertToDirectedGraph(DAG, DDG);
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
+		KosarajuStrongConnectivityInspector<Bug,DefaultEdge> KI=new KosarajuStrongConnectivityInspector<Bug, DefaultEdge>(DAG);
 		System.out.println(DDG.isDirected());
 		for(DefaultEdge e:DAG.edgeSet()){
 			System.out.print(DDG.getEdgeSource(e).ID+"-----"+DDG.getEdgeTarget(e).ID+",,,");
@@ -128,9 +128,12 @@ public class GA_Problem_Parameter {
 			Iterator<DefaultEdge> iterator_2=perm.iterator();
 			ArrayList<DefaultEdge> remindEdges=new ArrayList<DefaultEdge>();
 			remindEdges.clear();
-			while(iterator_1.hasNext())
-				remindEdges.add(iterator_1.next());
-
+			while(iterator_1.hasNext()){
+				DefaultEdge d=iterator_1.next();
+				remindEdges.add(d);
+				System.out.print(DDG.getEdgeSource(d).ID+">>>"+DDG.getEdgeTarget(d).ID+"---");
+			}
+			System.out.println();
 			System.out.println(remindEdges.size());
 			while(iterator_2.hasNext()){
 				e=iterator_2.next();
@@ -141,7 +144,12 @@ public class GA_Problem_Parameter {
 					update(remindEdges,e,DDG,DDG2, verifiedEadges);
 				}
 			}		
-			System.out.println("REdges: "+remindEdges.size());
+			//System.out.println("REdges: "+remindEdges.size());
+			int i=0;
+			for(DefaultEdge d:DAG.edgeSet()){
+				verifiedEadges.add(i, d);
+				i++;
+			}
 			validSchedulings.add(verifiedEadges);
 			//for(DefaultEdge d:verifiedEadges)
 			//	System.out.print(d+"-----");
@@ -169,13 +177,16 @@ public class GA_Problem_Parameter {
 			e2.printStackTrace();
 		}
 		ConnectivityInspector<Bug, DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DDG_2);
+		CycleDetector<Bug,DefaultEdge> CD=new CycleDetector<Bug, DefaultEdge>(DDG_2);
 		for(DefaultEdge ed: edges_2){	
 			DDG_2.addEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
 			//verifiedEdges.add(ed);
 			//if(DDG_2.getEdgeSource(ed).ID!=DDG_2.getEdgeSource(e).ID && DDG_2.getEdgeTarget(ed).ID!=DDG_2.getEdgeTarget(e).ID)
 			//{
 			try {
-				if(CI.pathExists(DDG_2.getEdgeSource(ed), DDG_2.getEdgeTarget(ed)) && CI.pathExists(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed))){
+				//if(CI.pathExists(DDG_2.getEdgeSource(ed), DDG_2.getEdgeTarget(ed)) && CI.pathExists(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed))){
+				if(CD.detectCycles()){
+					//System.out.println(CD.detectCycles());
 					edges.remove(DDG_2.getEdge(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed)));
 					//verifiedEdges.remove(ed);
 				}
@@ -187,7 +198,7 @@ public class GA_Problem_Parameter {
 			DDG_2.removeEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
 			//}
 		}
-		System.out.println(edges.size());
+		//System.out.println(edges.size());
 	}
 	
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> getDAGModel(Bug[] bugs){
@@ -279,7 +290,7 @@ public class GA_Problem_Parameter {
 		}
 		
 		
-		System.out.println("size of ddg"+DDG.edgeSet().size());
+		//System.out.println("size of ddg"+DDG.edgeSet().size());
 		for(Bug b:DAG.vertexSet()){
 			DDG.addVertex(b);
 		}

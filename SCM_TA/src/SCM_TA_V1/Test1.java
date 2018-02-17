@@ -7,16 +7,22 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Queue;
 
+import org.jgrapht.graph.DefaultEdge;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
+import org.paukov.combinatorics.Factory;
+import org.paukov.combinatorics.Generator;
+import org.paukov.combinatorics.ICombinatoricsVector;
+
 
 public class Test1 {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
@@ -26,7 +32,7 @@ public class Test1 {
 	static HashMap<Integer , Zone> columns=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	
-	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{
+	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
 		for(int runNum=0;runNum<50;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
