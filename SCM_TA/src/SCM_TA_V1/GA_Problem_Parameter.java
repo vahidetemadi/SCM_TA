@@ -117,6 +117,7 @@ public class GA_Problem_Parameter {
 		//find all permutation of potentialEdges list
 		ICombinatoricsVector<DefaultEdge> IV=Factory.createVector(potentilEdges);
 		Generator<DefaultEdge> potentialPerm=Factory.createPermutationGenerator(IV);
+		long c=0;
 		for(ICombinatoricsVector<DefaultEdge> perm:potentialPerm){
 			DefaultDirectedGraph<Bug, DefaultEdge> DDG2=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 			DDG2=convertToDirectedGraph(DAG, DDG2);
@@ -131,10 +132,10 @@ public class GA_Problem_Parameter {
 			while(iterator_1.hasNext()){
 				DefaultEdge d=iterator_1.next();
 				remindEdges.add(d);
-				System.out.print(DDG.getEdgeSource(d).ID+">>>"+DDG.getEdgeTarget(d).ID+"---");
+				//System.out.print(DDG.getEdgeSource(d).ID+">>>"+DDG.getEdgeTarget(d).ID+"---");
 			}
-			System.out.println();
-			System.out.println(remindEdges.size());
+			//System.out.println();
+			//System.out.println(remindEdges.size());
 			while(iterator_2.hasNext()){
 				e=iterator_2.next();
 				iterator_2.remove();
@@ -157,6 +158,8 @@ public class GA_Problem_Parameter {
 			System.out.println("DDG2 Edge size: "+DDG2.edgeSet().size());
 
 			System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
+			c++;
+			System.out.println("c value: "+c);
 		}
 		return validSchedulings;
 	}
@@ -188,6 +191,7 @@ public class GA_Problem_Parameter {
 				if(CD.detectCycles()){
 					//System.out.println(CD.detectCycles());
 					edges.remove(DDG_2.getEdge(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed)));
+					DDG_2.removeEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
 					//verifiedEdges.remove(ed);
 				}
 			} catch (Exception e2) {
@@ -195,7 +199,7 @@ public class GA_Problem_Parameter {
 				e2.printStackTrace();
 			}
 
-			DDG_2.removeEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
+
 			//}
 		}
 		//System.out.println(edges.size());
