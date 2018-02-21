@@ -3,8 +3,10 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/MOEAFramework"/>
-	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/combinatoricslib-2.0.jar"/>
-	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/guava.jar"/>
-	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA/SCM_TA/lib/jgrapht-ext-1.1.0-uber.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pc/workspace/SCM_TA/SCM_TA/lib/combinatoricslib-2.0.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pc/workspace/SCM_TA/SCM_TA/lib/guava.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pc/workspace/SCM_TA/SCM_TA/lib/jgrapht-ext-1.1.0-uber.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pc/git/SCM_TA/SCM_TA/lib/commons-math3-3.6.1.jar"/>
+	<classpathentry kind="lib" path="C:/Users/pc/git/SCM_TA/SCM_TA/lib/commons-math3-3.6.1-javadoc.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>
