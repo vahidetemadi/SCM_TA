@@ -4,12 +4,14 @@ import java.rmi.dgc.DGC;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
+import java.util.Collections;
 
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
+import org.jgrapht.traverse.DepthFirstIterator;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.KosarajuStrongConnectivityInspector;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -111,13 +113,21 @@ public class GA_Problem_Parameter {
 				}
 			}
 		}
+		for(Bug b:DAG.vertexSet()){
+			TopologicalOrderIterator<Bug, DefaultEdge> TO=new TopologicalOrderIterator(DAG);
+			TO.setReuseEvents(false);
+			while(TO.hasNext()){
+				System.out.print(TO.next().ID+"---");
+			}
+			System.out.println();
+		}
 		
-		System.out.println();
-		System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
 		//find all permutation of potentialEdges list
+		
+		/*
 		ICombinatoricsVector<DefaultEdge> IV=Factory.createVector(potentilEdges);
 		Generator<DefaultEdge> potentialPerm=Factory.createPermutationGenerator(IV);
-		long c=0;
+		
 		for(ICombinatoricsVector<DefaultEdge> perm:potentialPerm){
 			DefaultDirectedGraph<Bug, DefaultEdge> DDG2=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 			DDG2=convertToDirectedGraph(DAG, DDG2);
@@ -161,6 +171,75 @@ public class GA_Problem_Parameter {
 			c++;
 			System.out.println("c value: "+c);
 		}
+		
+		
+		
+		
+		
+		
+		
+		
+		ArrayList<DefaultEdge> shuffledPotentialEdges=(ArrayList<DefaultEdge>)potentilEdges.clone();
+		long t=1000;
+		long c=0;
+		for(int i=0;i<t;i++){
+				DefaultDirectedGraph<Bug, DefaultEdge> DDG2=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+				DDG2=convertToDirectedGraph(DAG, DDG2);
+				ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
+				verifiedEadges.clear();
+				DefaultEdge e;
+				ArrayList<DefaultEdge> remindEdges=(ArrayList<DefaultEdge>)potentilEdges.clone();
+				ArrayList<DefaultEdge> shuffledEdgeList=(ArrayList<DefaultEdge>)potentilEdges.clone();
+				Collections.shuffle(shuffledEdgeList);
+				System.out.println("sh: "+shuffledEdgeList.size());
+				System.out.println();
+				int j=0;
+				for(DefaultEdge d:DAG.edgeSet()){
+					verifiedEadges.add(j, d);
+					j++;
+				}
+				CycleDetector<Bug,DefaultEdge> CD=new CycleDetector<Bug, DefaultEdge>(DDG2);
+				System.out.println("CY1: "+CD.detectCycles()+ DDG2.edgeSet().size());
+				for(DefaultEdge edge:shuffledEdgeList){
+					e=(DefaultEdge) edge.clone();
+					if(remindEdges.contains(edge)){
+						DDG2.addEdge(DDG.getEdgeSource(e), DDG.getEdgeTarget(e));
+						verifiedEadges.add(e);
+						update(remindEdges,e,DDG,DDG2, verifiedEadges);
+					}
+				}		
+				
+				
+				System.out.println("CY: "+CD.detectCycles()+ DDG2.vertexSet().size());
+				DefaultDirectedGraph<Bug, DefaultEdge> D=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+				
+				for(DefaultEdge ddd:verifiedEadges)
+					System.out.print(DDG2.getEdgeSource(ddd).ID+">>>"+DDG2.getEdgeTarget(ddd).ID+",,,");
+				System.out.println("////////////////////////");
+				
+				for(DefaultEdge ddd:DDG2.edgeSet())
+					System.out.print(DDG2.getEdgeSource(ddd).ID+">>>"+DDG2.getEdgeTarget(ddd).ID+",,,");
+				System.out.println();
+				
+				
+				//System.out.println("REdges: "+remindEdges.size());
+				
+				System.out.println("VE_2: "+verifiedEadges.size());
+				validSchedulings.add(verifiedEadges);
+				//for(DefaultEdge d:verifiedEadges)
+				//	System.out.print(d+"-----");
+				System.out.println("VEdges: "+verifiedEadges.size());
+				System.out.println("DDG2 Edge size: "+DDG2.edgeSet().size());
+				System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
+			System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
+			c++;
+			System.out.println("c value: "+c);
+			}	
+			
+		*/
+		
+		
+		
 		return validSchedulings;
 	}
 	
@@ -168,19 +247,19 @@ public class GA_Problem_Parameter {
 	
 	public static void update(ArrayList<DefaultEdge> edges, DefaultEdge e, DefaultDirectedGraph<Bug, DefaultEdge> DDG ,DefaultDirectedGraph<Bug, DefaultEdge> DDG_2
 			, ArrayList<DefaultEdge> verifiedEdges){
+		CycleDetector<Bug,DefaultEdge> CD=new CycleDetector<Bug, DefaultEdge>(DDG_2);
 		ArrayList<DefaultEdge> edges_2=(ArrayList<DefaultEdge>)edges.clone();
 		try {
 			DefaultEdge e_reverse=DDG.getEdge(DDG.getEdgeTarget(e), DDG.getEdgeSource(e));
 			edges.remove(e_reverse);
 			edges_2.remove(e_reverse);
+			
 			//DDG_2.removeEdge(DDG_2.getEdgeTarget(e), DDG_2.getEdgeSource(e));
 		}
 		catch (Exception e2) {
 			//DDG_2.addEdge(, targetVertex)
 			e2.printStackTrace();
 		}
-		ConnectivityInspector<Bug, DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DDG_2);
-		CycleDetector<Bug,DefaultEdge> CD=new CycleDetector<Bug, DefaultEdge>(DDG_2);
 		for(DefaultEdge ed: edges_2){	
 			DDG_2.addEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
 			//verifiedEdges.add(ed);
@@ -248,7 +327,7 @@ public class GA_Problem_Parameter {
 			@SuppressWarnings("unchecked")
 			DirectedAcyclicGraph<Bug, DefaultEdge> ReScheduledDAG=(DirectedAcyclicGraph<Bug, DefaultEdge>)DAG.clone();
 			for(DefaultEdge edge:candidateSchedule){
-			ReScheduledDAG.addEdge(DAG.getEdgeSource(edge), DAG.getEdgeTarget(edge));
+				ReScheduledDAG.addEdge(DAG.getEdgeSource(edge), DAG.getEdgeTarget(edge));
 		}
 		schedulings.add(ReScheduledDAG);
 		}
