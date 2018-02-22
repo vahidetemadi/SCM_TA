@@ -3,7 +3,7 @@
 	<item value="false" key="TypeHierarchyViewPart.qualifiednames"/>
 	<item value="3" key="TypeHierarchyViewPart.orientation"/>
 	<item value="false" key="TypeHierarchyViewPart.linkeditors"/>
-	<item value="C:\Users\pc\workspace\SCM_TA\SCM_TA\lib" key="org.eclipse.jdt.ui.lastextjar"/>
+	<item value="C:\Users\pc\git\SCM_TA\SCM_TA\lib" key="org.eclipse.jdt.ui.lastextjar"/>
 	<item value="2" key="TypeHierarchyViewPart.hierarchyview"/>
 	<section name="org.eclipse.jdt.internal.ui.packageview.PackageExplorerPart">
 		<item value="2" key="layout"/>
@@ -18,6 +18,8 @@
 		<item value="2" key="pageIndex"/>
 	</section>
 	<section name="completion_proposal_size">
+		<item value="408" key="size.y"/>
+		<item value="770" key="size.x"/>
 	</section>
 	<section name="JavaElementSearchActions">
 	</section>

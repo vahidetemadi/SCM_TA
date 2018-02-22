@@ -62,8 +62,8 @@ public class InformationDifussion extends AbstractProblem{
 	@Override 	
 	public void evaluate(Solution solution){
 		System.out.println("gives error");
-		double f1 = 0.0;
-		double f2=0.0;
+		double f_totalTime = 0.0;
+		double f_totalCost=0.0;
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
@@ -73,8 +73,9 @@ public class InformationDifussion extends AbstractProblem{
 		GA_Problem_Parameter.assignZoneDev(tso_evaluate, solution);
 		//evaluate and examine for all the candidate schdulings and then, pick the minimum one 
 		for(TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate_scheduling:GA_Problem_Parameter.candidateSchedulings){
-			double f1_1=0.0;
-			double f1_2=0.0;
+			double f_devCost=0.0;
+			double f_delayCost=0.0;
+			double f_Time=0.0;
 			
 			int numOfVar=0; 
 			Bug b;
@@ -85,20 +86,26 @@ public class InformationDifussion extends AbstractProblem{
 						double compeletionTime=0.0;
 						Entry<Zone, Double> zone=new AbstractMap.SimpleEntry<Zone, Double>(zone_bug,b.BZone_Coefficient.get(zone_bug));
 						compeletionTime=fitnessCalc.compeletionTime(b,zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
-						f1_1+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getDZone_Wage().get(zone.getKey());
+						f_devCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getDZone_Wage().get(zone.getKey());
 						numOfVar++;
 						delayTime=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
-						f1_2+=delayTime*GA_Problem_Parameter.delayPenaltyCostRate;		
-						
+						f_delayCost+=delayTime*GA_Problem_Parameter.delayPenaltyCostRate;		
+						f_Time+=compeletionTime+delayTime;
 						//update developer nextAvailableHours
 						developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
 						//update bug endTime
 						b.endTime=Math.max(b.endTime, delayTime+compeletionTime);		
 				 }  
 		 }
-			 f1=f1_1+f1_2;
+			 f_totalCost=f_delayCost+f_devCost;
+			 f_totalTime=f_Time;
 			 if(solution.getObjectives()[0]!=0){
-				 solution.setObjective(0, Math.min(f1,solution.getObjectives()[0]));
+				 solution.setObjective(0, Math.min(f_totalTime,solution.getObjectives()[0]));
+				 //assigning the best schedule for the solution 
+				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),tso_evaluate_scheduling);
+			 }
+			 if(solution.getObjectives()[1]!=0){
+				 solution.setObjective(0, Math.min(f_totalCost,solution.getObjectives()[1]));
 				 //assigning the best schedule for the solution 
 				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),tso_evaluate_scheduling);
 			 }
@@ -109,7 +116,7 @@ public class InformationDifussion extends AbstractProblem{
 		/*
 		
 		
-		//compute the infomration difuusion
+		//compute the information diffusion
 		numOfVar=0;
 		 ArrayList<Developer> devs=new ArrayList<Developer>();
 		 for (int i = 0; i < GA_Problem_Parameter.Num_of_Bugs; i++) {
@@ -139,7 +146,7 @@ public class InformationDifussion extends AbstractProblem{
 		 
 		 */
 		
-		solution.setObjective(1, f2);
+		//olution.setObjective(1, f2);
 		
 		 }
 
