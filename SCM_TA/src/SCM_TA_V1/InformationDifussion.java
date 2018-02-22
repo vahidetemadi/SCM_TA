@@ -52,7 +52,6 @@ public class InformationDifussion extends AbstractProblem{
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		System.out.println(DEP_evaluation_scheduling.hashCode());
 		ArrayList<ArrayList<DefaultEdge>> validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
-		System.out.println(validSchedulings.size()+"dwdwqdwqwq");
 		GA_Problem_Parameter.setCandidateSchedulings(GA_Problem_Parameter.getReScheduledGraphs(DEP,validSchedulings));
 		System.out.println("passed");
 		return solution;
@@ -75,8 +74,7 @@ public class InformationDifussion extends AbstractProblem{
 		for(TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate_scheduling:GA_Problem_Parameter.candidateSchedulings){
 			double f_devCost=0.0;
 			double f_delayCost=0.0;
-			double f_Time=0.0;
-			
+			double f_Time=0.0;		
 			int numOfVar=0; 
 			Bug b;
 			while(tso_evaluate_scheduling.hasNext()) {
