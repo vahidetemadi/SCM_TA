@@ -47,7 +47,7 @@ public class InformationDifussion extends AbstractProblem{
 			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
 		}
 
-		//generate all the candidate schdeuling
+		//generate all the candidate schedule
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		System.out.println(DEP_evaluation_scheduling.hashCode());
@@ -60,6 +60,7 @@ public class InformationDifussion extends AbstractProblem{
 	
 	@Override 	
 	public void evaluate(Solution solution){
+		
 		System.out.println("gives error");
 		double f_totalTime = 0.0;
 		double f_totalCost=0.0;
@@ -98,12 +99,12 @@ public class InformationDifussion extends AbstractProblem{
 			 if(solution.getObjectives()[0]!=0){
 				 solution.setObjective(0, Math.min(f_totalTime,solution.getObjectives()[0]));
 				 //assigning the best schedule for the solution 
-				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),tso_evaluate_scheduling);
+				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),valid_scheduling);
 			 }
 			 if(solution.getObjectives()[1]!=0){
 				 solution.setObjective(0, Math.min(f_totalCost,solution.getObjectives()[1]));
 				 //assigning the best schedule for the solution 
-				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),tso_evaluate_scheduling);
+				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),valid_scheduling);
 			 }
 		}
 		

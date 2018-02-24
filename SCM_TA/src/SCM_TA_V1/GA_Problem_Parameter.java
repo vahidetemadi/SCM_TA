@@ -1,6 +1,5 @@
 package SCM_TA_V1;
 
-import java.rmi.dgc.DGC;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,7 +12,6 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.Subgraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.KosarajuStrongConnectivityInspector;
@@ -53,7 +51,7 @@ public class GA_Problem_Parameter {
 	public static ArrayList<Integer> DevList_forAssignment=new ArrayList<Integer>();
 	//public static ArrayList<TopologicalOrderIterator<Bug, DefaultEdge>> candidateSchedulings=null;
 	public static ArrayList<ArrayList<Bug>> candidateSchedulings=null;
-	public static HashMap<Integer,TopologicalOrderIterator<Bug, DefaultEdge>> selectedSchedules=new HashMap<Integer, TopologicalOrderIterator<Bug,DefaultEdge>>();
+	public static HashMap<Integer, ArrayList<Bug>> selectedSchedules=new HashMap<Integer, ArrayList<Bug>>();
 	
 	public static int setNum_of_Variables(Bug[] bugs){
 		Num_of_variables=0;
@@ -120,18 +118,39 @@ public class GA_Problem_Parameter {
 		System.out.println();
 	*/	
 
-		System.out.println();
+		/*System.out.println();
 		ConnectivityInspector<Bug, DefaultEdge> GCI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
 		List<Set<Bug>> components = GCI.connectedSets();
 		ArrayList<AsSubgraph<Bug, DefaultEdge>> subgraphs=new ArrayList<AsSubgraph<Bug,DefaultEdge>>();
 		for(Set<Bug> s:components){
 			subgraphs.add(new AsSubgraph(DAG, s));
-		}
-			
+		}*/
 		ArrayList<ArrayList<Bug>> validSchedulings=new ArrayList<ArrayList<Bug>>();
-		System.out.println("comp: "+components.size());
-		for(int i=0;i<10;i++){
+		for(int k=0;k<20;k++){
 			ArrayList<Bug> va=new ArrayList<Bug>();
+			ArrayList<Bug> travesredNodes=new ArrayList<Bug>();
+			Random randomGenerator=new Random();
+			int rIndex=0;
+			for(Bug b:DAG.vertexSet()){
+				if(DAG.inDegreeOf(b)==0){
+					travesredNodes.add(b);
+				}
+			}
+			while(!travesredNodes.isEmpty()){
+				rIndex=randomGenerator.nextInt(travesredNodes.size());
+				va.add(travesredNodes.get(rIndex));
+				Set<DefaultEdge> edges=DAG.outgoingEdgesOf(travesredNodes.get(rIndex));
+				travesredNodes.remove(travesredNodes.get(rIndex));
+				for(DefaultEdge d:edges){
+					travesredNodes.add(DAG.getEdgeTarget(d));
+				}
+			}
+			validSchedulings.add(va);	
+		}
+		
+		
+		/*System.out.println("comp: "+components.size());
+		for(int i=0;i<10;i++){
 			Collections.shuffle(subgraphs);
 			for(AsSubgraph<Bug, DefaultEdge> g:subgraphs){
 				TopologicalOrderIterator<Bug, DefaultEdge> TO=new TopologicalOrderIterator(g);
@@ -139,8 +158,8 @@ public class GA_Problem_Parameter {
 					va.add(TO.next());
 				}
 			}
-			validSchedulings.add(va);
-		}
+			
+		}*/
 		for(ArrayList<Bug> ab:validSchedulings){
 			for(Bug b:ab){
 				System.out.print(b.ID+"---");
