@@ -1,0 +1,115 @@
+//find all permutation of potentialEdges list
+		
+		/*
+		ICombinatoricsVector<DefaultEdge> IV=Factory.createVector(potentilEdges);
+		Generator<DefaultEdge> potentialPerm=Factory.createPermutationGenerator(IV);
+		
+		for(ICombinatoricsVector<DefaultEdge> perm:potentialPerm){
+			DefaultDirectedGraph<Bug, DefaultEdge> DDG2=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+			DDG2=convertToDirectedGraph(DAG, DDG2);
+			//DDG2=(DefaultDirectedGraph<Bug, DefaultEdge>).clone();
+			ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
+			verifiedEadges.clear();
+			DefaultEdge e=new DefaultEdge();
+			Iterator<DefaultEdge> iterator_1=perm.iterator();
+			Iterator<DefaultEdge> iterator_2=perm.iterator();
+			ArrayList<DefaultEdge> remindEdges=new ArrayList<DefaultEdge>();
+			remindEdges.clear();
+			while(iterator_1.hasNext()){
+				DefaultEdge d=iterator_1.next();
+				remindEdges.add(d);
+				//System.out.print(DDG.getEdgeSource(d).ID+">>>"+DDG.getEdgeTarget(d).ID+"---");
+			}
+			//System.out.println();
+			//System.out.println(remindEdges.size());
+			while(iterator_2.hasNext()){
+				e=iterator_2.next();
+				iterator_2.remove();
+				if(remindEdges.contains(e)){
+					DDG2.addEdge(DDG.getEdgeSource(e), DDG.getEdgeTarget(e));
+					verifiedEadges.add(e);
+					update(remindEdges,e,DDG,DDG2, verifiedEadges);
+				}
+			}		
+			//System.out.println("REdges: "+remindEdges.size());
+			int i=0;
+			for(DefaultEdge d:DAG.edgeSet()){
+				verifiedEadges.add(i, d);
+				i++;
+			}
+			validSchedulings.add(verifiedEadges);
+			//for(DefaultEdge d:verifiedEadges)
+			//	System.out.print(d+"-----");
+			System.out.println("VEdges: "+verifiedEadges.size());
+			System.out.println("DDG2 Edge size: "+DDG2.edgeSet().size());
+
+			System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
+			c++;
+			System.out.println("c value: "+c);
+		}
+		
+		
+		
+		
+		
+		
+		
+		
+		ArrayList<DefaultEdge> shuffledPotentialEdges=(ArrayList<DefaultEdge>)potentilEdges.clone();
+		long t=1000;
+		long c=0;
+		for(int i=0;i<t;i++){
+				DefaultDirectedGraph<Bug, DefaultEdge> DDG2=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+				DDG2=convertToDirectedGraph(DAG, DDG2);
+				ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
+				verifiedEadges.clear();
+				DefaultEdge e;
+				ArrayList<DefaultEdge> remindEdges=(ArrayList<DefaultEdge>)potentilEdges.clone();
+				ArrayList<DefaultEdge> shuffledEdgeList=(ArrayList<DefaultEdge>)potentilEdges.clone();
+				Collections.shuffle(shuffledEdgeList);
+				System.out.println("sh: "+shuffledEdgeList.size());
+				System.out.println();
+				int j=0;
+				for(DefaultEdge d:DAG.edgeSet()){
+					verifiedEadges.add(j, d);
+					j++;
+				}
+				CycleDetector<Bug,DefaultEdge> CD=new CycleDetector<Bug, DefaultEdge>(DDG2);
+				System.out.println("CY1: "+CD.detectCycles()+ DDG2.edgeSet().size());
+				for(DefaultEdge edge:shuffledEdgeList){
+					e=(DefaultEdge) edge.clone();
+					if(remindEdges.contains(edge)){
+						DDG2.addEdge(DDG.getEdgeSource(e), DDG.getEdgeTarget(e));
+						verifiedEadges.add(e);
+						update(remindEdges,e,DDG,DDG2, verifiedEadges);
+					}
+				}		
+				
+				
+				System.out.println("CY: "+CD.detectCycles()+ DDG2.vertexSet().size());
+				DefaultDirectedGraph<Bug, DefaultEdge> D=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+				
+				for(DefaultEdge ddd:verifiedEadges)
+					System.out.print(DDG2.getEdgeSource(ddd).ID+">>>"+DDG2.getEdgeTarget(ddd).ID+",,,");
+				System.out.println("////////////////////////");
+				
+				for(DefaultEdge ddd:DDG2.edgeSet())
+					System.out.print(DDG2.getEdgeSource(ddd).ID+">>>"+DDG2.getEdgeTarget(ddd).ID+",,,");
+				System.out.println();
+				
+				
+				//System.out.println("REdges: "+remindEdges.size());
+				
+				System.out.println("VE_2: "+verifiedEadges.size());
+				validSchedulings.add(verifiedEadges);
+				//for(DefaultEdge d:verifiedEadges)
+				//	System.out.print(d+"-----");
+				System.out.println("VEdges: "+verifiedEadges.size());
+				System.out.println("DDG2 Edge size: "+DDG2.edgeSet().size());
+				System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
+			System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
+			c++;
+			System.out.println("c value: "+c);
+			}	
+			
+		*/

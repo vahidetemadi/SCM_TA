@@ -1,4 +1,4 @@
-!SESSION 2018-02-19 23:18:43.722 -----------------------------------------------
+!SESSION 2018-02-23 12:32:09.324 -----------------------------------------------
 eclipse.buildId=4.4.2.M20150204-1700
 java.version=1.8.0_101
 java.vendor=Oracle Corporation
@@ -7,406 +7,26 @@ Framework arguments:  -product org.eclipse.epp.package.java.product
 Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
 
 This is a continuation of log file C:\Users\pc\git\SCM_TA\.metadata\.bak_0.log
-Created Time: 2018-02-21 01:52:11.236
+Created Time: 2018-02-23 20:49:48.967
 
-!ENTRY org.eclipse.jdt.ui 4 10001 2018-02-21 01:52:11.237
-!MESSAGE Internal Error
-!STACK 1
-Java Model Exception: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/org/omg/PortableInterceptor/SYSTEM_EXCEPTION.html
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:928)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/org/omg/PortableInterceptor/SYSTEM_EXCEPTION.html
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	... 9 more
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/org/omg/PortableInterceptor/SYSTEM_EXCEPTION.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/org/omg/PortableInterceptor/SYSTEM_EXCEPTION.html
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/org/omg/PortableInterceptor/SYSTEM_EXCEPTION.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-!SUBENTRY 1 org.eclipse.jdt.core 4 985 2018-02-21 01:52:11.237
-!MESSAGE Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/org/omg/PortableInterceptor/SYSTEM_EXCEPTION.html
-!STACK 0
-java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/org/omg/PortableInterceptor/SYSTEM_EXCEPTION.html
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/org/omg/PortableInterceptor/SYSTEM_EXCEPTION.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-
-!ENTRY org.eclipse.jdt.ui 4 10001 2018-02-21 01:52:11.438
-!MESSAGE Internal Error
-!STACK 1
-Java Model Exception: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:928)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	... 9 more
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-!SUBENTRY 1 org.eclipse.jdt.core 4 985 2018-02-21 01:52:11.438
-!MESSAGE Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-!STACK 0
-java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
-	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-
-!ENTRY org.eclipse.jdt.ui 4 10001 2018-02-21 01:52:12.790
-!MESSAGE Internal Error
-!STACK 1
-Java Model Exception: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:928)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryField.getAttachedJavadoc(BinaryField.java:121)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	... 9 more
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryField.getAttachedJavadoc(BinaryField.java:121)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-!SUBENTRY 1 org.eclipse.jdt.core 4 985 2018-02-21 01:52:12.791
-!MESSAGE Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-!STACK 0
-java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryField.getAttachedJavadoc(BinaryField.java:121)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/lang/System.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-
-!ENTRY org.eclipse.jdt.ui 4 10001 2018-02-21 01:52:14.327
-!MESSAGE Internal Error
-!STACK 1
-Java Model Exception: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:928)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryMethod.getAttachedJavadoc(BinaryMethod.java:717)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	... 9 more
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryMethod.getAttachedJavadoc(BinaryMethod.java:717)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-!SUBENTRY 1 org.eclipse.jdt.core 4 985 2018-02-21 01:52:14.327
-!MESSAGE Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html
-!STACK 0
-java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
-	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
-	at java.lang.reflect.Constructor.newInstance(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
-	at java.security.AccessController.doPrivileged(Native Method)
-	at sun.net.www.protocol.http.HttpURLConnection.getChainedException(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryMethod.getAttachedJavadoc(BinaryMethod.java:717)
-	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
-Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/io/PrintStream.html
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
-	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
-	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
-	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
-	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-
-!ENTRY org.eclipse.jdt.ui 4 10001 2018-02-21 01:52:24.042
+!ENTRY org.eclipse.jdt.ui 4 10001 2018-02-23 20:49:48.977
 !MESSAGE Internal Error
 !STACK 1
 Java Model Exception: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
 	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:928)
 	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryMethod.getAttachedJavadoc(BinaryMethod.java:717)
+	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
 	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo(JavadocHover.java:689)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.internalGetHoverInfo(JavadocHover.java:607)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo2(JavadocHover.java:599)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:163)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:129)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:85)
+	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:166)
 Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
 	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
 	at java.lang.reflect.Constructor.newInstance(Unknown Source)
 	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
@@ -417,16 +37,17 @@ Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL:
 	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
 	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
 	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
-	... 9 more
+	... 10 more
 Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
 	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
 	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
 	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
 	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
 	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
+	... 10 more
 Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
 	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
 	at java.lang.reflect.Constructor.newInstance(Unknown Source)
 	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
@@ -438,26 +59,28 @@ Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL:
 	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
 	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
 	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryMethod.getAttachedJavadoc(BinaryMethod.java:717)
+	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
 	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo(JavadocHover.java:689)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.internalGetHoverInfo(JavadocHover.java:607)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo2(JavadocHover.java:599)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:163)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:129)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:85)
+	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:166)
 Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
 	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
 	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
 	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
 	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
 	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-!SUBENTRY 1 org.eclipse.jdt.core 4 985 2018-02-21 01:52:24.042
+	... 10 more
+!SUBENTRY 1 org.eclipse.jdt.core 4 985 2018-02-23 20:49:48.978
 !MESSAGE Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
 !STACK 0
 java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
-	at sun.reflect.GeneratedConstructorAccessor74.newInstance(Unknown Source)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance0(Native Method)
+	at sun.reflect.NativeConstructorAccessorImpl.newInstance(Unknown Source)
 	at sun.reflect.DelegatingConstructorAccessorImpl.newInstance(Unknown Source)
 	at java.lang.reflect.Constructor.newInstance(Unknown Source)
 	at sun.net.www.protocol.http.HttpURLConnection$10.run(Unknown Source)
@@ -469,32 +92,19 @@ java.io.IOException: Server returned HTTP response code: 401 for URL: https://do
 	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getInputStream(Unknown Source)
 	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:862)
 	at org.eclipse.jdt.internal.core.BinaryType.getJavadocContents(BinaryType.java:1039)
-	at org.eclipse.jdt.internal.core.BinaryMethod.getAttachedJavadoc(BinaryMethod.java:717)
+	at org.eclipse.jdt.internal.core.BinaryType.getAttachedJavadoc(BinaryType.java:997)
 	at org.eclipse.jdt.internal.ui.text.javadoc.JavadocContentAccess2.getHTMLContent(JavadocContentAccess2.java:500)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.extractJavadoc(ProposalInfo.java:93)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.computeInfo(ProposalInfo.java:77)
-	at org.eclipse.jdt.internal.ui.text.java.ProposalInfo.getInfo(ProposalInfo.java:62)
-	at org.eclipse.jdt.internal.ui.text.java.AbstractJavaCompletionProposal.getAdditionalProposalInfo(AbstractJavaCompletionProposal.java:575)
-	at org.eclipse.jface.text.contentassist.AdditionalInfoController$3.run(AdditionalInfoController.java:106)
-	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo(JavadocHover.java:689)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.internalGetHoverInfo(JavadocHover.java:607)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavadocHover.getHoverInfo2(JavadocHover.java:599)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:163)
+	at org.eclipse.jdt.internal.ui.text.java.hover.BestMatchHover.getHoverInfo2(BestMatchHover.java:129)
+	at org.eclipse.jdt.internal.ui.text.java.hover.JavaEditorTextHoverProxy.getHoverInfo2(JavaEditorTextHoverProxy.java:85)
+	at org.eclipse.jface.text.TextViewerHoverManager$4.run(TextViewerHoverManager.java:166)
 Caused by: java.io.IOException: Server returned HTTP response code: 401 for URL: https://docs.oracle.com/javase/8/docs/api/java/util/ArrayList.html
 	at sun.net.www.protocol.http.HttpURLConnection.getInputStream0(Unknown Source)
 	at sun.net.www.protocol.http.HttpURLConnection.getInputStream(Unknown Source)
 	at java.net.HttpURLConnection.getResponseCode(Unknown Source)
 	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
 	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
-	... 9 more
-!SESSION 2018-02-21 09:13:27.941 -----------------------------------------------
-eclipse.buildId=4.4.2.M20150204-1700
-java.version=1.8.0_101
-java.vendor=Oracle Corporation
-BootLoader constants: OS=win32, ARCH=x86_64, WS=win32, NL=en_US
-Framework arguments:  -product org.eclipse.epp.package.java.product
-Command-line arguments:  -os win32 -ws win32 -arch x86_64 -product org.eclipse.epp.package.java.product
-
-!ENTRY org.eclipse.egit.ui 2 0 2018-02-21 09:13:53.365
-!MESSAGE Warning: The environment variable HOME is not set. The following directory will be used to store the Git
-user global configuration and to define the default location to store repositories: 'C:\Users\pc'. If this is
-not correct please set the HOME environment variable and restart Eclipse. Otherwise Git for Windows and
-EGit might behave differently since they see different configuration options.
-This warning can be switched off on the Team > Git > Confirmations and Warnings preference page.
+	... 10 more

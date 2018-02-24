@@ -51,8 +51,8 @@ public class InformationDifussion extends AbstractProblem{
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		System.out.println(DEP_evaluation_scheduling.hashCode());
-		ArrayList<ArrayList<DefaultEdge>> validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
-		GA_Problem_Parameter.setCandidateSchedulings(GA_Problem_Parameter.getReScheduledGraphs(DEP,validSchedulings));
+		ArrayList<ArrayList<Bug>> validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
+		GA_Problem_Parameter.setCandidateSchedulings(validSchedulings);
 		System.out.println("passed");
 		return solution;
 	}
@@ -71,14 +71,12 @@ public class InformationDifussion extends AbstractProblem{
 		//assign Devs to zone
 		GA_Problem_Parameter.assignZoneDev(tso_evaluate, solution);
 		//evaluate and examine for all the candidate schdulings and then, pick the minimum one 
-		for(TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate_scheduling:GA_Problem_Parameter.candidateSchedulings){
+		for(ArrayList<Bug> valid_scheduling:GA_Problem_Parameter.candidateSchedulings){
 			double f_devCost=0.0;
 			double f_delayCost=0.0;
 			double f_Time=0.0;		
-			int numOfVar=0; 
-			Bug b;
-			while(tso_evaluate_scheduling.hasNext()) {
-			 b=tso_evaluate_scheduling.next();
+			int numOfVar=0;
+			for(Bug b:valid_scheduling) {
 				 for(Zone zone_bug:b.Zone_DEP){
 						double delayTime=0.0;
 						double compeletionTime=0.0;
