@@ -126,7 +126,7 @@ public class GA_Problem_Parameter {
 			subgraphs.add(new AsSubgraph(DAG, s));
 		}*/
 		ArrayList<ArrayList<Bug>> validSchedulings=new ArrayList<ArrayList<Bug>>();
-		for(int k=0;k<20;k++){
+		for(int k=0;k<5000;k++){
 			ArrayList<Bug> va=new ArrayList<Bug>();
 			ArrayList<Bug> travesredNodes=new ArrayList<Bug>();
 			Random randomGenerator=new Random();
@@ -243,7 +243,8 @@ public class GA_Problem_Parameter {
 	
 
 	public static TopologicalOrderIterator<Bug, DefaultEdge> getTopologicalSorted(DirectedAcyclicGraph<Bug, DefaultEdge> dag){
-		return new TopologicalOrderIterator<Bug, DefaultEdge>(dag);
+		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(dag);
+		return tso;
 	}
 	
 	
@@ -268,8 +269,7 @@ public class GA_Problem_Parameter {
 			for(Zone z:b.Zone_DEP.vertexSet()){
 				z.zoneStartTime_evaluate=0.0;
 				z.zoneEndTime_evaluate=0.0;
-			}
-				
+			}	
 		}
 	}
 	public static void assignZoneDev(TopologicalOrderIterator<Bug, DefaultEdge> TSO,Solution s){

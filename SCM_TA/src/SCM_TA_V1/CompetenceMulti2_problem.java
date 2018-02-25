@@ -60,30 +60,29 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 		Bug b;
 		int numOfVar=0;
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
+		System.out.println(DEP_evaluation.edgeSet().size());
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution);
 		//assign Devs to zone
-		GA_Problem_Parameter.assignZoneDev(tso_evaluate, solution);
+		GA_Problem_Parameter.assignZoneDev(GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation), solution);
 		
 		while(tso_evaluate.hasNext()) {
 			 b=tso_evaluate.next();
-				 for(Zone zone_bug:b.Zone_DEP){
-					double compeletionTime=0.0;
-					Entry<Zone, Double> zone=new AbstractMap.SimpleEntry<Zone, Double>(zone_bug,b.BZone_Coefficient.get(zone_bug));
-					compeletionTime=fitnessCalc.compeletionTime(b,zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
-					f1+=compeletionTime;
-					//compute the cost
-					f2+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getDZone_Wage().get(zone.getKey());
-					numOfVar++;
-					//update developer nextAvailableHours
-					developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
-					//update bug endTime
-					b.endTime=Math.max(b.endTime, b.endTime+compeletionTime);
-				 }
+			 for(Zone zone_bug:b.Zone_DEP){
+				double compeletionTime=0.0;
+				Entry<Zone, Double> zone=new AbstractMap.SimpleEntry<Zone, Double>(zone_bug,b.BZone_Coefficient.get(zone_bug));
+				compeletionTime=fitnessCalc.compeletionTime(b,zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
+				f1+=compeletionTime;
+				//compute the cost
+				f2+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getDZone_Wage().get(zone.getKey());
+				numOfVar++;
+				//update developer nextAvailableHours
+				developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
+				//update bug endTime
+				b.endTime=Math.max(b.endTime, b.endTime+compeletionTime);
+			 }
 		}
-		
-		
 		
 	/*	
 		System.out.println(developers.keySet());
@@ -105,8 +104,9 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 			 }
 		 }
 	*/	
+		System.out.println("f1: "+f1+"--- f2: "+f2);
 		solution.setObjective(0, f1);
-		//solution.setObjective(1, f2);
+		solution.setObjective(1, f2);
 		 }
 		
 	

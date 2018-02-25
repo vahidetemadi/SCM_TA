@@ -45,6 +45,7 @@ public class InformationDifussion extends AbstractProblem{
 		for(Zone z:genes){
 			int randDevId=GA_Problem_Parameter.getRandomDevId();
 			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
+			j++;
 		}
 
 		//generate all the candidate schedule
@@ -60,8 +61,6 @@ public class InformationDifussion extends AbstractProblem{
 	
 	@Override 	
 	public void evaluate(Solution solution){
-		
-		System.out.println("gives error");
 		double f_totalTime = 0.0;
 		double f_totalCost=0.0;
 		@SuppressWarnings("unchecked")
@@ -70,7 +69,7 @@ public class InformationDifussion extends AbstractProblem{
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution);
 		//assign Devs to zone
-		GA_Problem_Parameter.assignZoneDev(tso_evaluate, solution);
+		GA_Problem_Parameter.assignZoneDev(GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation), solution);
 		//evaluate and examine for all the candidate schdulings and then, pick the minimum one 
 		for(ArrayList<Bug> valid_scheduling:GA_Problem_Parameter.candidateSchedulings){
 			double f_devCost=0.0;
@@ -93,19 +92,25 @@ public class InformationDifussion extends AbstractProblem{
 						//update bug endTime
 						b.endTime=Math.max(b.endTime, delayTime+compeletionTime);		
 				 }  
-		 }
-			 f_totalCost=f_delayCost+f_devCost;
-			 f_totalTime=f_Time;
-			 if(solution.getObjectives()[0]!=0){
-				 solution.setObjective(0, Math.min(f_totalTime,solution.getObjectives()[0]));
-				 //assigning the best schedule for the solution 
-				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),valid_scheduling);
-			 }
-			 if(solution.getObjectives()[1]!=0){
+			}
+			f_totalCost=f_delayCost+f_devCost;
+			f_totalTime=f_Time;
+			if(solution.getObjectives()[0]!=0){
+				solution.setObjective(0, Math.min(f_totalTime,solution.getObjectives()[0]));
+				//assigning the best schedule for the solution 
+				GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),valid_scheduling);
+			}
+			else{
+				solution.setObjective(0,f_totalTime);
+			}
+			if(solution.getObjectives()[1]!=0){
 				 solution.setObjective(0, Math.min(f_totalCost,solution.getObjectives()[1]));
 				 //assigning the best schedule for the solution 
 				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),valid_scheduling);
 			 }
+			else {
+				solution.setObjective(0, f_totalCost);
+			}
 		}
 		
 		
