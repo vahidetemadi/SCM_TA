@@ -77,7 +77,7 @@ public class InformationDifussion extends AbstractProblem{
 			double f_Time=0.0;		
 			int numOfVar=0;
 			for(Bug b:valid_scheduling) {
-				 for(Zone zone_bug:b.Zone_DEP){
+				 for(Zone zone_bug:b.Zone_DEP.vertexSet()){
 						double delayTime=0.0;
 						double compeletionTime=0.0;
 						Entry<Zone, Double> zone=new AbstractMap.SimpleEntry<Zone, Double>(zone_bug,b.BZone_Coefficient.get(zone_bug));
@@ -88,7 +88,7 @@ public class InformationDifussion extends AbstractProblem{
 						f_delayCost+=delayTime*GA_Problem_Parameter.delayPenaltyCostRate;	
 						f_Time+=compeletionTime+delayTime;
 						//update developer nextAvailableHours
-						developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))))+ compeletionTime;
+						developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=delayTime+ compeletionTime;
 						if(Double.isInfinite(developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour)){
 							int t=0;
 							System.out.println(developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getID());
