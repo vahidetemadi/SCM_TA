@@ -240,8 +240,21 @@ public class Test1 {
 		
 	}
 	
+	
+	
+	
+	
+	
+	
 	//find solution to assign tasks to the developers
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
+		for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
+			if(Double.isInfinite(dev.getValue().getID()+dev.getValue().developerNextAvailableHour))
+				System.out.println("dev: "+dev.getValue().getID()+dev.getValue().developerNextAvailableHour);
+		}
+		
+		
+		
 		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population)
 				.withProperty("sbx.rate", GA_Problem_Parameter.sbx_rate).withProperty("sbx.distributionIndex", GA_Problem_Parameter.sbx_distribution_index)

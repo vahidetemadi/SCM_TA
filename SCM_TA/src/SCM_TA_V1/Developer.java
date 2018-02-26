@@ -4,15 +4,13 @@ import java.util.HashMap;
 
 public class Developer 
 {
-	
 	private int competenceProfileCount;
 	private int ID;
 	private double competenceProfile[];
-	public double developerNextAvailableHour;
+	public double developerNextAvailableHour=0.0;
 	private int totalAssignedBugs;
-	public HashMap< Zone, Double> DZone_Wage=new HashMap<Zone,Double>();
-	public HashMap< Zone, Double> DZone_Coefficient=new HashMap<Zone,Double>();
-	
+	public HashMap<Zone, Double> DZone_Wage=new HashMap<Zone,Double>();
+	public HashMap<Zone, Double> DZone_Coefficient=new HashMap<Zone,Double>();
 	public int getTotalAssignedBugs() {
 		return totalAssignedBugs;
 	}
@@ -22,9 +20,8 @@ public class Developer
 		this.totalAssignedBugs = totalAssignedBugs;
 	}
 
-	
 	public double getDeveloperNextAvailableHour() {
-		return developerNextAvailableHour;
+		return this.developerNextAvailableHour;
 	}
 
 	public void setDeveloperNextAvailableHour(int developerNextAvailableHour) {

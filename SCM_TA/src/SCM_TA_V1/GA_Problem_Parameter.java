@@ -3,6 +3,7 @@ package SCM_TA_V1;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Collections;
 import java.util.Set;
@@ -98,10 +99,7 @@ public class GA_Problem_Parameter {
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
 		KosarajuStrongConnectivityInspector<Bug,DefaultEdge> KI=new KosarajuStrongConnectivityInspector<Bug, DefaultEdge>(DAG);
-		System.out.println(DDG.isDirected());
-		for(DefaultEdge e:DAG.edgeSet()){
-			System.out.print(DDG.getEdgeSource(e).ID+"-----"+DDG.getEdgeTarget(e).ID+",,,");
-		}
+		
 	/*
 		System.out.println();
 		//generate all valid schedules 
@@ -126,7 +124,7 @@ public class GA_Problem_Parameter {
 			subgraphs.add(new AsSubgraph(DAG, s));
 		}*/
 		ArrayList<ArrayList<Bug>> validSchedulings=new ArrayList<ArrayList<Bug>>();
-		for(int k=0;k<5000;k++){
+		for(int k=0;k<500;k++){
 			ArrayList<Bug> va=new ArrayList<Bug>();
 			ArrayList<Bug> travesredNodes=new ArrayList<Bug>();
 			Random randomGenerator=new Random();
@@ -160,12 +158,14 @@ public class GA_Problem_Parameter {
 			}
 			
 		}*/
-		for(ArrayList<Bug> ab:validSchedulings){
+		
+		
+		/*for(ArrayList<Bug> ab:validSchedulings){
 			for(Bug b:ab){
 				System.out.print(b.ID+"---");
 			}
 			System.out.println();
-		}
+		}*/
 		
 		return validSchedulings;
 	}
@@ -262,7 +262,7 @@ public class GA_Problem_Parameter {
 		return schedulings;
 	}
 	
-	public static void resetParameters(DirectedAcyclicGraph<Bug, DefaultEdge> DEP,Solution s){
+	public static void resetParameters(DirectedAcyclicGraph<Bug, DefaultEdge> DEP,Solution s, HashMap<Integer, Developer> developers){
 		for(Bug b:DEP.vertexSet()){
 			b.startTime_evaluate=0.0;
 			b.endTime_evaluate=0.0;
@@ -271,6 +271,9 @@ public class GA_Problem_Parameter {
 				z.zoneEndTime_evaluate=0.0;
 			}	
 		}
+		for(Entry<Integer, Developer> d:developers.entrySet()){
+			d.getValue().developerNextAvailableHour=0.0;
+		}
 	}
 	public static void assignZoneDev(TopologicalOrderIterator<Bug, DefaultEdge> TSO,Solution s){
 		int numOfVar=0;
@@ -278,6 +281,7 @@ public class GA_Problem_Parameter {
 			Bug b=TSO.next();
 			for(Zone z:b.Zone_DEP){
 				z.assignedDevID=EncodingUtils.getInt(s.getVariable(numOfVar));
+				numOfVar++;
 			}
 		}
 	}

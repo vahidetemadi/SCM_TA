@@ -67,7 +67,7 @@ public class InformationDifussion extends AbstractProblem{
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
 		//reset all the associate time for the bugs and their zones
-		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution);
+		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign Devs to zone
 		GA_Problem_Parameter.assignZoneDev(GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation), solution);
 		//evaluate and examine for all the candidate schdulings and then, pick the minimum one 
@@ -85,10 +85,17 @@ public class InformationDifussion extends AbstractProblem{
 						f_devCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getDZone_Wage().get(zone.getKey());
 						numOfVar++;
 						delayTime=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
-						f_delayCost+=delayTime*GA_Problem_Parameter.delayPenaltyCostRate;		
+						f_delayCost+=delayTime*GA_Problem_Parameter.delayPenaltyCostRate;	
 						f_Time+=compeletionTime+delayTime;
 						//update developer nextAvailableHours
-						developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
+						developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))))+ compeletionTime;
+						if(Double.isInfinite(developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour)){
+							int t=0;
+							System.out.println(developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getID());
+							delayTime=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
+							//System.out.println("devID: "+developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getID());
+						}
+						
 						//update bug endTime
 						b.endTime=Math.max(b.endTime, delayTime+compeletionTime);		
 				 }  
@@ -104,12 +111,12 @@ public class InformationDifussion extends AbstractProblem{
 				solution.setObjective(0,f_totalTime);
 			}
 			if(solution.getObjectives()[1]!=0){
-				 solution.setObjective(0, Math.min(f_totalCost,solution.getObjectives()[1]));
+				 solution.setObjective(1, Math.min(f_totalCost,solution.getObjectives()[1]));
 				 //assigning the best schedule for the solution 
 				 GA_Problem_Parameter.selectedSchedules.put(solution.getNumberOfVariables(),valid_scheduling);
 			 }
 			else {
-				solution.setObjective(0, f_totalCost);
+				solution.setObjective(1, f_totalCost);
 			}
 		}
 		
