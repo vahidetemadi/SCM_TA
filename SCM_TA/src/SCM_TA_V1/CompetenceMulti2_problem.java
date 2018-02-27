@@ -76,11 +76,12 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 				f1+=compeletionTime;
 				//compute the cost
 				f2+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getDZone_Wage().get(zone.getKey());
-				numOfVar++;
+				
 				//update developer nextAvailableHours
 				developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
 				//update bug endTime
 				b.endTime=Math.max(b.endTime, b.endTime+compeletionTime);
+				numOfVar++;
 			 }
 		}
 		

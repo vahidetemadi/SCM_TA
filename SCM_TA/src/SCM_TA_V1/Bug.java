@@ -17,15 +17,22 @@ public class Bug implements Cloneable{
 	double arrivalTime;
 	HashMap<Zone, Double> BZone_Coefficient=new HashMap<Zone,Double>();
 	DirectedAcyclicGraph<Zone, DefaultEdge> Zone_DEP; 
-	double startTime;
-	double startTime_evaluate;
-	double endTime;
-	double endTime_evaluate;
+	double startTime=0.0;
+	double startTime_evaluate=0.0;
+	double endTime=0.0;
+	double endTime_evaluate=0.0;
 	int algorithmicDeveloperAssignmentID=0;
 	
 	public Object clone()throws CloneNotSupportedException{  
 		return (Bug)super.clone();  
 	   }
+	
+	public Bug(){
+		this.startTime=0.0;
+		this.startTime_evaluate=0.0;
+		this.endTime=0.0;
+		this.endTime_evaluate=0.0;
+	}
 	public int getAlgorithmicDeveloperAssignmentID() {
 		return algorithmicDeveloperAssignmentID;
 	}

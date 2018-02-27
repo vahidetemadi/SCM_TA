@@ -314,4 +314,16 @@ public class GA_Problem_Parameter {
 		return DDG;
 	}
 	
+	public static void candidateSolutonGeneration(){
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP=GA_Problem_Parameter.getDAGModel(GA_Problem_Parameter.bugs);
+		//generate all the candidate schedules
+		@SuppressWarnings("unchecked")
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
+		System.out.println(DEP_evaluation_scheduling.hashCode());
+		ArrayList<ArrayList<Bug>> validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
+		GA_Problem_Parameter.setCandidateSchedulings(validSchedulings);
+		System.out.println("passed");
+	}
+	
+	
 }

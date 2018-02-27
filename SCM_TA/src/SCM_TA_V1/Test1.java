@@ -43,6 +43,7 @@ public class Test1 {
 			int roundNum=5;
 			for(int i=1;i<=roundNum;i++){
 			bugInitialization(i);
+			GA_Problem_Parameter.candidateSolutonGeneration();
 			NondominatedPopulation[] results = new NondominatedPopulation[2]; 
 			results=Assigning(results);
 			solution=results[1].get(results[1].size()/2);
@@ -91,6 +92,7 @@ public class Test1 {
 								//System.out.println(columns.get(j));
 								developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
 								developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
+								developer.hourlyWage=Double.parseDouble(wage_items[wage_items.length-1]);
 								//System.out.println(Double.parseDouble(wage_items[k]));
 							}
 							else{
@@ -152,7 +154,7 @@ public class Test1 {
 								bug.BZone_Coefficient.put(project.zones.get(j-2),Double.parseDouble(items[k]));
 							}
 							else if(j==0){
-								bug=new Bug(0);
+								bug=new Bug();
 								bug.setID(Integer.parseInt(items[k]));
 							}
 							else if(j==2){
@@ -250,6 +252,17 @@ public class Test1 {
 	
 	//find solution to assign tasks to the developers
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
+		for(Entry<Integer, Developer> d:developers.entrySet()){
+			for(Entry<Zone, Double> f:d.getValue().DZone_Wage.entrySet()){
+				System.out.print(f.getKey().zName+": "+f.getValue()+"---");
+			}
+			System.out.println();
+		}
+		
+		
+		
+		
+		
 		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population)
 				.withProperty("sbx.rate", GA_Problem_Parameter.sbx_rate).withProperty("sbx.distributionIndex", GA_Problem_Parameter.sbx_distribution_index)

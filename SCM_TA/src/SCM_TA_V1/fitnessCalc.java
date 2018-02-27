@@ -10,7 +10,7 @@ public class fitnessCalc {
 
 public static double compeletionTime(Bug bug, Entry<Zone, Double> zone, Developer developer) {	
 	//compute the total time for each zone 
-	double tct=bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey())/((developer.getDZone_Coefficient().get(zone.getKey())+1));
+	double tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())+1));
 	return tct;
 }
 
@@ -27,14 +27,15 @@ public static double getDelayTime(Bug bug, Entry<Zone, Double> zone,
 public static double taskDependencyDelayTime(Bug bug, Entry<Zone, Double> zone,
 Developer developer){
 	for(Zone z:zone.getKey().DZ){
-		zone.getKey().zoneStartTime=Math.max(zone.getKey().zoneStartTime,z.zoneEndTime);
+		zone.getKey().zoneStartTime_evaluate=Math.max(zone.getKey().zoneStartTime_evaluate,z.zoneEndTime_evaluate);
 	}
 	
 	for(int j=0;j<bug.DB.size();j++){
-			bug.startTime=Math.max(bug.startTime, bug.DB.get(j).endTime);
+		bug.startTime_evaluate=Math.max(bug.startTime_evaluate, bug.DB.get(j).endTime_evaluate);
 	}
 	
-	return zone.getKey().zoneStartTime+ bug.startTime;
+	
+	return zone.getKey().zoneStartTime_evaluate+ bug.startTime_evaluate;
 }
 
 
