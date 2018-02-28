@@ -247,7 +247,9 @@ public class GA_Problem_Parameter {
 	
 
 	public static TopologicalOrderIterator<Bug, DefaultEdge> getTopologicalSorted(DirectedAcyclicGraph<Bug, DefaultEdge> dag){
+		
 		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(dag);
+		
 		return tso;
 	}
 	

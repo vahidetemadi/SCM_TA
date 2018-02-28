@@ -40,7 +40,7 @@ public class Test1 {
 			developers.clear();
 			bugs.clear();
 			devInitialization();
-			int roundNum=5;
+			int roundNum=1;
 			for(int i=1;i<=roundNum;i++){
 			bugInitialization(i);
 			

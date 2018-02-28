@@ -25,10 +25,14 @@ public class InformationDifussion extends AbstractProblem{
 	}
 	
 	
-	@Override
-	public Solution newSolution(){
-		
-		int j=0;
+	public void init(){
+		DEP=GA_Problem_Parameter.DEP;
+		tso=GA_Problem_Parameter.tso;
+		/*
+		//generate DAG for arrival Bugs
+		DEP=GA_Problem_Parameter.getDAGModel(bugs);
+		//topologically sort the graph
+		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
@@ -37,8 +41,14 @@ public class InformationDifussion extends AbstractProblem{
 				genes.add(tso_zones.next());
 			}
 		}
+	}
+	
+	@Override
+	public Solution newSolution(){
+		init();
 		//changed NUM of variables for the solution
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
+		int j=0;
 		for(Zone z:genes){
 			int randDevId=GA_Problem_Parameter.getRandomDevId();
 			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
