@@ -4,6 +4,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
+
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -24,10 +25,13 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	
 	
 	public void init(){
+		DEP=GA_Problem_Parameter.DEP;
+		tso=GA_Problem_Parameter.tso;
+		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
-		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);
+		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
@@ -64,9 +68,8 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
-		//assign Devs to zone
+		//assign associate Dev to zone
 		GA_Problem_Parameter.assignZoneDev(GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation), solution);
-		
 		while(tso_evaluate.hasNext()) {
 			 b=tso_evaluate.next();
 			 for(Zone zone_bug:b.Zone_DEP){

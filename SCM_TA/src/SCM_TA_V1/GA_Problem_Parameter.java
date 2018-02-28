@@ -54,6 +54,10 @@ public class GA_Problem_Parameter {
 	public static ArrayList<ArrayList<Bug>> candidateSchedulings=null;
 	public static HashMap<Integer, ArrayList<Bug>> selectedSchedules=new HashMap<Integer, ArrayList<Bug>>();
 	
+	//generate DAG for arrival Bugs
+	public static DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
+	public static TopologicalOrderIterator<Bug,DefaultEdge> tso;
+	
 	public static int setNum_of_Variables(Bug[] bugs){
 		Num_of_variables=0;
 		for(int i=0;i<bugs.length;i++){
@@ -313,6 +317,14 @@ public class GA_Problem_Parameter {
 		}
 		return DDG;
 	}
+	
+	public static void generateModelofBugs(){
+		//generate DAG for arrival Bugs
+		DEP=GA_Problem_Parameter.getDAGModel(bugs);
+		//topologically sort the graph
+		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);
+	}
+	
 	
 	public static void candidateSolutonGeneration(){
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP=GA_Problem_Parameter.getDAGModel(GA_Problem_Parameter.bugs);

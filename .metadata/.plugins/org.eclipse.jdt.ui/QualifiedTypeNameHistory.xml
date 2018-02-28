@@ -9,12 +9,17 @@
 <fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
 <fullyQualifiedTypeName name="org.apache.commons.math3.geometry.spherical.twod.Edge"/>
 <fullyQualifiedTypeName name="java.util.Collection"/>
-<fullyQualifiedTypeName name="java.util.Collections"/>
-<fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="org.jgrapht.alg.ConnectivityInspector"/>
 <fullyQualifiedTypeName name="org.jgrapht.alg.GabowStrongConnectivityInspector"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="org.jgrapht.Graph"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.dependencyEdge"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.DefaultEdge"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="org.jgrapht.graph.DirectedAcyclicGraph"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.Bug"/>
-<fullyQualifiedTypeName name="org.jgrapht.graph.DefaultEdge"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.Subgraph"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.AsSubgraph"/>
 </qualifiedTypeNameHistroy>

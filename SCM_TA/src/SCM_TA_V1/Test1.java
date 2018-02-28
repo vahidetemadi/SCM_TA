@@ -34,7 +34,7 @@ public class Test1 {
 	static int roundnum=0;
 	
 	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
-		for(int runNum=0;runNum<50;runNum++){
+		for(int runNum=0;runNum<1;runNum++){
 			roundnum++;
 			double[] costs=new double[2];
 			developers.clear();
@@ -43,7 +43,10 @@ public class Test1 {
 			int roundNum=5;
 			for(int i=1;i<=roundNum;i++){
 			bugInitialization(i);
+			
+			GA_Problem_Parameter.generateModelofBugs();
 			GA_Problem_Parameter.candidateSolutonGeneration();
+			
 			NondominatedPopulation[] results = new NondominatedPopulation[2]; 
 			results=Assigning(results);
 			solution=results[1].get(results[1].size()/2);

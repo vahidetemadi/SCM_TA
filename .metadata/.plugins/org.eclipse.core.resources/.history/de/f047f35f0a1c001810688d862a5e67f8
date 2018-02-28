@@ -1,12 +1,16 @@
 package SCM_TA_V1;
 
-import java.rmi.dgc.DGC;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Collections;
+import java.util.Set;
 
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
+import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -14,6 +18,7 @@ import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.KosarajuStrongConnectivityInspector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.alg.CycleDetector;
+import org.jgrapht.alg.GabowStrongConnectivityInspector;
 
 import java.util.Iterator;
 
@@ -45,8 +50,9 @@ public class GA_Problem_Parameter {
 	public static double currentTimePeriodStartTime=0;
 	public static ArrayList<Integer> DevList=new ArrayList<Integer>();
 	public static ArrayList<Integer> DevList_forAssignment=new ArrayList<Integer>();
-	public static ArrayList<TopologicalOrderIterator<Bug, DefaultEdge>> candidateSchedulings=null;
-	public static HashMap<Integer,TopologicalOrderIterator<Bug, DefaultEdge>> selectedSchedules=new HashMap<Integer, TopologicalOrderIterator<Bug,DefaultEdge>>();
+	//public static ArrayList<TopologicalOrderIterator<Bug, DefaultEdge>> candidateSchedulings=null;
+	public static ArrayList<ArrayList<Bug>> candidateSchedulings=null;
+	public static HashMap<Integer, ArrayList<Bug>> selectedSchedules=new HashMap<Integer, ArrayList<Bug>>();
 	
 	public static int setNum_of_Variables(Bug[] bugs){
 		Num_of_variables=0;
@@ -85,20 +91,16 @@ public class GA_Problem_Parameter {
 	}
 	
 	
-	public static ArrayList<ArrayList<DefaultEdge>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG){
+	public static ArrayList<ArrayList<Bug>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG){
 		//all valid schedules(without any loop)
-		ArrayList<ArrayList<DefaultEdge>> validSchedulings=new ArrayList<ArrayList<DefaultEdge>>();
+		//ArrayList<ArrayList<DefaultEdge>> validSchedulings=new ArrayList<ArrayList<DefaultEdge>>();
 		DefaultDirectedGraph<Bug, DefaultEdge> DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 		DDG=convertToDirectedGraph(DAG, DDG);
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
 		KosarajuStrongConnectivityInspector<Bug,DefaultEdge> KI=new KosarajuStrongConnectivityInspector<Bug, DefaultEdge>(DAG);
-		System.out.println(DDG.isDirected());
-		for(DefaultEdge e:DAG.edgeSet()){
-			System.out.print(DDG.getEdgeSource(e).ID+"-----"+DDG.getEdgeTarget(e).ID+",,,");
-		}
 		
-
+	/*
 		System.out.println();
 		//generate all valid schedules 
 		for(Bug b1:DAG.vertexSet()){
@@ -111,61 +113,60 @@ public class GA_Problem_Parameter {
 				}
 			}
 		}
-		
 		System.out.println();
-		System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
-		//find all permutation of potentialEdges list
-		ICombinatoricsVector<DefaultEdge> IV=Factory.createVector(potentilEdges);
-		Generator<DefaultEdge> potentialPerm=Factory.createPermutationGenerator(IV);
-		Random r=new Random();
-		int t=1000;
-		long seed=potentialPerm.getNumberOfGeneratedObjects()/t;
-		long c=0;
-		for(ICombinatoricsVector<DefaultEdge> perm:potentialPerm){
-			if(c%seed==0){
-				DefaultDirectedGraph<Bug, DefaultEdge> DDG2=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
-				DDG2=convertToDirectedGraph(DAG, DDG2);
-				//DDG2=(DefaultDirectedGraph<Bug, DefaultEdge>).clone();
-				ArrayList<DefaultEdge> verifiedEadges=new ArrayList<DefaultEdge>();
-				verifiedEadges.clear();
-				DefaultEdge e=new DefaultEdge();
-				Iterator<DefaultEdge> iterator_1=perm.iterator();
-				Iterator<DefaultEdge> iterator_2=perm.iterator();
-				ArrayList<DefaultEdge> remindEdges=new ArrayList<DefaultEdge>();
-				remindEdges.clear();
-				while(iterator_1.hasNext()){
-					DefaultEdge d=iterator_1.next();
-					remindEdges.add(d);
-					System.out.print(DDG.getEdgeSource(d).ID+">>>"+DDG.getEdgeTarget(d).ID+"---");
-				}
-				System.out.println();
-				System.out.println(remindEdges.size());
-				while(iterator_2.hasNext()){
-					e=iterator_2.next();
-					iterator_2.remove();
-					if(remindEdges.contains(e)){
-						DDG2.addEdge(DDG.getEdgeSource(e), DDG.getEdgeTarget(e));
-						verifiedEadges.add(e);
-						update(remindEdges,e,DDG,DDG2, verifiedEadges);
-					}
-				}		
-				//System.out.println("REdges: "+remindEdges.size());
-				int i=0;
-				for(DefaultEdge d:DAG.edgeSet()){
-					verifiedEadges.add(i, d);
-					i++;
-				}
-				validSchedulings.add(verifiedEadges);
-				//for(DefaultEdge d:verifiedEadges)
-				//	System.out.print(d+"-----");
-				System.out.println("VEdges: "+verifiedEadges.size());
-				System.out.println("DDG2 Edge size: "+DDG2.edgeSet().size());
+	*/	
 
-				System.out.println(DDG.edgeSet().size() +"..."+potentilEdges.size());
+		/*System.out.println();
+		ConnectivityInspector<Bug, DefaultEdge> GCI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
+		List<Set<Bug>> components = GCI.connectedSets();
+		ArrayList<AsSubgraph<Bug, DefaultEdge>> subgraphs=new ArrayList<AsSubgraph<Bug,DefaultEdge>>();
+		for(Set<Bug> s:components){
+			subgraphs.add(new AsSubgraph(DAG, s));
+		}*/
+		ArrayList<ArrayList<Bug>> validSchedulings=new ArrayList<ArrayList<Bug>>();
+		for(int k=0;k<500;k++){
+			ArrayList<Bug> va=new ArrayList<Bug>();
+			ArrayList<Bug> travesredNodes=new ArrayList<Bug>();
+			Random randomGenerator=new Random();
+			int rIndex=0;
+			for(Bug b:DAG.vertexSet()){
+				if(DAG.inDegreeOf(b)==0){
+					travesredNodes.add(b);
 				}
-			else
-				c++;
-			}	
+			}
+			while(!travesredNodes.isEmpty()){
+				rIndex=randomGenerator.nextInt(travesredNodes.size());
+				va.add(travesredNodes.get(rIndex));
+				Set<DefaultEdge> edges=DAG.outgoingEdgesOf(travesredNodes.get(rIndex));
+				travesredNodes.remove(travesredNodes.get(rIndex));
+				for(DefaultEdge d:edges){
+					travesredNodes.add(DAG.getEdgeTarget(d));
+				}
+			}
+			validSchedulings.add(va);	
+		}
+		
+		
+		/*System.out.println("comp: "+components.size());
+		for(int i=0;i<10;i++){
+			Collections.shuffle(subgraphs);
+			for(AsSubgraph<Bug, DefaultEdge> g:subgraphs){
+				TopologicalOrderIterator<Bug, DefaultEdge> TO=new TopologicalOrderIterator(g);
+				while(TO.hasNext()){
+					va.add(TO.next());
+				}
+			}
+			
+		}*/
+		
+		
+		/*for(ArrayList<Bug> ab:validSchedulings){
+			for(Bug b:ab){
+				System.out.print(b.ID+"---");
+			}
+			System.out.println();
+		}*/
+		
 		return validSchedulings;
 	}
 	
@@ -173,19 +174,19 @@ public class GA_Problem_Parameter {
 	
 	public static void update(ArrayList<DefaultEdge> edges, DefaultEdge e, DefaultDirectedGraph<Bug, DefaultEdge> DDG ,DefaultDirectedGraph<Bug, DefaultEdge> DDG_2
 			, ArrayList<DefaultEdge> verifiedEdges){
+		CycleDetector<Bug,DefaultEdge> CD=new CycleDetector<Bug, DefaultEdge>(DDG_2);
 		ArrayList<DefaultEdge> edges_2=(ArrayList<DefaultEdge>)edges.clone();
 		try {
 			DefaultEdge e_reverse=DDG.getEdge(DDG.getEdgeTarget(e), DDG.getEdgeSource(e));
 			edges.remove(e_reverse);
 			edges_2.remove(e_reverse);
+			
 			//DDG_2.removeEdge(DDG_2.getEdgeTarget(e), DDG_2.getEdgeSource(e));
 		}
 		catch (Exception e2) {
 			//DDG_2.addEdge(, targetVertex)
 			e2.printStackTrace();
 		}
-		ConnectivityInspector<Bug, DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DDG_2);
-		CycleDetector<Bug,DefaultEdge> CD=new CycleDetector<Bug, DefaultEdge>(DDG_2);
 		for(DefaultEdge ed: edges_2){	
 			DDG_2.addEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
 			//verifiedEdges.add(ed);
@@ -196,6 +197,7 @@ public class GA_Problem_Parameter {
 				if(CD.detectCycles()){
 					//System.out.println(CD.detectCycles());
 					edges.remove(DDG_2.getEdge(DDG_2.getEdgeTarget(ed), DDG_2.getEdgeSource(ed)));
+					DDG_2.removeEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
 					//verifiedEdges.remove(ed);
 				}
 			} catch (Exception e2) {
@@ -203,7 +205,7 @@ public class GA_Problem_Parameter {
 				e2.printStackTrace();
 			}
 
-			DDG_2.removeEdge(DDG.getEdgeSource(ed), DDG.getEdgeTarget(ed));
+
 			//}
 		}
 		//System.out.println(edges.size());
@@ -241,7 +243,8 @@ public class GA_Problem_Parameter {
 	
 
 	public static TopologicalOrderIterator<Bug, DefaultEdge> getTopologicalSorted(DirectedAcyclicGraph<Bug, DefaultEdge> dag){
-		return new TopologicalOrderIterator<Bug, DefaultEdge>(dag);
+		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(dag);
+		return tso;
 	}
 	
 	
@@ -252,22 +255,24 @@ public class GA_Problem_Parameter {
 			@SuppressWarnings("unchecked")
 			DirectedAcyclicGraph<Bug, DefaultEdge> ReScheduledDAG=(DirectedAcyclicGraph<Bug, DefaultEdge>)DAG.clone();
 			for(DefaultEdge edge:candidateSchedule){
-			ReScheduledDAG.addEdge(DAG.getEdgeSource(edge), DAG.getEdgeTarget(edge));
+				ReScheduledDAG.addEdge(DAG.getEdgeSource(edge), DAG.getEdgeTarget(edge));
 		}
 		schedulings.add(ReScheduledDAG);
 		}
 		return schedulings;
 	}
 	
-	public static void resetParameters(DirectedAcyclicGraph<Bug, DefaultEdge> DEP,Solution s){
+	public static void resetParameters(DirectedAcyclicGraph<Bug, DefaultEdge> DEP,Solution s, HashMap<Integer, Developer> developers){
 		for(Bug b:DEP.vertexSet()){
 			b.startTime_evaluate=0.0;
 			b.endTime_evaluate=0.0;
 			for(Zone z:b.Zone_DEP.vertexSet()){
 				z.zoneStartTime_evaluate=0.0;
 				z.zoneEndTime_evaluate=0.0;
-			}
-				
+			}	
+		}
+		for(Entry<Integer, Developer> d:developers.entrySet()){
+			d.getValue().developerNextAvailableHour=0.0;
 		}
 	}
 	public static void assignZoneDev(TopologicalOrderIterator<Bug, DefaultEdge> TSO,Solution s){
@@ -276,15 +281,16 @@ public class GA_Problem_Parameter {
 			Bug b=TSO.next();
 			for(Zone z:b.Zone_DEP){
 				z.assignedDevID=EncodingUtils.getInt(s.getVariable(numOfVar));
+				numOfVar++;
 			}
 		}
 	}
 	
-	public static void setCandidateSchedulings(ArrayList<DirectedAcyclicGraph<Bug, DefaultEdge>> validSchedulings ){
-		candidateSchedulings=new ArrayList<TopologicalOrderIterator<Bug,DefaultEdge>>();
-		for(DirectedAcyclicGraph<Bug, DefaultEdge> schedule:validSchedulings){
+	public static void setCandidateSchedulings(ArrayList<ArrayList<Bug>> validSchedulings ){
+		candidateSchedulings=validSchedulings;
+		/*for(DirectedAcyclicGraph<Bug, DefaultEdge> schedule:validSchedulings){
 			candidateSchedulings.add(getTopologicalSorted(schedule));
-		}
+		}*/
 		
 	}
 	
@@ -307,5 +313,17 @@ public class GA_Problem_Parameter {
 		}
 		return DDG;
 	}
+	
+	public static void candidateSolutonGeneration(){
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP=GA_Problem_Parameter.getDAGModel(GA_Problem_Parameter.bugs);
+		//generate all the candidate schedules
+		@SuppressWarnings("unchecked")
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
+		System.out.println(DEP_evaluation_scheduling.hashCode());
+		ArrayList<ArrayList<Bug>> validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
+		GA_Problem_Parameter.setCandidateSchedulings(validSchedulings);
+		System.out.println("passed");
+	}
+	
 	
 }
