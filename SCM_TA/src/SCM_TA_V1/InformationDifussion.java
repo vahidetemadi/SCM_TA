@@ -27,7 +27,7 @@ public class InformationDifussion extends AbstractProblem{
 	
 	public void init(){
 		DEP=GA_Problem_Parameter.DEP;
-		tso=GA_Problem_Parameter.tso;
+		tso=GA_Problem_Parameter.tso_ID;
 		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
@@ -94,14 +94,9 @@ public class InformationDifussion extends AbstractProblem{
 							delayTime=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
 							//System.out.println("devID: "+developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getID());
 						}
-						
-						//update bug endTime
-						if(Double.isInfinite(delayTime+compeletionTime)){
-							System.out.println(b.ID);
-						}
 						numOfVar++;
 				 }  
-
+					//update bug endTime
 					b.endTime=endTime_bug;
 					f_Time+=endTime_bug;
 			}

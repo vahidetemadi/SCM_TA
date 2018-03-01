@@ -56,7 +56,8 @@ public class GA_Problem_Parameter {
 	
 	//generate DAG for arrival Bugs
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
-	public static TopologicalOrderIterator<Bug,DefaultEdge> tso;
+	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_competenceMulti2;
+	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_ID;
 	
 	public static int setNum_of_Variables(Bug[] bugs){
 		Num_of_variables=0;
@@ -324,7 +325,8 @@ public class GA_Problem_Parameter {
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
-		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);
+		tso_competenceMulti2=GA_Problem_Parameter.getTopologicalSorted(DEP);
+		tso_ID=GA_Problem_Parameter.getTopologicalSorted(DEP);
 	}
 	
 	
@@ -333,10 +335,8 @@ public class GA_Problem_Parameter {
 		//generate all the candidate schedules
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
-		System.out.println(DEP_evaluation_scheduling.hashCode());
 		ArrayList<ArrayList<Bug>> validSchedulings = GA_Problem_Parameter.getValidSchedulings(DEP_evaluation_scheduling);
 		GA_Problem_Parameter.setCandidateSchedulings(validSchedulings);
-		System.out.println("passed");
 	}
 	
 	

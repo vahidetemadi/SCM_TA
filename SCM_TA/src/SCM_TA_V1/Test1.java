@@ -40,7 +40,7 @@ public class Test1 {
 			developers.clear();
 			bugs.clear();
 			devInitialization();
-			int roundNum=1;
+			int roundNum=5;
 			for(int i=1;i<=roundNum;i++){
 			bugInitialization(i);
 			
@@ -175,8 +175,6 @@ public class Test1 {
 			}
 			n++;
 		}
-
-		System.out.println(bugs.keySet());
 					
 		/*set bug dependencies*/
 		
@@ -197,7 +195,7 @@ public class Test1 {
 					if(columns_bug[k].toString().length()>1 && columns_bug[k].trim().length() > 0){
 						try{
 							bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(Integer.parseInt(columns_bug[k])));
-							System.out.println(bugs.get(Integer.parseInt(columns_bug[k])));
+							//System.out.println(bugs.get(Integer.parseInt(columns_bug[k])));
 						}
 						catch(NullPointerException e){
 							
@@ -255,12 +253,12 @@ public class Test1 {
 	
 	//find solution to assign tasks to the developers
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
-		for(Entry<Integer, Developer> d:developers.entrySet()){
+		/*for(Entry<Integer, Developer> d:developers.entrySet()){
 			for(Entry<Zone, Double> f:d.getValue().DZone_Wage.entrySet()){
 				System.out.print(f.getKey().zName+": "+f.getValue()+"---");
 			}
 			System.out.println();
-		}
+		}*/
 		
 		
 		

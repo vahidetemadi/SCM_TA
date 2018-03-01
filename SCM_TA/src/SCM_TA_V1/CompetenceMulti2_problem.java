@@ -26,7 +26,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	
 	public void init(){
 		DEP=GA_Problem_Parameter.DEP;
-		tso=GA_Problem_Parameter.tso;
+		tso=GA_Problem_Parameter.tso_competenceMulti2;
 		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
@@ -64,7 +64,6 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 		Bug b;
 		int numOfVar=0;
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
-		System.out.println(DEP_evaluation.edgeSet().size());
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
@@ -108,7 +107,6 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 			 }
 		 }
 	*/	
-		System.out.println("f1: "+f1+"--- f2: "+f2);
 		solution.setObjective(0, f1);
 		solution.setObjective(1, f2);
 		 }
