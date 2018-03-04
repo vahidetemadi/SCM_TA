@@ -42,18 +42,16 @@ public class Test1 {
 			devInitialization();
 			int roundNum=5;
 			for(int i=1;i<=roundNum;i++){
-			bugInitialization(i);
-			
-			GA_Problem_Parameter.generateModelofBugs();
-			GA_Problem_Parameter.candidateSolutonGeneration();
-			
-			NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-			results=Assigning(results);
-			solution=results[1].get(results[1].size()/2);
-			writeResult(runNum,i,results);
-			System.out.println("finished writing");
-			afterRoundUpdating(solution);
-			removeDevelopers();
+				bugInitialization(i);
+				GA_Problem_Parameter.generateModelofBugs();
+				GA_Problem_Parameter.candidateSolutonGeneration();
+				NondominatedPopulation[] results = new NondominatedPopulation[2]; 
+				results=Assigning(results);
+				solution=results[1].get(results[1].size()/2);
+				writeResult(runNum,i,results);
+				System.out.println("finished writing");
+				afterRoundUpdating(solution);
+				removeDevelopers();
 			}
 		}
 	}

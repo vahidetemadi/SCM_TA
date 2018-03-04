@@ -225,7 +225,17 @@ public class GA_Problem_Parameter {
 			if(bugs[i].DB.size()>0){
 				for(Bug b:bugs[i].DB){
 						if(dag.edgeSet().size()<1){
-							dag.addEdge(b,bugs[i]);
+							try{dag.addEdge(b,bugs[i]);}
+							catch(Exception ex){
+								if(b==null)
+									System.out.println("f");
+								else if (bugs[i]==null)
+									System.out.println("f-f");
+								ex.printStackTrace();
+							}
+								
+							
+							
 							//System.out.println(dag.edgeSet());
 						}
 						else if(!dag.containsEdge(bugs[i],b)){

@@ -68,7 +68,7 @@ public class InformationDifussion extends AbstractProblem{
 		//reset all the associate time for the bugs and their zones
 		//assign Devs to zone
 		GA_Problem_Parameter.assignZoneDev(GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation), solution);
-		//evaluate and examine for all the candidate schdulings and then, pick the minimum one 
+		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
 		for(ArrayList<Bug> valid_scheduling:GA_Problem_Parameter.candidateSchedulings){
 			GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 			double f_devCost=0.0;
