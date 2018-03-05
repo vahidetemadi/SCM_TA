@@ -130,12 +130,15 @@ public class Test1 {
 		Bug bug=null;
 		//sc=new Scanner(System.in);
 		sc=new Scanner(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\JDT\\efforts");
+
 		Scanner sc1=null;
 		int n=1;
 		for(File fileEntry:new File(sc.nextLine()).listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
+			if(roundNum==n)
+				System.out.println(fileEntry.getPath());
 			while(sc1.hasNextLine() && roundNum==n){
 				//counter "i" has set to record the name of each zone (the header of each file)
 				if(i==0){

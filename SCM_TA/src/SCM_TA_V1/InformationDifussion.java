@@ -83,7 +83,7 @@ public class InformationDifussion extends AbstractProblem{
 						Entry<Zone, Double> zone=new AbstractMap.SimpleEntry<Zone, Double>(zone_bug,b.BZone_Coefficient.get(zone_bug));
 						compeletionTime=fitnessCalc.compeletionTime(b,zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
 						f_devCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).hourlyWage;
-						delayTime=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
+						delayTime=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))))+compeletionTime;
 						f_delayCost+=delayTime*GA_Problem_Parameter.delayPenaltyCostRate;f_Time+=compeletionTime+delayTime;
 						endTime_bug=Math.max(endTime_bug, delayTime+compeletionTime);
 						//update developer nextAvailableHours
