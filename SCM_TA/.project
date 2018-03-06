@@ -3,6 +3,7 @@
 	<name>SCM_TA</name>
 	<comment></comment>
 	<projects>
+		<project>jgrapht</project>
 	</projects>
 	<buildSpec>
 		<buildCommand>

@@ -121,7 +121,8 @@ public class Test1 {
 				
 	}
 	
-	public static void bugInitialization(int roundNum) throws IOException,NoSuchElementException{		
+	public static void bugInitialization(int roundNum) throws IOException,NoSuchElementException{	
+		bugs.clear();
 		Scanner sc=new Scanner(System.in);
 		int i=0;
 		int j=0;
@@ -193,9 +194,10 @@ public class Test1 {
 					String s=sc1.nextLine();
 					columns_bug=s.split(",");
 					int k=1;
-					if(columns_bug[k].toString().length()>1 && columns_bug[k].trim().length() > 0){
+					if(columns_bug[k].trim().length() > 0){
 						try{
-							bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(Integer.parseInt(columns_bug[k])));
+							if(bugs.get(Integer.parseInt(columns_bug[k-1]))!=null && bugs.get(Integer.parseInt(columns_bug[k]))!=null)
+								bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(Integer.parseInt(columns_bug[k])));
 							//System.out.println(bugs.get(Integer.parseInt(columns_bug[k])));
 						}
 						catch(NullPointerException e){

@@ -217,14 +217,17 @@ public class GA_Problem_Parameter {
 	}
 	
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> getDAGModel(Bug[] bugs){
+		
 		DirectedAcyclicGraph<Bug, DefaultEdge> dag=new DirectedAcyclicGraph<Bug, DefaultEdge>(DefaultEdge.class);
+		
 		for(int k=0; k<bugs.length;k++){
 			dag.addVertex(bugs[k]);
 		}
+		System.out.println(bugs.length);
 		for(int i=0;i<bugs.length;i++){
 			if(bugs[i].DB.size()>0){
 				for(Bug b:bugs[i].DB){
-						if(dag.edgeSet().size()<1){
+						if(dag.edgeSet().size()<1 && dag.containsVertex(bugs[i])){
 							try{
 								dag.addEdge(b,bugs[i]);
 								}
@@ -235,13 +238,11 @@ public class GA_Problem_Parameter {
 									System.out.println("f-f");
 								ex.printStackTrace();
 							}
-								
-							
-							
 							//System.out.println(dag.edgeSet());
 						}
 						else if(!dag.containsEdge(bugs[i],b)){
-							dag.addEdge(b,bugs[i]);	
+							if(b!=null && bugs[i]!=null)
+								dag.addEdge(b,bugs[i]);	
 							//System.out.println(dag.edgeSet());
 						}
 				}

@@ -16,8 +16,7 @@ public static double compeletionTime(Bug bug, Entry<Zone, Double> zone, Develope
 
 
 
-public static double getDelayTime(Bug bug, Entry<Zone, Double> zone,
-		Developer developer){
+public static double getDelayTime(Bug bug, Entry<Zone, Double> zone, Developer developer){
 	double delayTime=Math.max(taskDependencyDelayTime(bug, zone, developer), developer.developerNextAvailableHour);
 	return delayTime;
 }
