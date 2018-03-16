@@ -36,9 +36,9 @@ public class GA_Problem_Parameter {
 	static int Num_of_Zones;
 	//set GA parameters
 	static int population;
-	static double sbx_rate;
+	static double sbx_rate=0.50;
 	static double sbx_distribution_index;
-	static double pm_rate;
+	static double pm_rate=0.50;
 	static double pm_distribution_index;
 	static double delayPenaltyCostRate=0.33;
 	//
