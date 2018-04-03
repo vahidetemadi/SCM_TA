@@ -19,6 +19,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
+	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	public CompetenceMulti2_problem(){
 		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
@@ -59,56 +60,44 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	
 	@Override 	
 	public void evaluate(Solution solution){
-		double f1 = 0.0;
-		double f2 = 0.0;
-		Bug b;
-		int numOfVar=0;
+		double totalTime=0.0;
+		double totalCost=0.0;
+		double totalDevCost=0.0;
+		double totalStartTime=0.0;
+		double totalEndTime=0.0;
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
-		TopologicalOrderIterator<Bug, DefaultEdge> tso_evaluate=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
+		TopologicalOrderIterator<Bug, DefaultEdge> tso=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
 		//reset all the associate time for the bugs and their zones
-		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
+		//GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign associate Dev to zone
-		GA_Problem_Parameter.assignZoneDev(GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation), solution);
-		while(tso_evaluate.hasNext()) {
-			 b=tso_evaluate.next();
-			 for(Zone zone_bug:b.Zone_DEP){
+		//GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
+		int index=0;
+		while(tso.hasNext()){
+			Bug b=tso.next();
+			//set Bug startTime
+			b.startTime_evaluate=b.arrivalTime+ fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			while(tso_Zone.hasNext()){
+				Zone zone=tso_Zone.next();
 				double compeletionTime=0.0;
-				Entry<Zone, Double> zone=new AbstractMap.SimpleEntry<Zone, Double>(zone_bug,b.BZone_Coefficient.get(zone_bug));
-				compeletionTime=fitnessCalc.compeletionTime(b,zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
-				f1+=compeletionTime;
-				//compute the cost
-				f2+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getDZone_Wage().get(zone.getKey());
-				
-				//update developer nextAvailableHours
-				developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).developerNextAvailableHour+=fitnessCalc.getDelayTime(b, zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
-				//update bug endTime
-				b.endTime=Math.max(b.endTime, b.endTime+compeletionTime);
-				numOfVar++;
-			 }
+				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
+				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
+				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
+				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
+				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
+				developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
+						zone.zoneEndTime_evaluate);
+				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
+				index++;
+			}
+			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
+			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
 		}
+		totalTime=totalEndTime-totalStartTime;
+		totalCost=totalDevCost;
 		
-	/*	
-		System.out.println(developers.keySet());
-		for (int i = 0; i < GA_Problem_Parameter.Num_of_Bugs; i++) {
-			 for(Map.Entry<Zone, Double>  zone:bugs[i].BZone_Coefficient.entrySet()){
-				f1+=fitnessCalc.compeletionTime(bugs[i],zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))));
-				numOfVar++;
-			 }
-
-			bugs[i].endTime=f1+bugs[i].startTime;
-		 }
-		
-		numOfVar=0;
-		 for (int i = 0; i < GA_Problem_Parameter.Num_of_Bugs; i++) {
-			 for(Map.Entry<Zone, Double>  zone:bugs[i].BZone_Coefficient.entrySet()){
-				 	f2+=fitnessCalc.compeletionTime(bugs[i],zone, developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))))
-							*developers.get(EncodingUtils.getInt(solution.getVariable(numOfVar))).getDZone_Wage().get(zone.getKey());
-					numOfVar++;
-			 }
-		 }
-	*/	
-		solution.setObjective(0, f1);
-		solution.setObjective(1, f2);
+		solution.setObjective(0, totalTime);
+		solution.setObjective(1, totalCost);
 		 }
 		
 	

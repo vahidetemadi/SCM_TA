@@ -4,6 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
+
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 
 public class fitnessCalc {
 
@@ -152,6 +156,22 @@ Developer developer){
  }
  public static double getNotAssignedTaskCost(){
 	 return 0;
+ }
+ 
+ public static double getMaxEndTimes(Bug b, DirectedAcyclicGraph<Bug,DefaultEdge> DEP){
+	 double endTime=0;
+	 Set<Bug> dependents=DEP.getAncestors(b);
+	 for(Bug bug:dependents){
+		 endTime=Math.max(endTime, bug.endTime);
+	 }
+	 return endTime;
+ }
+ public static double getZoneStartTime(Developer d, ArrayList<Zone> depZones){
+	 double sDate=0;
+	 for(Zone zone:depZones){
+		 sDate=Math.max(sDate, zone.zoneEndTime);
+	 }
+	 return sDate;
  }
  
 }

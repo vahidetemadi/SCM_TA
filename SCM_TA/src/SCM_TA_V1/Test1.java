@@ -244,7 +244,7 @@ public class Test1 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 			}
-		GA_Problem_Parameter.population=100;
+		GA_Problem_Parameter.population=1000;
 		
 	}
 	
@@ -256,31 +256,18 @@ public class Test1 {
 	
 	//find solution to assign tasks to the developers
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
-		/*for(Entry<Integer, Developer> d:developers.entrySet()){
-			for(Entry<Zone, Double> f:d.getValue().DZone_Wage.entrySet()){
-				System.out.print(f.getKey().zName+": "+f.getValue()+"---");
-			}
-			System.out.println();
-		}*/
-		
-		
-		
-		
+		GA_Problem_Parameter.setArrivalTasks();
 		
 		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population)
-				.withProperty("sbx.rate", GA_Problem_Parameter.sbx_rate).withProperty("sbx.distributionIndex", GA_Problem_Parameter.sbx_distribution_index)
-				.withProperty("pm.rate", GA_Problem_Parameter.pm_rate).withProperty("pm.distributionIndex", GA_Problem_Parameter.pm_distribution_index)
-				.run();
+				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5).run();
 		results[0]=result_Karim;
 		
 		System.out.println("finished first one");
 		
 	    NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population)
-				.withProperty("sbx.rate", GA_Problem_Parameter.sbx_rate).withProperty("sbx.distributionIndex", GA_Problem_Parameter.sbx_distribution_index)
-				.withProperty("pm.rate", GA_Problem_Parameter.pm_rate).withProperty("pm.distributionIndex", GA_Problem_Parameter.pm_distribution_index)
-				.run();
+				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5).run();
 	    results[1]=result_me;
 
 		System.out.println("finished second one");

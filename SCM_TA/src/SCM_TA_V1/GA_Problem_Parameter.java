@@ -19,6 +19,7 @@ import org.jgrapht.alg.KosarajuStrongConnectivityInspector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.GabowStrongConnectivityInspector;
+import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
 import java.util.Iterator;
 
@@ -36,7 +37,7 @@ public class GA_Problem_Parameter {
 	static int Num_of_Zones;
 	//set GA parameters
 	static int population;
-	static double sbx_rate=0.50;
+	static double sbx_rate=0.0;
 	static double sbx_distribution_index;
 	static double pm_rate=0.50;
 	static double pm_distribution_index;
@@ -58,6 +59,10 @@ public class GA_Problem_Parameter {
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_competenceMulti2;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_ID;
+	public static ArrayList<Bug> tasks=new ArrayList<Bug>();
+	public static ArrayList<DefaultEdge> pEdges;
+	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG;
+	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
 	
 	public static int setNum_of_Variables(Bug[] bugs){
 		Num_of_variables=0;
@@ -99,18 +104,18 @@ public class GA_Problem_Parameter {
 	public static ArrayList<ArrayList<Bug>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG){
 		//all valid schedules(without any loop)
 		//ArrayList<ArrayList<DefaultEdge>> validSchedulings=new ArrayList<ArrayList<DefaultEdge>>();
-		DefaultDirectedGraph<Bug, DefaultEdge> DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+		DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 		DDG=convertToDirectedGraph(DAG, DDG);
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
 		KosarajuStrongConnectivityInspector<Bug,DefaultEdge> KI=new KosarajuStrongConnectivityInspector<Bug, DefaultEdge>(DAG);
 		
-	/*
+	
 		System.out.println();
 		//generate all valid schedules 
 		for(Bug b1:DAG.vertexSet()){
 			for(Bug b2:DAG.vertexSet()){
-				System.out.print(b1.ID+">>>>"+b2.ID+"....."+CI.pathExists(b1, b2)+",,,");
+				//System.out.print(b1.ID+">>>>"+b2.ID+"....."+CI.pathExists(b1, b2)+",,,");
 				if(b1.ID!=b2.ID && !(DAG.containsEdge(b1, b2) || DAG.containsEdge(b2, b1))){
 					DDG.addEdge(b1, b2);
 					//DDG.addEdge(b2,b1);
@@ -118,8 +123,9 @@ public class GA_Problem_Parameter {
 				}
 			}
 		}
+		DDG_1=DDG;
 		System.out.println();
-	*/	
+		pEdges=potentilEdges;
 
 		/*System.out.println();
 		ConnectivityInspector<Bug, DefaultEdge> GCI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
@@ -295,14 +301,16 @@ public class GA_Problem_Parameter {
 			d.getValue().developerNextAvailableHour=0.0;
 		}
 	}
-	public static void assignZoneDev(TopologicalOrderIterator<Bug, DefaultEdge> TSO,Solution s){
-		int numOfVar=0;
-		while(TSO.hasNext()){
-			Bug b=TSO.next();
-			for(Zone z:b.Zone_DEP){
-				z.assignedDevID=EncodingUtils.getInt(s.getVariable(numOfVar));
-				numOfVar++;
+	public static void assignZoneDev(ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee,ArrayList<Bug> tasks,Solution s){
+		int index=0;
+		int tIndex=0;
+		while(EncodingUtils.getInt(s.getVariable(index))!=-100){
+			Bug b=tasks.get(tIndex);
+			for(Zone zone:b.Zone_DEP){
+				zoneAssignee.add(new Triplet<Bug, Zone, Integer>(b, zone, EncodingUtils.getInt(s.getVariable(index))));
+				index++;
 			}
+			tIndex++;
 		}
 	}
 	
@@ -352,5 +360,111 @@ public class GA_Problem_Parameter {
 		GA_Problem_Parameter.setCandidateSchedulings(validSchedulings);
 	}
 	
+	public static void setValidSchdule(Solution solution, HashMap<Integer, Bug> varToBug){
+		ArrayList<Integer> assignment=new ArrayList<Integer>();
+		ArrayList<Integer> schedules=new ArrayList<Integer>();
+		int[] solu=EncodingUtils.getInt(solution);
+		for(int i=0;i<solu.length;i++){
+			if(solu[i]!=-100){
+				assignment.add(solu[i]);
+			}
+			else {
+				break;
+			}
+		}
+		for(int i=assignment.size();i<solu.length-1;i++){
+			schedules.add(solu[i]);
+		}
+		int m,n,p,q;
+		int[] indexes=new int[2];
+		AllDirectedPaths<Bug, DefaultEdge> paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
+		for(int i=0;i<GA_Problem_Parameter.tasks.size()-1;i++){
+			indexes=getIndex(i);
+			m=indexes[0];
+			n=indexes[1];
+			for(int j=i+1;j<GA_Problem_Parameter.tasks.size();j++){
+				indexes=getIndex(j);
+				p=indexes[0];
+				q=indexes[1];
+				if(compareSubtasksAssignee(m,n,p,q,assignment)){
+					/*if(!(DEP.getAncestors(varToBug.get(i)).contains(varToBug.get(j))|| DEP.getAncestors(varToBug.get(j)).contains(varToBug.get(i))))
+					{ 
+						int t;
+						try{
+							t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
+						}
+						catch(Exception ex)
+						{
+							t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
+						}
+
+						schedules.set(t, 1);
+					}*/
+					
+					try{
+						if(paths.getAllPaths(varToBug.get(i), varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
+							int t=-1;
+							try{
+								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
+								if(t<0){
+									t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
+								}
+							}
+							catch(Exception ex)
+							{
+								
+							} 
+							schedules.set(t, 1);
+						}
+					}
+					catch (IllegalArgumentException e) {
+						// TODO: handle exception
+					}
+				}
+			}
+		}
+		for(int i=assignment.size()+1;i<solu.length;i++){
+			solution.setVariable(i, EncodingUtils.newInt(solu[i-assignment.size()], solu[i-assignment.size()]));
+		}
+	}
+	
+	public static int[] getIndex(int index){
+		int[] indexes=new int[2];
+		int sIndex=0;
+		for(int i=0;i<index;i++){
+			sIndex+=GA_Problem_Parameter.tasks.get(i).BZone_Coefficient.size();
+		}
+		indexes[0]=sIndex;
+		indexes[1]=sIndex+GA_Problem_Parameter.tasks.get(index).BZone_Coefficient.size();
+		return indexes;
+	}
+	
+	public static Boolean compareSubtasksAssignee(int i, int j,int p, int k, ArrayList<Integer> assignment){
+		Boolean b=false;
+		for(int r=i;r<j;r++){
+			for(int s=p;s<k;s++)
+				if(assignment.get(r)==assignment.get(s))
+					b=true;
+		}
+		
+		return b;
+	}
+	
+	public static HashMap<Integer, Bug> getVarToBug(){
+		int index=0;
+		HashMap<Integer, Bug> varToBug=new HashMap<Integer, Bug>();
+		for(Bug b:GA_Problem_Parameter.tasks){
+			varToBug.put(index, b);
+			index++;
+		} 
+		return varToBug;
+	}
+	
+	public static void setArrivalTasks(){
+		while(tso_ID.hasNext()){
+			Bug b=tso_ID.next();
+			GA_Problem_Parameter.tasks.add(b);
+		}
+	}
 	
 }

@@ -14,7 +14,7 @@ public class Bug implements Cloneable{
 	double competenceProfile[];
 	int manualDeveloperID;
 	double totalEstimatedEffort;
-	double arrivalTime;
+	double arrivalTime=0;
 	HashMap<Zone, Double> BZone_Coefficient=new HashMap<Zone,Double>();
 	DirectedAcyclicGraph<Zone, DefaultEdge> Zone_DEP; 
 	double startTime=0.0;

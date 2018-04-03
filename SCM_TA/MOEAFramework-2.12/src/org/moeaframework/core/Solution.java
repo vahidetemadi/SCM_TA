@@ -18,6 +18,7 @@
 package org.moeaframework.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,6 +42,8 @@ public class Solution implements Serializable {
 	 * The decision variables of this solution.
 	 */
 	private final Variable[] variables;
+	
+	private final ArrayList<ArrayList<Integer>> variables_2;
 
 	/**
 	 * The objectives of this solution.
@@ -209,6 +212,10 @@ public class Solution implements Serializable {
 	public Variable getVariable(int index) {
 		return variables[index];
 	}
+	
+	public ArrayList<Integer> getVariable(int index) {
+		return variables_2.get(index);
+	}
 
 	/**
 	 * Sets the objective at the specified index.
@@ -259,6 +266,10 @@ public class Solution implements Serializable {
 	 */
 	public void setVariable(int index, Variable variable) {
 		variables[index] = variable;
+	}
+	
+	public void setVariable(int index, ArrayList<Integer> variable) {
+		variables_2.add(variable);
 	}
 
 	/**
