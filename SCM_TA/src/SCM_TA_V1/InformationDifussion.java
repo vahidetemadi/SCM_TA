@@ -4,8 +4,10 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
-import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
+import org.jgrapht.alg.CycleDetector;
+import org.jgrapht.alg.shortestpath.AllDirectedPaths;
+import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -15,6 +17,8 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 import org.moeaframework.problem.misc.Schaffer;
 import org.omg.PortableInterceptor.INACTIVE;
+
+import com.google.common.eventbus.DeadEvent;
 
 public class InformationDifussion extends AbstractProblem{
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
@@ -67,6 +71,7 @@ public class InformationDifussion extends AbstractProblem{
 		int m,n,p,q;
 		int[] indexes=new int[2];
 		AllDirectedPaths<Bug, DefaultEdge> paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
+		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=(DefaultDirectedGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DDG.clone();
 		for(int i=0;i<GA_Problem_Parameter.tasks.size()-1;i++){
 			indexes=getIndex(i);
 			m=indexes[0];
@@ -98,12 +103,18 @@ public class InformationDifussion extends AbstractProblem{
 								if(t<0){
 									t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
 								}
+								DEP_scheduling.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
+										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
 							}
 							catch(Exception ex)
 							{
 								
 							} 
-							schedules.set(t, 1);
+							if(!new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles())
+								schedules.set(t, 1);
+							else
+								DEP_scheduling.removeEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
+										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
 						}
 					}
 					catch (IllegalArgumentException e) {

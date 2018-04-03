@@ -107,10 +107,7 @@ public class GA_Problem_Parameter {
 		DDG=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 		DDG=convertToDirectedGraph(DAG, DDG);
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
-		ConnectivityInspector<Bug,DefaultEdge> CI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
-		KosarajuStrongConnectivityInspector<Bug,DefaultEdge> KI=new KosarajuStrongConnectivityInspector<Bug, DefaultEdge>(DAG);
 		
-	
 		System.out.println();
 		//generate all valid schedules 
 		for(Bug b1:DAG.vertexSet()){
@@ -363,6 +360,7 @@ public class GA_Problem_Parameter {
 	public static void setValidSchdule(Solution solution, HashMap<Integer, Bug> varToBug){
 		ArrayList<Integer> assignment=new ArrayList<Integer>();
 		ArrayList<Integer> schedules=new ArrayList<Integer>();
+		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=(DefaultDirectedGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DDG.clone();
 		int[] solu=EncodingUtils.getInt(solution);
 		for(int i=0;i<solu.length;i++){
 			if(solu[i]!=-100){
@@ -409,12 +407,18 @@ public class GA_Problem_Parameter {
 								if(t<0){
 									t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
 								}
+								DEP_scheduling.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
+										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
 							}
 							catch(Exception ex)
 							{
 								
 							} 
-							schedules.set(t, 1);
+							if(!new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles())
+								schedules.set(t, 1);
+							else
+								DEP_scheduling.removeEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
+										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
 						}
 					}
 					catch (IllegalArgumentException e) {
