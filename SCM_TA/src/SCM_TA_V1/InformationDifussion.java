@@ -3,6 +3,7 @@ package SCM_TA_V1;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Random;
 import java.util.Map.Entry;
 
 import org.jgrapht.alg.CycleDetector;
@@ -72,6 +73,8 @@ public class InformationDifussion extends AbstractProblem{
 		int[] indexes=new int[2];
 		AllDirectedPaths<Bug, DefaultEdge> paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
 		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=(DefaultDirectedGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DDG.clone();
+		ArrayList<Integer> indices=new ArrayList<Integer>();
+		Random randomizer=new Random();
 		for(int i=0;i<GA_Problem_Parameter.tasks.size()-1;i++){
 			indexes=getIndex(i);
 			m=indexes[0];
@@ -81,23 +84,13 @@ public class InformationDifussion extends AbstractProblem{
 				p=indexes[0];
 				q=indexes[1];
 				if(compareSubtasksAssignee(m,n,p,q,assignment)){
-					/*if(!(DEP.getAncestors(varToBug.get(i)).contains(varToBug.get(j))|| DEP.getAncestors(varToBug.get(j)).contains(varToBug.get(i))))
-					{ 
-						int t;
-						try{
-							t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
-						}
-						catch(Exception ex)
-						{
-							t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
-						}
-
-						schedules.set(t, 1);
-					}*/
-					
 					try{
 						if(paths.getAllPaths(varToBug.get(i), varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
 							int t=-1;
+							indices.clear();
+							indices.add(i);
+							indices.add(j);
+							
 							try{
 								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
 								if(t<0){

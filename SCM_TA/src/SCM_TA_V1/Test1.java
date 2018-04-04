@@ -15,6 +15,7 @@ import java.util.Scanner;
 import java.util.Queue;
 
 import org.jgrapht.graph.DefaultEdge;
+import org.moeaframework.Analyzer;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -258,18 +259,21 @@ public class Test1 {
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
+		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5).run();
-		results[0]=result_Karim;
+				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5);
+		//results[0]=result_Karim;
 		
 		System.out.println("finished first one");
 		
-	    NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
+	    Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5).run();
-	    results[1]=result_me;
+				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5);
+	    //results[1]=result_me;
 
+	    Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
+	    analyzer.addAll("Karim",result_Karim.runSeeds(50));
+	    analyzer.addAll("ID", result_me.runSeeds(50));
 		System.out.println("finished second one");
 	    return results;
 	    
