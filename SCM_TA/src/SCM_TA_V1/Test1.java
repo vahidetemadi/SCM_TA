@@ -48,10 +48,10 @@ public class Test1 {
 				GA_Problem_Parameter.candidateSolutonGeneration();
 				NondominatedPopulation[] results = new NondominatedPopulation[2]; 
 				results=Assigning(results);
-				solution=results[1].get(results[1].size()/2);
-				writeResult(runNum,i,results);
+				//solution=results[1].get(results[1].size()/2);
+				//writeResult(runNum,i,results);
 				System.out.println("finished writing");
-				afterRoundUpdating(solution);
+				//afterRoundUpdating(solution);
 				removeDevelopers();
 			}
 		}
@@ -245,7 +245,7 @@ public class Test1 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 			}
-		GA_Problem_Parameter.population=1000;
+		GA_Problem_Parameter.population=3000;
 		
 	}
 	
@@ -259,22 +259,24 @@ public class Test1 {
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+		Executor result_Karim=new Executor()
+				.withMaxEvaluations(50).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5);
 		//results[0]=result_Karim;
 		
 		System.out.println("finished first one");
 		
-	    Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(1000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+	    Executor result_me=new Executor()
+				.withMaxEvaluations(50).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5);
 	    //results[1]=result_me;
 
 	    Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
-	    analyzer.addAll("Karim",result_Karim.runSeeds(50));
-	    analyzer.addAll("ID", result_me.runSeeds(50));
+	    analyzer.addAll("Karim",result_Karim.withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII").runSeeds(1));
+	    analyzer.addAll("ID", result_me.withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII").runSeeds(1));
 		System.out.println("finished second one");
+		analyzer.withProblemClass(CompetenceMulti2_problem.class).printAnalysis();
+		analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
 	    return results;
 	    
 	}
