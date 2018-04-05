@@ -64,6 +64,8 @@ public class GA_Problem_Parameter {
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG;
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
 	
+	//paramter for new solution in ID approach
+	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){
 		Num_of_variables=0;
 		for(int i=0;i<bugs.length;i++){

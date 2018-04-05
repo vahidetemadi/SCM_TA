@@ -27,12 +27,14 @@ public class InformationDifussion extends AbstractProblem{
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
-	ArrayList<Integer> assignment;
-	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	ArrayList<Integer> schedules;
 	HashMap<Integer,Bug> varToBug;
 	ArrayList<ArrayList<Integer>> variables;
 	ArrayList<Integer> combinedLists;
+	ArrayList<Integer> assignment;
+	TopologicalOrderIterator<Zone,DefaultEdge> tso_zones;
+	AllDirectedPaths<Bug, DefaultEdge> paths;
+	DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	public InformationDifussion(){
 		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
@@ -44,11 +46,11 @@ public class InformationDifussion extends AbstractProblem{
 	public void init(){
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_ID;
-		
-		assignment=new ArrayList<Integer>();
-		schedules=new ArrayList<Integer>(GA_Problem_Parameter.pEdges.size());
+		schedules=new ArrayList<Integer>();
 		varToBug=new HashMap<Integer, Bug>();
+		variables=new ArrayList<ArrayList<Integer>>();
 		combinedLists=new ArrayList<Integer>();
+		assignment=new ArrayList<Integer>();
 		for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++)
 			schedules.add(0);
 		
@@ -59,7 +61,7 @@ public class InformationDifussion extends AbstractProblem{
 		int index=0;
 		for(Bug b:GA_Problem_Parameter.tasks){
 			b.setZoneDEP();
-			TopologicalOrderIterator<Zone,DefaultEdge> tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_zones.hasNext()){
 				genes.add(tso_zones.next());
 				assignment.add(GA_Problem_Parameter.getRandomDevId());
@@ -71,8 +73,8 @@ public class InformationDifussion extends AbstractProblem{
 		/* generate valid schedules*/
 		int m,n,p,q;
 		int[] indexes=new int[2];
-		AllDirectedPaths<Bug, DefaultEdge> paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
-		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=(DefaultDirectedGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DDG.clone();
+		paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
+		DEP_scheduling=(DefaultDirectedGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DDG.clone();
 		ArrayList<Integer> indices=new ArrayList<Integer>();
 		Random randomizer=new Random();
 		for(int i=0;i<GA_Problem_Parameter.tasks.size()-1;i++){
@@ -85,7 +87,7 @@ public class InformationDifussion extends AbstractProblem{
 				q=indexes[1];
 				if(compareSubtasksAssignee(m,n,p,q,assignment)){
 					try{
-						if(paths.getAllPaths(varToBug.get(i), varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
+						if(paths.getAllPaths(varToBug.get(i),varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
 							int t=-1;
 							indices.clear();
 							indices.add(i);
@@ -116,7 +118,6 @@ public class InformationDifussion extends AbstractProblem{
 				}
 			}
 		}
-		variables=new ArrayList<ArrayList<Integer>>();
 		variables.add(assignment);
 		variables.add(schedules);
 		
