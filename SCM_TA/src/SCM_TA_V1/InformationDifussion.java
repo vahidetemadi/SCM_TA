@@ -185,6 +185,7 @@ public class InformationDifussion extends AbstractProblem{
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		//reset all the associate time for the bugs and their zones
+		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign Devs to zone
 		zoneAssignee.clear();
 		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );

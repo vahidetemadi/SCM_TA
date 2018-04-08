@@ -60,17 +60,21 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	
 	@Override 	
 	public void evaluate(Solution solution){
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
+		//reset all the associate time for the bugs and their zones
+		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
+		//assign associate Dev to zone
+		//GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
+		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 		double totalTime=0.0;
 		double totalCost=0.0;
 		double totalDevCost=0.0;
+		double totalDelayTime=0.0;
+		double totalDelayCost=0.0;
+		
+		
 		double totalStartTime=0.0;
 		double totalEndTime=0.0;
-		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
-		TopologicalOrderIterator<Bug, DefaultEdge> tso=GA_Problem_Parameter.getTopologicalSorted(DEP_evaluation);
-		//reset all the associate time for the bugs and their zones
-		//GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
-		//assign associate Dev to zone
-		//GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
 		int index=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
@@ -92,13 +96,15 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 			}
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
+			totalDelayTime+=b.endTime_evaluate-b.arrivalTime;
+			totalDelayCost+=(b.endTime_evaluate-b.arrivalTime)*GA_Problem_Parameter.delayPenaltyCostRate;
 		}
 		totalTime=totalEndTime-totalStartTime;
-		totalCost=totalDevCost;
+		totalCost=totalDevCost+totalDelayCost;
 		
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);
-		 }
+	}
 		
 	
 }

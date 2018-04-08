@@ -41,7 +41,7 @@ public class GA_Problem_Parameter {
 	static double sbx_distribution_index;
 	static double pm_rate=0.50;
 	static double pm_distribution_index;
-	static double delayPenaltyCostRate=0.33;
+	static double delayPenaltyCostRate=0.1;
 	//
 	static Bug[] bugs;
 	static HashMap<Integer,Developer> developers;
@@ -467,6 +467,7 @@ public class GA_Problem_Parameter {
 	}
 	
 	public static void setArrivalTasks(){
+		GA_Problem_Parameter.tasks.clear();
 		while(tso_ID.hasNext()){
 			Bug b=tso_ID.next();
 			GA_Problem_Parameter.tasks.add(b);

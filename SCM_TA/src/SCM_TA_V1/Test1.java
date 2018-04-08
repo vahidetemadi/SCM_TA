@@ -51,8 +51,8 @@ public class Test1 {
 				solution=results[1].get(results[1].size()/2);
 				writeResult(runNum,i,results);
 				System.out.println("finished writing");
-				afterRoundUpdating(solution);
-				removeDevelopers();
+				//afterRoundUpdating(solution);
+				//removeDevelopers();
 			}
 		}
 	}
@@ -260,15 +260,15 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5).run();
+				.withMaxEvaluations(70000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.3).withProperty("pm.rate", 0.1).run();
 		results[0]=result_Karim;
 		
 		System.out.println("finished first one");
 		
 		NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.5).withProperty("pm.rate", 0.5).run();
+				.withMaxEvaluations(70000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.3).withProperty("pm.rate", 0.1).run();
 	    results[1]=result_me;
 
 	   /* Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
@@ -297,6 +297,7 @@ public class Test1 {
 		pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\results\\solutions_Me_round "+runNum+"_"+roundNum+".csv"));
 		sb.setLength(0);
 		for(Solution solution:result[1]){
+			System.out.println("volation: "+solution.violatesConstraints());
 			sb.append(solution.getObjective(0)+","+solution.getObjective(1));
 			sb.setLength(sb.length()-1);
 			sb.append("\n");
