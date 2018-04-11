@@ -260,14 +260,14 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(70000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.3).withProperty("pm.rate", 0.1).run();
 		results[0]=result_Karim;
 		
 		System.out.println("finished first one");
 		
 		NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(70000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.3).withProperty("pm.rate", 0.1).run();
 	    results[1]=result_me;
 
@@ -281,12 +281,16 @@ public class Test1 {
 	    
 	}
 	
-	//write results for testing
+	//write the results for testing
 	public static void writeResult(int runNum,int roundNum, NondominatedPopulation[] result) throws FileNotFoundException{
 		//write results to CSV for each round
 		PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\results\\solutions_Karim_round "+runNum+"_"+roundNum+".csv"));
 		StringBuilder sb=new StringBuilder();
 		for(Solution solution:result[0]){
+			for(int i=0; i<solution.getNumberOfVariables();i++){
+				System.out.print(EncodingUtils.getInt(solution.getVariable(i))+",");
+			}
+			System.out.println();
 			sb.append(solution.getObjective(0)+","+solution.getObjective(1));
 			sb.setLength(sb.length()-1);
 			sb.append("\n");
@@ -297,7 +301,10 @@ public class Test1 {
 		pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\results\\solutions_Me_round "+runNum+"_"+roundNum+".csv"));
 		sb.setLength(0);
 		for(Solution solution:result[1]){
-			System.out.println("volation: "+solution.violatesConstraints());
+			for(int i=0; i<solution.getNumberOfVariables();i++){
+				System.out.print(EncodingUtils.getInt(solution.getVariable(i))+",");
+			}
+			System.out.println();
 			sb.append(solution.getObjective(0)+","+solution.getObjective(1));
 			sb.setLength(sb.length()-1);
 			sb.append("\n");
