@@ -261,14 +261,14 @@ public class Test1 {
 		
 		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.3).withProperty("pm.rate", 0.1).run();
+				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
 		results[0]=result_Karim;
 		
 		System.out.println("finished first one");
 		
 		NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.3).withProperty("pm.rate", 0.1).run();
+				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
 	    results[1]=result_me;
 
 	   /* Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
