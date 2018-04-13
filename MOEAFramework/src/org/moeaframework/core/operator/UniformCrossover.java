@@ -61,18 +61,16 @@ public class UniformCrossover implements Variation {
 		Solution result2 = parents[1].copy();
 		if (PRNG.nextDouble() <= probability) {
 			for (int i = 0; i < result1.getNumberOfVariables(); i++) {
-				this.x=EncodingUtils.getInt(result1.getVariable(i));
-				
+				this.x=EncodingUtils.getInt(result1.getVariable(i));				
 				if(x!=-100){
 					if (PRNG.nextBoolean()) {
-						int temp = EncodingUtils.getInt(result1.getVariable(i));
-						System.out.println(temp);
-						result1.setVariable(i, EncodingUtils.newInt(EncodingUtils.getInt(result2.getVariable(i)),EncodingUtils.getInt(result2.getVariable(i))));
-						result2.setVariable(i, EncodingUtils.newInt(temp, temp));
+						Variable temp = result1.getVariable(i);
+						result1.setVariable(i, result2.getVariable(i));
+						result2.setVariable(i, temp);
 					}
 				}
 				else {
-					i=result1.getNumberOfVariables();
+					break;
 				}
 			}
 		}
