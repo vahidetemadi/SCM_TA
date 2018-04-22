@@ -57,6 +57,7 @@ public class UniformCrossover implements Variation {
 
 	@Override
 	public Solution[] evolve(Solution[] parents) {
+		boolean b=false;
 		Solution result1 = parents[0].copy();
 		Solution result2 = parents[1].copy();
 		if (PRNG.nextDouble() <= probability) {
@@ -70,6 +71,7 @@ public class UniformCrossover implements Variation {
 					}
 				}
 				else {
+					b=true;
 					break;
 				}
 			}
@@ -78,8 +80,10 @@ public class UniformCrossover implements Variation {
 		Solution[] results;
 		
 		results=new Solution[] { result1, result2 };
-		GA_Problem_Parameter.setValidSchdule(results[0], GA_Problem_Parameter.getVarToBug());
-		GA_Problem_Parameter.setValidSchdule(results[1], GA_Problem_Parameter.getVarToBug());
+		if(b){
+			GA_Problem_Parameter.setValidSchdule(results[0], GA_Problem_Parameter.getVarToBug());
+			GA_Problem_Parameter.setValidSchdule(results[1], GA_Problem_Parameter.getVarToBug());
+		}
 
 		return results;
 	}

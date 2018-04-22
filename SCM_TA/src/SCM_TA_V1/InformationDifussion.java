@@ -74,7 +74,8 @@ public class InformationDifussion extends AbstractProblem{
 		int m,n,p,q;
 		int[] indexes=new int[2];
 		paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
-		DEP_scheduling=(DefaultDirectedGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DDG.clone();
+		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
 		ArrayList<Integer> indices=new ArrayList<Integer>();
 		Random randomizer=new Random();
 		for(int i=0;i<GA_Problem_Parameter.tasks.size()-1;i++){
@@ -92,12 +93,12 @@ public class InformationDifussion extends AbstractProblem{
 							indices.clear();
 							indices.add(i);
 							indices.add(j);
-							
 							try{
 								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
 								if(t<0){
 									t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
 								}
+								boolean b=new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles();
 								DEP_scheduling.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
 										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
 							}
@@ -105,7 +106,8 @@ public class InformationDifussion extends AbstractProblem{
 							{
 								
 							} 
-							if(!new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles())
+							boolean b=new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles();
+							if(!b)
 								schedules.set(t, 1);
 							else
 								DEP_scheduling.removeEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),

@@ -122,7 +122,7 @@ public class GA_Problem_Parameter {
 				}
 			}
 		}
-		DDG_1=DDG;
+		DDG_1=(DefaultDirectedGraph<Bug, DefaultEdge>)DDG.clone();
 		System.out.println();
 		pEdges=potentilEdges;
 
@@ -323,13 +323,15 @@ public class GA_Problem_Parameter {
 	
 	public static DefaultDirectedGraph<Bug, DefaultEdge> convertToDirectedGraph(DirectedAcyclicGraph<Bug, DefaultEdge> DAG,
 			DefaultDirectedGraph<Bug, DefaultEdge> DDG){
-		for(DefaultEdge d:DDG.edgeSet()){
-			DDG.removeEdge(d);
-		}
-		for(Bug b:DDG.vertexSet()){
-			DDG.removeVertex(b);
-		}
 		
+		if(!DDG.vertexSet().isEmpty()){
+			for(DefaultEdge d:DDG.edgeSet()){
+			DDG.removeEdge(d);
+			}
+			for(Bug b:DDG.vertexSet()){
+			DDG.removeVertex(b);
+			}
+		}
 		
 		//System.out.println("size of ddg"+DDG.edgeSet().size());
 		for(Bug b:DAG.vertexSet()){
@@ -362,7 +364,8 @@ public class GA_Problem_Parameter {
 	public static void setValidSchdule(Solution solution, HashMap<Integer, Bug> varToBug){
 		ArrayList<Integer> assignment=new ArrayList<Integer>();
 		ArrayList<Integer> schedules=new ArrayList<Integer>();
-		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=(DefaultDirectedGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DDG.clone();
+		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
 		int[] solu=EncodingUtils.getInt(solution);
 		for(int i=0;i<solu.length;i++){
 			if(solu[i]!=-100){

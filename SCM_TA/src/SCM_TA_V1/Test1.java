@@ -259,10 +259,10 @@ public class Test1 {
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
+		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
-		results[0]=result_Karim;
+		results[0]=result_Karim;*/
 		
 		System.out.println("finished first one");
 		
