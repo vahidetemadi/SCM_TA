@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,11 +62,12 @@ public class Test1 {
 		//initialize developers
 				System.out.println("enter the developrs file");
 				Developer developer = null;
+				 System.out.println(System.getProperty("user.dir"));
 				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\bug-data\\JDTDeveloper.txt"));
+				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloper.txt"));
 				System.out.println("enter the devlopers wage file");
 				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\bug-data\\JDTDeveloperWithWage.txt"));
+				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloperWithWage.txt"));
 				int i=0;
 				int j=0;
 				while(sc.hasNextLine() && scan.hasNextLine()){
@@ -131,11 +133,11 @@ public class Test1 {
 		System.out.println("enter the bugs files");
 		Bug bug=null;
 		//sc=new Scanner(System.in);
-		sc=new Scanner(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\JDT\\efforts");
-
+		sc=new Scanner("/bug-data/JDT/efforts");
+		System.out.println(sc.nextLine());
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(sc.nextLine()).listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//efforts").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
@@ -182,7 +184,7 @@ public class Test1 {
 		/*set bug dependencies*/
 		
 		System.out.println("enter the bug dependency files");
-		sc=new Scanner(System.getProperty("user.dir")+"\\src\\SCM_TA_V1\\bug-data\\JDT\\dependencies");
+		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies");
 		String[] columns_bug=null;
 		for(Bug b:bugs.values()){
 			b.DB.clear();
@@ -259,10 +261,10 @@ public class Test1 {
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
+		NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
-		results[0]=result_Karim;*/
+		results[0]=result_Karim;
 		
 		System.out.println("finished first one");
 		
@@ -284,7 +286,7 @@ public class Test1 {
 	//write the results for testing
 	public static void writeResult(int runNum,int roundNum, NondominatedPopulation[] result) throws FileNotFoundException{
 		//write results to CSV for each round
-		PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\results\\solutions_Karim_round "+runNum+"_"+roundNum+".csv"));
+		PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//solutions_Karim_round "+runNum+"_"+roundNum+".csv"));
 		StringBuilder sb=new StringBuilder();
 		for(Solution solution:result[0]){
 			for(int i=0; i<solution.getNumberOfVariables();i++){
@@ -298,7 +300,7 @@ public class Test1 {
 		pw.write(sb.toString());
 		pw.close();
 		
-		pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\results\\solutions_Me_round "+runNum+"_"+roundNum+".csv"));
+		pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//solutions_Me_round "+runNum+"_"+roundNum+".csv"));
 		sb.setLength(0);
 		for(Solution solution:result[1]){
 			for(int i=0; i<solution.getNumberOfVariables();i++){

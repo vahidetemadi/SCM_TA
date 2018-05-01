@@ -20,9 +20,10 @@
 <fullyQualifiedTypeName name="org.jgrapht.graph.AsSubgraph"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.Solution"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.variable.EncodingUtils"/>
-<fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.Bug"/>
 <fullyQualifiedTypeName name="org.jgrapht.graph.DefaultDirectedGraph"/>
 <fullyQualifiedTypeName name="org.jgrapht.graph.DefaultEdge"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
 </qualifiedTypeNameHistroy>
