@@ -2,10 +2,8 @@ package SCM_TA_V1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map.Entry;
 import java.util.Random;
-import java.util.Collections;
 import java.util.Set;
 
 import org.moeaframework.core.Solution;
@@ -20,12 +18,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.GabowStrongConnectivityInspector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
-
 import java.util.Iterator;
-
-import org.paukov.combinatorics.Factory;
-import org.paukov.combinatorics.Generator;
-import org.paukov.combinatorics.ICombinatoricsVector;
 
 
 public class GA_Problem_Parameter {
@@ -41,7 +34,7 @@ public class GA_Problem_Parameter {
 	static double sbx_distribution_index;
 	static double pm_rate=0.50;
 	static double pm_distribution_index;
-	static double delayPenaltyCostRate=0.1;
+	static double delayPenaltyCostRate=0.5;
 	//
 	static Bug[] bugs;
 	static HashMap<Integer,Developer> developers;
@@ -361,7 +354,10 @@ public class GA_Problem_Parameter {
 		GA_Problem_Parameter.setCandidateSchedulings(validSchedulings);
 	}
 	
-	public static void setValidSchdule(Solution solution, HashMap<Integer, Bug> varToBug){
+	/** 
+	 update the schedules for each generated offspring produced by crossover operator   
+	**/
+	public static Solution setValidSchdule(Solution solution, HashMap<Integer, Bug> varToBug){
 		ArrayList<Integer> assignment=new ArrayList<Integer>();
 		ArrayList<Integer> schedules=new ArrayList<Integer>();
 		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
@@ -390,20 +386,6 @@ public class GA_Problem_Parameter {
 				p=indexes[0];
 				q=indexes[1];
 				if(compareSubtasksAssignee(m,n,p,q,assignment)){
-					/*if(!(DEP.getAncestors(varToBug.get(i)).contains(varToBug.get(j))|| DEP.getAncestors(varToBug.get(j)).contains(varToBug.get(i))))
-					{ 
-						int t;
-						try{
-							t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
-						}
-						catch(Exception ex)
-						{
-							t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
-						}
-
-						schedules.set(t, 1);
-					}*/
-					
 					try{
 						if(paths.getAllPaths(varToBug.get(i), varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
 							int t=-1;
@@ -432,11 +414,21 @@ public class GA_Problem_Parameter {
 				}
 			}
 		}
-		for(int i=assignment.size()+1;i<solu.length;i++){
-			solution.setVariable(i, EncodingUtils.newInt(solu[i-assignment.size()], solu[i-assignment.size()]));
+		int[] temp=new int[schedules.size()];
+		for(int i=0;i<temp.length;i++){
+			temp[i]=schedules.get(i);
 		}
+		int o=temp.length;
+		
+		/*for(int i=assignment.size()+1;i<solution.getNumberOfVariables();i++){
+			int t=temp[i-(assignment.size()+1)];
+			solution.setVariable(i, EncodingUtils.newInt(t,t));
+		}*/
+		int[] soluw=EncodingUtils.getInt(solution);
+		return solution;
 	}
 	
+	/**get index of the subtasks' assignees need to be compared**/
 	public static int[] getIndex(int index){
 		int[] indexes=new int[2];
 		int sIndex=0;
@@ -448,6 +440,7 @@ public class GA_Problem_Parameter {
 		return indexes;
 	}
 	
+	/** compare subtasks to find the potential links**/
 	public static Boolean compareSubtasksAssignee(int i, int j,int p, int k, ArrayList<Integer> assignment){
 		Boolean b=false;
 		for(int r=i;r<j;r++){
@@ -459,6 +452,7 @@ public class GA_Problem_Parameter {
 		return b;
 	}
 	
+	/** assign the each bug an index of the associated variable in the encoded solution**/
 	public static HashMap<Integer, Bug> getVarToBug(){
 		int index=0;
 		HashMap<Integer, Bug> varToBug=new HashMap<Integer, Bug>();
@@ -469,6 +463,7 @@ public class GA_Problem_Parameter {
 		return varToBug;
 	}
 	
+	/**set arrival task**/
 	public static void setArrivalTasks(){
 		GA_Problem_Parameter.tasks.clear();
 		while(tso_ID.hasNext()){

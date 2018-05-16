@@ -13,14 +13,8 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.core.Solution;
-import org.moeaframework.core.Variable;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
-import org.moeaframework.problem.misc.Schaffer;
-import org.omg.PortableInterceptor.INACTIVE;
-
-import com.google.common.eventbus.DeadEvent;
-
 public class InformationDifussion extends AbstractProblem{
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
@@ -218,7 +212,7 @@ public class InformationDifussion extends AbstractProblem{
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			//set Bug startTime
-			b.startTime_evaluate=b.arrivalTime+ fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
+			b.startTime_evaluate=Math.max(fitnessCalc.getMaxEndTimes(b, DEP_evaluation), System.currentTimeMillis());
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();

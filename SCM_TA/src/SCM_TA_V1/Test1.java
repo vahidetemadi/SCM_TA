@@ -286,6 +286,7 @@ public class Test1 {
 	//write the results for testing
 	public static void writeResult(int runNum,int roundNum, NondominatedPopulation[] result) throws FileNotFoundException{
 		//write results to CSV for each round
+		System.out.println("result of the expriment for Karim approach");
 		PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//solutions_Karim_round "+runNum+"_"+roundNum+".csv"));
 		StringBuilder sb=new StringBuilder();
 		for(Solution solution:result[0]){
@@ -299,14 +300,13 @@ public class Test1 {
 		}
 		pw.write(sb.toString());
 		pw.close();
-		
+		System.out.println("result of the expriment for proposed approach");
 		pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//solutions_Me_round "+runNum+"_"+roundNum+".csv"));
 		sb.setLength(0);
 		for(Solution solution:result[1]){
 			for(int i=0; i<solution.getNumberOfVariables();i++){
 				System.out.print(EncodingUtils.getInt(solution.getVariable(i))+",");
 			}
-			System.out.println();
 			sb.append(solution.getObjective(0)+","+solution.getObjective(1));
 			sb.setLength(sb.length()-1);
 			sb.append("\n");
