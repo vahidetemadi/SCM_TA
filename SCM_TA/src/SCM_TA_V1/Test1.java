@@ -307,6 +307,7 @@ public class Test1 {
 			for(int i=0; i<solution.getNumberOfVariables();i++){
 				System.out.print(EncodingUtils.getInt(solution.getVariable(i))+",");
 			}
+			System.out.println();
 			sb.append(solution.getObjective(0)+","+solution.getObjective(1));
 			sb.setLength(sb.length()-1);
 			sb.append("\n");

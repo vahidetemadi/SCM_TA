@@ -85,10 +85,10 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 				Zone zone=tso_Zone.next();
 				double compeletionTime=0.0;
 				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
-				if(EncodingUtils.getInt(solution.getVariable(index))==0){
+				/*if(EncodingUtils.getInt(solution.getVariable(index))==0){
 					int[] g=EncodingUtils.getInt(solution);
 					System.out.println(g);
-				}
+				}*/
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
 				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);

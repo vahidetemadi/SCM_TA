@@ -224,7 +224,6 @@ public class InformationDifussion extends AbstractProblem{
 			Date d1=null;
 			Date d2=null;
 			b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
-			double x=b.startTime_evaluate;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
