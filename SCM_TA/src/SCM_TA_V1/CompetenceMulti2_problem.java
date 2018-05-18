@@ -79,7 +79,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			//set Bug startTime
-			b.startTime_evaluate=Math.max(fitnessCalc.getMaxEndTimes(b, DEP_evaluation), System.currentTimeMillis());
+			b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();

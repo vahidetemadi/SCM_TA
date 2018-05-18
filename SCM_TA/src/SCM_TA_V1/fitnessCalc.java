@@ -162,14 +162,14 @@ Developer developer){
 	 double endTime=0;
 	 Set<Bug> dependents=DEP.getAncestors(b);
 	 for(Bug bug:dependents){
-		 endTime=Math.max(endTime, bug.endTime);
+		 endTime=Math.max(endTime, bug.endTime_evaluate);
 	 }
 	 return endTime;
  }
  public static double getZoneStartTime(Developer d, ArrayList<Zone> depZones){
 	 double sDate=0;
 	 for(Zone zone:depZones){
-		 sDate=Math.max(sDate, zone.zoneEndTime);
+		 sDate=Math.max(sDate, zone.zoneEndTime_evaluate);
 	 }
 	 return sDate;
  }

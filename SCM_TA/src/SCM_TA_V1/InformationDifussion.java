@@ -1,10 +1,15 @@
 package SCM_TA_V1;
 
+import java.sql.Time;
+import java.text.DateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Map.Entry;
+
+import javax.swing.JViewport;
 
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
@@ -15,6 +20,8 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 public class InformationDifussion extends AbstractProblem{
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
@@ -212,7 +219,12 @@ public class InformationDifussion extends AbstractProblem{
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			//set Bug startTime
-			b.startTime_evaluate=Math.max(fitnessCalc.getMaxEndTimes(b, DEP_evaluation), System.currentTimeMillis());
+			Date date=new Date();
+			SimpleDateFormat d=new SimpleDateFormat();
+			Date d1=null;
+			Date d2=null;
+			b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
+			double x=b.startTime_evaluate;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
