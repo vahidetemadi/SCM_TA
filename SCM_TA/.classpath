@@ -8,5 +8,6 @@
 	<classpathentry kind="lib" path="/home/vahid/Documents/SCM_TA/SCM_TA/lib/commons-math3-3.6.1-javadoc.jar"/>
 	<classpathentry kind="lib" path="/home/vahid/Documents/SCM_TA/SCM_TA/lib/guava.jar"/>
 	<classpathentry kind="lib" path="/home/vahid/Documents/SCM_TA/SCM_TA/lib/jgrapht-ext-1.1.0-uber.jar"/>
+	<classpathentry kind="lib" path="/home/vahid/Documents/SCM_TA/SCM_TA/lib/jgraphx.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>

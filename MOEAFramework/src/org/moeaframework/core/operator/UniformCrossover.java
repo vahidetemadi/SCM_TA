@@ -17,11 +17,14 @@
  */
 package org.moeaframework.core.operator;
 
+import java.util.ArrayList;
+
 import org.moeaframework.core.PRNG;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variable;
 import org.moeaframework.core.Variation;
 import org.moeaframework.core.variable.EncodingUtils;
+
 import SCM_TA_V1.GA_Problem_Parameter;
 
 /**
@@ -81,8 +84,8 @@ public class UniformCrossover implements Variation {
 		
 		results=new Solution[] { result1, result2 };
 		if(b){
-			GA_Problem_Parameter.setValidSchdule(results[0], GA_Problem_Parameter.getVarToBug());
-			GA_Problem_Parameter.setValidSchdule(results[1], GA_Problem_Parameter.getVarToBug());
+			results[0]=GA_Problem_Parameter.setValidSchdule(results[0], GA_Problem_Parameter.getVarToBug());
+			results[1]=GA_Problem_Parameter.setValidSchdule(results[1], GA_Problem_Parameter.getVarToBug());
 		}
 
 		return results;

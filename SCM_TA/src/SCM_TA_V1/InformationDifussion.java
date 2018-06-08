@@ -20,6 +20,7 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 public class InformationDifussion extends AbstractProblem{
@@ -211,8 +212,6 @@ public class InformationDifussion extends AbstractProblem{
 		double totalDevCost=0.0;
 		double totalDelayTime=0.0;
 		double totalDelayCost=0.0;
-		
-		
 		double totalStartTime=0.0;
 		double totalEndTime=0.0;
 		int index=0;
@@ -223,7 +222,8 @@ public class InformationDifussion extends AbstractProblem{
 			SimpleDateFormat d=new SimpleDateFormat();
 			Date d1=null;
 			Date d2=null;
-			b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
+			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
+			b.startTime_evaluate=x;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
@@ -233,9 +233,13 @@ public class InformationDifussion extends AbstractProblem{
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(devId));
 				totalDevCost+=compeletionTime*developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(zoneAssignee.get(index).getThird()), zone.DZ);
+				double pp=zone.zoneEndTime_evaluate;
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
+				int DId=zoneAssignee.get(index).getThird();
+				double x1=developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour;
 				developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour=Math.max(developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
+				x1=developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour;
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
 			}

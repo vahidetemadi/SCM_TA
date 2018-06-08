@@ -58,6 +58,7 @@ public class Test1 {
 		}
 	}
 	
+	// initialize the developer objects  
 	public static void devInitialization() throws IOException,NoSuchElementException, URISyntaxException{
 		//initialize developers
 				System.out.println("enter the developrs file");
@@ -124,6 +125,7 @@ public class Test1 {
 				
 	}
 	
+	// initialize the bugs objects for task assignment  
 	public static void bugInitialization(int roundNum) throws IOException,NoSuchElementException{	
 		bugs.clear();
 		Scanner sc=new Scanner(System.in);
@@ -182,14 +184,14 @@ public class Test1 {
 		}
 					
 		/*set bug dependencies*/
-		
+		int f=0;
 		System.out.println("enter the bug dependency files");
 		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies");
 		String[] columns_bug=null;
 		for(Bug b:bugs.values()){
 			b.DB.clear();
 		}
-		for(File fileEntry:new File(sc.nextLine()).listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){
@@ -197,16 +199,26 @@ public class Test1 {
 					String s=sc1.nextLine();
 					columns_bug=s.split(",");
 					int k=1;
-					if(columns_bug[k].trim().length() > 0){
-						try{
-							if(bugs.get(Integer.parseInt(columns_bug[k-1]))!=null && bugs.get(Integer.parseInt(columns_bug[k]))!=null)
-								bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(Integer.parseInt(columns_bug[k])));
-							//System.out.println(bugs.get(Integer.parseInt(columns_bug[k])));
-						}
-						catch(NullPointerException e){
-							
-						}
+					try{
+						if(columns_bug[k].trim().length() > 0){
+							try{
+								Integer ID_1=Integer.parseInt(columns_bug[k-1]);
+								System.out.println(bugs.get(ID_1).ID);
+								if(bugs.get(Integer.parseInt(columns_bug[k-1]))!=null && bugs.get(Integer.parseInt(columns_bug[k]))!=null){
+									bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(Integer.parseInt(columns_bug[k])));
+									f++;
+								}
+								//System.out.println(bugs.get(Integer.parseInt(columns_bug[k])));
+							}
+							catch(Exception e){
+								
+							}
+						}	
 					}
+					catch(Exception e){
+						
+					}
+					
 				}
 				else{
 					sc1.nextLine();
@@ -214,6 +226,7 @@ public class Test1 {
 				i++;
 			}
 		}
+		System.out.println("real F:"+f);
 		/* end setting bug dependencies*/
 		
 		/* set zone dependencies */
@@ -250,12 +263,6 @@ public class Test1 {
 		GA_Problem_Parameter.population=500;
 		
 	}
-	
-	
-	
-	
-	
-	
 	
 	//find solution to assign tasks to the developers
 	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){

@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import org.jgraph.JGraph;
+import org.jgrapht.ListenableGraph;
+import org.jgrapht.ext.JGraphModelAdapter;
+import org.jgrapht.graph.ListenableDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -60,6 +64,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	
 	@Override 	
 	public void evaluate(Solution solution){
+		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
@@ -71,15 +76,14 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 		double totalDevCost=0.0;
 		double totalDelayTime=0.0;
 		double totalDelayCost=0.0;
-		
-		
 		double totalStartTime=0.0;
 		double totalEndTime=0.0;
 		int index=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			//set Bug startTime
-			b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
+			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
+			b.startTime_evaluate=x;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
@@ -93,8 +97,11 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
+				int DId=EncodingUtils.getInt(solution.getVariable(index));
+				double x1=developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour;
 				developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
+				x1=developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour;
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
 			}

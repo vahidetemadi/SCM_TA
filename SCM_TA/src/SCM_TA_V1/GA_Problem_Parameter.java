@@ -18,6 +18,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.GabowStrongConnectivityInspector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
+
 import java.util.Iterator;
 
 
@@ -221,7 +222,6 @@ public class GA_Problem_Parameter {
 		for(int k=0; k<bugs.length;k++){
 			dag.addVertex(bugs[k]);
 		}
-		System.out.println(bugs.length);
 		for(int i=0;i<bugs.length;i++){
 			if(bugs[i].DB.size()>0){
 				for(Bug b:bugs[i].DB){

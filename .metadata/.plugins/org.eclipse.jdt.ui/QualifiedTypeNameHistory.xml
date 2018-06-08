@@ -4,7 +4,6 @@
 <fullyQualifiedTypeName name="java.rmi.dgc.DGC"/>
 <fullyQualifiedTypeName name="org.omg.Messaging.SYNC_WITH_TRANSPORT"/>
 <fullyQualifiedTypeName name="java.util.Random"/>
-<fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="org.apache.commons.math3.util.ArithmeticUtils"/>
 <fullyQualifiedTypeName name="org.apache.commons.math3.geometry.spherical.twod.Edge"/>
 <fullyQualifiedTypeName name="java.util.Collection"/>
@@ -19,11 +18,18 @@
 <fullyQualifiedTypeName name="org.jgrapht.graph.Subgraph"/>
 <fullyQualifiedTypeName name="org.jgrapht.graph.AsSubgraph"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.Solution"/>
-<fullyQualifiedTypeName name="org.moeaframework.core.variable.EncodingUtils"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
-<fullyQualifiedTypeName name="SCM_TA_V1.Bug"/>
 <fullyQualifiedTypeName name="org.jgrapht.graph.DefaultDirectedGraph"/>
-<fullyQualifiedTypeName name="org.jgrapht.graph.DefaultEdge"/>
 <fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="org.moeaframework.core.variable.EncodingUtils"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
+<fullyQualifiedTypeName name="org.jgrapht.ListenableGraph"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.ListenableDirectedGraph"/>
+<fullyQualifiedTypeName name="org.jgraph.JGraph"/>
+<fullyQualifiedTypeName name="org.jgrapht.ext.JGraphModelAdapter"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.Bug"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.DefaultEdge"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.lang.Exception"/>
 </qualifiedTypeNameHistroy>
