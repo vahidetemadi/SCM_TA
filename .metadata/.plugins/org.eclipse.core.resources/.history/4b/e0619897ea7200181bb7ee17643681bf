@@ -124,7 +124,7 @@ public class Test1 {
 				for(Developer d:GA_Problem_Parameter.developers.values()){
 					for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
 						if(entry.getValue()==0)
-							d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
+							d.DZone_Coefficient.put(entry.getKey(),getMin(d.DZone_Coefficient));
 					}
 				}
 				
@@ -394,7 +394,7 @@ public class Test1 {
 		
 	}
 	
-	private static double getNonZeroMin(HashMap<Zone, Double> entrySet){
+	private static double getMin(HashMap<Zone, Double> entrySet){
 		double min=300;
 		for(Double d:entrySet.values()){
 			if(min>d && d>0){

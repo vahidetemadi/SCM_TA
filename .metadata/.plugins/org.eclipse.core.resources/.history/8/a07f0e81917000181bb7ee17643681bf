@@ -242,7 +242,7 @@ public class InformationDifussion extends AbstractProblem{
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
 			totalDelayTime+=b.endTime_evaluate-b.arrivalTime;
-			totalDelayCost+=(b.endTime_evaluate-b.arrivalTime)*GA_Problem_Parameter.delayPenaltyCostRate;
+			//totalDelayCost+=(b.endTime_evaluate-b.arrivalTime)*GA_Problem_Parameter.delayPenaltyCostRate;
 		}
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;

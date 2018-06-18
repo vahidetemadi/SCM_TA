@@ -233,9 +233,13 @@ public class InformationDifussion extends AbstractProblem{
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(devId));
 				totalDevCost+=compeletionTime*developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(zoneAssignee.get(index).getThird()), zone.DZ);
+				double pp=zone.zoneEndTime_evaluate;
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
+				int DId=zoneAssignee.get(index).getThird();
+				double x1=developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour;
 				developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour=Math.max(developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
+				x1=developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour;
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
 			}

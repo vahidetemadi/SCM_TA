@@ -121,12 +121,6 @@ public class Test1 {
 				}
 				GA_Problem_Parameter.developers=developers;
 				
-				for(Developer d:GA_Problem_Parameter.developers.values()){
-					for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
-						if(entry.getValue()==0)
-							d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
-					}
-				}
 				
 				
 	}
@@ -288,13 +282,13 @@ public class Test1 {
 		
 		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.8).withProperty("pm.rate", 0.1);
+				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1);
 		
 		System.out.println("finished first one");
 		
 		Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.8).withProperty("pm.rate", 0.1);
+				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1);
 	 
 	   Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
 	   
@@ -392,16 +386,6 @@ public class Test1 {
 	
 	public static void writeResultsforRuns(){
 		
-	}
-	
-	private static double getNonZeroMin(HashMap<Zone, Double> entrySet){
-		double min=300;
-		for(Double d:entrySet.values()){
-			if(min>d && d>0){
-				min=d;
-			}
-		}
-		return min;
 	}
 	
 }

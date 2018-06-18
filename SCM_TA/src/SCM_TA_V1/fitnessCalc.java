@@ -14,7 +14,7 @@ public class fitnessCalc {
 
 public static double compeletionTime(Bug bug, Entry<Zone, Double> zone, Developer developer) {	
 	//compute the total time for each zone 
-	double tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())+1));
+	double tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
 	return tct;
 }
 

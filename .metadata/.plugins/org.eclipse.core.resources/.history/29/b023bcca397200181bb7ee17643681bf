@@ -158,17 +158,10 @@ Developer developer){
 	 return 0;
  }
  
- public static double getMaxEndTimes_1(Bug b, DirectedAcyclicGraph<Bug,DefaultEdge> DEP){
-	 double endTime=0;
-	 Set<Bug> dependents=DEP.getAncestors(b);
-	 for(Bug bug:dependents){
-		 endTime=Math.max(endTime, bug.endTime_evaluate);
-	 }
-	 return endTime;
- }
  public static double getMaxEndTimes(Bug b, DirectedAcyclicGraph<Bug,DefaultEdge> DEP){
 	 double endTime=0;
-	 Set<Bug> dependents=DEP.getAncestors(b);
+	 //Set<Bug> dependents=DEP.getAncestors(b);
+	 ArrayList<Bug> dependents=b.DB;
 	 for(Bug bug:dependents){
 		 endTime=Math.max(endTime, bug.endTime_evaluate);
 	 }
