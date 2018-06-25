@@ -17,6 +17,7 @@ import java.util.Queue;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.moeaframework.Analyzer;
+import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -51,7 +52,7 @@ public class Test1 {
 				results=Assigning(results);
 				//solution=results[1].get(results[1].size()/2);
 				//writeResult(runNum,i,results);
-				System.out.println("finished writing");
+				//System.out.println("finished writing");
 				//afterRoundUpdating(solution);
 				//removeDevelopers();
 			}
@@ -275,35 +276,35 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
 		results[0]=result_Karim;
 		
 		System.out.println("finished first one");
 		
 		NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
 	    results[1]=result_me;*/
 		
 		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.8).withProperty("pm.rate", 0.1);
+				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1);
 		
-		System.out.println("finished first one");
+		System.out.println("finished Competence-multi2 one");
 		
 		Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.8).withProperty("pm.rate", 0.1);
+				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1);
 	 
-	   Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
+	    Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
 	   
 	    analyzer.addAll("NSGAII",result_Karim.withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII").runSeeds(1));
 	    analyzer.addAll("ID", result_me.withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII").runSeeds(1));
-	    
-	    System.out.println("finished second one");
+	    System.out.println("finished Schedule-based one");
 		analyzer.withProblemClass(CompetenceMulti2_problem.class).printAnalysis();
 		analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
+	    //AnalyzerResults ar=analyzer.getAnalysis();
 	    return results;
 	    
 	}
