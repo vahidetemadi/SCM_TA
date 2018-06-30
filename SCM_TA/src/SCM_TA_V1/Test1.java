@@ -3,6 +3,7 @@ package SCM_TA_V1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -17,7 +18,9 @@ import java.util.Queue;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.moeaframework.Analyzer;
+import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
+import org.moeaframework.core.Indicator;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
@@ -30,25 +33,25 @@ public class Test1 {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
 	static HashMap<Integer,Bug> bugs=new HashMap<Integer,Bug>();
 	static Queue<Bug> orderdBugs; 
-	static Solution solution=null;
+	//static Solution solution=null;
 	static HashMap<Integer , Zone> columns=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	static int roundnum=0;
 	
 	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
-		for(int runNum=0;runNum<1;runNum++){
+		for(int runNum=0;runNum<20;runNum++){
 			roundnum++;
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
 			devInitialization();
-			int roundNum=6;
+			int roundNum=1;
 			for(int i=1;i<=roundNum;i++){
 				bugInitialization(i);
 				GA_Problem_Parameter.generateModelofBugs();
 				GA_Problem_Parameter.candidateSolutonGeneration();
 				NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-				results=Assigning(results);
+				results=Assigning(results,runNum,roundNum);
 				//solution=results[1].get(results[1].size()/2);
 				//writeResult(runNum,i,results);
 				System.out.println("finished writing");
@@ -271,7 +274,7 @@ public class Test1 {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
+	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
@@ -286,25 +289,33 @@ public class Test1 {
 				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
 	    results[1]=result_me;*/
 		
-		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
+		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class)
 				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.8).withProperty("pm.rate", 0.1);
 		
 		System.out.println("finished first one");
 		
-		Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
+		Executor result_me=new Executor().withProblemClass(InformationDifussion.class)
 				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.8).withProperty("pm.rate", 0.1);
 	 
-	   Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
+	    Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
 	   
-	    analyzer.addAll("NSGAII",result_Karim.withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII").runSeeds(1));
-	    analyzer.addAll("ID", result_me.withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII").runSeeds(1));
+	    analyzer.addAll("NSGAII", result_Karim.withAlgorithm("NSGAII").runSeeds(1));
+	    analyzer.addAll("ID", result_me.withAlgorithm("NSGAII").runSeeds(1));
 	    
 	    System.out.println("finished second one");
-		analyzer.withProblemClass(CompetenceMulti2_problem.class).printAnalysis();
-		analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
-	    return results;
+		
+
+		analyzer.withProblemClass(CompetenceMulti2_problem.class).saveAs(null, new File(System.getProperty("user.dir")+"//results//AnalyzerResults_1"));
+		analyzer.withProblemClass(InformationDifussion.class).saveAs(null, new File(System.getProperty("user.dir")+"//results//AnalyzerResults_2"));
+	    
+		PrintStream ps_NSGAII=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".csv"));
+	    analyzer.withProblemClass(CompetenceMulti2_problem.class).saveAnalysis(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+fileNum+".csv"));
+		//analyzer.withProblemClass(InformationDifussion.class).printAnalysis(ps_ID);
+	    analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(fileNum)
+	    		, Integer.toString(fileNum));
+		return results;
 	    
 	}
 	
@@ -312,7 +323,7 @@ public class Test1 {
 	public static void writeResult(int runNum,int roundNum, NondominatedPopulation[] result) throws FileNotFoundException{
 		//write results to CSV for each round
 		System.out.println("result of the expriment for Karim approach");
-		PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//solutions_Karim_round "+runNum+"_"+roundNum+".csv"));
+		PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//solutions_Karim_round "+roundnum+"_"+roundNum+".csv"));
 		StringBuilder sb=new StringBuilder();
 		for(Solution solution:result[0]){
 			for(int i=0; i<solution.getNumberOfVariables();i++){
@@ -340,6 +351,15 @@ public class Test1 {
 		pw.write(sb.toString());
 		pw.close();
 		
+	}
+	
+	
+	public static void writeAnalyzingResults(AnalyzerResults ar, int runNum, int roundNum) throws FileNotFoundException{
+		//PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"+runNum+"_"+roundNum+".csv"));
+		StringBuilder sb=new StringBuilder();
+		for(String AN:ar.getAlgorithms()){
+			System.out.println(ar.get(AN));
+		}
 	}
 	
 	
