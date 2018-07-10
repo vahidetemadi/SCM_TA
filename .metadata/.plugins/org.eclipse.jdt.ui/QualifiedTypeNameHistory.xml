@@ -19,7 +19,6 @@
 <fullyQualifiedTypeName name="org.moeaframework.core.Solution"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
 <fullyQualifiedTypeName name="org.jgrapht.graph.DefaultDirectedGraph"/>
-<fullyQualifiedTypeName name="java.io.File"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.variable.EncodingUtils"/>
 <fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="org.jgrapht.ListenableGraph"/>
@@ -32,4 +31,7 @@
 <fullyQualifiedTypeName name="java.lang.Exception"/>
 <fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.Bug"/>
+<fullyQualifiedTypeName name="java.util.Scanner"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.lang.String"/>
 </qualifiedTypeNameHistroy>
