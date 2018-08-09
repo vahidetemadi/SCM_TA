@@ -3,6 +3,7 @@ package SCM_TA_V1;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
@@ -19,6 +20,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.moeaframework.Analyzer;
 import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
+import org.moeaframework.core.Indicator;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
@@ -31,31 +33,31 @@ public class Test1 {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
 	static HashMap<Integer,Bug> bugs=new HashMap<Integer,Bug>();
 	static Queue<Bug> orderdBugs; 
-	static Solution solution=null;
+	//static Solution solution=null;
 	static HashMap<Integer , Zone> columns=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	static int roundnum=0;
 	
 	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
-		for(int runNum=0;runNum<1;runNum++){
-			roundnum++;
+		for(int runNum=1;runNum<=20;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
 			devInitialization();
-			int roundNum=6;
+			int roundNum=9;
 			for(int i=1;i<=roundNum;i++){
 				bugInitialization(i);
 				GA_Problem_Parameter.generateModelofBugs();
 				GA_Problem_Parameter.candidateSolutonGeneration();
 				NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-				results=Assigning(results);
+				results=Assigning(results,runNum,i);
 				//solution=results[1].get(results[1].size()/2);
 				//writeResult(runNum,i,results);
 				//System.out.println("finished writing");
 				//afterRoundUpdating(solution);
 				//removeDevelopers();
 			}
+			System.gc();
 		}
 	}
 	
@@ -66,10 +68,10 @@ public class Test1 {
 				Developer developer = null;
 				 System.out.println(System.getProperty("user.dir"));
 				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloper.txt"));
+				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloper.txt"));
 				System.out.println("enter the devlopers wage file");
 				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloperWithWage.txt"));
+				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloperWithWage.txt"));
 				int i=0;
 				int j=0;
 				while(sc.hasNextLine() && scan.hasNextLine()){
@@ -86,8 +88,8 @@ public class Test1 {
 							}
 					}
 					else{
-						String[] items=sc.nextLine().split("\t",-1);
-						String[] wage_items=scan.nextLine().split("\t",-1);
+						String[] items=sc.nextLine().split("\t|\\ ",-1);
+						String[] wage_items=scan.nextLine().split("\t|\\ ",-1);
 						double sumOfPro=0.0;
 						for(int k=0;k<items.length;k++){
 							sumOfPro+=Double.parseDouble(items[k]);
@@ -142,11 +144,11 @@ public class Test1 {
 		System.out.println("enter the bugs files");
 		Bug bug=null;
 		//sc=new Scanner(System.in);
-		sc=new Scanner("/bug-data/JDT/efforts");
+		sc=new Scanner("/bug-data/Platform/efforts");
 		System.out.println(sc.nextLine());
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//efforts").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//efforts").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
@@ -155,7 +157,7 @@ public class Test1 {
 			while(sc1.hasNextLine() && roundNum==n){
 				//counter "i" has set to record the name of each zone (the header of each file)
 				if(i==0){
-						String[] items=sc1.nextLine().split("\t",-1);
+						String[] items=sc1.nextLine().split("\t|\\ ",-1);
 							for(int k=0;k<items.length;k++){
 								if(j>2){
 									Zone zone=new Zone(j, items[k]);
@@ -193,12 +195,12 @@ public class Test1 {
 		/*set bug dependencies*/
 		int f=0;
 		System.out.println("enter the bug dependency files");
-		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies");
+		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies");
 		String[] columns_bug=null;
 		for(Bug b:bugs.values()){
 			b.DB.clear();
 		}
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){
@@ -267,12 +269,12 @@ public class Test1 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 			}
-		GA_Problem_Parameter.population=500;
+		GA_Problem_Parameter.population=100;
 		
 	}
 	
 	//find solution to assign tasks to the developers
-	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results){
+	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
@@ -288,24 +290,30 @@ public class Test1 {
 	    results[1]=result_me;*/
 		
 		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1);
+				.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.5).withProperty("operator", "PM").withProperty("pm.rate", 0.04);
 		
 		System.out.println("finished Competence-multi2 one");
 		
 		Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1);
+				.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.5).withProperty("operator", "PM").withProperty("pm.rate", 0.04);
+	    System.out.println("finished Schedule-based one");
+	    //AnalyzerResults ar=analyzer.getAnalysis();
 	 
 	    Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
 	   
-	    analyzer.addAll("NSGAII",result_Karim.withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII").runSeeds(1));
-	    analyzer.addAll("ID", result_me.withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII").runSeeds(1));
-	    System.out.println("finished Schedule-based one");
-		analyzer.withProblemClass(CompetenceMulti2_problem.class).printAnalysis();
-		analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
-	    //AnalyzerResults ar=analyzer.getAnalysis();
-	    return results;
+		
+	    analyzer.addAll("NSGAII", result_Karim.withAlgorithm("NSGAII").runSeeds(1));
+	    analyzer.addAll("ID", result_me.withAlgorithm("NSGAII").runSeeds(1));
+	    
+		//analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
+		PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
+		analyzer.withProblemClass(InformationDifussion.class).printAnalysis(ps_ID);
+		ps_ID.close();
+		analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(fileNum)
+	    		, Integer.toString(fileNum));
+		return results;
 	    
 	}
 	
@@ -313,7 +321,7 @@ public class Test1 {
 	public static void writeResult(int runNum,int roundNum, NondominatedPopulation[] result) throws FileNotFoundException{
 		//write results to CSV for each round
 		System.out.println("result of the expriment for Karim approach");
-		PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//solutions_Karim_round "+runNum+"_"+roundNum+".csv"));
+		PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//solutions_Karim_round "+roundnum+"_"+roundNum+".csv"));
 		StringBuilder sb=new StringBuilder();
 		for(Solution solution:result[0]){
 			for(int i=0; i<solution.getNumberOfVariables();i++){
@@ -341,6 +349,15 @@ public class Test1 {
 		pw.write(sb.toString());
 		pw.close();
 		
+	}
+	
+	
+	public static void writeAnalyzingResults(AnalyzerResults ar, int runNum, int roundNum) throws FileNotFoundException{
+		//PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"+runNum+"_"+roundNum+".csv"));
+		StringBuilder sb=new StringBuilder();
+		for(String AN:ar.getAlgorithms()){
+			System.out.println(ar.get(AN));
+		}
 	}
 	
 	
