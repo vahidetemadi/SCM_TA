@@ -68,10 +68,10 @@ public class Test1 {
 				Developer developer = null;
 				 System.out.println(System.getProperty("user.dir"));
 				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloper.txt"));
+				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloper.txt"));
 				System.out.println("enter the devlopers wage file");
 				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloperWithWage.txt"));
+				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloperWithWage.txt"));
 				int i=0;
 				int j=0;
 				while(sc.hasNextLine() && scan.hasNextLine()){
@@ -148,7 +148,7 @@ public class Test1 {
 		System.out.println(sc.nextLine());
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//efforts").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//efforts").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
@@ -195,12 +195,12 @@ public class Test1 {
 		/*set bug dependencies*/
 		int f=0;
 		System.out.println("enter the bug dependency files");
-		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies");
+		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies");
 		String[] columns_bug=null;
 		for(Bug b:bugs.values()){
 			b.DB.clear();
 		}
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){
@@ -262,6 +262,7 @@ public class Test1 {
 		//GA_Problem_Parameter
 		GA_Problem_Parameter.Num_of_Bugs=bugs.size();
 		GA_Problem_Parameter.Num_of_Active_Developers=developers.size();
+		GA_Problem_Parameter.upperDevId=developers.size()+1;
 		GA_Problem_Parameter.Num_of_functions_Multi=2;
 		GA_Problem_Parameter.Num_of_variables=0;
 		for(Entry<Integer, Bug>  b:bugs.entrySet()){
@@ -269,7 +270,7 @@ public class Test1 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 			}
-		GA_Problem_Parameter.population=100;
+		GA_Problem_Parameter.population=300;
 		
 	}
 	
@@ -290,14 +291,15 @@ public class Test1 {
 	    results[1]=result_me;*/
 		
 		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.5).withProperty("operator", "PM").withProperty("pm.rate", 0.04);
+				.withMaxEvaluations(20000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.4).withProperty("operator", "UM").withProperty("pm.rate", 0.01);
+		Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
+				.withMaxEvaluations(20000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.4).withProperty("operator", "UM").withProperty("pm.rate", 0.01);
 		
 		System.out.println("finished Competence-multi2 one");
 		
-		Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.5).withProperty("operator", "PM").withProperty("pm.rate", 0.04);
+		
 	    System.out.println("finished Schedule-based one");
 	    //AnalyzerResults ar=analyzer.getAnalysis();
 	 
@@ -311,7 +313,7 @@ public class Test1 {
 		PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
 		analyzer.withProblemClass(InformationDifussion.class).printAnalysis(ps_ID);
 		ps_ID.close();
-		analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(fileNum)
+		analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum)
 	    		, Integer.toString(fileNum));
 		return results;
 	    

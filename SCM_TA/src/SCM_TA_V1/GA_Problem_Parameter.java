@@ -35,7 +35,9 @@ public class GA_Problem_Parameter {
 	static double sbx_distribution_index;
 	static double pm_rate=0.50;
 	static double pm_distribution_index;
-	static double delayPenaltyCostRate=0.5;
+	static double delayPenaltyCostRate=0.2;
+	public static int upperDevId;
+	public static int lowerDevId=1;
 	//
 	static Bug[] bugs;
 	static HashMap<Integer,Developer> developers;

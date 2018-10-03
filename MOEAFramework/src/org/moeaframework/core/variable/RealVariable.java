@@ -23,13 +23,15 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.moeaframework.core.PRNG;
 import org.moeaframework.core.Variable;
-
+import SCM_TA_V1.GA_Problem_Parameter;
 /**
  * Decision variable for real values.
  */
 public class RealVariable implements Variable {
 
 	private static final long serialVersionUID = 3141851312155686224L;
+	private static final int UB=GA_Problem_Parameter.upperDevId;
+	private static final int LB=GA_Problem_Parameter.lowerDevId;
 	
 	private static final String VALUE_OUT_OF_BOUNDS = 
 		"value out of bounds (value: {0}, min: {1}, max: {2})";
@@ -100,6 +102,14 @@ public class RealVariable implements Variable {
 	 */
 	public void setValue(double value) {
 		if ((value < lowerBound) || (value > upperBound)) {
+			throw new IllegalArgumentException(MessageFormat.format(
+					VALUE_OUT_OF_BOUNDS, value, lowerBound, upperBound));
+		}
+
+		this.value = value;
+	}
+	public void setValue(double value, int upperB, int lowerB ) {
+		if ((value < lowerB) || (value > upperB)) {
 			throw new IllegalArgumentException(MessageFormat.format(
 					VALUE_OUT_OF_BOUNDS, value, lowerBound, upperBound));
 		}

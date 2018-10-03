@@ -21,6 +21,7 @@ import org.moeaframework.core.PRNG;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variable;
 import org.moeaframework.core.Variation;
+import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.core.variable.RealVariable;
 
 import SCM_TA_V1.GA_Problem_Parameter;
@@ -101,23 +102,26 @@ public class PM implements Variation {
 	public Solution[] evolve(Solution[] parents) {
 		boolean b=false;
 		Solution result = parents[0].copy();
-
 		for (int i = 0; i < result.getNumberOfVariables(); i++) {
+			this.x=EncodingUtils.getInt(result.getVariable(i));
 			if(x!=-100){
 				Variable variable = result.getVariable(i);
 				if ((PRNG.nextDouble() <= probability)
 						&& (variable instanceof RealVariable)) {
 					evolve((RealVariable)variable, distributionIndex);
-				}
-				else{
-					b=true;
-					break;
-				}
+				}	
 			}
-			
+			else{
+				b=true;
+				break;
+			}	
 		}
-		if(b)
+		
+		if(b){
+			
 			result=GA_Problem_Parameter.setValidSchdule(result, GA_Problem_Parameter.getVarToBug());
+		}
+			
 		return new Solution[] { result };
 	}
 	
