@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.util.Iterator"/>
+<fullyQualifiedTypeName name="java.rmi.dgc.DGC"/>
+<fullyQualifiedTypeName name="org.omg.Messaging.SYNC_WITH_TRANSPORT"/>
+<fullyQualifiedTypeName name="java.util.Random"/>
+<fullyQualifiedTypeName name="org.apache.commons.math3.util.ArithmeticUtils"/>
+<fullyQualifiedTypeName name="org.apache.commons.math3.geometry.spherical.twod.Edge"/>
+<fullyQualifiedTypeName name="java.util.Collection"/>
+<fullyQualifiedTypeName name="org.jgrapht.alg.ConnectivityInspector"/>
+<fullyQualifiedTypeName name="org.jgrapht.alg.GabowStrongConnectivityInspector"/>
+<fullyQualifiedTypeName name="java.util.Collections"/>
+<fullyQualifiedTypeName name="org.jgrapht.Graph"/>
+<fullyQualifiedTypeName name="java.util.List"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.dependencyEdge"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.DirectedAcyclicGraph"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.Subgraph"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.AsSubgraph"/>
+<fullyQualifiedTypeName name="org.moeaframework.core.Solution"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.DefaultDirectedGraph"/>
+<fullyQualifiedTypeName name="org.moeaframework.core.variable.EncodingUtils"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
+<fullyQualifiedTypeName name="org.jgrapht.ListenableGraph"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.ListenableDirectedGraph"/>
+<fullyQualifiedTypeName name="org.jgraph.JGraph"/>
+<fullyQualifiedTypeName name="org.jgrapht.ext.JGraphModelAdapter"/>
+<fullyQualifiedTypeName name="org.jgrapht.graph.DefaultEdge"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="java.lang.Exception"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.Bug"/>
+<fullyQualifiedTypeName name="java.util.Scanner"/>
+<fullyQualifiedTypeName name="java.io.File"/>
+<fullyQualifiedTypeName name="java.lang.String"/>
+</qualifiedTypeNameHistroy>
