@@ -39,14 +39,7 @@ public class Test1 {
 	static int roundnum=0;
 	
 	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
-<<<<<<< HEAD
 		for(int runNum=1;runNum<=20;runNum++){
-=======
-		changeRepresentation cr=new changeRepresentation();
-		cr.txtToCSV();
-		/*for(int runNum=0;runNum<20;runNum++){
-			roundnum++;
->>>>>>> 4c201078a5bdeaa653943e73fc4a8254592ace0a
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -64,12 +57,9 @@ public class Test1 {
 				//afterRoundUpdating(solution);
 				//removeDevelopers();
 			}
-<<<<<<< HEAD
 			System.gc();
 		}
-=======
-		}*/
->>>>>>> 4c201078a5bdeaa653943e73fc4a8254592ace0a
+		
 	}
 	
 	// initialize the developer objects  
