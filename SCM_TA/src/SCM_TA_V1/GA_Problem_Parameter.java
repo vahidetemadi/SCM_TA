@@ -59,6 +59,7 @@ public class GA_Problem_Parameter {
 	public static ArrayList<DefaultEdge> pEdges;
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG;
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
+	public static HashMap<String, Double> priorities=new HashMap<String, Double>();
 	
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
@@ -472,6 +473,11 @@ public class GA_Problem_Parameter {
 			Bug b=tso_ID.next();
 			GA_Problem_Parameter.tasks.add(b);
 		}
+	}
+	public static void createPriorityTable(){
+		priorities.put("P1", 0.9);
+		priorities.put("P2", 0.6);
+		priorities.put("P3", 0.3);
 	}
 	
 }

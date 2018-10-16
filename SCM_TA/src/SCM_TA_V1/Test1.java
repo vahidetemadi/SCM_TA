@@ -39,6 +39,7 @@ public class Test1 {
 	static int roundnum=0;
 	
 	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
+		GA_Problem_Parameter.createPriorityTable();
 		for(int runNum=1;runNum<=20;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
@@ -206,10 +207,27 @@ public class Test1 {
 			i=0;
 			while(sc1.hasNextLine()){
 				if(i>0){
+					int l=6;
+					int m=5;
+
 					String s=sc1.nextLine();
 					columns_bug=s.split(",");
+					//if(columns_bug[l]=="P3")
+						//System.out.println(columns_bug[l]);
 					int k=1;
 					try{
+						for(String st:columns_bug){
+							if(st.contains("P3")){
+								bugs.get(Integer.parseInt(columns_bug[k-1])).priority="P3";
+							}
+							if(st.contains("P2")){
+								bugs.get(Integer.parseInt(columns_bug[k-1])).priority="P2";
+							}
+							if(st.contains("P1")){
+								bugs.get(Integer.parseInt(columns_bug[k-1])).priority="P1";
+							}
+						}
+						
 						if(columns_bug[k].trim().length() > 0){
 							try{
 								Integer ID_1=Integer.parseInt(columns_bug[k-1]);
@@ -218,6 +236,7 @@ public class Test1 {
 									bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(Integer.parseInt(columns_bug[k])));
 									f++;
 								}
+								
 								//System.out.println(bugs.get(Integer.parseInt(columns_bug[k])));
 							}
 							catch(Exception e){
