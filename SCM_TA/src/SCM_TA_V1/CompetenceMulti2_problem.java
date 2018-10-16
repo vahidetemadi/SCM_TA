@@ -108,7 +108,9 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
 			totalDelayTime+=b.endTime_evaluate-b.arrivalTime;
-			totalDelayCost+=(b.endTime_evaluate-b.arrivalTime)*GA_Problem_Parameter.delayPenaltyCostRate;
+			//if(b.priority=="P3")
+				//System.out.println(b.priority);
+			totalDelayCost+=(b.endTime_evaluate-b.arrivalTime)*GA_Problem_Parameter.priorities.get(b.priority);
 		}
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;

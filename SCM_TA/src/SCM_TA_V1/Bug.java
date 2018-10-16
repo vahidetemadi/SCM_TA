@@ -22,6 +22,7 @@ public class Bug implements Cloneable{
 	double endTime=0.0;
 	double endTime_evaluate=0.0;
 	int algorithmicDeveloperAssignmentID=0;
+	String priority="P2";
 	
 	public Object clone()throws CloneNotSupportedException{  
 		return (Bug)super.clone();  
