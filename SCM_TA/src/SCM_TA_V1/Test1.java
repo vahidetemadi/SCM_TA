@@ -37,32 +37,36 @@ public class Test1 {
 	static HashMap<Integer , Zone> columns=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	static int roundnum=0;
+	//DevMetrics devMetric=new DevMetrics();
 	
 	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=1;runNum<=20;runNum++){
+		for(int runNum=11;runNum<=20;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
 			devInitialization();
-			int roundNum=9;
+			int roundNum=10;
 			for(int i=1;i<=roundNum;i++){
-				bugInitialization(i);
-				GA_Problem_Parameter.generateModelofBugs();
-				GA_Problem_Parameter.candidateSolutonGeneration();
-				NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-				results=Assigning(results,runNum,i);
-				//solution=results[1].get(results[1].size()/2);
-				//writeResult(runNum,i,results);
-				//System.out.println("finished writing");
-				//afterRoundUpdating(solution);
-				//removeDevelopers();
+				starting(i, runNum);
 			}
 			System.gc();
 		}
 		
 	}
 	
+	public static void starting(int roundNum, int runNum) throws IOException{
+		bugInitialization(roundNum);
+		GA_Problem_Parameter.generateModelofBugs();
+		GA_Problem_Parameter.candidateSolutonGeneration();
+		NondominatedPopulation[] results = new NondominatedPopulation[2]; 
+		Assigning(results,runNum,roundNum);
+		//solution=results[1].get(results[1].size()/2);
+		//writeResult(runNum,i,results);
+		//System.out.println("finished writing");
+		//afterRoundUpdating(solution);
+		//removeDevelopers();
+	}
 	// initialize the developer objects  
 	public static void devInitialization() throws IOException,NoSuchElementException, URISyntaxException{
 		//initialize developers
@@ -70,10 +74,10 @@ public class Test1 {
 				Developer developer = null;
 				 System.out.println(System.getProperty("user.dir"));
 				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloper.txt"));
+				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloper.txt"));
 				System.out.println("enter the devlopers wage file");
 				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloperWithWage.txt"));
+				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloperWithWage.txt"));
 				int i=0;
 				int j=0;
 				while(sc.hasNextLine() && scan.hasNextLine()){
@@ -116,10 +120,7 @@ public class Test1 {
 					i++;
 					j=0;
 				}
-				
-				
-				
-				
+				//prune devs
 				/*assign GA_Problem_Parameter DevList*/
 				for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
 					GA_Problem_Parameter.DevList.add(dev.getKey());
@@ -133,24 +134,35 @@ public class Test1 {
 					}
 				}
 				
-				
+
+				ArrayList<Ranking<Developer, Double>> Devs=new ArrayList<Ranking<Developer,Double>>();
+				for(Developer d:developers.values()){
+					Devs.add(DevMetrics.computeMetric(d));
+				}
+				DevMetrics.sortByMetric(Devs);
+				for(Ranking<Developer, Double> r:Devs){
+					System.out.println(r.getEntity()+"---"+r.getMetric());
+				}
+
+				//GA_Problem_Parameter.pruneDevList(developers);
+				GA_Problem_Parameter.pruneDevList(developers,Devs,2);
 	}
 	
 	// initialize the bugs objects for task assignment  
 	public static void bugInitialization(int roundNum) throws IOException,NoSuchElementException{	
 		bugs.clear();
-		Scanner sc=new Scanner(System.in);
+		Scanner sc;//=new Scanner(System.in);
 		int i=0;
 		int j=0;
 		/*generate bug objects*/
 		System.out.println("enter the bugs files");
 		Bug bug=null;
 		//sc=new Scanner(System.in);
-		sc=new Scanner("/bug-data/Platform/efforts");
-		System.out.println(sc.nextLine());
+		//sc=new Scanner("/bug-data/JDT/efforts");
+		//System.out.println(sc.nextLine());
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//efforts").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//efforts").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
@@ -193,16 +205,23 @@ public class Test1 {
 			}
 			n++;
 		}
-					
+				
+
+		
+		//prune bug list
+		GA_Problem_Parameter.pruneList(bugs);
+		
+		
+		
 		/*set bug dependencies*/
 		int f=0;
 		System.out.println("enter the bug dependency files");
-		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies");
+		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies");
 		String[] columns_bug=null;
 		for(Bug b:bugs.values()){
 			b.DB.clear();
 		}
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){
@@ -290,12 +309,12 @@ public class Test1 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 			}
-		GA_Problem_Parameter.population=300;
+		GA_Problem_Parameter.population=500;
 		
 	}
 	
 	//find solution to assign tasks to the developers
-	public static NondominatedPopulation[] Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
+	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
@@ -310,32 +329,35 @@ public class Test1 {
 				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
 	    results[1]=result_me;*/
 		
-		Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(20000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.4).withProperty("operator", "UM").withProperty("pm.rate", 0.01);
-		Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(20000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.4).withProperty("operator", "UM").withProperty("pm.rate", 0.01);
-		
-		System.out.println("finished Competence-multi2 one");
-		
-		
-	    System.out.println("finished Schedule-based one");
-	    //AnalyzerResults ar=analyzer.getAnalysis();
-	 
-	    Analyzer analyzer=new Analyzer().includeAllMetrics().showStatisticalSignificance();
-	   
-		
-	    analyzer.addAll("NSGAII", result_Karim.withAlgorithm("NSGAII").runSeeds(1));
-	    analyzer.addAll("ID", result_me.withAlgorithm("NSGAII").runSeeds(1));
-	    
-		//analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
-		PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
-		analyzer.withProblemClass(InformationDifussion.class).printAnalysis(ps_ID);
-		ps_ID.close();
-		analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum)
-	    		, Integer.toString(fileNum));
-		return results;
+		try{
+			Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withProperty("UX.rate", 0.4).withProperty("operator", "UM").withProperty("pm.rate", 0.01);
+			Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withProperty("UX.rate", 0.4).withProperty("operator", "UM").withProperty("pm.rate", 0.01);
+			
+			System.out.println("finished Competence-multi2 one");
+			
+			
+		    System.out.println("finished Schedule-based one");
+		    //AnalyzerResults ar=analyzer.getAnalysis();
+		 
+		    Analyzer analyzer=new Analyzer().includeAllMetrics();
+			
+		    analyzer.addAll("NSGAII", result_Karim.withAlgorithm("NSGAII").runSeeds(1));
+		    analyzer.addAll("ID", result_me.withAlgorithm("NSGAII").runSeeds(1));
+			//analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
+			PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
+			analyzer.withProblemClass(InformationDifussion.class).printAnalysis(ps_ID);
+			ps_ID.close();
+			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum)
+		    		, Integer.toString(fileNum));
+		}
+		catch(Exception e){
+			starting(fileNum, runNum);
+		}
+		//return results;
 	    
 	}
 	
