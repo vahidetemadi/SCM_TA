@@ -41,7 +41,7 @@ public class Test1 {
 	
 	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=11;runNum<=20;runNum++){
+		for(int runNum=21;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -332,10 +332,10 @@ public class Test1 {
 		try{
 			Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.4).withProperty("operator", "UM").withProperty("pm.rate", 0.01);
+					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05);
 			Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.4).withProperty("operator", "UM").withProperty("pm.rate", 0.01);
+					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05);
 			
 			System.out.println("finished Competence-multi2 one");
 			
