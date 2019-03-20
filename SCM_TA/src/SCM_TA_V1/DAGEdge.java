@@ -1,6 +1,7 @@
 package SCM_TA_V1;
 import org.jgrapht.EdgeFactory;
 import org.jgrapht.graph.DefaultEdge;
+
 public class DAGEdge extends DefaultEdge implements EdgeFactory<Bug, DefaultEdge> {
 	private final Class<? extends DefaultEdge> edgeClass=null;
 	@Override

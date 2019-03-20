@@ -56,6 +56,7 @@ public class GA_Problem_Parameter {
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_competenceMulti2;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_ID;
 	public static ArrayList<Bug> tasks=new ArrayList<Bug>();
+	public static ArrayList<Bug> shuffledTasks;
 	public static ArrayList<DefaultEdge> pEdges;
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG;
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;

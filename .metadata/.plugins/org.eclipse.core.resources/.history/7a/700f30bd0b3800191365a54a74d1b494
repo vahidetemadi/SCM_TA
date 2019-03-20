@@ -1,0 +1,63 @@
+package SCM_TA_V2;
+
+import java.util.Random;
+import org.apache.commons.math3.distribution.*;
+
+import smile.sequence.HMM;
+
+public class adaptiveModelV1 {
+	
+	
+	public static void main(String[] args){
+		datasetGeneration();
+	}
+	//parameters definition
+	double[] states=new double[]{0.5,0.5};
+	double[][] transitions=new double[2][2];
+	double[][] emissions=new double[2][16];	 
+	
+	//initialize the params 
+	public void initialize_params(){
+		Random random_generator=new Random();
+		
+		//initialize transitions probabilities
+		for(int i=0;i<transitions.length;i++){
+			for(int j=0;j<transitions[i].length;j++)
+				transitions[i][j]=random_generator.nextDouble();
+		}
+		
+		//initialize emissions probabilities
+		for(int i=0;i<emissions.length;i++){
+			for(int j=0;j<emissions[i].length;j++)
+				emissions[i][j]=random_generator.nextDouble();
+		}
+	}
+	
+	
+	//prepare the input data set for training
+	public static void datasetGeneration(){
+		PoissonDistribution pi=new PoissonDistribution(5);
+		double t=pi.sample();
+		System.out.print(t);
+		
+		
+	}
+	
+	
+	//train HMM
+	public void trainHMM() {
+		HMM<observation> hmm=new HMM<observation>(states,transitions,emissions);
+		
+	}
+	
+	
+	
+
+	
+	
+	//train the model
+	
+	
+	//
+
+}

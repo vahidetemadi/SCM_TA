@@ -1,0 +1,22 @@
+NSGAII:
+    Hypervolume: 0.3419802720079875
+    GenerationalDistance: 0.07519680015476672
+    InvertedGenerationalDistance: 0.08199993672573194
+    AdditiveEpsilonIndicator: 0.21923586937792097
+    MaximumParetoFrontError: 0.29063465193421345
+    Spacing: 4.473039953149844E7
+    Contribution: 0.25
+    R1Indicator: 0.0
+    R2Indicator: 1.9067214296226618E9
+    R3Indicator: 2.3404162294721794E9
+ID:
+    Hypervolume: 0.4975550504218835
+    GenerationalDistance: 0.0
+    InvertedGenerationalDistance: 0.053958357998035396
+    AdditiveEpsilonIndicator: 0.1620295150942076
+    MaximumParetoFrontError: 0.0
+    Spacing: 7.52122177173126E7
+    Contribution: 0.75
+    R1Indicator: 0.0
+    R2Indicator: 1.9800990197760801E9
+    R3Indicator: 2.4304843597729397E9

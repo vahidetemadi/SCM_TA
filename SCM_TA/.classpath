@@ -10,5 +10,6 @@
 	<classpathentry kind="lib" path="/home/vahid/Documents/SCM_TA/SCM_TA/lib/jgrapht-ext-1.1.0-uber.jar"/>
 	<classpathentry kind="lib" path="/home/vahid/Documents/SCM_TA/SCM_TA/lib/jgraphx.jar"/>
 	<classpathentry kind="lib" path="/home/vahid/Documents/SCM_TA/SCM_TA/lib/MOEAFramework-2.12.jar"/>
+	<classpathentry kind="lib" path="/home/vahid/Downloads/jar_files/smile-core-1.5.0.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>

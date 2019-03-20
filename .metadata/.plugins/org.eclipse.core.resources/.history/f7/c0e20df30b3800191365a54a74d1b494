@@ -1,0 +1,37 @@
+package SCM_TA_V2;
+
+public class observation {
+	private int SLA_violation;
+	private int teamChangeRate;
+	private int teamUtilization_avg;
+	private int teamUtilizartion_var;
+	
+	public int getSLA_violation() {
+		return SLA_violation;
+	}
+	public void setSLA_violation(int sLA_violation) {
+		SLA_violation = sLA_violation;
+	}
+	public int getTeamChangeRate() {
+		return teamChangeRate;
+	}
+	public void setTeamChangeRate(int teamChangeRate) {
+		this.teamChangeRate = teamChangeRate;
+	}
+	public int getTeamUtilization_avg() {
+		return teamUtilization_avg;
+	}
+	public void setTeamUtilization_avg(int teamUtilization_avg) {
+		this.teamUtilization_avg = teamUtilization_avg;
+	}
+	public int getTeamUtilizartion_var() {
+		return teamUtilizartion_var;
+	}
+	public void setTeamUtilizartion_var(int teamUtilizartion_var) {
+		this.teamUtilizartion_var = teamUtilizartion_var;
+	}
+	
+	
+	
+
+}

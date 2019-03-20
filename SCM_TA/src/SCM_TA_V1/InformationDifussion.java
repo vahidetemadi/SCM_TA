@@ -5,6 +5,8 @@ import java.text.DateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Random;
 import java.util.Map.Entry;
@@ -80,11 +82,14 @@ public class InformationDifussion extends AbstractProblem{
 		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
 		ArrayList<Integer> indices=new ArrayList<Integer>();
 		Random randomizer=new Random();
-		for(int i=0;i<GA_Problem_Parameter.tasks.size()-1;i++){
+		//shuffling the bug list to provide randomness in the scheduling
+		GA_Problem_Parameter.shuffledTasks=(ArrayList<Bug>) GA_Problem_Parameter.tasks.clone();
+		Collections.shuffle(GA_Problem_Parameter.shuffledTasks);
+		for(int i=0;i<GA_Problem_Parameter.shuffledTasks.size()-1;i++){
 			indexes=getIndex(i);
 			m=indexes[0];
 			n=indexes[1];
-			for(int j=i+1;j<GA_Problem_Parameter.tasks.size();j++){
+			for(int j=i+1;j<GA_Problem_Parameter.shuffledTasks.size();j++){
 				indexes=getIndex(j);
 				p=indexes[0];
 				q=indexes[1];

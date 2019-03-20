@@ -1,0 +1,93 @@
+package SCM_TA_V2;
+
+import java.util.Random;
+
+import org.apache.commons.math3.distribution.*;
+import org.moeaframework.util.statistics.Observation;
+
+import smile.sequence.HMM;
+
+public class adaptiveModelV1 {
+	
+	
+	public static void main(String[] args){
+		datasetGeneration();
+	}
+	//parameters definition
+	double[] states=new double[]{0.5,0.5};
+	double[][] transitions=new double[2][2];
+	double[][] emissions=new double[2][16];	 
+	
+	//initialize the params 
+	public void initialize_params(){
+		Random random_generator=new Random();
+		
+		//initialize transitions probabilities
+		for(int i=0;i<transitions.length;i++){
+			for(int j=0;j<transitions[i].length;j++)
+				transitions[i][j]=random_generator.nextDouble();
+		}
+		
+		//initialize emissions probabilities
+		for(int i=0;i<emissions.length;i++){
+			for(int j=0;j<emissions[i].length;j++)
+				emissions[i][j]=random_generator.nextDouble();
+		}
+	}
+	
+	
+	//prepare the input data set for training
+	public static void datasetGeneration(){
+		observation o=new observation();
+		
+		//assign the SLA violation rate--- using the X distribution
+		NormalDistribution SLA=new NormalDistribution();
+		o.setSLA_violation(SLA.sample());	
+		
+		//input the mean of desired Poisson distribution and then assign teamChangeRate
+		PoissonDistribution pi=new PoissonDistribution(5);
+		double t=pi.sample();
+		System.out.print(t);
+		
+		//assign the team utilization_mean to the current observation --how to get the right parameters for assignment
+		
+		
+		//assign the utilization_var to the current observation-- need to compute the variance for the assignment
+		
+		
+	}
+	
+	//the feedback function-- used to change the parameters for the next period of time!!!
+	//act as a (reward, penalty) function
+	//separately change the parameters for each source of observation 
+	//need a reference table to apply the feedbacks to both observations' source and the developer profile
+	public void feedbackFunction(){
+		//change the params for SLA source of data:
+		
+		
+		//change the params for teamChangeRate source of data:
+		
+		
+		//change the params for teamChangeRate source of data:
+		
+		
+		//change the params for teamChangeRate source of data:
+		
+	}
+	
+	
+	public void pickTheBestPoicy(){
+		
+	}
+	
+	
+	//train HMM
+	public void trainHMM() {
+		HMM<observation> hmm=new HMM<observation>(states,transitions,emissions);
+		
+	}
+	
+	
+	
+
+}

@@ -38,30 +38,54 @@ public class Test1 {
 	static Project project=new Project();
 	static int roundnum=0;
 	
-	public static void main(String[] args) throws IOException, NoSuchElementException, URISyntaxException{	
+	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{	
+		String mode="running";
+		if(mode=="running"){
+			runExperiment();
+		}
+		else if (mode=="representatoin"){
+			changeRepresentation();
+		}
+		
+	}
+	
+	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=1;runNum<=20;runNum++){
+		for(int runNum=1;runNum<=10;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
 			devInitialization();
-			int roundNum=9;
+			int roundNum=10;
 			for(int i=1;i<=roundNum;i++){
-				bugInitialization(i);
-				GA_Problem_Parameter.generateModelofBugs();
-				GA_Problem_Parameter.candidateSolutonGeneration();
-				NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-				results=Assigning(results,runNum,i);
-				//solution=results[1].get(results[1].size()/2);
-				//writeResult(runNum,i,results);
-				//System.out.println("finished writing");
-				//afterRoundUpdating(solution);
-				//removeDevelopers();
+				starting(i, runNum);
 			}
 			System.gc();
 		}
-		
 	}
+	
+	public static void starting(int roundNum, int runNum) throws IOException{
+		bugInitialization(roundNum);
+		GA_Problem_Parameter.generateModelofBugs();
+		GA_Problem_Parameter.candidateSolutonGeneration();
+		NondominatedPopulation[] results = new NondominatedPopulation[2]; 
+		Assigning(results,runNum,roundNum);
+		//solution=results[1].get(results[1].size()/2);
+		//writeResult(runNum,i,results);
+		//System.out.println("finished writing");
+		//afterRoundUpdating(solution);
+		//removeDevelopers();
+	}
+		
+	
+	
+	public static void changeRepresentation() throws FileNotFoundException{
+		
+		changeRepresentation cr=new changeRepresentation();
+		cr.txtToCSV();
+	}
+	
+	
 	
 	// initialize the developer objects  
 	public static void devInitialization() throws IOException,NoSuchElementException, URISyntaxException{
