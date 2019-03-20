@@ -481,4 +481,54 @@ public class GA_Problem_Parameter {
 		priorities.put("P3", 0.3);
 	}
 	
+	public static void pruneList(HashMap<Integer, Bug> tasks_prune){
+		if(tasks_prune.size()>40){
+			int _size=(tasks_prune.size()*3)/4;
+			System.out.println(tasks_prune.size()+"***");
+			ArrayList<Integer> bugsID=new ArrayList<Integer>();
+			for(Integer ID:tasks_prune.keySet()){
+				bugsID.add(ID);
+			}
+			for(int i=0;i<_size;i++){
+				int ran=new Random().nextInt(bugsID.size());
+				tasks_prune.remove(bugsID.get(ran));
+				bugsID.remove(ran);
+			}
+
+			System.out.println(tasks_prune.size()+"///");
+		}
+	}
+	
+	public static void pruneDevList(HashMap<Integer, Developer> devs_prune){
+		int _size=devs_prune.size()/2;
+		System.out.println(devs_prune.size()+"***devs");
+		ArrayList<Integer> devsID=new ArrayList<Integer>();
+		for(Integer ID:devs_prune.keySet()){
+			devsID.add(ID);
+		}
+		for(int i=0;i<_size;i++){
+			int ran=new Random().nextInt(devsID.size());
+			devs_prune.remove(devsID.get(ran));
+			devsID.remove(ran);
+		}
+
+		System.out.println(devs_prune.size()+"///devs");
+	}
+	
+	public static void pruneDevList(HashMap<Integer, Developer> devs_prune, ArrayList<Ranking<Developer, Double>> devs, int portion){
+			int _size=devs_prune.size()-devs_prune.size()/portion;
+			System.out.println(devs_prune.size()+"***devs");
+			int i=1;
+			for(Ranking<Developer, Double> r:devs){
+				if(i>_size){
+					break;
+				}
+				devs_prune.remove(r.getEntity().getID());
+				i++;
+			}
+
+			System.out.println(devs_prune.size()+"///devs");
+	}
+	
+	
 }
