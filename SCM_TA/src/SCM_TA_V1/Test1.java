@@ -53,7 +53,7 @@ public class Test1 {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=1;runNum<=10;runNum++){
+		for(int runNum=21;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -166,7 +166,7 @@ public class Test1 {
 				}
 
 				//GA_Problem_Parameter.pruneDevList(developers);
-				GA_Problem_Parameter.pruneDevList(developers,Devs,2);
+				GA_Problem_Parameter.pruneDevList(developers,Devs,50);
 	}
 	
 	// initialize the bugs objects for task assignment  

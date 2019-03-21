@@ -1,46 +1,22 @@
 NSGAII:
-<<<<<<< HEAD
     Hypervolume: 0.0
     GenerationalDistance: 0.0
-    InvertedGenerationalDistance: 0.0
-    AdditiveEpsilonIndicator: 0.0
+    InvertedGenerationalDistance: 0.08483581472267082
+    AdditiveEpsilonIndicator: 0.038133351836957985
     MaximumParetoFrontError: 0.0
     Spacing: 0.0
-    Contribution: 1.0
+    Contribution: 0.6666666666666666
     R1Indicator: 0.0
-    R2Indicator: 2137776.0633492754
-    R3Indicator: 2961938.0243151253
+    R2Indicator: 7.71638067711983E8
+    R3Indicator: 1.0625712183166192E9
 ID:
-    Hypervolume: 0.0
-    GenerationalDistance: 0.615819787596611
-    InvertedGenerationalDistance: 0.6200932862210256
-    AdditiveEpsilonIndicator: 0.6513095825060268
-    MaximumParetoFrontError: 1.6254566029977295
-    Spacing: 12118.476887223174
-    Contribution: 0.0
+    Hypervolume: 0.02853768756429123
+    GenerationalDistance: 0.8151283278851564
+    InvertedGenerationalDistance: 0.49107034939675737
+    AdditiveEpsilonIndicator: 0.961866648163042
+    MaximumParetoFrontError: 1.6302566557703129
+    Spacing: 0.0
+    Contribution: 0.3333333333333333
     R1Indicator: 0.0
-    R2Indicator: 2171022.7309895144
-    R3Indicator: 3008001.9042003183
-=======
-    Hypervolume: 0.27027462812558095
-    GenerationalDistance: 0.17020596247720352
-    InvertedGenerationalDistance: 0.21172388339391487
-    AdditiveEpsilonIndicator: 0.37395660325341135
-    MaximumParetoFrontError: 0.5106178874316105
-    Spacing: 2.660305283675749E7
-    Contribution: 0.4
-    R1Indicator: 0.0
-    R2Indicator: 7.729824645816524E8
-    R3Indicator: 9.749775972136178E8
-ID:
-    Hypervolume: 0.20089860385390396
-    GenerationalDistance: 0.0692896751128459
-    InvertedGenerationalDistance: 0.10689877007440093
-    AdditiveEpsilonIndicator: 0.21408520975406597
-    MaximumParetoFrontError: 0.2771587004513836
-    Spacing: 3.074961022033124E7
-    Contribution: 0.6
-    R1Indicator: 0.0
-    R2Indicator: 7.85071317889763E8
-    R3Indicator: 9.902255833979967E8
->>>>>>> c0cd56efd11f2adfb5104bd319c894ff460150e3
+    R2Indicator: 7.849000260340643E8
+    R3Indicator: 1.0808333611862442E9

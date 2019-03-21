@@ -516,7 +516,7 @@ public class GA_Problem_Parameter {
 	}
 	
 	public static void pruneDevList(HashMap<Integer, Developer> devs_prune, ArrayList<Ranking<Developer, Double>> devs, int portion){
-			int _size=devs_prune.size()-devs_prune.size()/portion;
+			int _size=devs_prune.size()-(int)(devs_prune.size()*portion)/100;
 			System.out.println(devs_prune.size()+"***devs");
 			int i=1;
 			for(Ranking<Developer, Double> r:devs){
