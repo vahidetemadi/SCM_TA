@@ -21,6 +21,7 @@ import org.moeaframework.core.PRNG;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variable;
 import org.moeaframework.core.Variation;
+import org.moeaframework.core.variable.EncodingUtils;
 
 /**
  * One-point or single-point crossover. A crossover point is selected and all
@@ -28,7 +29,7 @@ import org.moeaframework.core.Variation;
  * two children resulting from this swapping are returned.
  */
 public class OnePointCrossover implements Variation {
-
+	private int x=-100;
 	/**
 	 * The probability of applying this operator to solutions.
 	 */
@@ -54,7 +55,7 @@ public class OnePointCrossover implements Variation {
 	}
 
 	@Override
-	public Solution[] evolve(Solution[] parents) {
+	/*public Solution[] evolve(Solution[] parents) {
 		Solution result1 = parents[0].copy();
 		Solution result2 = parents[1].copy();
 
@@ -71,8 +72,39 @@ public class OnePointCrossover implements Variation {
 		}
 
 		return new Solution[] { result1, result2 };
-	}
+	}*/
 
+	public Solution[] evolve(Solution[] parents) {
+		int size=0;
+		Solution result1 = parents[0].copy();
+		Solution result2 = parents[1].copy();
+		for (int i = 0; i < result1.getNumberOfVariables(); i++) {
+			this.x=EncodingUtils.getInt(result1.getVariable(i));				
+			if(x!=-100){
+					size++;
+			}
+			else
+				break;
+		}
+		
+		if ((PRNG.nextDouble() <= probability) && 
+				(result1.getNumberOfVariables() > 1)) {
+			int crossoverPoint = PRNG.nextInt(
+					size - 1);
+
+			for (int i = 0; i <= crossoverPoint; i++) {
+				Variable temp = result1.getVariable(i);
+				result1.setVariable(i, result2.getVariable(i));
+				result2.setVariable(i, temp);
+			}
+		}
+
+		return new Solution[] { result1, result2 };
+	}
+	
+	
+	
+	
 	@Override
 	public int getArity() {
 		return 2;
