@@ -219,6 +219,7 @@ public class InformationDifussion extends AbstractProblem{
 		double totalDelayCost=0.0;
 		double totalStartTime=0.0;
 		double totalEndTime=0.0;
+		double totalExecutionTime=0.0;
 		int index=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
@@ -236,6 +237,7 @@ public class InformationDifussion extends AbstractProblem{
 				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
 				int devId=zoneAssignee.get(index).getThird();
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(devId));
+				totalExecutionTime+=compeletionTime;
 				totalDevCost+=compeletionTime*developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(zoneAssignee.get(index).getThird()), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
@@ -246,8 +248,9 @@ public class InformationDifussion extends AbstractProblem{
 			}
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
-			totalDelayTime+=b.endTime_evaluate-b.arrivalTime;
-			totalDelayCost+=(b.endTime_evaluate-b.arrivalTime)*GA_Problem_Parameter.priorities.get(b.priority);
+			totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
+			if(totalDelayTime>0)
+				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
 		}
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;

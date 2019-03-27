@@ -78,6 +78,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 		double totalDelayCost=0.0;
 		double totalStartTime=0.0;
 		double totalEndTime=0.0;
+		double totalExecutionTime=0.0;
 		int index=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
@@ -94,6 +95,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 					System.out.println(g);
 				}*/
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
+				totalExecutionTime+=compeletionTime;
 				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
@@ -107,8 +109,9 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 			}
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
-			totalDelayTime+=b.endTime_evaluate-b.arrivalTime;
-			totalDelayCost+=(b.endTime_evaluate-b.arrivalTime)*GA_Problem_Parameter.priorities.get(b.priority);
+			totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
+			if(totalDelayTime>0)
+				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
 		}
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
