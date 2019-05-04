@@ -42,7 +42,7 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 	DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	public InformationDifussion_adaptive(){
-		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi_IDIncluded);
+		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_objectives);
 		//this.bugs=bugs;
 		//this.developers= new ArrayList<Developer>(Arrays.asList(developers));
 	}
@@ -180,7 +180,7 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 	public Solution newSolution(){
 		init();
 		//changed NUM of variables for the solution
-		Solution solution=new Solution(combinedLists.size(),GA_Problem_Parameter.Num_of_functions_Multi_IDIncluded);
+		Solution solution=new Solution(combinedLists.size(),GA_Problem_Parameter.Num_of_objectives);
 		for(int i=0;i<combinedLists.size();i++){
 			solution.setVariable(i,EncodingUtils.newInt(combinedLists.get(i), combinedLists.get(i)));
 		}
@@ -266,6 +266,8 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 								totalSimToUnAssignedST+=fitnessCalc.getSimBug(developers.get(zoneAssignee.get(dev_id).getThird()), b, zone);
 						}*/
 					
+					
+					
 					//the newer approach for knowledge diffusion
 					double emissionTime=10000000;
 					double estimatedEmissionTime=0;
@@ -277,6 +279,7 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 						if(estimatedEmissionTime<emissionTime){
 							emissionTime=estimatedEmissionTime;
 							sourceDevId=dev.getKey();
+							totalSimToUnAssignedST=fitnessCalc.getSimBug(dev.getValue(), b, zone_bug.getKey());
 						}
 					}
 					//compute the extra cost for information diffusion==> used to compute the cost posed due to
@@ -285,7 +288,8 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 					totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
 					
 			}
-			totalDiffusedKnowledge+=(totalSimToAssignedST-totalSimToUnAssignedST);
+			//totalDiffusedKnowledge+=(totalSimToAssignedST-totalSimToUnAssignedST);
+			totalDiffusedKnowledge+=totalSimToUnAssignedST;
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
 			totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
@@ -295,9 +299,9 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
 		
-		solution.setObjective(0, totalTime);
-		solution.setObjective(1, totalCost);
-		solution.setObjective(2, totalDiffusedKnowledge);
+		//solution.setObjective(0, totalTime);
+		//solution.setObjective(1, totalCost);
+		solution.setObjective(0, totalDiffusedKnowledge);
 	}
 
 	public void generateDAG(){

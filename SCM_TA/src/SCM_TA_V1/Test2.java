@@ -357,17 +357,20 @@ public class Test2 {
 			NondominatedPopulation result_random=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+			
+			System.out.println("finished normal assignment");
+			
+			
 			NondominatedPopulation result_ID=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
-			System.out.println("finished Competence-multi2 one");
-			
-			
-		    System.out.println("finished Schedule-based one");
-		    //AnalyzerResults ar=analyzer.getAnalysis();
+			System.out.println("finished ID-based assignment");
 		 
-		    Analyzer analyzer=new Analyzer().includeAllMetrics();
+		    
+		    
+		    //-----------code snippet for including quality indicators metrics
+		    /*Analyzer analyzer=new Analyzer().includeAllMetrics();
 		    
 		    analyzer.add("NSGAII", result_random);
 		    analyzer.add("ID", result_ID);
@@ -376,10 +379,14 @@ public class Test2 {
 			analyzer.withProblemClass(InformationDifussion.class).printAnalysis(ps_ID);
 			ps_ID.close();
 			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum)
-		    		, Integer.toString(fileNum));
+		    		, Integer.toString(fileNum));*/
 			
+		    
+		    
+		    
+		    
+		    
 			//Performing the update
-			
 			double p=new Random().nextDouble();
 			Solution pickedSolution=null;
 			for(Solution s:result_ID)
