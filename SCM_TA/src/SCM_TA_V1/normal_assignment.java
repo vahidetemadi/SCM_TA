@@ -118,6 +118,7 @@ public class normal_assignment extends AbstractProblem {
 		
 		//solution.setObjective(0, totalTime);
 		solution.setObjective(0, totalCost);
+		solution.setAttribute("time", totalTime);
 	}
 		
 	

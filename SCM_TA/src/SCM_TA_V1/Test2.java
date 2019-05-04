@@ -24,6 +24,7 @@ import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
 import org.moeaframework.core.Indicator;
 import org.moeaframework.core.NondominatedPopulation;
+import org.moeaframework.core.Population;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.paukov.combinatorics.Factory;
@@ -354,14 +355,14 @@ public class Test2 {
 	    results[1]=result_me;*/
 		
 		try{
-			NondominatedPopulation result_random=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
+			Population result_random=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
 			System.out.println("finished normal assignment");
 			
 			
-			NondominatedPopulation result_ID=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
+			Population result_ID=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
@@ -387,10 +388,10 @@ public class Test2 {
 		    
 		    
 			//Performing the update
-			double p=new Random().nextDouble();
+			//double p=new Random().nextDouble();
 			Solution pickedSolution=null;
 			for(Solution s:result_ID)
-				if(p>0.5)
+				//if(p>0.5)
 					pickedSolution=s;
 			int c=0;
 			while(GA_Problem_Parameter.tso.hasNext()){
@@ -401,6 +402,13 @@ public class Test2 {
 					updateDevProfile(b, tso_Zone.next(), d);
 				}
 			}
+			
+			//report the cost
+			System.out.println("amount of diffused knowledg:" + pickedSolution.getObjective(0)
+					+"%n"+
+					"the total cost:"+ pickedSolution.getAttribute("cost"));
+			
+			
 		}
 		catch(Exception e){
 			starting(fileNum, runNum);

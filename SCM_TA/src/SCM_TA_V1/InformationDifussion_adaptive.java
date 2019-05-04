@@ -302,6 +302,8 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 		//solution.setObjective(0, totalTime);
 		//solution.setObjective(1, totalCost);
 		solution.setObjective(0, totalDiffusedKnowledge);
+		solution.setAttribute("cost", totalCost);
+		solution.setAttribute("time", totalTime);
 	}
 
 	public void generateDAG(){

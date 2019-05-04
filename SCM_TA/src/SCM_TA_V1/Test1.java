@@ -85,7 +85,7 @@ public class Test1 {
 	
 	public static void changeRepresentation() throws FileNotFoundException{
 		
-		changeRepresentation cr=new changeRepresentation();
+		changeRepresentation cr=new changeRepresentation(null);
 		cr.txtToCSV();
 	}
 	
