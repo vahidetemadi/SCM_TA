@@ -6,12 +6,16 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class changeRepresentation {
+	static String pName="", numOfDevs="", RQ="";
+	public changeRepresentation(String dataset_name){
+		this.pName=dataset_name;
+	}
 
 	public static void txtToCSV() throws FileNotFoundException{
 		
 		Scanner sc;
 		int numOfFiles=0;
-		String pName="", numOfDevs="", RQ="";
+		
 		String[] items;
 		String[] items_name = null;
 		String[] fileName;

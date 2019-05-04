@@ -40,7 +40,8 @@ public class Test1 {
 	//DevMetrics devMetric=new DevMetrics();
 	
 
-	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{	
+	public static void run(ArrayList<String> objectiveSet) throws NoSuchElementException, IOException, URISyntaxException{	
+		
 		String mode="running";
 		if(mode=="running"){
 			runExperiment();
@@ -54,7 +55,7 @@ public class Test1 {
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
 		for(int runNum=21;runNum<=30;runNum++){
-			double[] costs=new double[2];
+			//double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
 			devInitialization();

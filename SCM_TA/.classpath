@@ -9,5 +9,7 @@
 	<classpathentry kind="lib" path="/home/vahid/Documents/2/scm_ta/SCM_TA/lib/guava.jar"/>
 	<classpathentry kind="lib" path="/home/vahid/Documents/2/scm_ta/SCM_TA/lib/jgrapht-ext-1.1.0-uber.jar"/>
 	<classpathentry kind="lib" path="/home/vahid/Documents/2/scm_ta/SCM_TA/lib/jgraphx.jar"/>
+	<classpathentry kind="lib" path="/home/vahid/Documents/2/scm_ta/SCM_TA/lib/smile-core-1.5.0.jar"/>
+	<classpathentry kind="lib" path="/home/vahid/Documents/2/scm_ta/SCM_TA/lib/jgrapht-1.3.0/lib/jgrapht-core-1.3.0.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>

@@ -10,6 +10,7 @@ public class Developer
 	public double developerNextAvailableHour=0.0;
 	private int totalAssignedBugs;
 	public double hourlyWage;
+	public int weight;
 	public DevMetrics devMetrics=new DevMetrics();
 	public HashMap<Zone, Double> DZone_Wage=new HashMap<Zone,Double>();
 	public HashMap<Zone, Double> DZone_Coefficient=new HashMap<Zone,Double>();

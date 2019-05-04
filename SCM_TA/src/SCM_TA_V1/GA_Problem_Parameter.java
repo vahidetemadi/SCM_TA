@@ -26,6 +26,7 @@ public class GA_Problem_Parameter {
 	static int Num_of_variables;
 	static int Num_of_functions_Single=1;
 	static int Num_of_functions_Multi=2;
+	static int Num_of_functions_Multi_IDIncluded=3;
 	static int Num_of_Active_Developers;
 	static int Num_of_Bugs;
 	static int Num_of_Zones;
@@ -40,7 +41,7 @@ public class GA_Problem_Parameter {
 	public static int lowerDevId=1;
 	//
 	static Bug[] bugs;
-	static HashMap<Integer,Developer> developers;
+	public static HashMap<Integer,Developer> developers;
 	public static final int startDevId=1;
 	public static final int endDevId=20;
 	private static DAGEdge EClass=new DAGEdge();
@@ -62,6 +63,9 @@ public class GA_Problem_Parameter {
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
 	public static HashMap<String, Double> priorities=new HashMap<String, Double>();
 	
+	
+	public static TopologicalOrderIterator<Bug, DefaultEdge> tso;
+	public static TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){

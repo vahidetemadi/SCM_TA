@@ -9,6 +9,8 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
+import SCM_TA_V2.environment_s1;
+
 public class fitnessCalc {
 
 
@@ -60,7 +62,8 @@ Developer developer){
  public static double getSimBug(Developer d1,Bug b2, Zone z1){
 	 double DBSim=0.0;
 	 //for (Entry<Zone, Double>  zone:b2.BZone_Coefficient.entrySet())
-	 DBSim+=Math.min(b2.BZone_Coefficient.get(z1),d1.DZone_Coefficient.get(z1));
+	 if(d1.DZone_Coefficient.containsKey(z1))
+		 DBSim+=Math.min(b2.BZone_Coefficient.get(z1),d1.DZone_Coefficient.get(z1));
 
 	 return DBSim;
  }
@@ -174,6 +177,15 @@ Developer developer){
 	 }
 	 return Math.max(sDate, d.developerNextAvailableHour);
  }
+
+ public static double getEstimatedDiffusionTime(Map.Entry<Integer, Developer> sourceDev ,Map.Entry<Integer, Developer> targetDev,double estimatedEffort){
+	 double estimeatedTime=estimatedEffort/environment_s1.getDevNetwork().getEdgeWeight(environment_s1.getDevNetwork().getEdge(sourceDev,targetDev));
+	 return estimatedEffort;
+ }
+ 
  
 }
+
+
+
 
