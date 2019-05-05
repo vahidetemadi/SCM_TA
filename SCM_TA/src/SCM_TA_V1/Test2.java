@@ -18,6 +18,7 @@ import java.util.Scanner;
 import java.util.Queue;
 
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.Analyzer;
 import org.moeaframework.Analyzer.AnalyzerResults;
@@ -26,10 +27,13 @@ import org.moeaframework.core.Indicator;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Population;
 import org.moeaframework.core.Solution;
+import org.moeaframework.core.Variable;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
+
+import SCM_TA_V2.environment_s1;
 
 
 public class Test2 {
@@ -171,6 +175,10 @@ public class Test2 {
 
 				//GA_Problem_Parameter.pruneDevList(developers);
 				GA_Problem_Parameter.pruneDevList(developers,Devs,50);
+				
+				//initialize dev networks
+				environment_s1 en_1=new environment_s1();
+				en_1.initializeDevNetwork();
 	}
 	
 	// initialize the bugs objects for task assignment  
@@ -336,6 +344,9 @@ public class Test2 {
 			}
 		GA_Problem_Parameter.population=500;
 		
+		
+		//assign the tso to GA-Problem-Parameter
+		
 	}
 	
 	//find solution to assign tasks to the developers
@@ -355,14 +366,14 @@ public class Test2 {
 	    results[1]=result_me;*/
 		
 		try{
-			Population result_random=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
+			Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
 			System.out.println("finished normal assignment");
 			
 			
-			Population result_ID=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
+			Population result_ID=new Executor().withProblemClass(InformationDifussion_adaptive.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
@@ -389,24 +400,50 @@ public class Test2 {
 		    
 			//Performing the update
 			//double p=new Random().nextDouble();
-			Solution pickedSolution=null;
+			Solution IDSolution=null;
 			for(Solution s:result_ID)
 				//if(p>0.5)
-					pickedSolution=s;
+					IDSolution=s;
 			int c=0;
 			while(GA_Problem_Parameter.tso.hasNext()){
 				Bug b=GA_Problem_Parameter.tso.next();
 				TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 				while(tso_Zone.hasNext()){
-					Developer d=developers.get(pickedSolution.getVariable(c));
+					Developer d=developers.get(IDSolution.getVariable(0));
 					updateDevProfile(b, tso_Zone.next(), d);
+					c++;
 				}
 			}
 			
 			//report the cost
-			System.out.println("amount of diffused knowledg:" + pickedSolution.getObjective(0)
-					+"%n"+
-					"the total cost:"+ pickedSolution.getAttribute("cost"));
+			System.out.println("knowlwdge and cost for ID-based approach"+
+					"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
+					+"\n"+
+					"	the total cost:"+ IDSolution.getAttribute("cost"));
+			
+			////
+			//cost based///
+			////
+			Solution NormalSolution=null;
+			for(Solution s:result_normal)
+				//if(p>0.5)
+				NormalSolution=s;
+			c=0;
+			while(GA_Problem_Parameter.tso.hasNext()){
+				Bug b=GA_Problem_Parameter.tso.next();
+				TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+				while(tso_Zone.hasNext()){
+					Developer d=developers.get(NormalSolution.getVariable(c));
+					updateDevProfile(b, tso_Zone.next(), d);
+					c++;
+				}
+			}
+			
+			//report the cost
+			System.out.println("knowlwdge and cost for normal approach"+
+					"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
+					+"\n	the total cost:" + NormalSolution.getObjective(0));
+			
 			
 			
 		}

@@ -23,6 +23,8 @@ import org.moeaframework.problem.AbstractProblem;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.swing.DebugGraphics;
+
 import SCM_TA_V2.*;
 
 
@@ -42,7 +44,7 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 	DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	public InformationDifussion_adaptive(){
-		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_objectives);
+		super(GA_Problem_Parameter.setNum_of_Variables(bugs), GA_Problem_Parameter.Num_of_objectives);
 		//this.bugs=bugs;
 		//this.developers= new ArrayList<Developer>(Arrays.asList(developers));
 	}
@@ -241,11 +243,16 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 				GA_Problem_Parameter.tso_Zone=tso_Zone;
 				//make a list to keep the teammate list
 				ArrayList<Integer> teammate_list=new ArrayList<Integer>();
+				Map.Entry<Integer, Developer> candidate=null;
 				while(tso_Zone.hasNext()){
 					Zone zone=tso_Zone.next();
 					double compeletionTime=0.0;
 					Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
 					int devId=zoneAssignee.get(index).getThird();
+					for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
+						if(developer.getKey()==devId)
+							candidate=developer;
+					}
 					compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(devId));
 					totalExecutionTime+=compeletionTime;
 					totalDevCost+=compeletionTime*developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
@@ -273,18 +280,17 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 					double estimatedEmissionTime=0;
 					int sourceDevId = 0;
 					for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
-						if(environment_s1.getDevNetwork().containsEdge(dev, (Entry<Integer, Developer>)developers.get(devId)))
-							estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev, (Entry<Integer, Developer>) developers.get(devId),
+						if(environment_s1.getDevNetwork().containsEdge(dev,candidate))
+							estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
 									(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
 						if(estimatedEmissionTime<emissionTime){
 							emissionTime=estimatedEmissionTime;
 							sourceDevId=dev.getKey();
-							totalSimToUnAssignedST=fitnessCalc.getSimBug(dev.getValue(), b, zone_bug.getKey());
 						}
 					}
 					//compute the extra cost for information diffusion==> used to compute the cost posed due to
 					//information diffusion 
-				
+					totalSimToUnAssignedST=fitnessCalc.getSimBug(candidate.getValue(), b, zone_bug.getKey());
 					totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
 					
 			}
@@ -298,7 +304,7 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 		}
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
-		
+		totalDiffusedKnowledge=(-1*totalDiffusedKnowledge);
 		//solution.setObjective(0, totalTime);
 		//solution.setObjective(1, totalCost);
 		solution.setObjective(0, totalDiffusedKnowledge);

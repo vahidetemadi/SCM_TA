@@ -3,6 +3,7 @@ package SCM_TA_V1;
 import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.jgraph.JGraph;
@@ -15,6 +16,8 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
+
+import SCM_TA_V2.environment_s1;
 
 public class normal_assignment extends AbstractProblem {
 	
@@ -79,13 +82,17 @@ public class normal_assignment extends AbstractProblem {
 		double totalStartTime=0.0;
 		double totalEndTime=0.0;
 		double totalExecutionTime=0.0;
+		double totalDiffusedKnowledge=0.0;
 		int index=0;
+		GA_Problem_Parameter.tso=tso;
 		while(tso.hasNext()){
+			double totalSimToUnAssignedST=0;
 			Bug b=tso.next();
 			//set Bug startTime
 			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			b.startTime_evaluate=x;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			Map.Entry<Integer, Developer> candidate=null;
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
 				double compeletionTime=0.0;
@@ -95,6 +102,10 @@ public class normal_assignment extends AbstractProblem {
 					System.out.println(g);
 				}*/
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
+				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
+					if(developer.getKey()== (EncodingUtils.getInt(solution.getVariable(index))))
+						candidate=developer;
+				}
 				totalExecutionTime+=compeletionTime;
 				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
@@ -106,12 +117,44 @@ public class normal_assignment extends AbstractProblem {
 				x1=developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour;
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
+				
+				
+				
+				
+				double emissionTime=10000000;
+				double estimatedEmissionTime=0;
+				int sourceDevId = 0;
+				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
+					if(environment_s1.getDevNetwork().containsEdge(dev,candidate))
+						estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
+								(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
+					if(estimatedEmissionTime<emissionTime){
+						emissionTime=estimatedEmissionTime;
+						sourceDevId=dev.getKey();
+					}
+				}
+				totalSimToUnAssignedST=fitnessCalc.getSimBug(candidate.getValue(), b, zone_bug.getKey());
+				//compute the extra cost for information diffusion==> used to compute the cost posed due to
+				//information diffusion 
+			
+				totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
+				
+				
+				
+				
+				
+				
+				
 			}
+			
+			totalDiffusedKnowledge+=totalSimToUnAssignedST;
+			
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
 			totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
 			if(totalDelayTime>0)
 				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
+			
 		}
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
@@ -119,6 +162,7 @@ public class normal_assignment extends AbstractProblem {
 		//solution.setObjective(0, totalTime);
 		solution.setObjective(0, totalCost);
 		solution.setAttribute("time", totalTime);
+		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);
 	}
 		
 	

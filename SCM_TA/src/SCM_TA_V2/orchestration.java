@@ -13,7 +13,7 @@ public class orchestration {
 	static training training_instance=new training();
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 	
-		//generate environment
+		/*//generate environment
 		environment environment_scenario1=new environment_s1();
 		//create and intialize a sequence of observations
 		observation[] observationSequence=new observation[4];//specify the number of observation sequence??!!!
@@ -30,24 +30,25 @@ public class orchestration {
 		//lunch the assignment process with the provided set of objectives--call the runExpriment of Test2
 		Test2.run(objectiveSet, "JDT");
 		Test2.run(objectiveSet, "Platform");
-		/*data representation for the reigning round==>call the dataRepresentation to make the data ready
-		analyzing and visualization*/	
+		data representation for the reigning round==>call the dataRepresentation to make the data ready
+		analyzing and visualization	
 		
 		//represent the result==> HyperVolume, Contribution and Generational Distance
 		Test2.changeRepresentation("JDT");
 		Test2.changeRepresentation("Platform");
 		
-		/*apply the feedback to the developer profiles, the environmental parameters
-		 --pick a solution -- update the dev profile by the assigned tasks-- */
+		apply the feedback to the developer profiles, the environmental parameters
+		 --pick a solution -- update the dev profile by the assigned tasks-- 
 		//pick one of the solution===> the once that has highest level of knowledge diffusion
 		
 		
 		
 		//update the dev profile based on the picked solution 
+*/		
 		
 		
-		
-		
+		Test2.run(null, "JDT");
+		Test2.run(null, "Platform");
 		
 		
 		

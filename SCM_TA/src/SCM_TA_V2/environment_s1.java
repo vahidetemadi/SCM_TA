@@ -48,7 +48,7 @@ public class environment_s1 extends environment {
 		
 	}
 	
-	public void initializeDevNetwork(){	
+	public static void initializeDevNetwork(){	
 		//set devs node and assign weights to the developers
 		int size=GA_Problem_Parameter.developers.entrySet().size();
 		int sumOfWeights=0;
@@ -71,7 +71,7 @@ public class environment_s1 extends environment {
 		
 	}
 	
-	public void setRandomEdge(DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge> devNetwork, 
+	public static void setRandomEdge(DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge> devNetwork, 
 			 ArrayList<Map.Entry<Integer, Developer>> edgeTails, int sumOfWeights, Random r){
 		int randNum;
 		for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
@@ -91,7 +91,7 @@ public class environment_s1 extends environment {
 	}
 	
 	//set the label for all the edges in the devNetwork
-	public void setEdgesWeight(){
+	public static void setEdgesWeight(){
 		//assign flow rate to each edge in developer network
 		for(DefaultEdge e:devNetwork.edgeSet()){
 			//compute the flow rate--start to end
