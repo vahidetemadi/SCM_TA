@@ -113,5 +113,12 @@ public class environment_s1 extends environment {
 		
 	}
 
+	//the nodes are added to the 
+	public static void nodeDeletion(){
+		
+	}
+	public static void nodeAttachment(){
+		
+	}
 	
 }

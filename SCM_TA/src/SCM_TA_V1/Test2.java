@@ -563,5 +563,5 @@ public class Test2 {
 	public static void updateDevProfile(Bug b,Zone z, Developer d){
 		d.getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
 	}
-	
+
 }
