@@ -13,7 +13,8 @@ import org.apache.commons.math3.distribution.*;
 import SCM_TA_V1.*;
 
 public class environment_s1 extends environment {
-	
+	public static double deletionRate=0;
+	public static double additionRate=0;
 	{
 		SLA=new NormalDistribution(0.8,0.1);
 		TCR=new PoissonDistribution(5);
@@ -106,7 +107,6 @@ public class environment_s1 extends environment {
 				}
 					
 			}
-			
 			//assign the flow rate
 			devNetwork.setEdgeWeight(e,flowRate);
 		}
@@ -115,6 +115,11 @@ public class environment_s1 extends environment {
 
 	//the nodes are added to the 
 	public static void nodeDeletion(){
+		//is done with the a rate of "r"
+		
+		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
+			
+		}
 		
 	}
 	public static void nodeAttachment(){
