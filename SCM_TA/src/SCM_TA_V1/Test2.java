@@ -33,6 +33,7 @@ import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
 
+import SCM_TA_V2.environment;
 import SCM_TA_V2.environment_s1;
 
 
@@ -67,10 +68,11 @@ public class Test2 {
 	
 	public static void runExperiment(int numOfFiles) throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=1;runNum<=30;runNum++){
-			developers.clear();
+		for(int runNum=1;runNum<=1;runNum++){
+			//developers.clear();
+			HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 			bugs.clear();
-			devInitialization();
+			//---assigned to orchestration class---->devInitialization();
 			for(int i=1;i<=numOfFiles;i++){
 				starting(i, runNum);
 			}
@@ -151,12 +153,11 @@ public class Test2 {
 					i++;
 					j=0;
 				}
-				//prune devs
 				/*assign GA_Problem_Parameter DevList*/
 				for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
 					GA_Problem_Parameter.DevList.add(dev.getKey());
 				}
-				
+				GA_Problem_Parameter.developers_all=(HashMap<Integer, Developer>) developers.clone();
 				GA_Problem_Parameter.developers=developers;
 				
 				for(Developer d:GA_Problem_Parameter.developers.values()){
@@ -305,12 +306,6 @@ public class Test2 {
 		
 		//initialize GA parameters
 		GA_Problem_Parameter.Num_of_variables=bugs.size();
-		GA_Problem_Parameter.developers=developers;
-		GA_Problem_Parameter.developers_all=(HashMap<Integer, Developer>) developers.clone();
-		GA_Problem_Parameter.DevList=new ArrayList<Integer>();
-		for(Entry<Integer, Developer> dev:developers.entrySet()){
-			GA_Problem_Parameter.DevList.add(dev.getKey());
-		}
 		
 		int b_index=0;
 		GA_Problem_Parameter.bugs=new Bug[bugs.size()];
@@ -353,7 +348,8 @@ public class Test2 {
 				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
 	    results[1]=result_me;*/
 		
-		try{
+		//try{
+		HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 			Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
@@ -390,7 +386,6 @@ public class Test2 {
 			//double p=new Random().nextDouble();
 			Solution IDSolution=null;
 			for(Solution s:result_ID)
-				//if(p>0.5)
 					IDSolution=s;
 			int c=0;
 			while(GA_Problem_Parameter.tso.hasNext()){
@@ -434,10 +429,10 @@ public class Test2 {
 			
 			
 			
-		}
+		/*}
 		catch(Exception e){
 			starting(fileNum, runNum);
-		}
+		}*/
 		//return results;
 	    
 	}

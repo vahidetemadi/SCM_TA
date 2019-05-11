@@ -45,13 +45,14 @@ public class GA_Problem_Parameter {
 	public static int lowerDevId=1;
 	//
 	static Bug[] bugs;
-	public static HashMap<Integer,Developer> developers;
-	public static HashMap<Integer, Developer> developers_all;
+	public static HashMap<Integer,Developer> developers=null;
+	public static HashMap<Integer, Developer> developers_all=null;
 	public static final int startDevId=1;
 	public static final int endDevId=20;
 	private static DAGEdge EClass=new DAGEdge();
 	public static double currentTimePeriodStartTime=0;
 	public static ArrayList<Integer> DevList=new ArrayList<Integer>();
+	public static ArrayList<Integer> DevList_forRandom=new ArrayList<Integer>();
 	public static ArrayList<Integer> DevList_forAssignment=new ArrayList<Integer>();
 	//public static ArrayList<TopologicalOrderIterator<Bug, DefaultEdge>> candidateSchedulings=null;
 	public static ArrayList<ArrayList<Bug>> candidateSchedulings=null;
@@ -89,10 +90,17 @@ public class GA_Problem_Parameter {
 		}
 	}
 	
+	
+	public static void setDevelopersIDForRandom(){
+		DevList_forRandom.clear();
+		for(Map.Entry<Integer, Developer> dev:developers.entrySet())
+			DevList_forRandom.add(dev.getKey());
+	}
+	
 	public static int getRandomDevId(){
 		Random rg=new Random();
-		int index=rg.nextInt(DevList.size());
-		return DevList.get(index);
+		int index=rg.nextInt(DevList_forRandom.size());
+		return DevList_forRandom.get(index);
 	}
 	
 	
@@ -524,15 +532,14 @@ public class GA_Problem_Parameter {
 		System.out.println(devs_prune.size()+"///devs");
 	}
 	
-	public static void pruneDevList(HashMap<Integer, Developer> devs_prune, ArrayList<Ranking<Developer, Double>> devs, int portion, 
-			environment_s1 en_1_sample ){
+	public static void pruneDevList(HashMap<Integer, Developer> devs_prune, ArrayList<Ranking<Developer, Double>> devs, int portion ){
 			int _size=devs_prune.size()-(int)(devs_prune.size()*portion)/100;
 			System.out.println(devs_prune.size()+"***devs");
 			int i=1;
 			for(Ranking<Developer, Double> r:devs){
 				if(i>_size){
 					//create the potential dev list---- those who tends to attach the list
-					en_1_sample.readyForAttachment.add(r.getEntity().getID());
+					environment_s1.readyForAttachment.add(r.getEntity().getID());
 				}
 				else
 					devs_prune.remove(r.getEntity().getID());
@@ -547,7 +554,7 @@ public class GA_Problem_Parameter {
 
 	public static Map.Entry<Integer, Developer> getDev(Integer i){
 		Map.Entry<Integer, Developer> developer=null;
-		for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
+		for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers_all.entrySet()){
 			if(GA_Problem_Parameter.developers.containsKey(i))
 				developer=dev;
 			else

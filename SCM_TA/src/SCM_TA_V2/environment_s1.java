@@ -17,10 +17,14 @@ import SCM_TA_V1.*;
 public class environment_s1 extends environment {
 	public static double deletionRate=0;
 	public static double attachmentRate=0;
+	public static double TCR_ratio=0;
+	public static int totalChanged=0;
 	public static ArrayList<Integer> deletedNodes=new ArrayList<Integer>();
 	public static ArrayList<Integer> readyForAttachment=new ArrayList<Integer>();
 	static Random random;
-	{
+	static int numOfNodes;
+	
+	public static void insantiateObjects(){
 		SLA=new NormalDistribution(0.8,0.1);
 		TCR=new PoissonDistribution(5);
 		devNetwork=new DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge>(DefaultEdge.class);
@@ -132,16 +136,20 @@ public class environment_s1 extends environment {
 		
 		//is done with the a rate of "r"
 		double p=0;
-		int numOfNodes=0;
+		numOfNodes=TCR.sample();
+		totalChanged=0;
 		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
 			p=random.nextDouble();
 			if(p<deletionRate && numOfNodes>0){
 				deletedNodes.add(node.getKey());
+				numOfNodes--;
+				totalChanged++;
 			}
 		}
 		
 		for(Integer i:deletedNodes){
 			devNetwork.removeVertex(getVertex(i));
+			GA_Problem_Parameter.developers.remove(i);
 		}
 		
 	}
@@ -150,11 +158,14 @@ public class environment_s1 extends environment {
 		//add the node with the ratio of "1-r"
 		ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 		double p;
+		numOfNodes=TCR.sample();
 		for(Integer i:readyForAttachment){
 			p=random.nextDouble();
-			if(p<attachmentRate){
+			if(p<attachmentRate && numOfNodes>0){
 				shouldBeDeleted.add(i);
 				devNetwork.addVertex(GA_Problem_Parameter.getDev(i));
+				GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
+				totalChanged++;
 			}
 		}	
 		//remove nodes from readyForAttachment after added to the devNetwork
@@ -176,7 +187,6 @@ public class environment_s1 extends environment {
 				nodeForDeletion=null;
 		return nodeForDeletion;
 	}
-	
 	
 	public static void initializeR(double probability){
 		environment_s1.deletionRate=probability;
@@ -224,7 +234,7 @@ public class environment_s1 extends environment {
 		return node;
 	}
 	
-	public static void rankDevs(environment_s1 en_1_sample){
+	public static void rankDevs(){
 		ArrayList<Ranking<Developer, Double>> Devs=new ArrayList<Ranking<Developer,Double>>();
 		for(Developer d:GA_Problem_Parameter.developers.values()){
 			Devs.add(DevMetrics.computeMetric(d));
@@ -235,6 +245,19 @@ public class environment_s1 extends environment {
 		}
 		
 		//cut off the low experienced developers---add ready for attachment developers
-		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers,Devs,50, en_1_sample);
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers,Devs,50);
 	}
+
+	public static double getTCR_ratio(){
+		TCR_ratio=totalChanged/devNetwork.vertexSet().size();
+		return TCR_ratio;
+	}
+	
+	public static int getObservation(){
+		if(TCR_ratio<0.05)
+			return 0;
+		else 
+			return 1;
+	}
+	
 }

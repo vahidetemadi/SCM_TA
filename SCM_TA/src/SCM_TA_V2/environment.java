@@ -1,5 +1,6 @@
 package SCM_TA_V2;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import SCM_TA_V1.*;
@@ -12,11 +13,12 @@ import SCM_TA_V1.Developer;
 
 public abstract class environment {
 	
-	AbstractRealDistribution SLA;
-	PoissonDistribution TCR;
+	static AbstractRealDistribution SLA;
+	static PoissonDistribution TCR;
 	AbstractRealDistribution TUR;
 	AbstractRealDistribution TIR;
 	static DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge> devNetwork;	
+	static HashMap<Integer,Developer> developers=null;
 	
 	abstract void generae_observation(observation o);
 }

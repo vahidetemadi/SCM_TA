@@ -101,6 +101,7 @@ public class normal_assignment extends AbstractProblem {
 					int[] g=EncodingUtils.getInt(solution);
 					System.out.println(g);
 				}*/
+				int d=EncodingUtils.getInt(solution.getVariable(index));
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
 				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
 					if(developer.getKey()== (EncodingUtils.getInt(solution.getVariable(index))))
