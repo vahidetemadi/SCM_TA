@@ -47,8 +47,26 @@ public class orchestration {
 */		
 		
 		
+		//create the environment_s1
+		environment_s1 en_1_sample=new environment_s1();
+		
+		//pull in the developer  profile
+		Test2.devInitialization();
+		//Initialize the devNetwork
+		en_1_sample.initializeDevNetwork();
+		en_1_sample.initializeR(0.4);
+		
+		//cut off the low experienced developers---add ready for attachment developers
+		//starting with half of the developers
+		en_1_sample.rankDevs(en_1_sample);
+		
+		//running the experiment--->>> feedbacks afterwards apply on developers profile 
 		Test2.run(null, "JDT");
 		Test2.run(null, "Platform");
+		
+		//team change process
+		
+		
 		
 		
 		

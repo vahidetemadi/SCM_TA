@@ -2,12 +2,14 @@ package SCM_TA_V1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
 
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
+import org.omg.PortableInterceptor.INACTIVE;
 import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -20,6 +22,8 @@ import org.jgrapht.alg.GabowStrongConnectivityInspector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
 import java.util.Iterator;
+
+import SCM_TA_V2.*;
 
 
 public class GA_Problem_Parameter {
@@ -42,6 +46,7 @@ public class GA_Problem_Parameter {
 	//
 	static Bug[] bugs;
 	public static HashMap<Integer,Developer> developers;
+	public static HashMap<Integer, Developer> developers_all;
 	public static final int startDevId=1;
 	public static final int endDevId=20;
 	private static DAGEdge EClass=new DAGEdge();
@@ -519,19 +524,36 @@ public class GA_Problem_Parameter {
 		System.out.println(devs_prune.size()+"///devs");
 	}
 	
-	public static void pruneDevList(HashMap<Integer, Developer> devs_prune, ArrayList<Ranking<Developer, Double>> devs, int portion){
+	public static void pruneDevList(HashMap<Integer, Developer> devs_prune, ArrayList<Ranking<Developer, Double>> devs, int portion, 
+			environment_s1 en_1_sample ){
 			int _size=devs_prune.size()-(int)(devs_prune.size()*portion)/100;
 			System.out.println(devs_prune.size()+"***devs");
 			int i=1;
 			for(Ranking<Developer, Double> r:devs){
 				if(i>_size){
-					break;
+					//create the potential dev list---- those who tends to attach the list
+					en_1_sample.readyForAttachment.add(r.getEntity().getID());
 				}
-				devs_prune.remove(r.getEntity().getID());
+				else
+					devs_prune.remove(r.getEntity().getID());
 				i++;
 			}
 
 			System.out.println(devs_prune.size()+"///devs");
+			
+			
+			
+	}
+
+	public static Map.Entry<Integer, Developer> getDev(Integer i){
+		Map.Entry<Integer, Developer> developer=null;
+		for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
+			if(GA_Problem_Parameter.developers.containsKey(i))
+				developer=dev;
+			else
+				developer=null;
+		}
+		return developer;
 	}
 	
 	

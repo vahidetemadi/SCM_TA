@@ -44,6 +44,11 @@ public class Test2 {
 	static HashMap<Integer , Zone> columns=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	static int roundnum=0;
+	environment_s1 en1_sample;
+	
+	public void setEnvironment(environment_s1 en){
+		this.en1_sample=en;
+	}
 	//DevMetrics devMetric=new DevMetrics();
 	
 
@@ -87,8 +92,6 @@ public class Test2 {
 		//removeDevelopers();
 	}
 		
-	
-	
 	public static void changeRepresentation(String dataset_name) throws FileNotFoundException{
 		
 		changeRepresentation cr=new changeRepresentation(dataset_name);
@@ -162,23 +165,7 @@ public class Test2 {
 							d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
 					}
 				}
-				
-				
-				ArrayList<Ranking<Developer, Double>> Devs=new ArrayList<Ranking<Developer,Double>>();
-				for(Developer d:developers.values()){
-					Devs.add(DevMetrics.computeMetric(d));
-				}
-				DevMetrics.sortByMetric(Devs);
-				for(Ranking<Developer, Double> r:Devs){
-					System.out.println(r.getEntity()+"---"+r.getMetric());
-				}
-
-				//GA_Problem_Parameter.pruneDevList(developers);
-				GA_Problem_Parameter.pruneDevList(developers,Devs,50);
-				
-				//initialize dev networks
-				environment_s1 en_1=new environment_s1();
-				en_1.initializeDevNetwork();
+		
 	}
 	
 	// initialize the bugs objects for task assignment  
@@ -319,6 +306,7 @@ public class Test2 {
 		//initialize GA parameters
 		GA_Problem_Parameter.Num_of_variables=bugs.size();
 		GA_Problem_Parameter.developers=developers;
+		GA_Problem_Parameter.developers_all=(HashMap<Integer, Developer>) developers.clone();
 		GA_Problem_Parameter.DevList=new ArrayList<Integer>();
 		for(Entry<Integer, Developer> dev:developers.entrySet()){
 			GA_Problem_Parameter.DevList.add(dev.getKey());
@@ -488,7 +476,6 @@ public class Test2 {
 		
 	}
 	
-	
 	public static void writeAnalyzingResults(AnalyzerResults ar, int runNum, int roundNum) throws FileNotFoundException{
 		//PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"+runNum+"_"+roundNum+".csv"));
 		StringBuilder sb=new StringBuilder();
@@ -496,7 +483,6 @@ public class Test2 {
 			System.out.println(ar.get(AN));
 		}
 	}
-	
 	
 	public static void afterRoundUpdating(Solution solution){
 		//update developers' zone
@@ -510,6 +496,7 @@ public class Test2 {
 		//remove 2 top developers
 		
 	}
+	
 	public static void removeDevelopers(){
 		int devId=-1;
 		double devScore=-1.0;

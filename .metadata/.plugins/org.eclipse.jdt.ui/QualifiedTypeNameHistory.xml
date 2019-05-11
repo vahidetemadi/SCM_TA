@@ -30,7 +30,6 @@
 <fullyQualifiedTypeName name="java.lang.Double"/>
 <fullyQualifiedTypeName name="java.util.Scanner"/>
 <fullyQualifiedTypeName name="java.io.PrintWriter"/>
-<fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="java.lang.Object"/>
 <fullyQualifiedTypeName name="SCM_TA_V2.adaptiveSCM"/>
 <fullyQualifiedTypeName name="SCM_TA_V2.observation"/>
@@ -39,9 +38,14 @@
 <fullyQualifiedTypeName name="org.apache.commons.math3.distribution.PoissonDistribution"/>
 <fullyQualifiedTypeName name="java.util.Collection"/>
 <fullyQualifiedTypeName name="java.util.Collections"/>
-<fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.changeRepresentation"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.NondominatedPopulation"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.Population"/>
 <fullyQualifiedTypeName name="java.lang.System"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.Test2"/>
+<fullyQualifiedTypeName name="java.util.HashMap"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.Developer"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
+<fullyQualifiedTypeName name="SCM_TA_V2.environment_s1"/>
 </qualifiedTypeNameHistroy>

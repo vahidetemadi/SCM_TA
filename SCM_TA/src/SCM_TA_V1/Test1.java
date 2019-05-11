@@ -167,7 +167,7 @@ public class Test1 {
 				}
 
 				//GA_Problem_Parameter.pruneDevList(developers);
-				GA_Problem_Parameter.pruneDevList(developers,Devs,50);
+				GA_Problem_Parameter.pruneDevList(developers,Devs,50,null);
 	}
 	
 	// initialize the bugs objects for task assignment  

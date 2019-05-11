@@ -1,5 +1,6 @@
 package SCM_TA_V2;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -9,16 +10,21 @@ import java.util.Random;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.apache.commons.math3.distribution.*;
+import org.apache.commons.math3.geometry.spherical.twod.Vertex;
 
 import SCM_TA_V1.*;
 
 public class environment_s1 extends environment {
 	public static double deletionRate=0;
-	public static double additionRate=0;
+	public static double attachmentRate=0;
+	public static ArrayList<Integer> deletedNodes=new ArrayList<Integer>();
+	public static ArrayList<Integer> readyForAttachment=new ArrayList<Integer>();
+	static Random random;
 	{
 		SLA=new NormalDistribution(0.8,0.1);
 		TCR=new PoissonDistribution(5);
 		devNetwork=new DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge>(DefaultEdge.class);
+		random=new Random();
 	}
 	
 
@@ -91,6 +97,14 @@ public class environment_s1 extends environment {
 		}
 	}
 	
+	public static void setEdges_newNodes(){
+		int numOfEdges=5;
+		for(Integer i:deletedNodes){
+			devNetwork.addEdge(getSelectedVertexByFitness(), getDevNetworkVertex(i));
+			devNetwork.addEdge(getDevNetworkVertex(i), getSelectedVertexByFitness());
+		}
+		
+	}
 	//set the label for all the edges in the devNetwork
 	public static void setEdgesWeight(){
 		//assign flow rate to each edge in developer network
@@ -115,15 +129,112 @@ public class environment_s1 extends environment {
 
 	//the nodes are added to the 
 	public static void nodeDeletion(){
-		//is done with the a rate of "r"
 		
+		//is done with the a rate of "r"
+		double p=0;
+		int numOfNodes=0;
 		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
-			
+			p=random.nextDouble();
+			if(p<deletionRate && numOfNodes>0){
+				deletedNodes.add(node.getKey());
+			}
+		}
+		
+		for(Integer i:deletedNodes){
+			devNetwork.removeVertex(getVertex(i));
 		}
 		
 	}
+	
 	public static void nodeAttachment(){
+		//add the node with the ratio of "1-r"
+		ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
+		double p;
+		for(Integer i:readyForAttachment){
+			p=random.nextDouble();
+			if(p<attachmentRate){
+				shouldBeDeleted.add(i);
+				devNetwork.addVertex(GA_Problem_Parameter.getDev(i));
+			}
+		}	
+		//remove nodes from readyForAttachment after added to the devNetwork
+		for(Integer i:shouldBeDeleted){
+			readyForAttachment.remove(i);
+		}
+		
+		//establish the links for the newly added nodes
+		setEdges_newNodes();
 		
 	}
 	
+	public static Map.Entry<Integer, Developer> getVertex(Integer i){
+		Map.Entry<Integer, Developer> nodeForDeletion=null;
+		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet())
+			if(node.getKey()==i)
+				nodeForDeletion=node;
+			else
+				nodeForDeletion=null;
+		return nodeForDeletion;
+	}
+	
+	
+	public static void initializeR(double probability){
+		environment_s1.deletionRate=probability;
+		environment_s1.attachmentRate=1-deletionRate;
+		
+	}
+	
+	/*** after round update method ***/
+	public static void recomputeNodeFitness(){
+		double globalFitness=0;
+		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
+			double individualFitness=0;
+			for(Map.Entry<Zone, Double> zone:node.getValue().DZone_Coefficient.entrySet()){
+			individualFitness+=zone.getValue();
+			}
+			individualFitness=individualFitness*devNetwork.degreeOf(node);
+			node.getValue().fitness=individualFitness;
+			globalFitness+=individualFitness;
+		}
+		
+		for(Map.Entry<Integer, Developer> dev:devNetwork.vertexSet())
+			dev.getValue().preferentialAttachment=dev.getValue().fitness/globalFitness;
+		
+	}
+	 
+	public static Map.Entry<Integer, Developer> getSelectedVertexByFitness(){
+		
+		Map.Entry<Integer, Developer> selected=null;
+		int totalWight=0;
+		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
+			int weight=node.getValue().weight;
+			double r=random.nextInt(totalWight+weight);
+			if(r>=totalWight)
+				selected=node;
+			totalWight+=weight;
+		}
+		return selected;
+	}
+	
+	public static Map.Entry<Integer, Developer> getDevNetworkVertex(Integer i){
+		Map.Entry<Integer, Developer> node=null;
+		for(Map.Entry<Integer, Developer> vertex:devNetwork.vertexSet())
+			if(vertex.getKey()==i)
+				node=vertex;
+		return node;
+	}
+	
+	public static void rankDevs(environment_s1 en_1_sample){
+		ArrayList<Ranking<Developer, Double>> Devs=new ArrayList<Ranking<Developer,Double>>();
+		for(Developer d:GA_Problem_Parameter.developers.values()){
+			Devs.add(DevMetrics.computeMetric(d));
+		}
+		DevMetrics.sortByMetric(Devs);
+		for(Ranking<Developer, Double> r:Devs){
+			System.out.println(r.getEntity()+"---"+r.getMetric());
+		}
+		
+		//cut off the low experienced developers---add ready for attachment developers
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers,Devs,50, en_1_sample);
+	}
 }

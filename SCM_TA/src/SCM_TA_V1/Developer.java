@@ -14,6 +14,9 @@ public class Developer
 	public DevMetrics devMetrics=new DevMetrics();
 	public HashMap<Zone, Double> DZone_Wage=new HashMap<Zone,Double>();
 	public HashMap<Zone, Double> DZone_Coefficient=new HashMap<Zone,Double>();
+	public double preferentialAttachment=0;
+	public double fitness=0;
+	
 	public int getTotalAssignedBugs() {
 		return totalAssignedBugs;
 	}
