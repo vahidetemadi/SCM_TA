@@ -13,27 +13,18 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.Queue;
 
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
-import org.moeaframework.Analyzer;
 import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
-import org.moeaframework.core.Indicator;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Population;
 import org.moeaframework.core.Solution;
-import org.moeaframework.core.Variable;
 import org.moeaframework.core.variable.EncodingUtils;
-import org.paukov.combinatorics.Factory;
-import org.paukov.combinatorics.Generator;
-import org.paukov.combinatorics.ICombinatoricsVector;
 
-import SCM_TA_V2.environment;
 import SCM_TA_V2.environment_s1;
 
 
@@ -45,48 +36,42 @@ public class Test2 {
 	static HashMap<Integer , Zone> columns=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	static int roundnum=0;
-	environment_s1 en1_sample;
-	
-	public void setEnvironment(environment_s1 en){
-		this.en1_sample=en;
-	}
 	//DevMetrics devMetric=new DevMetrics();
 	
 
-	public static void run(ArrayList<String> objectiveSet, String dataset_name) throws NoSuchElementException, IOException, URISyntaxException{	
+	public static void run(ArrayList<String> objectiveSet, String dataset_name, int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{	
 		
-
-		int numOfFiles=0;
+		/*int numOfFiles=0;
 			if(dataset_name=="Platform")
 				numOfFiles=10;
 			else 
-				numOfFiles=9;
+				numOfFiles=9;*/
 			
-			runExperiment(numOfFiles);
+			runExperiment(fileNumber);
 		
 	}
 	
-	public static void runExperiment(int numOfFiles) throws NoSuchElementException, IOException, URISyntaxException{
+	public static void runExperiment(int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
 		for(int runNum=1;runNum<=1;runNum++){
 			//developers.clear();
 			HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 			bugs.clear();
 			//---assigned to orchestration class---->devInitialization();
-			for(int i=1;i<=numOfFiles;i++){
-				starting(i, runNum);
-			}
+			//for(int i=1;i<=numOfFiles;i++){
+				starting(fileNumber, runNum);
+			//}
 			System.gc();
 		}
 		
 	}
 	
-	public static void starting(int roundNum, int runNum) throws IOException{
-		bugInitialization(roundNum);
+	public static void starting(int fileNumber, int runNum) throws IOException{
+		bugInitialization(fileNumber);
 		GA_Problem_Parameter.generateModelofBugs();
 		GA_Problem_Parameter.candidateSolutonGeneration();
 		NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-		Assigning(results,runNum,roundNum);
+		Assigning(results,runNum,fileNumber);
 		//solution=results[1].get(results[1].size()/2);
 		//writeResult(runNum,i,results);
 		//System.out.println("finished writing");
@@ -170,7 +155,7 @@ public class Test2 {
 	}
 	
 	// initialize the bugs objects for task assignment  
-	public static void bugInitialization(int roundNum) throws IOException,NoSuchElementException{	
+	public static void bugInitialization(int fileNumber) throws IOException,NoSuchElementException{	
 		bugs.clear();
 		Scanner sc;//=new Scanner(System.in);
 		int i=0;
@@ -187,9 +172,9 @@ public class Test2 {
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
-			if(roundNum==n)
+			if(fileNumber==n)
 				System.out.println(fileEntry.getPath());
-			while(sc1.hasNextLine() && roundNum==n){
+			while(sc1.hasNextLine() && fileNumber==n){
 				//counter "i" has set to record the name of each zone (the header of each file)
 				if(i==0){
 						String[] items=sc1.nextLine().split("\t|\\ ",-1);
@@ -335,7 +320,7 @@ public class Test2 {
 	//find solution to assign tasks to the developers
 	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
-		
+		GA_Problem_Parameter.setDevelopersIDForRandom();
 		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
@@ -349,7 +334,6 @@ public class Test2 {
 	    results[1]=result_me;*/
 		
 		//try{
-		HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 			Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
@@ -398,11 +382,13 @@ public class Test2 {
 				}
 			}
 			
-			//report the cost
+			//report the cost---logging the cost
 			System.out.println("knowlwdge and cost for ID-based approach"+
 					"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
 					+"\n"+
 					"	the total cost:"+ IDSolution.getAttribute("cost"));
+			
+			
 			
 			////
 			//cost based///

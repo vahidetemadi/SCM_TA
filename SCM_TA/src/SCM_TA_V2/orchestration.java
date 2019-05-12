@@ -11,7 +11,7 @@ import SCM_TA_V1.*;
 public class orchestration {
 	
 	static training training_instance=new training();
-	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
+	public static void main_alte(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 	
 		/*//generate environment
 		environment environment_scenario1=new environment_s1();
@@ -60,14 +60,15 @@ public class orchestration {
 		//Initialize the devNetwork
 		environment_s1.initializeDevNetwork();
 		environment_s1.initializeR(0.4);
-		
-		//running the experiment--->>> feedbacks afterwards apply on developers profile 
-		Test2.run(null, "JDT");
-		Test2.run(null, "Platform");
-		
-		//team change process---determine the team change rate
-		
-		
+		for(int i=0; i<environment_s1.numberOfFiles;i++){
+			//running the experiment--->>> feedbacks afterwards apply on developers profile 
+			Test2.run(null, "JDT", i);
+			Test2.run(null, "Platform", i);
+			//team change process---determine the team change rate
+			if(environment_s1.getTheLastState().name=="steady")
+				environment_s1.nodeDeletion();
+				environment_s1.nodeAttachment();
+		}
 		
 		
 		

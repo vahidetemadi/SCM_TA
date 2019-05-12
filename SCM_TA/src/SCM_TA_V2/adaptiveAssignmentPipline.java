@@ -3,6 +3,7 @@ package SCM_TA_V2;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 
 import smile.sequence.HMM;
@@ -45,13 +46,49 @@ public class adaptiveAssignmentPipline {
 		
 		//update the dev profile based on the picked solution 
 */		
-		
-		
-		Test2.run(null, "JDT");
-		Test2.run(null, "Platform");
-		
-		
-		
-	}
+		//create the environment_s1
+				environment_s1.insantiateObjects();
+				
+				//pull in the developer  profile
+				Test2.devInitialization();
+				
+				//cut off the low experienced developers---add ready for attachment developers
+				//starting with half of the developers
+				environment_s1.rankDevs();
+				//Initialize the devNetwork
+				
+				environment_s1.initializeDevNetwork();
+				environment_s1.initializeR(0);
+
+				for(Entry<Integer, Developer> i:environment_s1.getDevNetwork().vertexSet()){
+					System.out.print(i.getKey()+" , ");
+				}
+				
+				System.out.println();
+				
+				for(Integer i:environment_s1.readyForAttachment){
+					System.out.print(i+" , ");
+				}
+				
+				for(int i=0; i<environment_s1.numberOfFiles;i++){
+					//assign sample sequence of states
+					if(i%4==0)
+						environment_s1.addToSequenceOfStates(new state("dynamic", "1"));
+					else
+						environment_s1.addToSequenceOfStates(new state("steady", "0"));
+					//running the experiment--->>> feedbacks afterwards apply on developers profile 
+					//Test2.run(null, "JDT", i);
+					Test2.run(null, "Platform", i);
+					//team change process---determine the team change rate
+					//if(environment_s1.getTheLastState().name=="steady"){
+					//	environment_s1.nodeDeletion();
+						environment_s1.nodeAttachment();
+					//}
+
+						GA_Problem_Parameter.setDevelopersIDForRandom();
+					System.out.println("number of developers---devNetwork:"+environment_s1.getDevNetwork().vertexSet().size());
+				}
+
+			}
 
 }

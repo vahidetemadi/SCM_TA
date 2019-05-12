@@ -54,7 +54,6 @@ public class GA_Problem_Parameter {
 	public static ArrayList<Integer> DevList=new ArrayList<Integer>();
 	public static ArrayList<Integer> DevList_forRandom=new ArrayList<Integer>();
 	public static ArrayList<Integer> DevList_forAssignment=new ArrayList<Integer>();
-	//public static ArrayList<TopologicalOrderIterator<Bug, DefaultEdge>> candidateSchedulings=null;
 	public static ArrayList<ArrayList<Bug>> candidateSchedulings=null;
 	public static HashMap<Integer, ArrayList<Bug>> selectedSchedules=new HashMap<Integer, ArrayList<Bug>>();
 	
@@ -68,11 +67,10 @@ public class GA_Problem_Parameter {
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG;
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
 	public static HashMap<String, Double> priorities=new HashMap<String, Double>();
-	
-	
 	public static TopologicalOrderIterator<Bug, DefaultEdge> tso;
+	
 	public static TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
-	//paramter for new solution in ID approach
+	//Parameter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){
 		Num_of_variables=0;
@@ -82,14 +80,12 @@ public class GA_Problem_Parameter {
 		return Num_of_variables;
 	}
 	
-	
 	public static void initializeDeveloperPool(){
 		for(int i=0;i<3;i++){
 			for(Integer dev:DevList)
 				DevList_forAssignment.add(dev);
 		}
 	}
-	
 	
 	public static void setDevelopersIDForRandom(){
 		DevList_forRandom.clear();
@@ -102,8 +98,7 @@ public class GA_Problem_Parameter {
 		int index=rg.nextInt(DevList_forRandom.size());
 		return DevList_forRandom.get(index);
 	}
-	
-	
+
 	public static int getDevId(){
 		if(DevList_forAssignment.size()>0){
 			Random rg=new Random();
@@ -116,7 +111,6 @@ public class GA_Problem_Parameter {
 			return -1;
 		}	
 	}
-	
 	
 	public static ArrayList<ArrayList<Bug>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG){
 		//all valid schedules(without any loop)
@@ -194,9 +188,7 @@ public class GA_Problem_Parameter {
 		
 		return validSchedulings;
 	}
-	
-	
-	
+		
 	public static void update(ArrayList<DefaultEdge> edges, DefaultEdge e, DefaultDirectedGraph<Bug, DefaultEdge> DDG ,DefaultDirectedGraph<Bug, DefaultEdge> DDG_2
 			, ArrayList<DefaultEdge> verifiedEdges){
 		CycleDetector<Bug,DefaultEdge> CD=new CycleDetector<Bug, DefaultEdge>(DDG_2);
@@ -278,14 +270,12 @@ public class GA_Problem_Parameter {
 		return new ArrayList<DefaultEdge>();
 	}
 	
-
 	public static TopologicalOrderIterator<Bug, DefaultEdge> getTopologicalSorted(DirectedAcyclicGraph<Bug, DefaultEdge> dag){
 		
 		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(dag);
 		
 		return tso;
 	}
-	
 	
 	public static ArrayList<DirectedAcyclicGraph<Bug, DefaultEdge>> getReScheduledGraphs(DirectedAcyclicGraph<Bug, DefaultEdge> DAG 
 			, ArrayList<ArrayList<DefaultEdge>> validSchedulings){
@@ -314,6 +304,7 @@ public class GA_Problem_Parameter {
 			d.getValue().developerNextAvailableHour=0.0;
 		}
 	}
+	
 	public static void assignZoneDev(ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee,ArrayList<Bug> tasks,Solution s){
 		int index=0;
 		int tIndex=0;
@@ -364,7 +355,6 @@ public class GA_Problem_Parameter {
 		tso_competenceMulti2=GA_Problem_Parameter.getTopologicalSorted(DEP);
 		tso_ID=GA_Problem_Parameter.getTopologicalSorted(DEP);
 	}
-	
 	
 	public static void candidateSolutonGeneration(){
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP=GA_Problem_Parameter.getDAGModel(GA_Problem_Parameter.bugs);
@@ -492,6 +482,7 @@ public class GA_Problem_Parameter {
 			GA_Problem_Parameter.tasks.add(b);
 		}
 	}
+	
 	public static void createPriorityTable(){
 		priorities.put("P1", 0.9);
 		priorities.put("P2", 0.6);
@@ -537,12 +528,12 @@ public class GA_Problem_Parameter {
 			System.out.println(devs_prune.size()+"***devs");
 			int i=1;
 			for(Ranking<Developer, Double> r:devs){
-				if(i>_size){
-					//create the potential dev list---- those who tends to attach the list
+				if(i<_size){
+					//create the potential dev list---- those who tend to attach to the list
 					environment_s1.readyForAttachment.add(r.getEntity().getID());
-				}
-				else
 					devs_prune.remove(r.getEntity().getID());
+				}
+					
 				i++;
 			}
 
@@ -555,13 +546,14 @@ public class GA_Problem_Parameter {
 	public static Map.Entry<Integer, Developer> getDev(Integer i){
 		Map.Entry<Integer, Developer> developer=null;
 		for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers_all.entrySet()){
-			if(GA_Problem_Parameter.developers.containsKey(i))
+			if(GA_Problem_Parameter.developers.containsKey(i) && dev.getKey()==i){
 				developer=dev;
+				break;
+			}
 			else
 				developer=null;
 		}
 		return developer;
 	}
-	
 	
 }

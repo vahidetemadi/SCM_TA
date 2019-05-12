@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
+import org.jgrapht.event.VertexTraversalEvent;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.apache.commons.math3.distribution.*;
@@ -23,6 +24,8 @@ public class environment_s1 extends environment {
 	public static ArrayList<Integer> readyForAttachment=new ArrayList<Integer>();
 	static Random random;
 	static int numOfNodes;
+	static int numberOfFiles=9;
+	static ArrayList<state> sequenceOfStates=new ArrayList<state>();
 	
 	public static void insantiateObjects(){
 		SLA=new NormalDistribution(0.8,0.1);
@@ -163,9 +166,14 @@ public class environment_s1 extends environment {
 			p=random.nextDouble();
 			if(p<attachmentRate && numOfNodes>0){
 				shouldBeDeleted.add(i);
-				devNetwork.addVertex(GA_Problem_Parameter.getDev(i));
-				GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
-				totalChanged++;
+				int size=devNetwork.vertexSet().size();
+				if(GA_Problem_Parameter.getDev(i)!=null){
+					Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
+					if(devNetwork.addVertex(developer))
+						System.out.println(devNetwork.vertexSet().size());
+					GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
+					totalChanged++;
+				}
 			}
 		}	
 		//remove nodes from readyForAttachment after added to the devNetwork
@@ -236,6 +244,7 @@ public class environment_s1 extends environment {
 	
 	public static void rankDevs(){
 		ArrayList<Ranking<Developer, Double>> Devs=new ArrayList<Ranking<Developer,Double>>();
+		System.out.println("prelimenary dev list size: "+GA_Problem_Parameter.developers.size());
 		for(Developer d:GA_Problem_Parameter.developers.values()){
 			Devs.add(DevMetrics.computeMetric(d));
 		}
@@ -243,9 +252,10 @@ public class environment_s1 extends environment {
 		for(Ranking<Developer, Double> r:Devs){
 			System.out.println(r.getEntity()+"---"+r.getMetric());
 		}
-		
+		System.out.println("secondary dev list size: "+Devs.size());
 		//cut off the low experienced developers---add ready for attachment developers
-		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers,Devs,50);
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers,Devs,10);
+		Boolean b=true;
 	}
 
 	public static double getTCR_ratio(){
@@ -260,4 +270,11 @@ public class environment_s1 extends environment {
 			return 1;
 	}
 	
+	public static void addToSequenceOfStates(state state){
+		sequenceOfStates.add(state);
+	}
+	
+	public static state getTheLastState(){
+		return sequenceOfStates.get(sequenceOfStates.size()-1);
+	}
 }
