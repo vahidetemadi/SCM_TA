@@ -546,7 +546,7 @@ public class GA_Problem_Parameter {
 	public static Map.Entry<Integer, Developer> getDev(Integer i){
 		Map.Entry<Integer, Developer> developer=null;
 		for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers_all.entrySet()){
-			if(GA_Problem_Parameter.developers.containsKey(i) && dev.getKey()==i){
+			if(GA_Problem_Parameter.developers_all.containsKey(i) && dev.getKey()==i){
 				developer=dev;
 				break;
 			}

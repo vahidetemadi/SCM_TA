@@ -58,7 +58,7 @@ public class adaptiveAssignmentPipline {
 				//Initialize the devNetwork
 				
 				environment_s1.initializeDevNetwork();
-				environment_s1.initializeR(0);
+				environment_s1.initializeR(0.4);
 
 				for(Entry<Integer, Developer> i:environment_s1.getDevNetwork().vertexSet()){
 					System.out.print(i.getKey()+" , ");
@@ -80,10 +80,10 @@ public class adaptiveAssignmentPipline {
 					//Test2.run(null, "JDT", i);
 					Test2.run(null, "Platform", i);
 					//team change process---determine the team change rate
-					//if(environment_s1.getTheLastState().name=="steady"){
-					//	environment_s1.nodeDeletion();
+					if(environment_s1.getTheLastState().name=="steady"){
+						environment_s1.nodeDeletion();
 						environment_s1.nodeAttachment();
-					//}
+					}
 
 						GA_Problem_Parameter.setDevelopersIDForRandom();
 					System.out.println("number of developers---devNetwork:"+environment_s1.getDevNetwork().vertexSet().size());

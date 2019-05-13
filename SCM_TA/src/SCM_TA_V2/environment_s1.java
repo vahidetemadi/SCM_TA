@@ -13,6 +13,7 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.apache.commons.math3.distribution.*;
 import org.apache.commons.math3.geometry.spherical.twod.Vertex;
 
+import smile.neighbor.MPLSH;
 import SCM_TA_V1.*;
 
 public class environment_s1 extends environment {
@@ -26,6 +27,7 @@ public class environment_s1 extends environment {
 	static int numOfNodes;
 	static int numberOfFiles=9;
 	static ArrayList<state> sequenceOfStates=new ArrayList<state>();
+	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(){
 		SLA=new NormalDistribution(0.8,0.1);
@@ -104,11 +106,14 @@ public class environment_s1 extends environment {
 		}
 	}
 	
-	public static void setEdges_newNodes(){
+	public static void setEdges_newNodes(ArrayList<Integer> shouldBeDeleted){
 		int numOfEdges=5;
-		for(Integer i:deletedNodes){
-			devNetwork.addEdge(getSelectedVertexByFitness(), getDevNetworkVertex(i));
-			devNetwork.addEdge(getDevNetworkVertex(i), getSelectedVertexByFitness());
+		Map.Entry<Integer, Developer> dev=null;
+		for(Integer i:shouldBeDeleted){
+			//the selected node should not be as those in the 
+			dev=getSelectedVertexByFitness(i);
+			devNetwork.addEdge(dev, getDevNetworkVertex(i));
+			devNetwork.addEdge(getDevNetworkVertex(i), dev);
 		}
 		
 	}
@@ -159,7 +164,7 @@ public class environment_s1 extends environment {
 	
 	public static void nodeAttachment(){
 		//add the node with the ratio of "1-r"
-		ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
+		shouldBeDeleted.clear();
 		double p;
 		numOfNodes=TCR.sample();
 		for(Integer i:readyForAttachment){
@@ -169,10 +174,10 @@ public class environment_s1 extends environment {
 				int size=devNetwork.vertexSet().size();
 				if(GA_Problem_Parameter.getDev(i)!=null){
 					Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
-					if(devNetwork.addVertex(developer))
-						System.out.println(devNetwork.vertexSet().size());
+					devNetwork.addVertex(developer);
 					GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
 					totalChanged++;
+					numOfNodes--;
 				}
 			}
 		}	
@@ -182,7 +187,7 @@ public class environment_s1 extends environment {
 		}
 		
 		//establish the links for the newly added nodes
-		setEdges_newNodes();
+		setEdges_newNodes(shouldBeDeleted);
 		
 	}
 	
@@ -220,14 +225,14 @@ public class environment_s1 extends environment {
 		
 	}
 	 
-	public static Map.Entry<Integer, Developer> getSelectedVertexByFitness(){
+	public static Map.Entry<Integer, Developer> getSelectedVertexByFitness(Integer selfEdge){
 		
 		Map.Entry<Integer, Developer> selected=null;
 		int totalWight=0;
 		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
 			int weight=node.getValue().weight;
 			double r=random.nextInt(totalWight+weight);
-			if(r>=totalWight)
+			if(r>=totalWight && node.getKey()!=selfEdge)
 				selected=node;
 			totalWight+=weight;
 		}
