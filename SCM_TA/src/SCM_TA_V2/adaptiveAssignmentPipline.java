@@ -77,7 +77,7 @@ public class adaptiveAssignmentPipline {
 					else
 						environment_s1.addToSequenceOfStates(new state("steady", "0"));
 					//running the experiment--->>> feedbacks afterwards apply on developers profile 
-					//Test2.run(null, "JDT", i);
+					Test2.run(null, "JDT", i);
 					Test2.run(null, "Platform", i);
 					//team change process---determine the team change rate
 					if(environment_s1.getTheLastState().name=="steady"){
@@ -85,7 +85,7 @@ public class adaptiveAssignmentPipline {
 						environment_s1.nodeAttachment();
 					}
 
-						GA_Problem_Parameter.setDevelopersIDForRandom();
+					GA_Problem_Parameter.setDevelopersIDForRandom();
 					System.out.println("number of developers---devNetwork:"+environment_s1.getDevNetwork().vertexSet().size());
 				}
 
