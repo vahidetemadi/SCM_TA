@@ -12,8 +12,11 @@ import smile.sequence.HMM;
 public class training {
 
 	//introduce the states
-	static final state steady_state=new state("Steady","1");
-	static final state dynamic_state=new state("Dynamic","2");
+	static final state steady_state=new state("Steady","0");
+	static final state dynamic_state=new state("Dynamic","1");
+	
+	//set the initial states
+	double[] initialStates=new double[]{0.8,0.2};
 	
 	//parameters definition
 	Random random_generator=new Random();
@@ -24,7 +27,7 @@ public class training {
 	//generate a new HMM
 	public HMM<observation> getHMM() {
 		initialize_params();
-		HMM<observation> hmm=new HMM<observation>(states,transitions,emissions);
+		HMM<observation> hmm=new HMM<observation>(initialStates,transitions,emissions, environment_s1.getObservationSymbols());
 		return hmm;
 	}
 
@@ -32,16 +35,31 @@ public class training {
 	public void initialize_params(){
 		
 		//initialize transitions probabilities
+		
+		/*//assign random entries
 		for(int i=0;i<transitions.length;i++){
 			for(int j=0;j<transitions[i].length;j++)
 				transitions[i][j]=random_generator.nextDouble();
-		}
+		}*/
+		
+		//initialize by hand
+		transitions[0][0]=0.7;
+		transitions[0][1]=0.3;
+		transitions[1][0]=0.5;
+		transitions[1][1]=0.5;
 		
 		//initialize emissions probabilities
+		/*//assign random entries
 		for(int i=0;i<emissions.length;i++){
 			for(int j=0;j<emissions[i].length;j++)
 				emissions[i][j]=random_generator.nextDouble();
-		}
+		}*/
+		
+		//assign by hand
+		emissions[0][0]=0.9;
+		emissions[0][1]=0.1;
+		emissions[1][0]=0.1;
+		emissions[1][1]=0.9;
 	}
 	
 	//get the sequence of states

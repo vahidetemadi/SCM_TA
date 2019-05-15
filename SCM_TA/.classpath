@@ -11,5 +11,7 @@
 	<classpathentry kind="lib" path="lib/jgraphx.jar"/>
 	<classpathentry kind="lib" path="lib/MOEAFramework-2.12.jar"/>
 	<classpathentry kind="lib" path="lib/smile-core-1.5.0.jar"/>
+	<classpathentry kind="lib" path="lib/slf4j-api-1.7.25.jar"/>
+	<classpathentry kind="lib" path="lib/smile-math-1.0.2.jar"/>
 	<classpathentry kind="output" path="src"/>
 </classpath>

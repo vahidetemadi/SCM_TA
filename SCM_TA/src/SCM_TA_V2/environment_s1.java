@@ -48,7 +48,7 @@ public class environment_s1 extends environment {
 		
 		
 		//input the mean of desired Poisson distribution and then assign teamChangeRate
-		double t=TCR.sample();
+		//double t=TCR.sample();
 		
 		/*assign the team utilization_mean to the current observation --how to get the right parameters for assignment
 		get the 20 % upper percentile devs as the selected ones-- compute the utilization rate based on the formula (# of changes
@@ -281,5 +281,12 @@ public class environment_s1 extends environment {
 	
 	public static state getTheLastState(){
 		return sequenceOfStates.get(sequenceOfStates.size()-1);
+	}
+
+	public static observation[] getObservationSymbols(){
+		observation o1=new observation(0.7);
+		observation o2=new observation(0.3);
+		
+		return new observation[]{o1,o2};
 	}
 }

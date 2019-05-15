@@ -23,7 +23,7 @@ public class adaptiveAssignmentPipline {
 		}
 		
 		//get the trained Markov model
-		HMM<observation> hmm=training_instance.getHMM();
+		HMM<observation> hmm=training_instance.	getHMM();
 		//find the sequence of predicted states 
 		state[] predicted_statesSequence=training_instance.get_statesSequence(hmm, observationSequence);
 		//apply the policy function and get the right action
@@ -31,10 +31,14 @@ public class adaptiveAssignmentPipline {
 		//data representation for the reigning round==>call the dataRepresentation to make the data ready
 		//analyzing and visualization	
 		
-		//represent the result==> HyperVolume, Contribution and Generational Distance
+		
+		//required in case of 
+		/*//represent the result==> HyperVolume, Contribution and Generational Distance
 		Test2.changeRepresentation("JDT");
-		Test2.changeRepresentation("Platform"); 
+		Test2.changeRepresentation("Platform");*/ 
 
+		
+		
 		environment_s1.insantiateObjects();
 		
 		//pull in the developer  profile
@@ -43,8 +47,9 @@ public class adaptiveAssignmentPipline {
 		//cut off the low experienced developers---add ready for attachment developers
 		//starting with half of the developers
 		environment_s1.rankDevs();
-		//Initialize the devNetwork
 		
+		
+		//Initialize the devNetwork
 		environment_s1.initializeDevNetwork();
 		environment_s1.initializeR(0.4);
 
