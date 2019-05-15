@@ -19,15 +19,15 @@ public class training {
 	Random random_generator=new Random();
 	double[] states=new double[]{0.5,0.5};
 	double[][] transitions=new double[2][2];
-	double[][] emissions=new double[2][16];
+	double[][] emissions=new double[2][2];
 
+	//generate a new HMM
 	public HMM<observation> getHMM() {
 		initialize_params();
 		HMM<observation> hmm=new HMM<observation>(states,transitions,emissions);
 		return hmm;
 	}
-	
-	
+
 	//initialize the params 
 	public void initialize_params(){
 		
@@ -44,6 +44,7 @@ public class training {
 		}
 	}
 	
+	//get the sequence of states
 	public state[] get_statesSequence(HMM<observation> hmm, observation[] o){
 		int[] state_ids=hmm.predict(o);
 		state[] predictedStates=new state[state_ids.length];
