@@ -19,6 +19,7 @@ public class adaptiveAssignmentPipline {
 		
 		//get the trained Markov model
 		HMM<observation> hmm=training_instance.	getHMM();
+		environment_s1.generaeListOfObservation();
 		
 		//apply the policy function and get the right action
 		//ArrayList<String> objectiveSet=operations.policyFunction(predicted_statesSequence[predicted_statesSequence.length-1]);
@@ -57,10 +58,11 @@ public class adaptiveAssignmentPipline {
 		}
 		
 		for(int i=0; i<environment_s1.numberOfFiles;i++){
-			//get the observation
-			environment_s1.addToSequenceOfObservation();
+			//add to the squence of observation
+			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
 			
-			//running the experiment--->>> feedbacks afterwards apply on developers profile 
+			//running the experiment--->>> feedbacks afterwards apply on developers profile
+			//define the path to the files as a parameter that gets passed to Test2.run
 			Test2.run(null, "JDT", i);
 			Test2.run(null, "Platform", i);
 			//team change process---determine the team change rate

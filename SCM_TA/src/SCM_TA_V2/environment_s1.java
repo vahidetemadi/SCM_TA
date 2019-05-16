@@ -28,7 +28,7 @@ public class environment_s1 extends environment {
 	static int numberOfFiles=9;
 	static ArrayList<state> sequenceOfStates=new ArrayList<state>();
 	static ArrayList<observation> observationSequence=new ArrayList<observation>();
-	HashMap<Integer, observation> listOfObservation=new HashMap<Integer, observation>();
+	static HashMap<Integer, observation> listOfObservation=new HashMap<Integer, observation>();
 	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(){
@@ -43,8 +43,11 @@ public class environment_s1 extends environment {
 		return devNetwork;
 	}
 	//prepare the input data set for training
-	public void generaeListOfObservation(){
-		observation o=new 
+	public static void generaeListOfObservation(){
+		observation o1=new observation(0.1);
+		observation o2=new observation(0.9);
+		listOfObservation.put(0, o1);
+		listOfObservation.put(1,o2);
 	}
 	
 	public static void initializeDevNetwork(){	
@@ -251,11 +254,11 @@ public class environment_s1 extends environment {
 		return TCR_ratio;
 	}
 	
-	public static int getObservation(){
-		if(TCR_ratio<0.05)
-			return 0;
+	public static observation getObservation(){
+		if(getTCR_ratio()<0.6)
+			return listOfObservation.get(0);
 		else 
-			return 1;
+			return listOfObservation.get(1);
 	}
 	
 	public static void addToSequenceOfStates(state state){

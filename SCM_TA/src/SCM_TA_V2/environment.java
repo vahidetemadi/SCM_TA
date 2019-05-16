@@ -20,5 +20,5 @@ public abstract class environment {
 	static DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge> devNetwork;	
 	static HashMap<Integer,Developer> developers=null;
 	
-	abstract void generae_observation(observation o);
+	//public abstract void generaeListOfObservation();
 }
