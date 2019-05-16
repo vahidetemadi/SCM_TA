@@ -58,7 +58,7 @@ public class adaptiveAssignmentPipline {
 		
 		for(int i=0; i<environment_s1.numberOfFiles;i++){
 			//get the observation
-			environment_s1.addToSequenceOfObservation(observation);
+			environment_s1.addToSequenceOfObservation();
 			
 			//running the experiment--->>> feedbacks afterwards apply on developers profile 
 			Test2.run(null, "JDT", i);
