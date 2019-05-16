@@ -27,6 +27,8 @@ public class environment_s1 extends environment {
 	static int numOfNodes;
 	static int numberOfFiles=9;
 	static ArrayList<state> sequenceOfStates=new ArrayList<state>();
+	static ArrayList<observation> observationSequence=new ArrayList<observation>();
+	HashMap<Integer, observation> listOfObservation=new HashMap<Integer, observation>();
 	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(){
@@ -41,27 +43,8 @@ public class environment_s1 extends environment {
 		return devNetwork;
 	}
 	//prepare the input data set for training
-	public void generae_observation(observation o){
-		
-		//assign the SLA violation rate--- using the Normal Distribution
-		//o.setSLA_violation(SLA.sample());	
-		
-		
-		//input the mean of desired Poisson distribution and then assign teamChangeRate
-		//double t=TCR.sample();
-		
-		/*assign the team utilization_mean to the current observation --how to get the right parameters for assignment
-		get the 20 % upper percentile devs as the selected ones-- compute the utilization rate based on the formula (# of changes
-		/ total # of lines changed for a changes)-- find the avg and var of the utilization rate-- map those to high or low
-		 category-- they're gonna be the observations
-		*/ 
-		
-		//o.setTeamUtilizationRate_avg(operations.getAVG(developrs_UR));
-		//assign the utilization_var to the current observation-- need to compute the variance for the assignment
-		
-		//NormalDistribution TUR_V=new NormalDistribution(0.8,0.05);
-		//o.setTeamUtilizationRate_var(operations.getVAR(developrs_UR));
-		
+	public void generaeListOfObservation(){
+		observation o=new 
 	}
 	
 	public static void initializeDevNetwork(){	
@@ -279,6 +262,9 @@ public class environment_s1 extends environment {
 		sequenceOfStates.add(state);
 	}
 	
+	public static void addToSequenceOfObservation(observation observation){
+		observationSequence.add(observation);
+	}
 	public static state getTheLastState(){
 		return sequenceOfStates.get(sequenceOfStates.size()-1);
 	}

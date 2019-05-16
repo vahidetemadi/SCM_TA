@@ -15,17 +15,11 @@ public class adaptiveAssignmentPipline {
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 	
 		//generate environment
-		environment environment_scenario1=new environment_s1();
-		//create and intialize a sequence of observations
-		observation[] observationSequence=new observation[4];//specify the number of observation sequence??!!!
-		for(observation o:observationSequence ){
-			environment_scenario1.generae_observation(o);
-		}
+		//environment environment_scenario1=new environment_s1();
 		
 		//get the trained Markov model
 		HMM<observation> hmm=training_instance.	getHMM();
-		//find the sequence of predicted states 
-		state[] predicted_statesSequence=training_instance.get_statesSequence(hmm, observationSequence);
+		
 		//apply the policy function and get the right action
 		//ArrayList<String> objectiveSet=operations.policyFunction(predicted_statesSequence[predicted_statesSequence.length-1]);
 		//data representation for the reigning round==>call the dataRepresentation to make the data ready
@@ -48,7 +42,6 @@ public class adaptiveAssignmentPipline {
 		//starting with half of the developers
 		environment_s1.rankDevs();
 		
-		
 		//Initialize the devNetwork
 		environment_s1.initializeDevNetwork();
 		environment_s1.initializeR(0.4);
@@ -64,11 +57,9 @@ public class adaptiveAssignmentPipline {
 		}
 		
 		for(int i=0; i<environment_s1.numberOfFiles;i++){
-			//assign sample sequence of states
-			if(i%4==0)
-				environment_s1.addToSequenceOfStates(new state("dynamic", "1"));
-			else
-				environment_s1.addToSequenceOfStates(new state("steady", "0"));
+			//get the observation
+			environment_s1.addToSequenceOfObservation(observation);
+			
 			//running the experiment--->>> feedbacks afterwards apply on developers profile 
 			Test2.run(null, "JDT", i);
 			Test2.run(null, "Platform", i);
