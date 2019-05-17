@@ -1,19 +1,15 @@
 package SCM_TA_V2;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 
-import org.jgrapht.event.VertexTraversalEvent;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.apache.commons.math3.distribution.*;
-import org.apache.commons.math3.geometry.spherical.twod.Vertex;
 
-import smile.neighbor.MPLSH;
 import SCM_TA_V1.*;
 
 public class environment_s1 extends environment {
@@ -25,14 +21,14 @@ public class environment_s1 extends environment {
 	public static ArrayList<Integer> readyForAttachment=new ArrayList<Integer>();
 	static Random random;
 	static int numOfNodes;
-	static int numberOfFiles=9;
-	static ArrayList<state> sequenceOfStates=new ArrayList<state>();
+	static int numberOfFiles=0;
+	static ArrayList<state> stateSequence=new ArrayList<state>();
 	static ArrayList<observation> observationSequence=new ArrayList<observation>();
 	static HashMap<Integer, observation> listOfObservation=new HashMap<Integer, observation>();
+	static HashMap<Integer, state> listOfState=new HashMap<Integer, state>();
 	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(){
-		SLA=new NormalDistribution(0.8,0.1);
 		TCR=new PoissonDistribution(5);
 		devNetwork=new DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge>(DefaultEdge.class);
 		random=new Random();
@@ -48,6 +44,15 @@ public class environment_s1 extends environment {
 		observation o2=new observation(0.9);
 		listOfObservation.put(0, o1);
 		listOfObservation.put(1,o2);
+	}
+	
+	public static void generaeListOfState(){
+		//introduce the states
+		final state steady_state=new state("Steady","0");
+		final state dynamic_state=new state("Dynamic","1");
+		
+		listOfState.put(0, steady_state);
+		listOfState.put(1,dynamic_state);
 	}
 	
 	public static void initializeDevNetwork(){	
@@ -262,14 +267,14 @@ public class environment_s1 extends environment {
 	}
 	
 	public static void addToSequenceOfStates(state state){
-		sequenceOfStates.add(state);
+		stateSequence.add(state);
 	}
 	
 	public static void addToSequenceOfObservation(observation observation){
 		observationSequence.add(observation);
 	}
 	public static state getTheLastState(){
-		return sequenceOfStates.get(sequenceOfStates.size()-1);
+		return stateSequence.get(stateSequence.size()-1);
 	}
 
 	public static observation[] getObservationSymbols(){

@@ -3,22 +3,28 @@ package SCM_TA_V2;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Scanner;
+
+import org.jgrapht.alg.color.SaturationDegreeColoring;
 
 import smile.sequence.HMM;
 import SCM_TA_V1.*;
 
 public class adaptiveAssignmentPipline {
-	
+
 	static training training_instance=new training();
+	static ArrayList<String> objectiveSet=new ArrayList<String>();
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 	
 		//generate environment
 		//environment environment_scenario1=new environment_s1();
 		
 		//get the trained Markov model
-		HMM<observation> hmm=training_instance.	getHMM();
+		HMM<observation> HMM=training_instance.	getHMM();
 		environment_s1.generaeListOfObservation();
 		
 		//apply the policy function and get the right action
@@ -34,10 +40,13 @@ public class adaptiveAssignmentPipline {
 
 		
 		
-		environment_s1.insantiateObjects();
+		environment_s1.insantiateObjects(); 
 		
+		System.out.println("Enter the dataset name:");
+		Scanner sc=new Scanner(System.in);
+		String datasetName=sc.next();
 		//pull in the developer  profile
-		Test2.devInitialization();
+		Test2.devInitialization(datasetName);
 		
 		//cut off the low experienced developers---add ready for attachment developers
 		//starting with half of the developers
@@ -57,14 +66,19 @@ public class adaptiveAssignmentPipline {
 			System.out.print(i+" , ");
 		}
 		
+		//set the number of files
+		if(datasetName=="JDT")
+			environment_s1.numberOfFiles=9;
+		else
+			environment_s1.numberOfFiles=10;
+		
 		for(int i=0; i<environment_s1.numberOfFiles;i++){
-			//add to the squence of observation
-			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
+			//find most probable state
+			
 			
 			//running the experiment--->>> feedbacks afterwards apply on developers profile
 			//define the path to the files as a parameter that gets passed to Test2.run
-			Test2.run(null, "JDT", i);
-			Test2.run(null, "Platform", i);
+			Test2.run(null, datasetName, i);
 			//team change process---determine the team change rate
 			if(environment_s1.getTheLastState().name=="steady"){
 				environment_s1.nodeDeletion();
@@ -73,8 +87,17 @@ public class adaptiveAssignmentPipline {
 
 			GA_Problem_Parameter.setDevelopersIDForRandom();
 			System.out.println("number of developers---devNetwork:"+environment_s1.getDevNetwork().vertexSet().size());
+			//add to the squence of observation
+			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
 		}
-
+			
 	}
-
+	
+	public static state getState(HMM<observation> HMM){
+		HashMap<state, Double> stateProbability=new HashMap<state, Double>();
+		for(Map.Entry<Integer, state> s:environment_s1.listOfState.entrySet()){
+			stateProbability.put(s.getValue(), HMM.p(environment_s1.observationSequence.toArray(), environment_s1.stateSequence));
+		}
+		return null;
+	}
 }

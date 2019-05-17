@@ -39,7 +39,7 @@ public class Test2 {
 	//DevMetrics devMetric=new DevMetrics();
 	
 
-	public static void run(ArrayList<String> objectiveSet, String dataset_name, int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{	
+	public static void run(ArrayList<String> objectiveSet, String datasetName, int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{	
 		
 		/*int numOfFiles=0;
 			if(dataset_name=="Platform")
@@ -47,11 +47,11 @@ public class Test2 {
 			else 
 				numOfFiles=9;*/
 			
-			runExperiment(fileNumber);
+			runExperiment(fileNumber, datasetName);
 		
 	}
 	
-	public static void runExperiment(int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{
+	public static void runExperiment(int fileNumber,String datasetName) throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
 		for(int runNum=1;runNum<=1;runNum++){
 			//developers.clear();
@@ -59,15 +59,15 @@ public class Test2 {
 			bugs.clear();
 			//---assigned to orchestration class---->devInitialization();
 			//for(int i=1;i<=numOfFiles;i++){
-				starting(fileNumber, runNum);
+				starting(fileNumber, runNum, datasetName);
 			//}
 			System.gc();
 		}
 		
 	}
 	
-	public static void starting(int fileNumber, int runNum) throws IOException{
-		bugInitialization(fileNumber);
+	public static void starting(int fileNumber, int runNum, String datasetName) throws IOException{
+		bugInitialization(fileNumber, datasetName);
 		GA_Problem_Parameter.generateModelofBugs();
 		GA_Problem_Parameter.candidateSolutonGeneration();
 		NondominatedPopulation[] results = new NondominatedPopulation[2]; 
@@ -79,23 +79,23 @@ public class Test2 {
 		//removeDevelopers();
 	}
 		
-	public static void changeRepresentation(String dataset_name) throws FileNotFoundException{
+	public static void changeRepresentation(String datasetName) throws FileNotFoundException{
 		
-		changeRepresentation cr=new changeRepresentation(dataset_name);
+		changeRepresentation cr=new changeRepresentation(datasetName);
 		cr.txtToCSV();
 	}
 	
 	// initialize the developer objects  
-	public static void devInitialization() throws IOException,NoSuchElementException, URISyntaxException{
+	public static void devInitialization(String datasetName) throws IOException,NoSuchElementException, URISyntaxException{
 		//initialize developers
 				System.out.println("enter the developrs file");
 				Developer developer = null;
 				 System.out.println(System.getProperty("user.dir"));
 				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloper.txt"));
+				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+datasetName+"Developer.txt"));
 				System.out.println("enter the devlopers wage file");
 				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloperWithWage.txt"));
+				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+datasetName+"DeveloperWithWage.txt"));
 				int i=0;
 				int j=0;
 				while(sc.hasNextLine() && scan.hasNextLine()){
@@ -155,7 +155,7 @@ public class Test2 {
 	}
 	
 	// initialize the bugs objects for task assignment  
-	public static void bugInitialization(int fileNumber) throws IOException,NoSuchElementException{	
+	public static void bugInitialization(int fileNumber, String datasetName) throws IOException,NoSuchElementException{	
 		bugs.clear();
 		Scanner sc;//=new Scanner(System.in);
 		int i=0;
@@ -168,7 +168,7 @@ public class Test2 {
 		//System.out.println(sc.nextLine());
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//efforts").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+datasetName+"//efforts").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
@@ -222,12 +222,12 @@ public class Test2 {
 		/*set bug dependencies*/
 		int f=0;
 		System.out.println("enter the bug dependency files");
-		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies");
+		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+datasetName+"//dependencies");
 		String[] columns_bug=null;
 		for(Bug b:bugs.values()){
 			b.DB.clear();
 		}
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+datasetName+"//dependencies").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){

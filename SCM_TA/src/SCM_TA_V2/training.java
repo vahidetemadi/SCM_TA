@@ -11,9 +11,6 @@ import smile.sequence.HMM;
 
 public class training {
 
-	//introduce the states
-	static final state steady_state=new state("Steady","0");
-	static final state dynamic_state=new state("Dynamic","1");
 	
 	//set the initial states
 	double[] initialStates=new double[]{0.8,0.2};
@@ -27,8 +24,9 @@ public class training {
 	//generate a new HMM
 	public HMM<observation> getHMM() {
 		initialize_params();
-		HMM<observation> hmm=new HMM<observation>(initialStates,transitions,emissions, environment_s1.getObservationSymbols());
-		return hmm;
+		HMM<observation> HMM=new HMM<observation>(initialStates,transitions,emissions, environment_s1.getObservationSymbols());
+		
+		return HMM;
 	}
 
 	//initialize the params 
@@ -42,7 +40,7 @@ public class training {
 				transitions[i][j]=random_generator.nextDouble();
 		}*/
 		
-		//initialize by hand
+		//initialized by hand
 		transitions[0][0]=0.7;
 		transitions[0][1]=0.3;
 		transitions[1][0]=0.5;
@@ -55,14 +53,14 @@ public class training {
 				emissions[i][j]=random_generator.nextDouble();
 		}*/
 		
-		//assign by hand
+		//initialized by hand
 		emissions[0][0]=0.9;
 		emissions[0][1]=0.1;
 		emissions[1][0]=0.1;
 		emissions[1][1]=0.9;
 	}
 	
-	//get the sequence of states
+	/*//get the sequence of states
 	public state[] get_statesSequence(HMM<observation> hmm, observation[] o){
 		int[] state_ids=hmm.predict(o);
 		state[] predictedStates=new state[state_ids.length];
@@ -76,6 +74,6 @@ public class training {
 			}
 		
 		return predictedStates;
-	}
+	}*/
 
 }
