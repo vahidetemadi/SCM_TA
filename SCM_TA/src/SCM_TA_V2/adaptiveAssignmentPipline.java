@@ -19,32 +19,17 @@ public class adaptiveAssignmentPipline {
 	static training training_instance=new training();
 	static ArrayList<String> objectiveSet=new ArrayList<String>();
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
-	
-		//generate environment
-		//environment environment_scenario1=new environment_s1();
-		
 		//get the trained Markov model
 		HMM<observation> HMM=training_instance.	getHMM();
-		environment_s1.generaeListOfObservation();
-		
-		//apply the policy function and get the right action
-		//ArrayList<String> objectiveSet=operations.policyFunction(predicted_statesSequence[predicted_statesSequence.length-1]);
-		//data representation for the reigning round==>call the dataRepresentation to make the data ready
-		//analyzing and visualization	
-		
-		
-		//required in case of 
-		/*//represent the result==> HyperVolume, Contribution and Generational Distance
-		Test2.changeRepresentation("JDT");
-		Test2.changeRepresentation("Platform");*/ 
-
-		
+		environment_s1.generaetListOfState();
+		environment_s1.generaetListOfObservation(); 
 		
 		environment_s1.insantiateObjects(); 
 		
 		System.out.println("Enter the dataset name:");
 		Scanner sc=new Scanner(System.in);
 		String datasetName=sc.next();
+		
 		//pull in the developer  profile
 		Test2.devInitialization(datasetName);
 		
@@ -72,15 +57,13 @@ public class adaptiveAssignmentPipline {
 		else
 			environment_s1.numberOfFiles=10;
 		
-		//define the variable for objective set
+		//set the initial observation and 
 		
 		for(int i=0; i<environment_s1.numberOfFiles;i++){
 			//find most probable state
 			state state=getState(HMM);
 			
-			if(environment_s1.getTheLastState().name=="steady")
-			
-			Test2.run(null, datasetName, i);
+			Test2.run(state.actionSet, datasetName, i);
 			//team change process---determine the team change rate
 			if(environment_s1.getTheLastState().name=="steady"){
 				environment_s1.nodeDeletion();
@@ -89,7 +72,7 @@ public class adaptiveAssignmentPipline {
 
 			GA_Problem_Parameter.setDevelopersIDForRandom();
 			System.out.println("number of developers---devNetwork:"+environment_s1.getDevNetwork().vertexSet().size());
-			//add to the squence of observation
+			//add to the sequence of observation
 			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
 		}
 			

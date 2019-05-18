@@ -6,15 +6,15 @@ public class state {
 	
 	String name;
 	Integer id;
-	ArrayList<String> objectiveSet=new ArrayList<String>();
+	ArrayList<String> actionSet=new ArrayList<String>();
 	
 	public state(String name, Integer id){
 		this.name=name;
 		this.id=id;
 	}
 	
-	public void setObjective(String s){
-		objectiveSet.add(s);
+	public void setAction(String s){
+		actionSet.add(s);
 	}
 	
 }

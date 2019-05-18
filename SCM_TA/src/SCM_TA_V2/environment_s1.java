@@ -39,17 +39,19 @@ public class environment_s1 extends environment {
 		return devNetwork;
 	}
 	//prepare the input data set for training
-	public static void generaeListOfObservation(){
+	public static void generaetListOfObservation(){
 		observation o1=new observation(0.1);
 		observation o2=new observation(0.9);
 		listOfObservation.put(0, o1);
 		listOfObservation.put(1,o2);
 	}
 	
-	public static void generaeListOfState(){
+	public static void generaetListOfState(){
 		//introduce the states
 		final state steady_state=new state("Steady",0);
+		steady_state.setAction("diffusion");
 		final state dynamic_state=new state("Dynamic",1);
+		dynamic_state.setAction("cost");
 		
 		listOfState.put(0, steady_state);
 		listOfState.put(1,dynamic_state);

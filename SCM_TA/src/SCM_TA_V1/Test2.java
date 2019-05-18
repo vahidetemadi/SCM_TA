@@ -39,7 +39,7 @@ public class Test2 {
 	//DevMetrics devMetric=new DevMetrics();
 	
 
-	public static void run(ArrayList<String> objectiveSet, String datasetName, int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{	
+	public static void run(ArrayList<String> actionSet, String datasetName, int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{	
 		
 		/*int numOfFiles=0;
 			if(dataset_name=="Platform")
@@ -47,11 +47,11 @@ public class Test2 {
 			else 
 				numOfFiles=9;*/
 			
-			runExperiment(fileNumber, datasetName);
+			runExperiment(actionSet,fileNumber, datasetName);
 		
 	}
 	
-	public static void runExperiment(int fileNumber,String datasetName) throws NoSuchElementException, IOException, URISyntaxException{
+	public static void runExperiment(ArrayList<String> actionSet ,int fileNumber,String datasetName) throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
 		for(int runNum=1;runNum<=1;runNum++){
 			//developers.clear();
@@ -59,19 +59,19 @@ public class Test2 {
 			bugs.clear();
 			//---assigned to orchestration class---->devInitialization();
 			//for(int i=1;i<=numOfFiles;i++){
-				starting(fileNumber, runNum, datasetName);
+				starting(actionSet,fileNumber, runNum, datasetName);
 			//}
 			System.gc();
 		}
 		
 	}
 	
-	public static void starting(int fileNumber, int runNum, String datasetName) throws IOException{
+	public static void starting(ArrayList<String> actionSet ,int fileNumber, int runNum, String datasetName) throws IOException{
 		bugInitialization(fileNumber, datasetName);
 		GA_Problem_Parameter.generateModelofBugs();
 		GA_Problem_Parameter.candidateSolutonGeneration();
 		NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-		Assigning(results,runNum,fileNumber);
+		Assigning(actionSet.get(0),results,runNum,fileNumber);
 		//solution=results[1].get(results[1].size()/2);
 		//writeResult(runNum,i,results);
 		//System.out.println("finished writing");
@@ -318,7 +318,7 @@ public class Test2 {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
+	public static void Assigning(String action,NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
@@ -334,70 +334,21 @@ public class Test2 {
 	    results[1]=result_me;*/
 		
 		//try{
+		
+		switch(action){
+		case "cost":
 			Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+			.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+			.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+	
+			System.out.println("finished cost-based assignment");
 			
-			System.out.println("finished normal assignment");
-			
-			
-			Population result_ID=new Executor().withProblemClass(InformationDifussion_adaptive.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
-			
-			System.out.println("finished ID-based assignment");
-		 
-		    
-		    
-		    //-----------code snippet for including quality indicators metrics
-		    /*Analyzer analyzer=new Analyzer().includeAllMetrics();
-		    
-		    analyzer.add("NSGAII", result_random);
-		    analyzer.add("ID", result_ID);
-			//analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
-			PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
-			analyzer.withProblemClass(InformationDifussion.class).printAnalysis(ps_ID);
-			ps_ID.close();
-			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum)
-		    		, Integer.toString(fileNum));*/
-			
-		    
-		    
-		    
-		    
-		    
-			//Performing the update
-			//double p=new Random().nextDouble();
-			Solution IDSolution=null;
-			for(Solution s:result_ID)
-					IDSolution=s;
-			int c=0;
-			while(GA_Problem_Parameter.tso.hasNext()){
-				Bug b=GA_Problem_Parameter.tso.next();
-				TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-				while(tso_Zone.hasNext()){
-					Developer d=developers.get(IDSolution.getVariable(0));
-					updateDevProfile(b, tso_Zone.next(), d);
-					c++;
-				}
-			}
-			
-			//report the cost---logging the cost
-			System.out.println("knowlwdge and cost for ID-based approach"+
-					"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
-					+"\n"+
-					"	the total cost:"+ IDSolution.getAttribute("cost"));
-			
-			
-			
-			////
 			//cost based///
 			////
 			Solution NormalSolution=null;
 			for(Solution s:result_normal)
-				//if(p>0.5)
 				NormalSolution=s;
-			c=0;
+			int c=0;
 			while(GA_Problem_Parameter.tso.hasNext()){
 				Bug b=GA_Problem_Parameter.tso.next();
 				TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
@@ -409,11 +360,43 @@ public class Test2 {
 			}
 			
 			//report the cost
-			System.out.println("knowlwdge and cost for normal approach"+
+			System.out.println("knowlwdge and cost for cost-based approach"+
 					"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
 					+"\n	the total cost:" + NormalSolution.getObjective(0));
 			
 			
+			
+			break;
+		
+		case "diffusion":
+			Population result_ID=new Executor().withProblemClass(InformationDifussion_adaptive.class).withAlgorithm("NSGAII")
+			.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+			.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+	
+			System.out.println("finished diffusion-based assignment");
+			//Performing the update
+			Solution IDSolution=null;
+			for(Solution s:result_ID)
+					IDSolution=s;
+			int c2=0;
+			while(GA_Problem_Parameter.tso.hasNext()){
+				Bug b=GA_Problem_Parameter.tso.next();
+				TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+				while(tso_Zone.hasNext()){
+					Developer d=developers.get(IDSolution.getVariable(0));
+					updateDevProfile(b, tso_Zone.next(), d);
+					c2++;
+				}
+			}
+			
+			//report the cost---logging the cost
+			System.out.println("knowlwdge and cost for diffusion-based approach"+
+					"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
+					+"\n"+
+					"	the total cost:"+ IDSolution.getAttribute("cost"));
+			
+			break;	
+		}
 			
 		/*}
 		catch(Exception e){
