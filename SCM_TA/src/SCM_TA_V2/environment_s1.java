@@ -48,8 +48,8 @@ public class environment_s1 extends environment {
 	
 	public static void generaeListOfState(){
 		//introduce the states
-		final state steady_state=new state("Steady","0");
-		final state dynamic_state=new state("Dynamic","1");
+		final state steady_state=new state("Steady",0);
+		final state dynamic_state=new state("Dynamic",1);
 		
 		listOfState.put(0, steady_state);
 		listOfState.put(1,dynamic_state);
@@ -273,6 +273,7 @@ public class environment_s1 extends environment {
 	public static void addToSequenceOfObservation(observation observation){
 		observationSequence.add(observation);
 	}
+	
 	public static state getTheLastState(){
 		return stateSequence.get(stateSequence.size()-1);
 	}
@@ -283,4 +284,22 @@ public class environment_s1 extends environment {
 		
 		return new observation[]{o1,o2};
 	}
+
+	@SuppressWarnings("null")
+	public static int[] getStateSequence(){
+		int[] stateSeqId=new int[stateSequence.size()+1];
+		for(int i=0;i<stateSequence.size();i++){
+			stateSeqId[i]=stateSequence.get(i).id;
+		}
+		return stateSeqId;
+	}
+	
+	public static int[] getObsercationSequence(){
+		int[] obsercationSeqId=new int[observationSequence.size()];
+		for(int i=0;i<observationSequence.size();i++){
+			obsercationSeqId[i]=observationSequence.get(i).getTeamChangeRate();
+		}
+		return obsercationSeqId;
+	}
+
 }

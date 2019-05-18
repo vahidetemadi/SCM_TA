@@ -72,12 +72,14 @@ public class adaptiveAssignmentPipline {
 		else
 			environment_s1.numberOfFiles=10;
 		
+		//define the variable for objective set
+		
 		for(int i=0; i<environment_s1.numberOfFiles;i++){
 			//find most probable state
+			state state=getState(HMM);
 			
+			if(environment_s1.getTheLastState().name=="steady")
 			
-			//running the experiment--->>> feedbacks afterwards apply on developers profile
-			//define the path to the files as a parameter that gets passed to Test2.run
 			Test2.run(null, datasetName, i);
 			//team change process---determine the team change rate
 			if(environment_s1.getTheLastState().name=="steady"){
@@ -95,9 +97,24 @@ public class adaptiveAssignmentPipline {
 	
 	public static state getState(HMM<observation> HMM){
 		HashMap<state, Double> stateProbability=new HashMap<state, Double>();
+		
+		int[] observation=environment_s1.getObsercationSequence();
+		int[] states=environment_s1.getStateSequence();
+		
 		for(Map.Entry<Integer, state> s:environment_s1.listOfState.entrySet()){
-			stateProbability.put(s.getValue(), HMM.p(environment_s1.observationSequence.toArray(), environment_s1.stateSequence));
+			states[states.length-1]=s.getKey();
+			stateProbability.put(s.getValue(), HMM.p(observation,states));
 		}
-		return null;
+		
+		Map.Entry<state, Double> selectedState=null;
+		for(Map.Entry<state, Double> stateProb:stateProbability.entrySet()){
+			if (selectedState==null)
+				selectedState=stateProb;
+			else
+				if(stateProb.getValue()>selectedState.getValue())
+					selectedState=stateProb;
+		}
+		environment_s1.addToSequenceOfStates(selectedState.getKey());
+		return selectedState.getKey();
 	}
 }
