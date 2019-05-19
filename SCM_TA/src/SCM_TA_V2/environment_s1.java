@@ -303,5 +303,10 @@ public class environment_s1 extends environment {
 		}
 		return obsercationSeqId;
 	}
+	
+	public static void initializeParameters(){
+		environment_s1.addToSequenceOfStates(listOfState.get(0));
+		environment_s1.addToSequenceOfObservation(environment_s1.getObservation());	
+	}
 
 }

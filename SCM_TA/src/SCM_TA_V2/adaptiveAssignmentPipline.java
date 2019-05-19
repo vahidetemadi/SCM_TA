@@ -20,7 +20,7 @@ public class adaptiveAssignmentPipline {
 	static ArrayList<String> objectiveSet=new ArrayList<String>();
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 		//get the trained Markov model
-		HMM<observation> HMM=training_instance.	getHMM();
+		HMM<observation> HMM=training_instance.getHMM();
 		environment_s1.generaetListOfState();
 		environment_s1.generaetListOfObservation(); 
 		
@@ -40,7 +40,8 @@ public class adaptiveAssignmentPipline {
 		//Initialize the devNetwork
 		environment_s1.initializeDevNetwork();
 		environment_s1.initializeR(0.4);
-
+		environment_s1.initializeParameters();
+		
 		for(Entry<Integer, Developer> i:environment_s1.getDevNetwork().vertexSet()){
 			System.out.print(i.getKey()+" , ");
 		}
@@ -85,12 +86,15 @@ public class adaptiveAssignmentPipline {
 		
 		int[] observation=environment_s1.getObsercationSequence();
 		int[] states=null;
-		
+		 
+		int i=environment_s1.observationSequence.size();
 		for(Map.Entry<Integer, state> s:environment_s1.listOfState.entrySet()){
-			environment_s1.addToSequenceOfStates(s.getValue());
+			if(states!=null || i>1)
+				environment_s1.addToSequenceOfStates(s.getValue());
 			states=environment_s1.getStateSequence();
 			stateProbability.put(s.getValue(), HMM.p(observation,states));
 			environment_s1.stateSequence.remove(environment_s1.stateSequence.size()-1);
+			i++;
 		}
 		
 		Map.Entry<state, Double> selectedState=null;
@@ -101,7 +105,9 @@ public class adaptiveAssignmentPipline {
 				if(stateProb.getValue()>selectedState.getValue())
 					selectedState=stateProb;
 		}
-		environment_s1.addToSequenceOfStates(selectedState.getKey());
+		//environment_s1.addToSequenceOfStates(selectedState.getKey());
 		return selectedState.getKey();
 	}
+
+	
 }
