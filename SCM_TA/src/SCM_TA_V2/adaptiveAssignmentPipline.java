@@ -62,7 +62,9 @@ public class adaptiveAssignmentPipline {
 		for(int i=0; i<environment_s1.numberOfFiles;i++){
 			//find most probable state
 			state state=getState(HMM);
+			environment_s1.addToSequenceOfStates(state);
 			
+			//call for run
 			Test2.run(state.actionSet, datasetName, i);
 			//team change process---determine the team change rate
 			if(environment_s1.getTheLastState().name=="steady"){
@@ -82,11 +84,13 @@ public class adaptiveAssignmentPipline {
 		HashMap<state, Double> stateProbability=new HashMap<state, Double>();
 		
 		int[] observation=environment_s1.getObsercationSequence();
-		int[] states=environment_s1.getStateSequence();
+		int[] states=null;
 		
 		for(Map.Entry<Integer, state> s:environment_s1.listOfState.entrySet()){
-			states[states.length-1]=s.getKey();
+			environment_s1.addToSequenceOfStates(s.getValue());
+			states=environment_s1.getStateSequence();
 			stateProbability.put(s.getValue(), HMM.p(observation,states));
+			environment_s1.stateSequence.remove(environment_s1.stateSequence.size()-1);
 		}
 		
 		Map.Entry<state, Double> selectedState=null;

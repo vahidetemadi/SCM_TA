@@ -289,7 +289,7 @@ public class environment_s1 extends environment {
 
 	@SuppressWarnings("null")
 	public static int[] getStateSequence(){
-		int[] stateSeqId=new int[stateSequence.size()+1];
+		int[] stateSeqId=new int[stateSequence.size()];
 		for(int i=0;i<stateSequence.size();i++){
 			stateSeqId[i]=stateSequence.get(i).id;
 		}
