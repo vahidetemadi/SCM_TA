@@ -39,7 +39,7 @@ public class adaptiveAssignmentPipline {
 		
 		//Initialize the devNetwork
 		environment_s1.initializeDevNetwork();
-		environment_s1.initializeR(0.4);
+		environment_s1.initializeR(0.3);
 		environment_s1.initializeParameters();
 		
 		for(Entry<Integer, Developer> i:environment_s1.getDevNetwork().vertexSet()){
@@ -68,16 +68,18 @@ public class adaptiveAssignmentPipline {
 			//call for run
 			Test2.run(state.actionSet, datasetName, i);
 			//team change process---determine the team change rate
-			if(environment_s1.getTheLastState().name=="steady"){
+			//if(environment_s1.getTheLastState().name=="steady"){
 				environment_s1.nodeDeletion();
 				environment_s1.nodeAttachment();
-			}
+			//}
 
 			GA_Problem_Parameter.setDevelopersIDForRandom();
-			System.out.println("number of developers---devNetwork:"+environment_s1.getDevNetwork().vertexSet().size());
+			System.out.println("number of developers---devNetwork:"+environment_s1.totalChanged+"***"
+								+environment_s1.devNetwork.vertexSet().size());
 			//add to the sequence of observation
 			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
 		}
+		
 			
 	}
 	

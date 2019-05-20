@@ -41,8 +41,8 @@ public class training {
 		}*/
 		
 		//initialized by hand
-		transitions[0][0]=0.7;
-		transitions[0][1]=0.3;
+		transitions[0][0]=0.6;
+		transitions[0][1]=0.4;
 		transitions[1][0]=0.5;
 		transitions[1][1]=0.5;
 		

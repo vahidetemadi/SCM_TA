@@ -360,7 +360,7 @@ public class Test2 {
 			}
 			
 			//report the cost
-			System.out.println("knowlwdge and cost for cost-based approach"+
+			System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
 					"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
 					+"\n	the total cost:" + NormalSolution.getObjective(0));
 			
@@ -390,7 +390,7 @@ public class Test2 {
 			}
 			
 			//report the cost---logging the cost
-			System.out.println("knowlwdge and cost for diffusion-based approach"+
+			System.out.println("knowlwdge and cost of diffusion-based approach (state Steady)"+
 					"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
 					+"\n"+
 					"	the total cost:"+ IDSolution.getAttribute("cost"));

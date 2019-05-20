@@ -29,7 +29,7 @@ public class environment_s1 extends environment {
 	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(){
-		TCR=new PoissonDistribution(5);
+		TCR=new PoissonDistribution(3);
 		devNetwork=new DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge>(DefaultEdge.class);
 		random=new Random();
 	}
@@ -48,9 +48,9 @@ public class environment_s1 extends environment {
 	
 	public static void generaetListOfState(){
 		//introduce the states
-		final state steady_state=new state("Steady",0);
+		final state steady_state=new state("steady",0);
 		steady_state.setAction("diffusion");
-		final state dynamic_state=new state("Dynamic",1);
+		final state dynamic_state=new state("dynamic",1);
 		dynamic_state.setAction("cost");
 		
 		listOfState.put(0, steady_state);
@@ -257,12 +257,13 @@ public class environment_s1 extends environment {
 	}
 
 	public static double getTCR_ratio(){
-		TCR_ratio=totalChanged/devNetwork.vertexSet().size();
+		double down=devNetwork.vertexSet().size();
+		TCR_ratio=totalChanged/down;
 		return TCR_ratio;
 	}
 	
 	public static observation getObservation(){
-		if(getTCR_ratio()<0.6)
+		if(getTCR_ratio()<0.7)
 			return listOfObservation.get(0);
 		else 
 			return listOfObservation.get(1);
