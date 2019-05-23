@@ -8,7 +8,8 @@ import java.util.Random;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
-import org.apache.commons.math3.distribution.*;
+//import org.apache.commons.math3.distribution.*;
+import smile.stat.distribution.PoissonDistribution;
 
 import SCM_TA_V1.*;
 
