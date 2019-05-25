@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
+import java.util.Random;
 import java.util.Scanner;
 
 import org.jgrapht.alg.color.SaturationDegreeColoring;
@@ -18,6 +19,7 @@ public class adaptiveAssignmentPipline {
 
 	static training training_instance=new training();
 	static ArrayList<String> objectiveSet=new ArrayList<String>();
+	static Random random=new Random();
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 		//get the trained Markov model
 		HMM<observation> HMM=training_instance.getHMM();
@@ -67,15 +69,15 @@ public class adaptiveAssignmentPipline {
 			
 			//call for run
 			Test2.run(state.actionSet, datasetName, i);
-			//team change process---determine the team change rate
-			//if(environment_s1.getTheLastState().name=="steady"){
-				environment_s1.nodeDeletion();
-				environment_s1.nodeAttachment();
-			//}
+			
+			//make the update onto devNetwork
+			environment_s1.nodeDeletion();
+			environment_s1.nodeAttachment();
 
 			GA_Problem_Parameter.setDevelopersIDForRandom();
-			System.out.println("number of developers---devNetwork:"+environment_s1.totalChanged+"***"
-								+environment_s1.devNetwork.vertexSet().size());
+			System.out.println("number of developers---devNetwork:"+environment_s1.devNetwork.vertexSet().size()
+					+"*** total changed"
+					+environment_s1.totalChanged);
 			//add to the sequence of observation
 			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
 		}
@@ -99,14 +101,25 @@ public class adaptiveAssignmentPipline {
 			i++;
 		}
 		
+		double r=random.nextDouble();
 		Map.Entry<state, Double> selectedState=null;
+		double lowerBound=0;
 		for(Map.Entry<state, Double> stateProb:stateProbability.entrySet()){
+			if ((lowerBound < r) && (r < (lowerBound+stateProb.getValue())))
+				selectedState=stateProb;
+			else
+				lowerBound+=stateProb.getValue();
+		}
+		
+		
+		/*for(Map.Entry<state, Double> stateProb:stateProbability.entrySet()){
 			if (selectedState==null)
 				selectedState=stateProb;
 			else
 				if(stateProb.getValue()>selectedState.getValue())
 					selectedState=stateProb;
-		}
+		}*/
+		
 		//environment_s1.addToSequenceOfStates(selectedState.getKey());
 		return selectedState.getKey();
 	}
