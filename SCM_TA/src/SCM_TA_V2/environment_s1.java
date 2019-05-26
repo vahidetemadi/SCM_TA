@@ -30,9 +30,9 @@ public class environment_s1 extends environment {
 	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(){
-		TCR=new PoissonDistribution(3);
 		devNetwork=new DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge>(DefaultEdge.class);
 		random=new Random();
+		TCR=new PoissonDistribution(random.nextInt(5));
 	}
 	
 
@@ -138,11 +138,10 @@ public class environment_s1 extends environment {
 		
 		//is done with the a rate of "r"
 		double p=0;
-		numOfNodes=TCR.sample();
 		totalChanged=0;
 		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
 			p=random.nextDouble();
-			if(p<deletionRate && numOfNodes>0){
+			if(p<TCR_ratio && numOfNodes>0){
 				deletedNodes.add(node.getKey());
 				numOfNodes--;
 				totalChanged++;
@@ -160,10 +159,9 @@ public class environment_s1 extends environment {
 		//add the node with the ratio of "1-r"
 		shouldBeDeleted.clear();
 		double p;
-		numOfNodes=TCR.sample();
 		for(Integer i:readyForAttachment){
 			p=random.nextDouble();
-			if(p<attachmentRate && numOfNodes>0){
+			if(p<TCR_ratio && numOfNodes>0){
 				shouldBeDeleted.add(i);
 				int size=devNetwork.vertexSet().size();
 				if(GA_Problem_Parameter.getDev(i)!=null){
@@ -311,4 +309,9 @@ public class environment_s1 extends environment {
 		environment_s1.addToSequenceOfObservation(environment_s1.getObservation());	
 	}
 
+	public static void reinitializePoissonDistribution(double newLambda, double numOfLeavers_threshold){
+		TCR=new PoissonDistribution(newLambda);
+		TCR_ratio=1-TCR.cdf(numOfLeavers_threshold);
+		numOfNodes=(int) TCR.mean();
+	}
 }

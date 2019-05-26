@@ -41,6 +41,8 @@ public class adaptiveAssignmentPipline {
 		
 		//Initialize the devNetwork
 		environment_s1.initializeDevNetwork();
+		
+		//supposed to change initialize the deletion and attachment rate
 		environment_s1.initializeR(0.3);
 		environment_s1.initializeParameters();
 		
@@ -79,6 +81,9 @@ public class adaptiveAssignmentPipline {
 					+"*** total changed"
 					+environment_s1.totalChanged);
 			//add to the sequence of observation
+			//the updates behind poisson process
+			//update lambda
+			
 			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
 		}
 		
