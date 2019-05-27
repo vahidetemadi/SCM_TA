@@ -256,16 +256,17 @@ public class environment_s1 extends environment {
 	}
 
 	public static double getTCR_ratio(){
-		double down=devNetwork.vertexSet().size();
-		TCR_ratio=totalChanged/down;
+		/*double down=devNetwork.vertexSet().size();
+		TCR_ratio=totalChanged/down;*/
 		return TCR_ratio;
 	}
 	
 	public static observation getObservation(){
-		if(getTCR_ratio()<0.7)
-			return listOfObservation.get(0);
-		else 
+		double d=random.nextDouble();
+		if(d<getTCR_ratio())
 			return listOfObservation.get(1);
+		else 
+			return listOfObservation.get(0);
 	}
 	
 	public static void addToSequenceOfStates(state state){
@@ -309,9 +310,9 @@ public class environment_s1 extends environment {
 		environment_s1.addToSequenceOfObservation(environment_s1.getObservation());	
 	}
 
-	public static void reinitializePoissonDistribution(double newLambda, double numOfLeavers_threshold){
+	public static void reinitializeParameters(double newLambda, double bussFactor){
 		TCR=new PoissonDistribution(newLambda);
-		TCR_ratio=1-TCR.cdf(numOfLeavers_threshold);
+		TCR_ratio=1-TCR.cdf(bussFactor);
 		numOfNodes=(int) TCR.mean();
 	}
 }

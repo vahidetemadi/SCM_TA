@@ -84,6 +84,7 @@ public class adaptiveAssignmentPipline {
 			//the updates behind poisson process
 			//update lambda
 			
+			
 			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
 		}
 		
