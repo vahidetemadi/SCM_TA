@@ -77,13 +77,14 @@ public class adaptiveAssignmentPipline {
 			environment_s1.nodeAttachment();
 
 			GA_Problem_Parameter.setDevelopersIDForRandom();
-			System.out.println("number of developers---devNetwork:"+environment_s1.devNetwork.vertexSet().size()
-					+"*** total changed"
+			System.out.println("number of developers---devNetwork: "+environment_s1.devNetwork.vertexSet().size()
+					+"*** total changed: "
 					+environment_s1.totalChanged);
 			//add to the sequence of observation
 			//the updates behind poisson process
 			//update lambda
-			
+			environment_s1.reinitializeParameters(random.nextInt(environment_s1.getDevNetwork().vertexSet().size()),
+					random.nextInt((environment_s1.getDevNetwork().vertexSet().size()/2)));
 			
 			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
 		}
