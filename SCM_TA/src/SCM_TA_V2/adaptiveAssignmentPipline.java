@@ -108,6 +108,14 @@ public class adaptiveAssignmentPipline {
 			i++;
 		}
 		
+		double totalProb=0;
+		for(Map.Entry<state, Double> stateProb:stateProbability.entrySet()){
+			totalProb+=stateProb.getValue();
+		}
+		for(Map.Entry<state, Double> stateProb:stateProbability.entrySet()){
+			stateProbability.put(stateProb.getKey(), stateProb.getValue()/totalProb);
+		}
+		
 		double r=random.nextDouble();
 		Map.Entry<state, Double> selectedState=null;
 		double lowerBound=0;
