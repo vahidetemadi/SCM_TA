@@ -360,9 +360,18 @@ public class Test2 {
 			}
 			
 			//report the cost
-			System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
+			/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
 					"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
-					+"\n	the total cost:" + NormalSolution.getObjective(0));
+					+"\n	the total cost:" + NormalSolution.getObjective(0));*/
+			
+			//write down the results in yaml format
+			
+			YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder()
+					.add("state name", "Dynamic")
+					.add("ID", NormalSolution.getAttribute("diffusedKnowledge").toString())
+					.add("Cost", Double.toString(NormalSolution.getObjective(0)))
+					.build();
+			System.out.println(yaml_Dynamic.toString());
 			
 			
 			
@@ -388,13 +397,18 @@ public class Test2 {
 					c2++;
 				}
 			}
-			
 			//report the cost---logging the cost
-			System.out.println("knowlwdge and cost of diffusion-based approach (state Steady)"+
+			/*System.out.println("knowlwdge and cost of diffusion-based approach (state Steady)"+
 					"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
 					+"\n"+
-					"	the total cost:"+ IDSolution.getAttribute("cost"));
+					"	the total cost:"+ IDSolution.getAttribute("cost"));*/
 			
+			YamlMapping yaml_Steady=Yaml.createYamlMappingBuilder()
+					.add("state name", "Steady")
+					.add("ID", Double.toString(-1*IDSolution.getObjective(0)))
+					.add("Cost", IDSolution.getAttribute("cost").toString())
+					.build();
+			System.out.println(yaml_Steady.toString());
 			break;	
 		}
 			

@@ -251,7 +251,7 @@ public class environment_s1 extends environment {
 		}
 		System.out.println("secondary dev list size: "+Devs.size());
 		//cut off the low experienced developers---add ready for attachment developers
-		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers,Devs,10);
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers,Devs,50);
 		Boolean b=true;
 	}
 
