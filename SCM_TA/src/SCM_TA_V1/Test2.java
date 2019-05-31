@@ -25,7 +25,7 @@ import org.moeaframework.core.Population;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 
-import SCM_TA_V2.environment_s1;
+import com.amihaiemil.eoyaml.*;
 
 
 public class Test2 {
