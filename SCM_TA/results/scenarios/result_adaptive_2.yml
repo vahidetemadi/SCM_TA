@@ -1,0 +1,50 @@
+Cost: 0.0
+ID: 0.0
+state name: Steady
+
+
+Cost: 2.418285504559288E9
+ID: 0.573207798334458
+state name: Dynamic
+
+
+Cost: 1.9498889972536354E9
+ID: 0.5571021662137695
+state name: Dynamic
+
+
+Cost: 6.090837869632981E7
+ID: 0.48040222483388906
+state name: Steady
+
+
+Cost: 9.901268313980466E7
+ID: 0.9348583033334947
+state name: Dynamic
+
+
+Cost: 8.877790016540337E7
+ID: 1.403720476142376
+state name: Steady
+
+
+Cost: 2.0053714571177526E9
+ID: 0.767751095466758
+state name: Dynamic
+
+
+Cost: 8.933817936765398E8
+ID: 0.7509279391465599
+state name: Steady
+
+
+Cost: 3.791775524956664E9
+ID: 1.3030390902639375
+state name: Steady
+
+
+Cost: 8.541553846977984E9
+ID: 0.9024208373629168
+state name: Steady
+
+

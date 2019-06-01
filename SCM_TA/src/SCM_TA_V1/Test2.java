@@ -2,6 +2,7 @@ package SCM_TA_V1;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -26,6 +27,7 @@ import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 
 import com.amihaiemil.eoyaml.*;
+import com.opencsv.*;
 
 
 public class Test2 {
@@ -71,7 +73,7 @@ public class Test2 {
 		GA_Problem_Parameter.generateModelofBugs();
 		GA_Problem_Parameter.candidateSolutonGeneration();
 		NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-		Assigning(actionSet.get(0),results,runNum,fileNumber);
+		Assigning(actionSet.get(0),results,runNum,fileNumber, datasetName);
 		//solution=results[1].get(results[1].size()/2);
 		//writeResult(runNum,i,results);
 		//System.out.println("finished writing");
@@ -318,7 +320,7 @@ public class Test2 {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(String action,NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
+	public static void Assigning(String action,NondominatedPopulation[] results, int runNum, int fileNum, String datasetName) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		
@@ -335,7 +337,8 @@ public class Test2 {
 	    results[1]=result_me;*/
 		
 		//try{
-		try(PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//result_adaptive.yml"))){
+		try(PrintWriter pw=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.yml"),true)))
+		{
 			switch(action){
 			case "cost":
 				Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
@@ -370,13 +373,26 @@ public class Test2 {
 				YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder()
 						.add("state name", "Dynamic")
 						.add("ID", NormalSolution.getAttribute("diffusedKnowledge").toString())
-						.add("Cost", Double.toString(NormalSolution.getObjective(0)))
+						.add("Cost",Double.toString(NormalSolution.getObjective(0)))
 						.build();
 				System.out.println(yaml_Dynamic.toString());
 				
 				//log in a file
 				pw.write(yaml_Dynamic.toString());
+				pw.append("\n");
+				pw.append("\n");
+				pw.append("\n");
+				
+				//clear pw
+				pw.flush();
+				CSVWriter csvWriter=new CSVWriter(pw);
+				
+				
+				
 				pw.close();
+				
+				
+				
 				break;
 			
 			case "diffusion":
@@ -414,10 +430,14 @@ public class Test2 {
 				
 				//log in file
 				pw.write(yaml_Steady.toString());
+				pw.append("\n");
+				pw.append("\n");
+				pw.append("\n");
 				pw.close();
 				break;	
 			}
 		}
+		
 		
 		
 			
