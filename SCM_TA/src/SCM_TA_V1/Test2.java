@@ -382,14 +382,14 @@ public class Test2 {
 				pw.append("\n");
 				pw.append("\n");
 				pw.append("\n");
-				
-				//clear pw
-				pw.flush();
-				CSVWriter csvWriter=new CSVWriter(pw);
-				
-				
-				
 				pw.close();
+				
+				PrintWriter pw2=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
+				StringBuilder sb=new StringBuilder();
+				sb.append(Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.getAttribute("diffusedKnowledge").toString());
+				sb.append('\n');
+				pw2.write(sb.toString());
+				pw2.close();
 				
 				
 				
@@ -428,12 +428,21 @@ public class Test2 {
 						.build();
 				System.out.println(yaml_Steady.toString());
 				
-				//log in file
+				//log in YAML format
 				pw.write(yaml_Steady.toString());
 				pw.append("\n");
 				pw.append("\n");
 				pw.append("\n");
 				pw.close();
+				
+				//write down to CSV file
+				PrintWriter pw3=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
+				StringBuilder sb2=new StringBuilder();
+				sb2.append(IDSolution.getAttribute("cost").toString()+","+Double.toString(-1*IDSolution.getObjective(0)));
+				sb2.append('\n');
+				pw3.write(sb2.toString());
+				pw3.close();
+				pw3.close();
 				break;	
 			}
 		}

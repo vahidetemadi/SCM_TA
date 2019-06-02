@@ -64,7 +64,7 @@ public class adaptiveAssignmentPipline {
 		
 		//set the initial observation and 
 		
-		for(int i=0; i<environment_s1.numberOfFiles;i++){
+		for(int i=1; i<=environment_s1.numberOfFiles;i++){
 			//find most probable state
 			state state=getState(HMM);
 			environment_s1.addToSequenceOfStates(state);
