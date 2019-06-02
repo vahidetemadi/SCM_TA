@@ -52,7 +52,7 @@ public class environment_s1 extends environment {
 		final state steady_state=new state("steady",0);
 		steady_state.setAction("diffusion");
 		final state dynamic_state=new state("dynamic",1);
-		dynamic_state.setAction("cost");
+		dynamic_state.setAction("diffusion");
 		
 		listOfState.put(0, steady_state);
 		listOfState.put(1,dynamic_state);

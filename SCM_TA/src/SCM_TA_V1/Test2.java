@@ -57,12 +57,8 @@ public class Test2 {
 		GA_Problem_Parameter.createPriorityTable();
 		for(int runNum=1;runNum<=1;runNum++){
 			//developers.clear();
-			HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 			bugs.clear();
-			//---assigned to orchestration class---->devInitialization();
-			//for(int i=1;i<=numOfFiles;i++){
-				starting(actionSet,fileNumber, runNum, datasetName);
-			//}
+			starting(actionSet,fileNumber, runNum, datasetName);
 			System.gc();
 		}
 		
@@ -386,7 +382,7 @@ public class Test2 {
 				
 				PrintWriter pw2=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
 				StringBuilder sb=new StringBuilder();
-				sb.append(Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.getAttribute("diffusedKnowledge").toString());
+				sb.append(fileNum +","+"Dynamic ,"+ Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.getAttribute("diffusedKnowledge").toString());
 				sb.append('\n');
 				pw2.write(sb.toString());
 				pw2.close();
@@ -438,7 +434,7 @@ public class Test2 {
 				//write down to CSV file
 				PrintWriter pw3=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
 				StringBuilder sb2=new StringBuilder();
-				sb2.append(IDSolution.getAttribute("cost").toString()+","+Double.toString(-1*IDSolution.getObjective(0)));
+				sb2.append(fileNum +","+"Steady ,"+IDSolution.getAttribute("cost").toString()+","+Double.toString(-1*IDSolution.getObjective(0)));
 				sb2.append('\n');
 				pw3.write(sb2.toString());
 				pw3.close();
