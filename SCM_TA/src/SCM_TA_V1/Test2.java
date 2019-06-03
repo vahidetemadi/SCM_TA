@@ -213,7 +213,7 @@ public class Test2 {
 
 		
 		//prune bug list
-		GA_Problem_Parameter.pruneList(bugs);
+		//GA_Problem_Parameter.pruneList(bugs);
 		
 		
 		
@@ -382,7 +382,7 @@ public class Test2 {
 				
 				PrintWriter pw2=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
 				StringBuilder sb=new StringBuilder();
-				sb.append(fileNum +","+"Dynamic ,"+ Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.getAttribute("diffusedKnowledge").toString());
+				sb.append(fileNum +", Dynamic, Cost, "+ Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.getAttribute("diffusedKnowledge").toString());
 				sb.append('\n');
 				pw2.write(sb.toString());
 				pw2.close();
@@ -434,7 +434,7 @@ public class Test2 {
 				//write down to CSV file
 				PrintWriter pw3=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
 				StringBuilder sb2=new StringBuilder();
-				sb2.append(fileNum +","+"Steady ,"+IDSolution.getAttribute("cost").toString()+","+Double.toString(-1*IDSolution.getObjective(0)));
+				sb2.append(fileNum +", Steady, Diffusion, "+IDSolution.getAttribute("cost").toString()+","+Double.toString(-1*IDSolution.getObjective(0)));
 				sb2.append('\n');
 				pw3.write(sb2.toString());
 				pw3.close();
