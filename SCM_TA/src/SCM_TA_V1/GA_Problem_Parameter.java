@@ -2,6 +2,7 @@ package SCM_TA_V1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -70,6 +71,9 @@ public class GA_Problem_Parameter {
 	public static TopologicalOrderIterator<Bug, DefaultEdge> tso;
 	
 	public static TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
+	public static ArrayList<HashMap<Integer,Bug>> listOfSubBugs=new ArrayList<HashMap<Integer,Bug>>();	
+	
+	
 	//Parameter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){
@@ -555,5 +559,22 @@ public class GA_Problem_Parameter {
 		}
 		return developer;
 	}
-	
+
+	public static void splitBugList(HashMap<Integer, Bug> bugList){	
+		int i=0;
+		HashMap<Integer, Bug> b=null;
+		for(Map.Entry<Integer, Bug> bug:bugList.entrySet()){
+			if (i==0){
+				b=new HashMap<Integer, Bug>();
+				listOfSubBugs.add(b);
+				i++;
+			}
+			else if (i>0 && i<21){
+				b.put(bug.getKey(), bug.getValue());
+				i++;
+			}
+			else 
+				i=0;
+		}
+	}
 }

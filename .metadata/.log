@@ -1498,3 +1498,21 @@ Caused by: java.io.IOException: Server returned HTTP response code: 403 for URL:
 	at sun.net.www.protocol.https.HttpsURLConnectionImpl.getResponseCode(Unknown Source)
 	at org.eclipse.jdt.internal.core.JavaElement.getURLContents(JavaElement.java:848)
 	... 11 more
+
+!ENTRY org.eclipse.ui 4 4 2019-06-08 17:28:08.692
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.disable.grammar.constraints
+
+!ENTRY org.eclipse.ui 4 4 2019-06-08 17:28:08.739
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.reload.dependencies
+
+!ENTRY org.eclipse.ui 4 4 2019-06-08 17:28:08.740
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.disable.grammar.constraints
+
+!ENTRY org.eclipse.ui 4 4 2019-06-08 17:28:08.740
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.reload.dependencies
+
+!ENTRY org.eclipse.ui 4 4 2019-06-08 17:28:08.741
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.disable.grammar.constraints
+
+!ENTRY org.eclipse.ui 4 4 2019-06-08 17:28:08.741
+!MESSAGE Could not retrieve EHandlerService or ICommandService from context evaluation context fororg.eclipse.wst.xml.ui.reload.dependencies

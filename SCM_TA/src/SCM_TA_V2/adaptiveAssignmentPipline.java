@@ -20,9 +20,11 @@ public class adaptiveAssignmentPipline {
 	static training training_instance=new training();
 	static ArrayList<String> objectiveSet=new ArrayList<String>();
 	static Random random=new Random();
+	static HMM<observation> HMM=null;
+	static String datasetName=null;
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 		//get the trained Markov model
-		HMM<observation> HMM=training_instance.getHMM();
+		HMM=training_instance.getHMM();
 		environment_s1.generaetListOfState();
 		environment_s1.generaetListOfObservation(); 
 		
@@ -30,7 +32,7 @@ public class adaptiveAssignmentPipline {
 		
 		System.out.println("Enter the dataset name:");
 		Scanner sc=new Scanner(System.in);
-		String datasetName=sc.next();
+		datasetName=sc.next();
 		
 		//pull in the developer  profile
 		Test2.devInitialization(datasetName);
@@ -63,33 +65,49 @@ public class adaptiveAssignmentPipline {
 			environment_s1.numberOfFiles=10;
 		
 		//set the initial observation and 
-		
+		int roundNum=1;
 		for(int i=1; i<=environment_s1.numberOfFiles;i++){
-			//find most probable state
-			state state=getState(HMM);
-			environment_s1.addToSequenceOfStates(state);
-			
 			//call for run
-			Test2.run(state.actionSet, datasetName, i);
-			
-			//make the update onto devNetwork
-			environment_s1.nodeDeletion();
-			environment_s1.nodeAttachment();
+			GA_Problem_Parameter.listOfSubBugs.clear();
+			Test2.run(datasetName, i);
+			int j=0;
+			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
+				//set bug dependencies
+				Test2.setBugDependencies(datasetName, bugList);
+				
+				//call the GA initialization--after party call
+				Test2.initializeGAParameter(bugList);
+				
+				//generate the models
+				GA_Problem_Parameter.generateModelofBugs();
+				GA_Problem_Parameter.candidateSolutonGeneration();
+				
+				//find most probable state
+				state state=getState(HMM);
+				environment_s1.addToSequenceOfStates(state);
 
-			GA_Problem_Parameter.setDevelopersIDForRandom();
-			System.out.println("number of developers---devNetwork: "+environment_s1.devNetwork.vertexSet().size()
-					+"*** total changed: "
-					+environment_s1.totalChanged);
-			//add to the sequence of observation
-			//the updates behind poisson process
-			//update lambda
-			environment_s1.reinitializeParameters(random.nextInt(environment_s1.getDevNetwork().vertexSet().size()),
-					random.nextInt((environment_s1.getDevNetwork().vertexSet().size()/2)));
-			
-			environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
-		}
-		
-			
+				Test2.Assigning(state.actionSet.get(0), 1, roundNum, datasetName);
+				
+				//make the update onto devNetwork
+				environment_s1.nodeDeletion();
+				environment_s1.nodeAttachment();
+
+				GA_Problem_Parameter.setDevelopersIDForRandom();
+				System.out.println("number of developers---devNetwork: "+environment_s1.devNetwork.vertexSet().size()
+						+"*** total changed: "
+						+environment_s1.totalChanged);
+				//add to the sequence of observation
+				//the updates behind poisson process
+				//update lambda
+				environment_s1.reinitializeParameters(random.nextInt(environment_s1.getDevNetwork().vertexSet().size()),
+						random.nextInt((environment_s1.getDevNetwork().vertexSet().size()/2)));
+				
+				environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
+
+				j++;
+				roundNum++;
+			}
+		}	
 	}
 	
 	public static state getState(HMM<observation> HMM){
@@ -139,5 +157,5 @@ public class adaptiveAssignmentPipline {
 		return selectedState.getKey();
 	}
 
-	
+
 }

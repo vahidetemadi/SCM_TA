@@ -41,7 +41,7 @@ public class Test2 {
 	//DevMetrics devMetric=new DevMetrics();
 	
 
-	public static void run(ArrayList<String> actionSet, String datasetName, int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{	
+	public static void run( String datasetName, int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{	
 		
 		/*int numOfFiles=0;
 			if(dataset_name=="Platform")
@@ -49,27 +49,24 @@ public class Test2 {
 			else 
 				numOfFiles=9;*/
 			
-			runExperiment(actionSet,fileNumber, datasetName);
+			runExperiment(fileNumber, datasetName);
 		
 	}
 	
-	public static void runExperiment(ArrayList<String> actionSet ,int fileNumber,String datasetName) throws NoSuchElementException, IOException, URISyntaxException{
+	public static void runExperiment(int fileNumber,String datasetName) throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
 		for(int runNum=1;runNum<=1;runNum++){
 			//developers.clear();
 			bugs.clear();
-			starting(actionSet,fileNumber, runNum, datasetName);
+			starting(fileNumber, runNum, datasetName);
 			System.gc();
 		}
 		
 	}
 	
-	public static void starting(ArrayList<String> actionSet ,int fileNumber, int runNum, String datasetName) throws IOException{
+	public static void starting(int fileNumber, int runNum, String datasetName) throws IOException{
 		bugInitialization(fileNumber, datasetName);
-		GA_Problem_Parameter.generateModelofBugs();
-		GA_Problem_Parameter.candidateSolutonGeneration();
-		NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-		Assigning(actionSet.get(0),results,runNum,fileNumber, datasetName);
+		//Assigning(actionSet.get(0),runNum,fileNumber, datasetName);
 		//solution=results[1].get(results[1].size()/2);
 		//writeResult(runNum,i,results);
 		//System.out.println("finished writing");
@@ -213,16 +210,44 @@ public class Test2 {
 
 		
 		//prune bug list
-		//GA_Problem_Parameter.pruneList(bugs);
+		GA_Problem_Parameter.splitBugList(bugs);
 		
+	}
+	
+	public static void initializeGAParameter(HashMap<Integer,Bug> bugList){
+		//initialize GA parameters
+		GA_Problem_Parameter.Num_of_variables=bugList.size();
 		
+		int b_index=0;
+		GA_Problem_Parameter.bugs=new Bug[bugList.size()];
+		for(Entry<Integer, Bug> b2:bugList.entrySet()){
+			GA_Problem_Parameter.bugs[b_index]=b2.getValue();
+			b_index++;
+		}
 		
+		//GA_Problem_Parameter
+		GA_Problem_Parameter.Num_of_Bugs=bugs.size();
+		GA_Problem_Parameter.Num_of_Active_Developers=developers.size();
+		GA_Problem_Parameter.upperDevId=developers.size()+1;
+		GA_Problem_Parameter.Num_of_functions_Multi=2;
+		GA_Problem_Parameter.Num_of_variables=0;
+		for(Entry<Integer, Bug>  b:bugs.entrySet()){
+			for(Map.Entry<Zone, Double>  zone:b.getValue().BZone_Coefficient.entrySet()){
+				GA_Problem_Parameter.Num_of_variables++;
+			}
+		}
+		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
+		GA_Problem_Parameter.population=500;
+	}
+	
+	public static void setBugDependencies(String datasetName, HashMap<Integer,Bug> bugList) throws FileNotFoundException{
 		/*set bug dependencies*/
-		int f=0;
+		int f = 0,i=0;
+		Scanner sc,sc1=null;
 		System.out.println("enter the bug dependency files");
 		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+datasetName+"//dependencies");
 		String[] columns_bug=null;
-		for(Bug b:bugs.values()){
+		for(Bug b:bugList.values()){
 			b.DB.clear();
 		}
 		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+datasetName+"//dependencies").listFiles()){
@@ -241,22 +266,22 @@ public class Test2 {
 					try{
 						for(String st:columns_bug){
 							if(st.contains("P3")){
-								bugs.get(Integer.parseInt(columns_bug[k-1])).priority="P3";
+								bugList.get(Integer.parseInt(columns_bug[k-1])).priority="P3";
 							}
 							if(st.contains("P2")){
-								bugs.get(Integer.parseInt(columns_bug[k-1])).priority="P2";
+								bugList.get(Integer.parseInt(columns_bug[k-1])).priority="P2";
 							}
 							if(st.contains("P1")){
-								bugs.get(Integer.parseInt(columns_bug[k-1])).priority="P1";
+								bugList.get(Integer.parseInt(columns_bug[k-1])).priority="P1";
 							}
 						}
 						
 						if(columns_bug[k].trim().length() > 0){
 							try{
 								Integer ID_1=Integer.parseInt(columns_bug[k-1]);
-								System.out.println(bugs.get(ID_1).ID);
-								if(bugs.get(Integer.parseInt(columns_bug[k-1]))!=null && bugs.get(Integer.parseInt(columns_bug[k]))!=null){
-									bugs.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugs.get(Integer.parseInt(columns_bug[k])));
+								System.out.println(bugList.get(ID_1).ID);
+								if(bugList.get(Integer.parseInt(columns_bug[k-1]))!=null && bugList.get(Integer.parseInt(columns_bug[k]))!=null){
+									bugList.get(Integer.parseInt(columns_bug[k-1])).DB.add(bugList.get(Integer.parseInt(columns_bug[k])));
 									f++;
 								}
 								
@@ -284,39 +309,11 @@ public class Test2 {
 		/* set zone dependencies */
 		
 		/* end setting zone dependencies */
-		
 		System.out.println("end of setting dependencies");
-		
-		//initialize GA parameters
-		GA_Problem_Parameter.Num_of_variables=bugs.size();
-		
-		int b_index=0;
-		GA_Problem_Parameter.bugs=new Bug[bugs.size()];
-		for(Entry<Integer, Bug> b2:bugs.entrySet()){
-			GA_Problem_Parameter.bugs[b_index]=b2.getValue();
-			b_index++;
-		}
-		
-		//GA_Problem_Parameter
-		GA_Problem_Parameter.Num_of_Bugs=bugs.size();
-		GA_Problem_Parameter.Num_of_Active_Developers=developers.size();
-		GA_Problem_Parameter.upperDevId=developers.size()+1;
-		GA_Problem_Parameter.Num_of_functions_Multi=2;
-		GA_Problem_Parameter.Num_of_variables=0;
-		for(Entry<Integer, Bug>  b:bugs.entrySet()){
-			for(Map.Entry<Zone, Double>  zone:b.getValue().BZone_Coefficient.entrySet()){
-				GA_Problem_Parameter.Num_of_variables++;
-			}
-			}
-		GA_Problem_Parameter.population=500;
-		
-		
-		//assign the tso to GA-Problem-Parameter
-		
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(String action,NondominatedPopulation[] results, int runNum, int fileNum, String datasetName) throws IOException{
+	public static void Assigning(String action, int runNum, int fileNum, String datasetName) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		
