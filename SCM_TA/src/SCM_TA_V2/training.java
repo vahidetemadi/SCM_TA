@@ -37,8 +37,8 @@ public class training {
 		}*/
 		
 		//initialized by hand
-		transitions[0][0]=0.6;
-		transitions[0][1]=0.4;
+		transitions[0][0]=0.5;
+		transitions[0][1]=0.5;
 		transitions[1][0]=0.5;
 		transitions[1][1]=0.5;
 		
@@ -50,10 +50,10 @@ public class training {
 		}*/
 		
 		//initialized by hand
-		emissions[0][0]=0.9;
-		emissions[0][1]=0.1;
-		emissions[1][0]=0.1;
-		emissions[1][1]=0.9;
+		emissions[0][0]=0.7;
+		emissions[0][1]=0.3;
+		emissions[1][0]=0.3;
+		emissions[1][1]=0.7;
 	}
 	
 	/*//get the sequence of states

@@ -78,7 +78,7 @@ public class adaptiveAssignmentPipline {
 				//call the GA initialization--after party call
 				Test2.initializeGAParameter(bugList);
 				
-				//generate the models
+				//generate the models for create the candidates
 				GA_Problem_Parameter.generateModelofBugs();
 				GA_Problem_Parameter.candidateSolutonGeneration();
 				
