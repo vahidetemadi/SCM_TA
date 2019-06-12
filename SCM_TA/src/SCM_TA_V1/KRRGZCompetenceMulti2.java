@@ -16,7 +16,7 @@ import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 
-public class CompetenceMulti2_problem extends AbstractProblem {
+public class KRRGZCompetenceMulti2 extends AbstractProblem {
 	
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
@@ -24,7 +24,7 @@ public class CompetenceMulti2_problem extends AbstractProblem {
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
-	public CompetenceMulti2_problem(){
+	public KRRGZCompetenceMulti2(){
 		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
 	

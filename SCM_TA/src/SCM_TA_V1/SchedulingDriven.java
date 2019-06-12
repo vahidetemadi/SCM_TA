@@ -25,22 +25,24 @@ import org.moeaframework.problem.AbstractProblem;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-public class InformationDifussion extends AbstractProblem{
+public class SchedulingDriven extends AbstractProblem{
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
-	ArrayList<Integer> schedules;
-	HashMap<Integer,Bug> varToBug;
-	ArrayList<ArrayList<Integer>> variables;
-	ArrayList<Integer> combinedLists;
+	ArrayList<ArrayList<Integer>> schedules=new ArrayList<ArrayList<Integer>>();
+	HashMap<Integer,Bug> varToBug; //supposed to be used for mapping the item in chromosome to a particular bug
+	ArrayList<ArrayList<ArrayList<Integer>>> variables;
+	ArrayList<ArrayList<Integer>> variable;
+	ArrayList<Integer> encodedSolution;
+	ArrayList<ArrayList<Integer>> encodedSolutions= new ArrayList<ArrayList<Integer>>();
 	ArrayList<Integer> assignment;
 	TopologicalOrderIterator<Zone,DefaultEdge> tso_zones;
 	AllDirectedPaths<Bug, DefaultEdge> paths;
 	DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
-	public InformationDifussion(){
+	public SchedulingDriven(){
 		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 		//this.bugs=bugs;
 		//this.developers= new ArrayList<Developer>(Arrays.asList(developers));
@@ -50,18 +52,16 @@ public class InformationDifussion extends AbstractProblem{
 	public void init(){
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_ID;
-		schedules=new ArrayList<Integer>();
+		
 		varToBug=new HashMap<Integer, Bug>();
-		variables=new ArrayList<ArrayList<Integer>>();
-		combinedLists=new ArrayList<Integer>();
+		//variables holds the list of choromosome and schedule
+		variables=new ArrayList<ArrayList<ArrayList<Integer>>>();
 		assignment=new ArrayList<Integer>();
-		for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++)
-			schedules.add(0);
 		
 		/* copy all the arrival bugs to the tasks */
 
 		
-		
+		//sort the subtasks for a bug-- initialize the assignment choromosome-- set the varToBug dictionary
 		int index=0;
 		for(Bug b:GA_Problem_Parameter.tasks){
 			b.setZoneDEP();
@@ -73,80 +73,30 @@ public class InformationDifussion extends AbstractProblem{
 			varToBug.put(index, b);
 			index++;
 		}
+		int numOfSchedules=1;
 		
-		/* generate valid schedules*/
-		int m,n,p,q;
-		int[] indexes=new int[2];
-		paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
-		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
-		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
-		ArrayList<Integer> indices=new ArrayList<Integer>();
-		Random randomizer=new Random();
-		//shuffling the bug list to provide randomness in the scheduling
-		GA_Problem_Parameter.shuffledTasks=(ArrayList<Bug>) GA_Problem_Parameter.tasks.clone();
-		Collections.shuffle(GA_Problem_Parameter.shuffledTasks);
-		for(int i=0;i<GA_Problem_Parameter.shuffledTasks.size()-1;i++){
-			indexes=getIndex(i);
-			m=indexes[0];
-			n=indexes[1];
-			for(int j=i+1;j<GA_Problem_Parameter.shuffledTasks.size();j++){
-				indexes=getIndex(j);
-				p=indexes[0];
-				q=indexes[1];
-				if(compareSubtasksAssignee(m,n,p,q,assignment)){
-					try{
-						if(paths.getAllPaths(varToBug.get(i),varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
-							int t=-1;
-							indices.clear();
-							indices.add(i);
-							indices.add(j);
-							try{
-								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
-								if(t<0){
-									t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
-								}
-								boolean b=new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles();
-								DEP_scheduling.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
-										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
-							}
-							catch(Exception ex)
-							{
-								
-							} 
-							boolean b=new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles();
-							if(!b)
-								schedules.set(t, 1);
-							else
-								DEP_scheduling.removeEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
-										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
-						}
-					}
-					catch (IllegalArgumentException e) {
-						// TODO: handle exception
-					}
+		for(int i=0;i<numOfSchedules;i++){
+			schedules.add(generateSchedule());
+		}
+		
+		for(ArrayList<Integer> schedule:schedules){
+			variable=new ArrayList<ArrayList<Integer>>();
+			variable.add(assignment);
+			variable.add(schedule);
+			variables.add(variable);
+		}
+		
+		//create final list
+		for(ArrayList<ArrayList<Integer>> var:variables){
+			encodedSolution=new ArrayList<Integer>();
+			for(ArrayList<Integer> list:var){
+				for(Integer i:list){
+					encodedSolution.add(i);
 				}
+				encodedSolution.add(-100);
 			}
+			encodedSolutions.add(encodedSolution);	
 		}
-		variables.add(assignment);
-		variables.add(schedules);
-		
-		for(ArrayList<Integer> list:variables){
-			for(Integer i:list){
-				combinedLists.add(i);
-			}
-			combinedLists.add(-100);
-		}
-	}
-	
-	public int[] getIndex(int index){
-		int[] indexes=new int[2];
-		int sIndex=0;
-		for(int i=0;i<index;i++){
-			sIndex+=GA_Problem_Parameter.tasks.get(i).BZone_Coefficient.size();
-		}
-		indexes[0]=sIndex;
-		indexes[1]=sIndex+GA_Problem_Parameter.tasks.get(index).BZone_Coefficient.size();
-		return indexes;
 	}
 	
 	public static Boolean compareSubtasksAssignee(int i, int j,int p, int k, ArrayList<Integer> assignment){
@@ -160,31 +110,30 @@ public class InformationDifussion extends AbstractProblem{
 		return b;
 	}
 	
-	public static String arrayTString(ArrayList<Integer> list){
+	/*public static String arrayToString(ArrayList<Integer> list){
 		String s="";
 		for(Integer i:list){
 			s+=i+",";
 		}
 		s=s.substring(0, s.length()-2);
 		return s;
-	}
+	}*/
 	
-	
-	public static ArrayList<Integer> stringToList(String s){
+	/*public static ArrayList<Integer> stringToList(String s){
 		ArrayList<Integer> list=new ArrayList<Integer>();
 		for(String st:s.split(",")){
 			list.add(Integer.parseInt(st));
 		}
 		return list;
-	}
+	}*/
 	
 	@Override
 	public Solution newSolution(){
 		init();
 		//changed NUM of variables for the solution
-		Solution solution=new Solution(combinedLists.size(),GA_Problem_Parameter.Num_of_functions_Multi);
-		for(int i=0;i<combinedLists.size();i++){
-			solution.setVariable(i,EncodingUtils.newInt(combinedLists.get(i), combinedLists.get(i)));
+		Solution solution=new Solution(encodedSolutions.get(0).size(),GA_Problem_Parameter.Num_of_functions_Multi);
+		for(int i=0;i<encodedSolutions.get(0).size();i++){
+			solution.setVariable(i,EncodingUtils.newInt(encodedSolutions.get(0).get(i), encodedSolutions.get(0).get(i)));
 		}
 		return solution;
 	}
@@ -258,7 +207,88 @@ public class InformationDifussion extends AbstractProblem{
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);
 	}
+	
+	
+	
 
+	public ArrayList<Integer> generateSchedule(){
+		//schedule has the same size of pEdges (potential edges)
+		ArrayList<Integer> schedule=new ArrayList<Integer>();
+		//initialization
+		for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++)
+			schedule.add(0);
+		
+		/* generate valid schedules*/
+		int m,n,p,q;
+		int[] indexes=new int[2];
+		paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
+		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
+		ArrayList<Integer> indices=new ArrayList<Integer>();
+		
+		//shuffling the bug list to provide randomness in the scheduling
+		GA_Problem_Parameter.shuffledTasks=(ArrayList<Bug>) GA_Problem_Parameter.tasks.clone();
+		Collections.shuffle(GA_Problem_Parameter.shuffledTasks);
+		for(int i=0;i<GA_Problem_Parameter.shuffledTasks.size()-1;i++){
+			indexes=getIndex(i);
+			m=indexes[0];
+			n=indexes[1];
+			for(int j=i+1;j<GA_Problem_Parameter.shuffledTasks.size();j++){
+				indexes=getIndex(j);
+				p=indexes[0];
+				q=indexes[1];
+				if(compareSubtasksAssignee(m,n,p,q,assignment)){
+					try{
+						if(paths.getAllPaths(varToBug.get(i),varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
+							int t=-1;
+							indices.clear();
+							indices.add(i);
+							indices.add(j);
+							try{
+								//get the information for potential link-- index t determine if the edge already exists there
+								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
+								if(t<0){
+									t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
+								}
+								boolean b=new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles();
+								// in case a link exits we add that link to DEP_scheduling (the graph of a specific schedule)
+								DEP_scheduling.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
+										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
+							}
+							catch(Exception ex)
+							{
+								
+							} 
+							//check if added link does not result in a cycle otherwise the added link gets removed
+							boolean b=new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles();
+							if(!b)
+								schedule.set(t, 1);
+							else
+								DEP_scheduling.removeEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
+										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
+						}
+					}
+					catch (IllegalArgumentException e) {
+						// TODO: handle exception
+					}
+				}
+			}
+		}
+		return schedule;
+	}
+
+	//get the start and end indices of each bug in the choromosome
+	public int[] getIndex(int index){
+		int[] indexes=new int[2];
+		int sIndex=0;
+		for(int i=0;i<index;i++){
+			sIndex+=GA_Problem_Parameter.tasks.get(i).BZone_Coefficient.size();
+		}
+		indexes[0]=sIndex;
+		indexes[1]=sIndex+GA_Problem_Parameter.tasks.get(index).BZone_Coefficient.size();
+		return indexes;
+	}
+	
 	public void generateDAG(){
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 	}

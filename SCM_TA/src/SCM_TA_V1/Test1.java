@@ -351,10 +351,10 @@ public class Test1 {
 	    results[1]=result_me;*/
 		
 		try{
-			Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
+			Executor result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05);
-			Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
+			Executor result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05);
 			
@@ -366,11 +366,11 @@ public class Test1 {
 		 
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
-		    analyzer.addAll("NSGAII", result_Karim.withAlgorithm("NSGAII").runSeeds(1));
-		    analyzer.addAll("ID", result_me.withAlgorithm("NSGAII").runSeeds(1));
+		    analyzer.addAll("KRRGZ", result_Karim.withAlgorithm("NSGAII").runSeeds(1));
+		    analyzer.addAll("Scheduling", result_me.withAlgorithm("NSGAII").runSeeds(1));
 			//analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
 			PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
-			analyzer.withProblemClass(InformationDifussion.class).printAnalysis(ps_ID);
+			analyzer.withProblemClass(SchedulingDriven.class).printAnalysis(ps_ID);
 			ps_ID.close();
 			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum)
 		    		, Integer.toString(fileNum));
