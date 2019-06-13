@@ -366,7 +366,9 @@ public class GA_Problem_Parameter {
 		ArrayList<Integer> schedules=new ArrayList<Integer>();
 		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
+		
 		int[] solu=EncodingUtils.getInt(solution);
+		
 		for(int i=0;i<solu.length;i++){
 			if(solu[i]!=-100){
 				assignment.add(solu[i]);
@@ -375,9 +377,11 @@ public class GA_Problem_Parameter {
 				break;
 			}
 		}
+		
 		for(int i=assignment.size();i<solu.length-1;i++){
 			schedules.add(solu[i]);
 		}
+		
 		int m,n,p,q;
 		int[] indexes=new int[2];
 		AllDirectedPaths<Bug, DefaultEdge> paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
@@ -482,7 +486,7 @@ public class GA_Problem_Parameter {
 	}
 	
 	public static void pruneList(HashMap<Integer, Bug> tasks_prune){
-		if(tasks_prune.size()>40){
+		if(tasks_prune.size()>50){
 			int _size=(tasks_prune.size()*3)/4;
 			System.out.println(tasks_prune.size()+"***");
 			ArrayList<Integer> bugsID=new ArrayList<Integer>();

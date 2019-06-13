@@ -16,6 +16,7 @@ import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Queue;
 
+import org.apache.commons.math3.filter.KalmanFilter;
 import org.jgrapht.graph.DefaultEdge;
 import org.moeaframework.Analyzer;
 import org.moeaframework.Analyzer.AnalyzerResults;
@@ -66,7 +67,7 @@ public class Test1 {
 		}
 		
 	}
-	
+
 	public static void starting(int roundNum, int runNum) throws IOException{
 		bugInitialization(roundNum);
 		GA_Problem_Parameter.generateModelofBugs();
@@ -329,7 +330,7 @@ public class Test1 {
 			for(Map.Entry<Zone, Double>  zone:b.getValue().BZone_Coefficient.entrySet()){
 				GA_Problem_Parameter.Num_of_variables++;
 			}
-			}
+		}
 		GA_Problem_Parameter.population=500;
 		
 	}
@@ -338,42 +339,30 @@ public class Test1 {
 	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
-		results[0]=result_Karim;
-		
-		System.out.println("finished first one");
-		
-		NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
-	    results[1]=result_me;*/
-		
 		try{
-			Executor result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05);
-			Executor result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05);
+			NondominatedPopulation result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(15000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+			NondominatedPopulation result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(15000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
 			System.out.println("finished Competence-multi2 one");
 			
 			
 		    System.out.println("finished Schedule-based one");
-		    //AnalyzerResults ar=analyzer.getAnalysis();
 		 
+		    int me=result_me.size();
+		    int you=result_Karim.size();
+		    
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
-		    analyzer.addAll("KRRGZ", result_Karim.withAlgorithm("NSGAII").runSeeds(1));
-		    analyzer.addAll("Scheduling", result_me.withAlgorithm("NSGAII").runSeeds(1));
-			//analyzer.withProblemClass(InformationDifussion.class).printAnalysis();
+		    analyzer.add("KRRGZ", result_Karim);
+		    analyzer.add("Scheduling", result_me);
 			PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
 			analyzer.withProblemClass(SchedulingDriven.class).printAnalysis(ps_ID);
 			ps_ID.close();
-			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum)
-		    		, Integer.toString(fileNum));
+			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		}
 		catch(Exception e){
 			starting(fileNum, runNum);
@@ -425,7 +414,6 @@ public class Test1 {
 		}
 	}
 	
-	
 	public static void afterRoundUpdating(Solution solution){
 		//update developers' zone
 		int variableNum=0;
@@ -438,6 +426,7 @@ public class Test1 {
 		//remove 2 top developers
 		
 	}
+	
 	public static void removeDevelopers(){
 		int devId=-1;
 		double devScore=-1.0;

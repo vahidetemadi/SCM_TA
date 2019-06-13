@@ -69,7 +69,9 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign associate Dev to zone
+		//zoneAssignee.clear();
 		//GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
+		
 		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 		double totalTime=0.0;
 		double totalCost=0.0;
@@ -90,20 +92,13 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 				Zone zone=tso_Zone.next();
 				double compeletionTime=0.0;
 				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
-				/*if(EncodingUtils.getInt(solution.getVariable(index))==0){
-					int[] g=EncodingUtils.getInt(solution);
-					System.out.println(g);
-				}*/
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
 				totalExecutionTime+=compeletionTime;
 				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
-				int DId=EncodingUtils.getInt(solution.getVariable(index));
-				double x1=developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour;
 				developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
-				x1=developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour;
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
 			}

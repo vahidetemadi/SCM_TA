@@ -73,7 +73,7 @@ public class SchedulingDriven extends AbstractProblem{
 			varToBug.put(index, b);
 			index++;
 		}
-		int numOfSchedules=1;
+		int numOfSchedules=2;
 		
 		for(int i=0;i<numOfSchedules;i++){
 			schedules.add(generateSchedule());
@@ -98,6 +98,7 @@ public class SchedulingDriven extends AbstractProblem{
 			encodedSolutions.add(encodedSolution);	
 		}
 	}
+	
 	
 	public static Boolean compareSubtasksAssignee(int i, int j,int p, int k, ArrayList<Integer> assignment){
 		Boolean b=false;
@@ -145,21 +146,22 @@ public class SchedulingDriven extends AbstractProblem{
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign Devs to zone
-		zoneAssignee.clear();
-		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
-		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
+		//zoneAssignee.clear();
+		//GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
+		
 		ArrayList<Integer> sche=new ArrayList<Integer>();
 		int[] solu=EncodingUtils.getInt(solution);
 		for(int i=assignment.size()+1;i<solu.length-1;i++){
 			sche.add(solu[i]);
 		}
 		
-		for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++){
+		//apply the schedule on the graph that is traversed
+		/*for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++){
 			if(sche.get(i)==1){
 				DEP_evaluation.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(i)),
 						GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(i)));
 			}
-		}
+		}*/
 		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 		double totalTime=0.0;
 		double totalCost=0.0;
@@ -173,10 +175,6 @@ public class SchedulingDriven extends AbstractProblem{
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			//set Bug startTime
-			Date date=new Date();
-			SimpleDateFormat d=new SimpleDateFormat();
-			Date d1=null;
-			Date d2=null;
 			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			b.startTime_evaluate=x;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
@@ -184,13 +182,12 @@ public class SchedulingDriven extends AbstractProblem{
 				Zone zone=tso_Zone.next();
 				double compeletionTime=0.0;
 				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
-				int devId=zoneAssignee.get(index).getThird();
-				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(devId));
+				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
 				totalExecutionTime+=compeletionTime;
-				totalDevCost+=compeletionTime*developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
-				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(zoneAssignee.get(index).getThird()), zone.DZ);
+				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
+				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
-				developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour=Math.max(developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour,
+				developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
@@ -207,9 +204,6 @@ public class SchedulingDriven extends AbstractProblem{
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);
 	}
-	
-	
-	
 
 	public ArrayList<Integer> generateSchedule(){
 		//schedule has the same size of pEdges (potential edges)
@@ -288,6 +282,7 @@ public class SchedulingDriven extends AbstractProblem{
 		indexes[1]=sIndex+GA_Problem_Parameter.tasks.get(index).BZone_Coefficient.size();
 		return indexes;
 	}
+	
 	
 	public void generateDAG(){
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
