@@ -61,6 +61,7 @@ public class GA_Problem_Parameter {
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG;
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
 	public static HashMap<String, Double> priorities=new HashMap<String, Double>();
+	public static int globalIndex=0;
 	
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
@@ -299,7 +300,14 @@ public class GA_Problem_Parameter {
 	}
 	public static void assignZoneDev(ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee,ArrayList<Bug> tasks,Solution s){
 		int index=0;
-		int tIndex=0;
+		for(Bug b:tasks){
+			for(Zone zone:b.Zone_DEP){
+				zoneAssignee.add(new Triplet<Bug, Zone, Integer>(b, zone, EncodingUtils.getInt(s.getVariable(index))));
+				index++;
+			}
+		}
+		
+		/*
 		while(EncodingUtils.getInt(s.getVariable(index))!=-100){
 			Bug b=tasks.get(tIndex);
 			for(Zone zone:b.Zone_DEP){
@@ -308,6 +316,7 @@ public class GA_Problem_Parameter {
 			}
 			tIndex++;
 		}
+		globalIndex=index;*/
 	}
 	
 	public static void setCandidateSchedulings(ArrayList<ArrayList<Bug>> validSchedulings ){
@@ -366,9 +375,7 @@ public class GA_Problem_Parameter {
 		ArrayList<Integer> schedules=new ArrayList<Integer>();
 		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
-		
 		int[] solu=EncodingUtils.getInt(solution);
-		
 		for(int i=0;i<solu.length;i++){
 			if(solu[i]!=-100){
 				assignment.add(solu[i]);
@@ -377,11 +384,9 @@ public class GA_Problem_Parameter {
 				break;
 			}
 		}
-		
 		for(int i=assignment.size();i<solu.length-1;i++){
 			schedules.add(solu[i]);
 		}
-		
 		int m,n,p,q;
 		int[] indexes=new int[2];
 		AllDirectedPaths<Bug, DefaultEdge> paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
@@ -486,7 +491,7 @@ public class GA_Problem_Parameter {
 	}
 	
 	public static void pruneList(HashMap<Integer, Bug> tasks_prune){
-		if(tasks_prune.size()>50){
+		if(tasks_prune.size()>40){
 			int _size=(tasks_prune.size()*3)/4;
 			System.out.println(tasks_prune.size()+"***");
 			ArrayList<Integer> bugsID=new ArrayList<Integer>();
