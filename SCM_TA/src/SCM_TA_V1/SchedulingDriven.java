@@ -1,21 +1,14 @@
 package SCM_TA_V1;
 
-import java.sql.Time;
-import java.text.DateFormat;
 import java.util.AbstractMap;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
 import java.util.Map.Entry;
 
-import javax.swing.JViewport;
-
+import org.apache.commons.math3.genetics.Population;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
-import org.jgrapht.ext.IntegerComponentNameProvider;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
@@ -23,8 +16,6 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
-
-import com.google.common.collect.ArrayListMultimap;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -35,7 +26,7 @@ public class SchedulingDriven extends AbstractProblem{
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<ArrayList<Integer>> schedules=new ArrayList<ArrayList<Integer>>();
-	HashMap<Integer,Bug> varToBug; //supposed to be used for mapping the item in chromosome to a particular bug
+	HashMap<Integer,Bug> varToBug=new HashMap<Integer, Bug>(); //supposed to be used for mapping the item in chromosome to a particular bug
 	ArrayList<ArrayList<ArrayList<Integer>>> variables=new ArrayList<ArrayList<ArrayList<Integer>>>();
 	//ArrayList<ArrayList<Integer>> variable=new ArrayList<ArrayList<Integer>>();
 	ArrayList<Integer> encodedSolution= new ArrayList<Integer>();
@@ -55,52 +46,57 @@ public class SchedulingDriven extends AbstractProblem{
 	public void init(){
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_ID;
-		
-		varToBug=new HashMap<Integer, Bug>();
-		//variables holds the list of choromosome and schedule
-		variables.clear();
-		assignment.clear();
-		encodedSolutions.clear();
-		
-		/* copy all the arrival bugs to the tasks */
+		int indexTotal=0;
+		while(indexTotal<GA_Problem_Parameter.population){
+			varToBug.clear();
+			//variables holds the list of choromosome and schedule
+			variables.clear();
+			assignment.clear();
+			encodedSolutions.clear();
+			
+			/* copy all the arrival bugs to the tasks */
 
-		
-		//sort the subtasks for a bug-- initialize the assignment choromosome-- set the varToBug dictionary
-		int index=0;
-		for(Bug b:GA_Problem_Parameter.tasks){
-			b.setZoneDEP();
-			tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-			while(tso_zones.hasNext()){
-				genes.add(tso_zones.next());
-				assignment.add(GA_Problem_Parameter.getRandomDevId());
-			}
-			varToBug.put(index, b);
-			index++;
-		}
-		int numOfSchedules=1;
-		
-		for(int i=0;i<numOfSchedules;i++){
-			schedules.add(generateSchedule());
-		}
-		
-		for(ArrayList<Integer> schedule:schedules){
-			ArrayList<ArrayList<Integer>> variable=new ArrayList<ArrayList<Integer>>();
-			variable.add(assignment);
-			variable.add(schedule);
-			variables.add(variable);
-		}
-		
-		//create final list
-		for(ArrayList<ArrayList<Integer>> var:variables){
-			ArrayList<Integer> encodedSolution=new ArrayList<Integer>();
-			for(ArrayList<Integer> list:var){
-				for(Integer i:list){
-					encodedSolution.add(i);
+			
+			//sort the subtasks for a bug-- initialize the assignment choromosome-- set the varToBug dictionary
+			int index=0;
+			for(Bug b:GA_Problem_Parameter.tasks){
+				b.setZoneDEP();
+				tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+				while(tso_zones.hasNext()){
+					genes.add(tso_zones.next());
+					assignment.add(GA_Problem_Parameter.getRandomDevId());
 				}
-				encodedSolution.add(-100);
+				varToBug.put(index, b);
+				index++;
 			}
-			encodedSolutions.add(encodedSolution);	
+			
+			for(int i=0;i<GA_Problem_Parameter.numOfEvaluationLocalSearch;i++){
+				schedules.add(generateSchedule());
+			}
+			int tr=schedules.size();
+			for(ArrayList<Integer> schedule:schedules){
+				ArrayList<ArrayList<Integer>> variable=new ArrayList<ArrayList<Integer>>();
+				variable.add(assignment);
+				variable.add(schedule);
+				variables.add(variable);
+			}
+			
+			//create final list
+			for(ArrayList<ArrayList<Integer>> var:variables){
+				ArrayList<Integer> encodedSolution=new ArrayList<Integer>();
+				for(ArrayList<Integer> list:var){
+					for(Integer i:list){
+						encodedSolution.add(i);
+					}
+					encodedSolution.add(-100);
+				}
+				GA_Problem_Parameter.encodedSolutions.add(encodedSolution);	
+				indexTotal++;
+				if(indexTotal==500)
+					break;
+			}
 		}
+		
 	}
 	
 	public static Boolean compareSubtasksAssignee(int i, int j,int p, int k, ArrayList<Integer> assignment){
@@ -133,21 +129,22 @@ public class SchedulingDriven extends AbstractProblem{
 	
 	@Override
 	public Solution newSolution(){
-		init();
+		//init();
 		//changed NUM of variables for the solution
-		Solution solution=new Solution(encodedSolutions.get(0).size(),GA_Problem_Parameter.Num_of_functions_Multi);
-		for(int i=0;i<encodedSolutions.get(0).size();i++){
-				solution.setVariable(i,EncodingUtils.newInt(encodedSolutions.get(0).get(i), encodedSolutions.get(0).get(i)));
-				
-		}
+		int t=GA_Problem_Parameter.encodedSolutions.size();
+		Solution solution=new Solution(GA_Problem_Parameter.encodedSolutions.get(0).size(),GA_Problem_Parameter.Num_of_functions_Multi);
+		for(int i=0;i<GA_Problem_Parameter.encodedSolutions.get(0).size();i++){
+				solution.setVariable(i,EncodingUtils.newInt(GA_Problem_Parameter.encodedSolutions.get(0).get(i), GA_Problem_Parameter.encodedSolutions.get(0).get(i)));	
+		} 
+		GA_Problem_Parameter.encodedSolutions.remove(0);
 		return solution;
 	}
 		
 	@Override 	
 	public void evaluate(Solution solution){
-		ArrayList<Integer> temp=new ArrayList<Integer>();
 		@SuppressWarnings("unchecked")
-		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
+		int test=GA_Problem_Parameter.DEP.vertexSet().size();
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign Devs to zone
@@ -199,7 +196,6 @@ public class SchedulingDriven extends AbstractProblem{
 				developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour=Math.max(developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
-				temp.add(EncodingUtils.getInt(solution.getVariable(index)));
 				index++;
 				
 			}

@@ -62,6 +62,8 @@ public class GA_Problem_Parameter {
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
 	public static HashMap<String, Double> priorities=new HashMap<String, Double>();
 	public static int globalIndex=0;
+	public static int numOfEvaluationLocalSearch;
+	public static ArrayList<ArrayList<Integer>> encodedSolutions= new ArrayList<ArrayList<Integer>>();
 	
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();

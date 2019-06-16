@@ -81,8 +81,6 @@ public class Test1 {
 		//removeDevelopers();
 	}
 		
-	
-	
 	public static void changeRepresentation() throws FileNotFoundException{
 		
 		changeRepresentation cr=new changeRepresentation();
@@ -338,11 +336,19 @@ public class Test1 {
 	//find solution to assign tasks to the developers
 	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
+		Scanner sc=new Scanner(System.in);
+		System.out.println("please insert the number of desired schedules:");
+		GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
 		
-		try{
+		
+		
+		//try{
 			NondominatedPopulation result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(15000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+			//generate population of Scheduling-Driven approach
+			SchedulingDriven sd=new SchedulingDriven();
+			sd.init();
 			NondominatedPopulation result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(15000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
@@ -363,10 +369,10 @@ public class Test1 {
 			analyzer.withProblemClass(SchedulingDriven.class).printAnalysis(ps_ID);
 			ps_ID.close();
 			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
-		}
-		catch(Exception e){
-			starting(fileNum, runNum);
-		}
+		//}
+		//catch(Exception e){
+			//starting(fileNum, runNum);
+		//}
 		//return results;
 	    
 	}
