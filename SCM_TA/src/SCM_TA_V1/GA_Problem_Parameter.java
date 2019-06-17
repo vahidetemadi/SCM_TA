@@ -64,6 +64,7 @@ public class GA_Problem_Parameter {
 	public static int globalIndex=0;
 	public static int numOfEvaluationLocalSearch;
 	public static ArrayList<ArrayList<Integer>> encodedSolutions= new ArrayList<ArrayList<Integer>>();
+	public static int thresoldForPopulationGeneration=0;
 	
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
@@ -493,7 +494,7 @@ public class GA_Problem_Parameter {
 	}
 	
 	public static void pruneList(HashMap<Integer, Bug> tasks_prune){
-		if(tasks_prune.size()>40){
+		if(tasks_prune.size()>20){
 			int _size=(tasks_prune.size()*3)/4;
 			System.out.println(tasks_prune.size()+"***");
 			ArrayList<Integer> bugsID=new ArrayList<Integer>();

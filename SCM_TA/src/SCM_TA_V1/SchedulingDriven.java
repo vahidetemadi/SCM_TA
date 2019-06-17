@@ -129,7 +129,10 @@ public class SchedulingDriven extends AbstractProblem{
 	
 	@Override
 	public Solution newSolution(){
-		//init();
+		if(GA_Problem_Parameter.thresoldForPopulationGeneration==0){
+			init();
+			GA_Problem_Parameter.thresoldForPopulationGeneration++;
+		}
 		//changed NUM of variables for the solution
 		int t=GA_Problem_Parameter.encodedSolutions.size();
 		Solution solution=new Solution(GA_Problem_Parameter.encodedSolutions.get(0).size(),GA_Problem_Parameter.Num_of_functions_Multi);
@@ -246,21 +249,21 @@ public class SchedulingDriven extends AbstractProblem{
 							indices.clear();
 							indices.add(i);
 							indices.add(j);
-							try{
-								//get the information for potential link-- index t determine if the edge already exists there
-								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
-								if(t<0){
-									t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
-								}
-								boolean b=new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles();
-								// in case a link exits we add that link to DEP_scheduling (the graph of a specific schedule)
-								DEP_scheduling.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
-										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
+							/*try{
+								
 							}
 							catch(Exception ex)
 							{
 								
-							} 
+							} */
+							//get the information for potential link-- index t determines if the edge already exists there
+							t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
+							if(t<0){
+								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));
+							}
+							// in case a link exits we add that link to DEP_scheduling (the graph of a specific schedule)
+							DEP_scheduling.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(t)),
+									GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
 							//check if added link does not result in a cycle otherwise the added link gets removed
 							boolean b=new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles();
 							if(!b)

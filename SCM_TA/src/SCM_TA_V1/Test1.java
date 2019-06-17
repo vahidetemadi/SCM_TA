@@ -41,7 +41,10 @@ public class Test1 {
 	//DevMetrics devMetric=new DevMetrics();
 	
 
-	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{	
+	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
+		Scanner sc=new Scanner(System.in);
+		System.out.println("please insert the number of desired schedules:");
+		GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
 		String mode="running";
 		if(mode=="running"){
 			runExperiment();
@@ -69,6 +72,8 @@ public class Test1 {
 	}
 
 	public static void starting(int roundNum, int runNum) throws IOException{
+		//set the threshold to initialize the population 
+		GA_Problem_Parameter.thresoldForPopulationGeneration=0;
 		bugInitialization(roundNum);
 		GA_Problem_Parameter.generateModelofBugs();
 		GA_Problem_Parameter.candidateSolutonGeneration();
@@ -336,9 +341,6 @@ public class Test1 {
 	//find solution to assign tasks to the developers
 	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
-		Scanner sc=new Scanner(System.in);
-		System.out.println("please insert the number of desired schedules:");
-		GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
 		
 		
 		
@@ -346,9 +348,7 @@ public class Test1 {
 			NondominatedPopulation result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(15000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
-			//generate population of Scheduling-Driven approach
-			SchedulingDriven sd=new SchedulingDriven();
-			sd.init();
+			
 			NondominatedPopulation result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(15000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
