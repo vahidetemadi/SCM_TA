@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
+import javax.xml.stream.events.StartDocument;
+
 import org.jgraph.JGraph;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
@@ -69,8 +71,8 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign associate Dev to zone
-		//zoneAssignee.clear();
-		//GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
+		zoneAssignee.clear();
+		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
 		
 		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 		double totalTime=0.0;
@@ -82,18 +84,20 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		double totalEndTime=0.0;
 		double totalExecutionTime=0.0;
 		int index=0;
+		
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			//set Bug startTime
-			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
-			b.startTime_evaluate=x;
+			b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			//iterate by the order provided in y graph
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
 				double compeletionTime=0.0;
 				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
 				totalExecutionTime+=compeletionTime;
+				//need to be changed????///
 				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
@@ -104,12 +108,14 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 			}
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
+			//pay for those 
 			totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
 			if(totalDelayTime>0)
 				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
 		}
+		//end=System.currentTimeMillis()-start;
 		totalTime=totalEndTime-totalStartTime;
-		totalCost=totalDevCost+totalDelayCost;
+		totalCost=totalDevCost;//+totalDelayCost;
 		
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);

@@ -1,7 +1,9 @@
 package SCM_TA_V1;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -21,6 +24,8 @@ import org.jgrapht.graph.DefaultEdge;
 import org.moeaframework.Analyzer;
 import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
+import org.moeaframework.Instrumenter;
+import org.moeaframework.analysis.collector.Accumulator;
 import org.moeaframework.core.Indicator;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
@@ -35,7 +40,7 @@ public class Test1 {
 	static HashMap<Integer,Bug> bugs=new HashMap<Integer,Bug>();
 	static Queue<Bug> orderdBugs; 
 	//static Solution solution=null;
-	static HashMap<Integer , Zone> columns=new HashMap<Integer, Zone>();
+	static HashMap<Integer , Zone> zoneList=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	static int roundnum=0;
 	//DevMetrics devMetric=new DevMetrics();
@@ -99,10 +104,10 @@ public class Test1 {
 				Developer developer = null;
 				 System.out.println(System.getProperty("user.dir"));
 				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloper.txt"));
+				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloper.txt"));
 				System.out.println("enter the devlopers wage file");
 				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//PlatformDeveloperWithWage.txt"));
+				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloperWithWage.txt"));
 				int i=0;
 				int j=0;
 				while(sc.hasNextLine() && scan.hasNextLine()){
@@ -113,7 +118,7 @@ public class Test1 {
 								if(j!=0){
 								Zone zone=new Zone(j, items[k]);
 								project.zones.put(j, zone);
-								columns.put(j,zone);
+								zoneList.put(j,zone);
 								}
 								j++;
 							}
@@ -122,14 +127,15 @@ public class Test1 {
 						String[] items=sc.nextLine().split("\t|\\ ",-1);
 						String[] wage_items=scan.nextLine().split("\t|\\ ",-1);
 						double sumOfPro=0.0;
-						for(int k=0;k<items.length;k++){
+						for(int k=1;k<items.length;k++){
 							sumOfPro+=Double.parseDouble(items[k]);
 						}
+						double f=sumOfPro;
 						for(int k=0;k<items.length;k++){
 							if(j!=0){
 								//developer.DZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
 								//System.out.println(columns.get(j));
-								developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
+								developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])));
 								developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
 								developer.hourlyWage=Double.parseDouble(wage_items[wage_items.length-1]);
 								//System.out.println(Double.parseDouble(wage_items[k]));
@@ -170,7 +176,7 @@ public class Test1 {
 				}
 
 				//GA_Problem_Parameter.pruneDevList(developers);
-				GA_Problem_Parameter.pruneDevList(developers,Devs,50);
+				GA_Problem_Parameter.pruneDevList(developers,Devs,100);
 	}
 	
 	// initialize the bugs objects for task assignment  
@@ -187,7 +193,7 @@ public class Test1 {
 		//System.out.println(sc.nextLine());
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//efforts").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//efforts").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
@@ -197,13 +203,13 @@ public class Test1 {
 				//counter "i" has set to record the name of each zone (the header of each file)
 				if(i==0){
 						String[] items=sc1.nextLine().split("\t|\\ ",-1);
-							for(int k=0;k<items.length;k++){
-								if(j>2){
-									Zone zone=new Zone(j, items[k]);
-									columns.put(j,zone);
-								}
-								j++;
-							}	
+						for(int k=0;k<items.length;k++){
+							if(j>2){
+								/*Zone zone=new Zone(j-2, items[k]);
+								zoneList.put(j-2,zone);*/
+							}
+							j++;
+						}	
 					}
 					else{
 						String[] items=sc1.nextLine().split("\t",-1);
@@ -220,8 +226,6 @@ public class Test1 {
 							}
 							j++;
 						}
-					//create DAG for zoneItems 	
-					bug.setZoneDEP();	
 					//add bug to bugset
 					bugs.put(bug.getID(), bug);
 					}
@@ -229,24 +233,41 @@ public class Test1 {
 					j=0;
 			}
 			n++;
+			
 		}
-				
-
+		//assign zone dep	
+		BufferedReader in=new BufferedReader(new FileReader(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//CompetencyGraph.txt")));
+		String line;
+		StringTokenizer tokens;
+		String dependee, depender;	
+		line=in.readLine();
+		tokens=new StringTokenizer(line);
+		dependee=tokens.nextToken();
+		while(tokens.hasMoreTokens()){
+			depender=tokens.nextToken();
+			zoneList.get(Integer.parseInt(depender)).DZ.add(zoneList.get(Integer.parseInt(dependee)));
+		}
+		
+		for(Map.Entry<Integer, Bug> bugdep:bugs.entrySet()){
+			//create DAG for zoneItems 	
+			bugdep.getValue().setZoneDEP();	
+		}
+		
 		
 		//prune bug list
-		GA_Problem_Parameter.pruneList(bugs);
+		//GA_Problem_Parameter.pruneList(bugs);
 		
 		
 		
 		/*set bug dependencies*/
 		int f=0;
 		System.out.println("enter the bug dependency files");
-		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies");
+		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies");
 		String[] columns_bug=null;
 		for(Bug b:bugs.values()){
 			b.DB.clear();
 		}
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//Platform//dependencies").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){
@@ -343,14 +364,16 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		
-		
+
+	    Instrumenter instrumenter=new Instrumenter();
+	    instrumenter.withProblemClass(KRRGZCompetenceMulti2.class).withFrequency(200).attachAll();
 		//try{
 			NondominatedPopulation result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(15000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
 			NondominatedPopulation result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(15000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withMaxEvaluations(55000).withMaxTime(300000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
 			System.out.println("finished Competence-multi2 one");
@@ -359,12 +382,20 @@ public class Test1 {
 		    System.out.println("finished Schedule-based one");
 		 
 		    int me=result_me.size();
-		    int you=result_Karim.size();
-		    
+		   int you=result_Karim.size();
+		   /*Accumulator accumulator = instrumenter.getLastAccumulator();
+		   for (int i=0; i<accumulator.size("NFE"); i++) {
+			   System.out.println(accumulator.get("NFE", i) + "\t" +
+			   accumulator.get("GenerationalDistance", i));
+			  }*/
+		   
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
 		    analyzer.add("KRRGZ", result_Karim);
 		    analyzer.add("Scheduling", result_me);
+		    NondominatedPopulation rs=analyzer.getReferenceSet();
+		    int test=rs.size();
+		    
 			PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
 			analyzer.withProblemClass(SchedulingDriven.class).printAnalysis(ps_ID);
 			ps_ID.close();

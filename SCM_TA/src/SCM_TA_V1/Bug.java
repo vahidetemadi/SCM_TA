@@ -103,16 +103,17 @@ public class Bug implements Cloneable{
 	}
 	public void setZoneDEP(){
 		Zone_DEP=new DirectedAcyclicGraph<Zone, DefaultEdge>(DefaultEdge.class);
-		for (Entry<Zone, Double>  zone:BZone_Coefficient.entrySet())
-		{
+		for (Entry<Zone, Double>  zone:BZone_Coefficient.entrySet()){
+				Zone_DEP.addVertex(zone.getKey());
+		}
+		
+		for (Entry<Zone, Double>  zone:BZone_Coefficient.entrySet()){
 			if(zone.getKey().DZ.size()>0){
 				for(Zone z:zone.getKey().DZ){
-					if(!Zone_DEP.containsEdge(z,zone.getKey()))
+					if(!Zone_DEP.containsEdge(z,zone.getKey()) && Zone_DEP.containsVertex(z))
 						Zone_DEP.addEdge(z, zone.getKey());
 				}
 			}
-			else
-				Zone_DEP.addVertex(zone.getKey());
 		}
 	}
 }

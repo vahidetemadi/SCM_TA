@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 
-import org.apache.commons.math3.genetics.Population;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -176,6 +175,8 @@ public class SchedulingDriven extends AbstractProblem{
 		double totalEndTime=0.0;
 		double totalExecutionTime=0.0;
 		int index=0;
+		double start, end;
+		start=System.currentTimeMillis();
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			//set Bug startTime
@@ -199,8 +200,7 @@ public class SchedulingDriven extends AbstractProblem{
 				developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour=Math.max(developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
-				index++;
-				
+				index++;	
 			}
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
@@ -208,6 +208,7 @@ public class SchedulingDriven extends AbstractProblem{
 			if(totalDelayTime>0)
 				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
 		}
+		end=System.currentTimeMillis()-start;
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
 		
