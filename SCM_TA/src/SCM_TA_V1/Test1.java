@@ -1,5 +1,6 @@
 package SCM_TA_V1;
 
+import java.awt.List;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,6 +34,7 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
+import org.apache.commons.io.FilenameUtils;
 
 
 public class Test1 {
@@ -43,6 +45,7 @@ public class Test1 {
 	static HashMap<Integer , Zone> zoneList=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	static int roundnum=0;
+	static String fileName;
 	//DevMetrics devMetric=new DevMetrics();
 	
 
@@ -197,8 +200,10 @@ public class Test1 {
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
-			if(roundNum==n)
+			if(roundNum==n){
+				fileName=FilenameUtils.removeExtension(fileEntry.getName());
 				System.out.println(fileEntry.getPath());
+			}
 			while(sc1.hasNextLine() && roundNum==n){
 				//counter "i" has set to record the name of each zone (the header of each file)
 				if(i==0){
@@ -363,17 +368,16 @@ public class Test1 {
 	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		
-
-	    Instrumenter instrumenter=new Instrumenter();
-	    instrumenter.withProblemClass(KRRGZCompetenceMulti2.class).withFrequency(200).attachAll();
+		String path=System.getProperty("user.dir")+"\\PS\\"+fileName+".ps";
+	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(200).attachAll();;
+	    Instrumenter instrumenter_2=new Instrumenter();
 		//try{
 			NondominatedPopulation result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+					.withMaxEvaluations(25000).withMaxTime(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.50).withInstrumenter(instrumenter_1).run();
 			
 			NondominatedPopulation result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(55000).withMaxTime(300000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withMaxEvaluations(25000).withMaxTime(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 			
 			System.out.println("finished Competence-multi2 one");
@@ -381,13 +385,20 @@ public class Test1 {
 			
 		    System.out.println("finished Schedule-based one");
 		 
-		    int me=result_me.size();
-		   int you=result_Karim.size();
-		   /*Accumulator accumulator = instrumenter.getLastAccumulator();
+		    int SD=result_me.size();
+		    int KRRGZ=result_Karim.size();
+		    
+		   Accumulator accumulator = instrumenter_1.getLastAccumulator();
 		   for (int i=0; i<accumulator.size("NFE"); i++) {
 			   System.out.println(accumulator.get("NFE", i) + "\t" +
-			   accumulator.get("GenerationalDistance", i));
-			  }*/
+					   accumulator.get("GenerationalDistance", i));
+			   System.out.println();
+			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
+			   for(Solution s:solutions)
+				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
+			   System.out.println();
+			   System.out.println();
+			  }
 		   
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
@@ -395,6 +406,8 @@ public class Test1 {
 		    analyzer.add("Scheduling", result_me);
 		    NondominatedPopulation rs=analyzer.getReferenceSet();
 		    int test=rs.size();
+		    /*File targetRefSet=new File(System.getProperty("user.dir")+"//PS//"+fileName+".ps");
+		    analyzer.saveReferenceSet(targetRefSet);*/
 		    
 			PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
 			analyzer.withProblemClass(SchedulingDriven.class).printAnalysis(ps_ID);
