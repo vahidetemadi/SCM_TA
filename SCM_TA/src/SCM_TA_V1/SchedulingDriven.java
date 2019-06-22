@@ -144,6 +144,7 @@ public class SchedulingDriven extends AbstractProblem{
 		
 	@Override 	
 	public void evaluate(Solution solution){
+		long start=System.currentTimeMillis();
 		@SuppressWarnings("unchecked")
 		int test=GA_Problem_Parameter.DEP.vertexSet().size();
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
@@ -175,7 +176,6 @@ public class SchedulingDriven extends AbstractProblem{
 		double totalEndTime=0.0;
 		double totalExecutionTime=0.0;
 		int index=0;
-		double start, end;
 		start=System.currentTimeMillis();
 		while(tso.hasNext()){
 			Bug b=tso.next();
@@ -208,12 +208,14 @@ public class SchedulingDriven extends AbstractProblem{
 			if(totalDelayTime>0)
 				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
 		}
-		end=System.currentTimeMillis()-start;
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
 		
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);
+		long end=System.currentTimeMillis();
+		long diff=(long) (end-start);
+		int t=0;
 	}
 	
 

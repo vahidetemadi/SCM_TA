@@ -769,7 +769,6 @@ public class Executor extends ProblemBuilder {
 		
 		try {
 			problem = getProblemInstance();
-			
 			try {
 				if (executorService != null) {
 					problem = new DistributedProblem(problem, executorService);
@@ -789,7 +788,7 @@ public class Executor extends ProblemBuilder {
 					} else {
 						algorithm = algorithmFactory.getAlgorithm(
 								algorithmName, 
-								properties.getProperties(), 
+								properties.getProperties(),
 								problem);
 					}
 

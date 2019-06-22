@@ -261,6 +261,7 @@ class ProblemBuilder {
 			//determine if the problem factory provides a reference set
 			NondominatedPopulation factorySet = null;
 			
+
 			if (problemName != null) {
 				if (problemFactory == null) {
 					factorySet = ProblemFactory.getInstance().getReferenceSet(

@@ -26,6 +26,7 @@ import org.moeaframework.Analyzer;
 import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
 import org.moeaframework.Instrumenter;
+import org.moeaframework.algorithm.PeriodicAction.FrequencyType;
 import org.moeaframework.analysis.collector.Accumulator;
 import org.moeaframework.core.Indicator;
 import org.moeaframework.core.NondominatedPopulation;
@@ -369,24 +370,28 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		String path=System.getProperty("user.dir")+"\\PS\\"+fileName+".ps";
-	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(200).attachAll();;
-	    Instrumenter instrumenter_2=new Instrumenter();
+	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    		.withFrequencyType(FrequencyType.EVALUATIONS);
+	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    		.withFrequencyType(FrequencyType.EVALUATIONS);;
 		//try{
 			NondominatedPopulation result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(25000).withMaxTime(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.50).withInstrumenter(instrumenter_1).run();
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
+			System.out.println("finished KRRGZ");
 			NondominatedPopulation result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(25000).withMaxTime(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_2).run();
 			
 			System.out.println("finished Competence-multi2 one");
 			
 			
 		    System.out.println("finished Schedule-based one");
 		 
-		    int SD=result_me.size();
-		    int KRRGZ=result_Karim.size();
+		   
+		    //int SD=result_me.size();
+		    //int KRRGZ=result_Karim.size();
 		    
 		   Accumulator accumulator = instrumenter_1.getLastAccumulator();
 		   for (int i=0; i<accumulator.size("NFE"); i++) {
@@ -398,6 +403,20 @@ public class Test1 {
 				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
 			   System.out.println();
 			   System.out.println();
+			   accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_KRRGZ_"+fileName+".csv"));
+			  }
+		   
+		   accumulator=instrumenter_2.getLastAccumulator();
+		   for (int i=0; i<accumulator.size("NFE"); i++) {
+			   System.out.println(accumulator.get("NFE", i) + "\t" +
+					   accumulator.get("GenerationalDistance", i));
+			   System.out.println();
+			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
+			   for(Solution s:solutions)
+				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
+			   System.out.println();
+			   System.out.println();
+			   accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
 			  }
 		   
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();

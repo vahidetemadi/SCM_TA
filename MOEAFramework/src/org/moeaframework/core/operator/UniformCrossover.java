@@ -60,6 +60,7 @@ public class UniformCrossover implements Variation {
 
 	@Override
 	public Solution[] evolve(Solution[] parents) {
+		long start=System.currentTimeMillis();
 		boolean b=false;
 		Solution result1 = parents[0].copy();
 		Solution result2 = parents[1].copy();
@@ -87,7 +88,8 @@ public class UniformCrossover implements Variation {
 			results[0]=GA_Problem_Parameter.setValidSchdule(results[0], GA_Problem_Parameter.getVarToBug());
 			results[1]=GA_Problem_Parameter.setValidSchdule(results[1], GA_Problem_Parameter.getVarToBug());
 		}
-
+		long end=System.currentTimeMillis();
+		long diff=end-start;
 		return results;
 	}
 
