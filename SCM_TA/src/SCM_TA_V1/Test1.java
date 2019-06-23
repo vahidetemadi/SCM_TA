@@ -19,7 +19,9 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Queue;
+import java.io.PrintWriter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.filter.KalmanFilter;
 import org.jgrapht.graph.DefaultEdge;
 import org.moeaframework.Analyzer;
@@ -47,6 +49,8 @@ public class Test1 {
 	static Project project=new Project();
 	static int roundnum=0;
 	static String fileName;
+	static StringBuilder sb=new StringBuilder();
+	static PrintWriter pw;  
 	//DevMetrics devMetric=new DevMetrics();
 	
 
@@ -375,23 +379,46 @@ public class Test1 {
 	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);;
 		//try{
-			NondominatedPopulation result_Karim=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
+			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
-			NondominatedPopulation result_me=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
+			
+			NondominatedPopulation NDP_SD=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_2).run();
 			
-			System.out.println("finished Competence-multi2 one");
-			
-			
-		    System.out.println("finished Schedule-based one");
+		    System.out.println("finished SD");
 		 
-		   
-		    //int SD=result_me.size();
-		    //int KRRGZ=result_Karim.size();
+		    
+		    //pareto front of KRRGZ gets saved in csv format
+		    sb.setLength(0);
+		    //create string builder to include the nonDominated for KRRGZ
+		    for(Solution s:NDP_KRRGZ){
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+		    }
+		    //write down into the file
+		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\KRRGZ_"+fileName+"_"+runNum+".csv"));
+		    pw.write(sb.toString());
+		    pw.close();
+		    
+		    
+		    
+		    
+		    //pareto front of SD gets saved in csv format
+		    sb.setLength(0);
+		    //create string builder to include the nonDominated for KRRGZ
+		    for(Solution s:NDP_SD){
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+		    }
+		    //write down into the file
+		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\SD_"+fileName+"_"+runNum+".csv"));
+		    pw.write(sb.toString());
+		    pw.close();
+		    
 		    
 		   Accumulator accumulator = instrumenter_1.getLastAccumulator();
 		   for (int i=0; i<accumulator.size("NFE"); i++) {
@@ -399,11 +426,20 @@ public class Test1 {
 					   accumulator.get("GenerationalDistance", i));
 			   System.out.println();
 			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
-			   for(Solution s:solutions)
+			   sb.setLength(0);
+			   for(Solution s:solutions){
 				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+			   }
 			   System.out.println();
 			   System.out.println();
-			   accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_KRRGZ_"+fileName+".csv"));
+			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+accumulator.get("NFE", i)+"\\KRRGZ_"+fileName+"_"+runNum+".csv");
+			   f.getParentFile().mkdirs();
+			   pw=new PrintWriter(f);
+			   pw.write(sb.toString());
+			   pw.close();
+			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_KRRGZ_"+fileName+".csv"));
 			  }
 		   
 		   accumulator=instrumenter_2.getLastAccumulator();
@@ -412,17 +448,26 @@ public class Test1 {
 					   accumulator.get("GenerationalDistance", i));
 			   System.out.println();
 			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
-			   for(Solution s:solutions)
+			   sb.setLength(0);
+			   for(Solution s:solutions){
 				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+			   }
 			   System.out.println();
 			   System.out.println();
-			   accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
+			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+accumulator.get("NFE", i)+"\\SD_"+fileName+"_"+runNum+".csv");
+			   f.getParentFile().mkdirs();
+			   pw=new PrintWriter(f);
+			   pw.write(sb.toString());
+			   pw.close();
+			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
 			  }
 		   
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
-		    analyzer.add("KRRGZ", result_Karim);
-		    analyzer.add("Scheduling", result_me);
+		    analyzer.add("KRRGZ", NDP_KRRGZ);
+		    analyzer.add("Scheduling", NDP_SD);
 		    NondominatedPopulation rs=analyzer.getReferenceSet();
 		    int test=rs.size();
 		    /*File targetRefSet=new File(System.getProperty("user.dir")+"//PS//"+fileName+".ps");

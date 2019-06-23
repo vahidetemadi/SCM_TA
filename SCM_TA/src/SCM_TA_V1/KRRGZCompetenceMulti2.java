@@ -115,7 +115,7 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		}
 		//end=System.currentTimeMillis()-start;
 		totalTime=totalEndTime-totalStartTime;
-		totalCost=totalDevCost;//+totalDelayCost;
+		totalCost=totalDevCost+totalDelayCost;
 		
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);
