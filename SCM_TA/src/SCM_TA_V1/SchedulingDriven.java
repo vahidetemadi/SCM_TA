@@ -47,7 +47,9 @@ public class SchedulingDriven extends AbstractProblem{
 		tso=GA_Problem_Parameter.tso_ID;
 		int indexTotal=0;
 		while(indexTotal<GA_Problem_Parameter.population){
+			//clear the list holds mapping solution element index to bugs
 			varToBug.clear();
+			
 			//variables holds the list of choromosome and schedule
 			variables.clear();
 			assignment.clear();
@@ -56,7 +58,7 @@ public class SchedulingDriven extends AbstractProblem{
 			/* copy all the arrival bugs to the tasks */
 
 			
-			//sort the subtasks for a bug-- initialize the assignment choromosome-- set the varToBug dictionary
+			//sort the subtasks of a bug-- initialize the assignment choromosome-- set the varToBug dictionary
 			int index=0;
 			for(Bug b:GA_Problem_Parameter.tasks){
 				b.setZoneDEP();
@@ -72,7 +74,9 @@ public class SchedulingDriven extends AbstractProblem{
 			for(int i=0;i<GA_Problem_Parameter.numOfEvaluationLocalSearch;i++){
 				schedules.add(generateSchedule());
 			}
-			int tr=schedules.size();
+			
+			// the schedules should be checked in favor of being duplicated
+			
 			for(ArrayList<Integer> schedule:schedules){
 				ArrayList<ArrayList<Integer>> variable=new ArrayList<ArrayList<Integer>>();
 				variable.add(assignment);
@@ -134,11 +138,13 @@ public class SchedulingDriven extends AbstractProblem{
 		}
 		//changed NUM of variables for the solution
 		int t=GA_Problem_Parameter.encodedSolutions.size();
+		ArrayList<Integer> test=GA_Problem_Parameter.encodedSolutions.get(0);
 		Solution solution=new Solution(GA_Problem_Parameter.encodedSolutions.get(0).size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		for(int i=0;i<GA_Problem_Parameter.encodedSolutions.get(0).size();i++){
 				solution.setVariable(i,EncodingUtils.newInt(GA_Problem_Parameter.encodedSolutions.get(0).get(i), GA_Problem_Parameter.encodedSolutions.get(0).get(i)));	
 		} 
 		GA_Problem_Parameter.encodedSolutions.remove(0);
+		
 		return solution;
 	}
 		
@@ -200,7 +206,7 @@ public class SchedulingDriven extends AbstractProblem{
 				developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour=Math.max(developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
-				index++;	
+				index++;
 			}
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
@@ -227,9 +233,10 @@ public class SchedulingDriven extends AbstractProblem{
 			schedule.add(0);
 		
 		/* generate valid schedules*/
+		//m: startIndex, n:endIndex, 
 		int m,n,p,q;
 		int[] indexes=new int[2];
-		paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
+		//create DEP_scheduling graph to add potential links used for a new schedule 
 		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
 		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
 		ArrayList<Integer> indices=new ArrayList<Integer>();
@@ -237,7 +244,10 @@ public class SchedulingDriven extends AbstractProblem{
 		//shuffling the bug list to provide randomness in the scheduling
 		GA_Problem_Parameter.shuffledTasks=(ArrayList<Bug>) GA_Problem_Parameter.tasks.clone();
 		Collections.shuffle(GA_Problem_Parameter.shuffledTasks);
-		for(int i=0;i<GA_Problem_Parameter.shuffledTasks.size()-1;i++){
+		int vertexSetSize=GA_Problem_Parameter.tasks.size()-1;
+		/*if(vertexSetSize>40)
+			vertexSetSize/=3;*/
+		for(int i=0;i<vertexSetSize;i++){
 			indexes=getIndex(i);
 			m=indexes[0];
 			n=indexes[1];
@@ -246,20 +256,12 @@ public class SchedulingDriven extends AbstractProblem{
 				p=indexes[0];
 				q=indexes[1];
 				if(compareSubtasksAssignee(m,n,p,q,assignment)){
+					paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP_scheduling);
 					try{
-						if(paths.getAllPaths(varToBug.get(i),varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
+						if(paths.getAllPaths(varToBug.get(i),varToBug.get(j), true, 10000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 10000).isEmpty()){
 							int t=-1;
-							indices.clear();
-							indices.add(i);
-							indices.add(j);
-							/*try{
-								
-							}
-							catch(Exception ex)
-							{
-								
-							} */
 							//get the information for potential link-- index t determines if the edge already exists there
+							//DDG_1 is the fully connected graph of all bugs 
 							t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
 							if(t<0){
 								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(j), varToBug.get(i)));

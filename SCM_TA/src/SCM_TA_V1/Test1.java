@@ -53,11 +53,14 @@ public class Test1 {
 	static PrintWriter pw;  
 	//DevMetrics devMetric=new DevMetrics();
 	
-
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 		Scanner sc=new Scanner(System.in);
 		System.out.println("please insert the number of desired schedules:");
 		GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
+		System.out.println("Specify the name of your project:");
+		GA_Problem_Parameter.pName=sc.next();
+		System.out.println("The file number you want to launch the run from:");
+		GA_Problem_Parameter.fileNum=sc.nextInt();
 		String mode="running";
 		if(mode=="running"){
 			runExperiment();
@@ -70,13 +73,23 @@ public class Test1 {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=21;runNum<=30;runNum++){
+		for(int runNum=1;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
+			
+			//load developers into the system
 			devInitialization();
-			int roundNum=10;
-			for(int i=1;i<=roundNum;i++){
+			
+			//set the round number upon the project name
+			int roundNum=9;
+			if(GA_Problem_Parameter.pName.equals("JDT"))
+				roundNum=9;
+			else 
+				roundNum=10;
+			
+			//iterate over the under experiment
+			for(int i=GA_Problem_Parameter.fileNum;i<=roundNum;i++){
 				starting(i, runNum);
 			}
 			System.gc();
@@ -112,10 +125,10 @@ public class Test1 {
 				Developer developer = null;
 				 System.out.println(System.getProperty("user.dir"));
 				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloper.txt"));
+				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+GA_Problem_Parameter.pName+"Developer.txt"));
 				System.out.println("enter the devlopers wage file");
 				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//JDTDeveloperWithWage.txt"));
+				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+GA_Problem_Parameter.pName+"DeveloperWithWage.txt"));
 				int i=0;
 				int j=0;
 				while(sc.hasNextLine() && scan.hasNextLine()){
@@ -201,7 +214,7 @@ public class Test1 {
 		//System.out.println(sc.nextLine());
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//efforts").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+GA_Problem_Parameter.pName+"//efforts").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
@@ -272,12 +285,12 @@ public class Test1 {
 		/*set bug dependencies*/
 		int f=0;
 		System.out.println("enter the bug dependency files");
-		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies");
+		sc=new Scanner(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+GA_Problem_Parameter.pName+"//dependencies");
 		String[] columns_bug=null;
 		for(Bug b:bugs.values()){
 			b.DB.clear();
 		}
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//JDT//dependencies").listFiles()){
+		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+GA_Problem_Parameter.pName+"//dependencies").listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){
@@ -373,20 +386,20 @@ public class Test1 {
 	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		String path=System.getProperty("user.dir")+"\\PS\\"+fileName+".ps";
-	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+		String path=System.getProperty("user.dir")+"\\PS\\"+GA_Problem_Parameter.pName+"\\"+fileName+".ps";
+	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(5000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(5000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);;
 		//try{
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
 			NondominatedPopulation NDP_SD=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_2).run();
 			
 		    System.out.println("finished SD");
@@ -399,13 +412,12 @@ public class Test1 {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
+		    
 		    //write down into the file
 		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\KRRGZ_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
-		    
-		    
-		    
+		   
 		    
 		    //pareto front of SD gets saved in csv format
 		    sb.setLength(0);
@@ -414,69 +426,32 @@ public class Test1 {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
+		    
 		    //write down into the file
 		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\SD_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
 		    
+		    //write down instrumenters results
+		    updateArchive(instrumenter_1, instrumenter_2, runNum);
 		    
-		   Accumulator accumulator = instrumenter_1.getLastAccumulator();
-		   for (int i=0; i<accumulator.size("NFE"); i++) {
-			   System.out.println(accumulator.get("NFE", i) + "\t" +
-					   accumulator.get("GenerationalDistance", i));
-			   System.out.println();
-			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
-			   sb.setLength(0);
-			   for(Solution s:solutions){
-				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
-				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
-				   sb.append("\n");
-			   }
-			   System.out.println();
-			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+accumulator.get("NFE", i)+"\\KRRGZ_"+fileName+"_"+runNum+".csv");
-			   f.getParentFile().mkdirs();
-			   pw=new PrintWriter(f);
-			   pw.write(sb.toString());
-			   pw.close();
-			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_KRRGZ_"+fileName+".csv"));
-			  }
-		   
-		   accumulator=instrumenter_2.getLastAccumulator();
-		   for (int i=0; i<accumulator.size("NFE"); i++) {
-			   System.out.println(accumulator.get("NFE", i) + "\t" +
-					   accumulator.get("GenerationalDistance", i));
-			   System.out.println();
-			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
-			   sb.setLength(0);
-			   for(Solution s:solutions){
-				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
-				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
-				   sb.append("\n");
-			   }
-			   System.out.println();
-			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+accumulator.get("NFE", i)+"\\SD_"+fileName+"_"+runNum+".csv");
-			   f.getParentFile().mkdirs();
-			   pw=new PrintWriter(f);
-			   pw.write(sb.toString());
-			   pw.close();
-			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
-			  }
-		   
+		    
+		   //write down the analyzer results
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
 		    analyzer.add("KRRGZ", NDP_KRRGZ);
 		    analyzer.add("Scheduling", NDP_SD);
-		    NondominatedPopulation rs=analyzer.getReferenceSet();
-		    int test=rs.size();
-		    /*File targetRefSet=new File(System.getProperty("user.dir")+"//PS//"+fileName+".ps");
-		    analyzer.saveReferenceSet(targetRefSet);*/
+		   
 		    
-			PrintStream ps_ID=new PrintStream(new File(System.getProperty("user.dir")+"//results//AnalyzerResults_"+runNum+"_"+fileNum+".txt"));
+		    //generate the pareto set in favor of archiving	    
+		    /*File targetRefSet=new File(System.getProperty("user.dir")+"//PS//"+GA_Problem_Parameter.pName+fileName+".ps");
+		    analyzer.saveReferenceSet(targetRefSet);*/
+		    File f=new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults_"+runNum+"_"+fileNum+".txt");
+		    f.getParentFile().mkdirs();
+			PrintStream ps_ID=new PrintStream(f);
 			analyzer.withProblemClass(SchedulingDriven.class).printAnalysis(ps_ID);
 			ps_ID.close();
-			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
+			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}
 		//catch(Exception e){
 			//starting(fileNum, runNum);
@@ -518,8 +493,7 @@ public class Test1 {
 		pw.close();
 		
 	}
-	
-	
+		
 	public static void writeAnalyzingResults(AnalyzerResults ar, int runNum, int roundNum) throws FileNotFoundException{
 		//PrintWriter pw=new PrintWriter(new File(System.getProperty("user.dir")+"//results//AnalyzerResults"+runNum+"_"+roundNum+".csv"));
 		StringBuilder sb=new StringBuilder();
@@ -590,4 +564,55 @@ public class Test1 {
 		return min;
 	}
 	
+	private static void updateArchive(Instrumenter instrumenter_1, Instrumenter instrumenter_2, int runNum ) throws FileNotFoundException{
+		 PrintWriter pw=null;
+		//instrumenter for KRRGZ 
+		   Accumulator accumulator = instrumenter_1.getLastAccumulator();
+		   for (int i=0; i<accumulator.size("NFE"); i++) {
+			   System.out.println(accumulator.get("NFE", i) + "\t" +
+					   accumulator.get("GenerationalDistance", i));
+			   System.out.println();
+			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
+			   sb.setLength(0);
+			   for(Solution s:solutions){
+				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+			   }
+			   System.out.println();
+			   System.out.println();
+			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+fileName+"\\"+accumulator.get("NFE", i)+"\\KRRGZ_"+fileName+"_"+runNum+".csv");
+			   f.getParentFile().mkdirs();
+			   pw=new PrintWriter(f);
+			   pw.write(sb.toString());
+			   pw.close();
+			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_KRRGZ_"+fileName+".csv"));
+			  }
+		   
+		   
+		   
+		   
+		   //Instrumenter for SD
+		   accumulator=instrumenter_2.getLastAccumulator();
+		   for (int i=0; i<accumulator.size("NFE"); i++) {
+			   System.out.println(accumulator.get("NFE", i) + "\t" +
+					   accumulator.get("GenerationalDistance", i));
+			   System.out.println();
+			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
+			   sb.setLength(0);
+			   for(Solution s:solutions){
+				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+			   }
+			   System.out.println();
+			   System.out.println();
+			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+fileName+"\\"+accumulator.get("NFE", i)+"\\SD_"+fileName+"_"+runNum+".csv");
+			   f.getParentFile().mkdirs();
+			   pw=new PrintWriter(f);
+			   pw.write(sb.toString());
+			   pw.close();
+			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
+			  }
+	}
 }

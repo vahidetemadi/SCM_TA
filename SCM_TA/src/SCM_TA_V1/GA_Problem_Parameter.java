@@ -1,6 +1,8 @@
 package SCM_TA_V1;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -65,7 +67,13 @@ public class GA_Problem_Parameter {
 	public static int numOfEvaluationLocalSearch;
 	public static ArrayList<ArrayList<Integer>> encodedSolutions= new ArrayList<ArrayList<Integer>>();
 	public static int thresoldForPopulationGeneration=0;
-	
+	public static String pName=null;
+	public static int fileNum=1;
+	static ArrayList<Integer> assignment=new ArrayList<Integer>();	
+	static ArrayList<Integer> schedules=new ArrayList<Integer>();
+	static Set<DefaultEdge> edgeSet;
+	static Set<Bug> nodeSet;
+	static DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){
@@ -301,6 +309,7 @@ public class GA_Problem_Parameter {
 			d.getValue().developerNextAvailableHour=0.0;
 		}
 	}
+	
 	public static void assignZoneDev(ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee,ArrayList<Bug> tasks,Solution s){
 		int index=0;
 		for(Bug b:tasks){
@@ -335,10 +344,10 @@ public class GA_Problem_Parameter {
 		
 		if(!DDG.vertexSet().isEmpty()){
 			for(DefaultEdge d:DDG.edgeSet()){
-			DDG.removeEdge(d);
+				DDG.removeEdge(d);
 			}
 			for(Bug b:DDG.vertexSet()){
-			DDG.removeVertex(b);
+				DDG.removeVertex(b);
 			}
 		}
 		
@@ -374,10 +383,12 @@ public class GA_Problem_Parameter {
 	 update the schedules for each generated offspring produced by crossover operator   
 	**/
 	public static Solution setValidSchdule(Solution solution, HashMap<Integer, Bug> varToBug){
-		ArrayList<Integer> assignment=new ArrayList<Integer>();
-		ArrayList<Integer> schedules=new ArrayList<Integer>();
-		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
-		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
+		assignment.clear();
+		schedules.clear();
+		/*edgeSet=DEP_scheduling.edgeSet();
+		DEP_scheduling.removeAllEdges(edgeSet);*/
+		DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
+		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);	
 		int[] solu=EncodingUtils.getInt(solution);
 		for(int i=0;i<solu.length;i++){
 			if(solu[i]!=-100){
@@ -387,13 +398,20 @@ public class GA_Problem_Parameter {
 				break;
 			}
 		}
-		for(int i=assignment.size();i<solu.length-1;i++){
+		
+		for(int i=assignment.size()+1;i<solu.length-1;i++){
 			schedules.add(solu[i]);
 		}
+		
+		int sizeTest=GA_Problem_Parameter.pEdges.size();
+		int scheculeSize=schedules.size();
 		int m,n,p,q;
 		int[] indexes=new int[2];
-		AllDirectedPaths<Bug, DefaultEdge> paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP);
-		for(int i=0;i<GA_Problem_Parameter.tasks.size()-1;i++){
+		AllDirectedPaths<Bug, DefaultEdge> paths;
+		int vertexSetSize=GA_Problem_Parameter.tasks.size()-1;
+		/*if(vertexSetSize>40)
+			vertexSetSize/=3;*/
+		for(int i=0;i<vertexSetSize;i++){
 			indexes=getIndex(i);
 			m=indexes[0];
 			n=indexes[1];
@@ -403,7 +421,8 @@ public class GA_Problem_Parameter {
 				q=indexes[1];
 				if(compareSubtasksAssignee(m,n,p,q,assignment)){
 					try{
-						if(paths.getAllPaths(varToBug.get(i), varToBug.get(j), true, 1000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 1000).isEmpty()){
+						paths=new AllDirectedPaths<Bug, DefaultEdge>(DEP_scheduling);
+						if(paths.getAllPaths(varToBug.get(i), varToBug.get(j), true, 10000).isEmpty() && paths.getAllPaths(varToBug.get(j), varToBug.get(i), true, 10000).isEmpty()){
 							int t=-1;
 							try{
 								t=GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG_1.getEdge(varToBug.get(i), varToBug.get(j)));
@@ -430,17 +449,23 @@ public class GA_Problem_Parameter {
 				}
 			}
 		}
-		int[] temp=new int[schedules.size()];
-		for(int i=0;i<temp.length;i++){
-			temp[i]=schedules.get(i);
-		}
-		int o=temp.length;
+		int j=0;
+		int tttt=solution.getNumberOfVariables();
+		int ttttt=assignment.size();
 		
-		/*for(int i=assignment.size()+1;i<solution.getNumberOfVariables();i++){
-			int t=temp[i-(assignment.size()+1)];
-			solution.setVariable(i, EncodingUtils.newInt(t,t));
-		}*/
-		int[] soluw=EncodingUtils.getInt(solution);
+		for(int i=assignment.size()+1;i<solution.getNumberOfVariables();i++){
+			solution.setVariable(i, EncodingUtils.newInt(schedules.get(j),schedules.get(j)));
+			j++;
+			if(j>71)
+				break;
+		}
+		
+		//should be called as a part of solution preparation
+		for (int k = 0; k < solution.getNumberOfVariables(); k++) {
+			solution.getVariable(k).randomize();
+		}
+		
+		int[] so=EncodingUtils.getInt(solution);
 		return solution;
 	}
 	
