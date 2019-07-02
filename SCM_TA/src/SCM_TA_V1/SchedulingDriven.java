@@ -76,7 +76,6 @@ public class SchedulingDriven extends AbstractProblem{
 			}
 			
 			// the schedules should be checked in favor of being duplicated
-			
 			for(ArrayList<Integer> schedule:schedules){
 				ArrayList<ArrayList<Integer>> variable=new ArrayList<ArrayList<Integer>>();
 				variable.add(assignment);
@@ -95,7 +94,8 @@ public class SchedulingDriven extends AbstractProblem{
 				}
 				GA_Problem_Parameter.encodedSolutions.add(encodedSolution);	
 				indexTotal++;
-				if(indexTotal==500)
+				//in case adding more schedules of a particular assignment causes meeting the total number of population
+				if(indexTotal==GA_Problem_Parameter.population)
 					break;
 			}
 		}
@@ -104,10 +104,13 @@ public class SchedulingDriven extends AbstractProblem{
 	
 	public static Boolean compareSubtasksAssignee(int i, int j,int p, int k, ArrayList<Integer> assignment){
 		Boolean b=false;
+		outerloop:
 		for(int r=i;r<j;r++){
 			for(int s=p;s<k;s++)
-				if(assignment.get(r)==assignment.get(s))
+				if(assignment.get(r)==assignment.get(s)){
 					b=true;
+					break outerloop;
+				}
 		}
 		
 		return b;
@@ -143,6 +146,7 @@ public class SchedulingDriven extends AbstractProblem{
 		for(int i=0;i<GA_Problem_Parameter.encodedSolutions.get(0).size();i++){
 				solution.setVariable(i,EncodingUtils.newInt(GA_Problem_Parameter.encodedSolutions.get(0).get(i), GA_Problem_Parameter.encodedSolutions.get(0).get(i)));	
 		} 
+		int sixeee=GA_Problem_Parameter.encodedSolutions.get(0).size();
 		GA_Problem_Parameter.encodedSolutions.remove(0);
 		
 		return solution;
@@ -154,11 +158,14 @@ public class SchedulingDriven extends AbstractProblem{
 		@SuppressWarnings("unchecked")
 		int test=GA_Problem_Parameter.DEP.vertexSet().size();
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
+	
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
+		
 		//assign Devs to zone
 		zoneAssignee.clear();
 		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
+		
 		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
 		ArrayList<Integer> sche=new ArrayList<Integer>();
 		int[] solu=EncodingUtils.getInt(solution);
@@ -228,6 +235,8 @@ public class SchedulingDriven extends AbstractProblem{
 	public ArrayList<Integer> generateSchedule(){
 		//schedule has the same size of pEdges (potential edges)
 		ArrayList<Integer> schedule=new ArrayList<Integer>();
+		
+		
 		//initialization
 		for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++)
 			schedule.add(0);
@@ -237,8 +246,8 @@ public class SchedulingDriven extends AbstractProblem{
 		int m,n,p,q;
 		int[] indexes=new int[2];
 		//create DEP_scheduling graph to add potential links used for a new schedule 
-		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
-		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
+		//DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);
 		ArrayList<Integer> indices=new ArrayList<Integer>();
 		
 		//shuffling the bug list to provide randomness in the scheduling
@@ -251,7 +260,7 @@ public class SchedulingDriven extends AbstractProblem{
 			indexes=getIndex(i);
 			m=indexes[0];
 			n=indexes[1];
-			for(int j=i+1;j<GA_Problem_Parameter.shuffledTasks.size();j++){
+			for(int j=i+1;j<vertexSetSize+1;j++){
 				indexes=getIndex(j);
 				p=indexes[0];
 				q=indexes[1];
@@ -278,12 +287,14 @@ public class SchedulingDriven extends AbstractProblem{
 										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
 						}
 					}
-					catch (IllegalArgumentException e) {
+					catch (Exception e) {
 						// TODO: handle exception
 					}
 				}
 			}
 		}
+		DEP_scheduling=null;
+		paths=null;
 		return schedule;
 	}
 

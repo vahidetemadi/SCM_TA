@@ -88,8 +88,9 @@ public class Test1 {
 			else 
 				roundNum=10;
 			
-			//iterate over the under experiment
+			//iterate over the under experiment files
 			for(int i=GA_Problem_Parameter.fileNum;i<=roundNum;i++){
+				GA_Problem_Parameter.fileNum=i;
 				starting(i, runNum);
 			}
 			System.gc();
@@ -378,7 +379,7 @@ public class Test1 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 		}
-		GA_Problem_Parameter.population=500;
+		GA_Problem_Parameter.population=100;
 		
 	}
 	
@@ -390,7 +391,7 @@ public class Test1 {
 	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(5000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(5000).attachAll()
-	    		.withFrequencyType(FrequencyType.EVALUATIONS);;
+	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
@@ -412,8 +413,6 @@ public class Test1 {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
-		    
-		    //write down into the file
 		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\KRRGZ_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
@@ -426,8 +425,6 @@ public class Test1 {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
-		    
-		    //write down into the file
 		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\SD_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
@@ -436,7 +433,7 @@ public class Test1 {
 		    updateArchive(instrumenter_1, instrumenter_2, runNum);
 		    
 		    
-		   //write down the analyzer results
+		    //write down the analyzer results
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
 		    analyzer.add("KRRGZ", NDP_KRRGZ);
@@ -574,6 +571,8 @@ public class Test1 {
 			   System.out.println();
 			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
 			   sb.setLength(0);
+			   sb.append("Time,Cost");
+			   sb.append("\n");
 			   for(Solution s:solutions){
 				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
@@ -581,7 +580,8 @@ public class Test1 {
 			   }
 			   System.out.println();
 			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+fileName+"\\"+accumulator.get("NFE", i)+"\\KRRGZ_"+fileName+"_"+runNum+".csv");
+			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+GA_Problem_Parameter.pName+"\\"+fileName+"\\"
+					   +"\\KRRGZ\\"+fileName+"_"+runNum+"_KRRGZ_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);
 			   pw.write(sb.toString());
@@ -600,6 +600,8 @@ public class Test1 {
 			   System.out.println();
 			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
 			   sb.setLength(0);
+			   sb.append("Time,Cost");
+			   sb.append("\n");
 			   for(Solution s:solutions){
 				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
@@ -607,7 +609,8 @@ public class Test1 {
 			   }
 			   System.out.println();
 			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+fileName+"\\"+accumulator.get("NFE", i)+"\\SD_"+fileName+"_"+runNum+".csv");
+			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+GA_Problem_Parameter.pName+"\\"+fileName+"\\"
+					   +"\\SD\\"+fileName+"_"+runNum+"_SD_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);
 			   pw.write(sb.toString());

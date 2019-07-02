@@ -1,22 +1,22 @@
 KRRGZ:
-    Hypervolume: 0.8744104537704327
+    Hypervolume: 0.5622113501229793
     GenerationalDistance: 0.0
     InvertedGenerationalDistance: 0.0
     AdditiveEpsilonIndicator: 0.0
     MaximumParetoFrontError: 0.0
-    Spacing: 733003.8544925711
+    Spacing: 295113.8797908573
     Contribution: 1.0
     R1Indicator: 0.0
-    R2Indicator: 2.392205468019382E7
-    R3Indicator: 2.5826192884609997E7
+    R2Indicator: 2.9351704787251156E7
+    R3Indicator: 3.510035933476915E7
 Scheduling:
-    Hypervolume: 0.6823509817118604
-    GenerationalDistance: 0.02611974193048543
-    InvertedGenerationalDistance: 0.1685219467657166
-    AdditiveEpsilonIndicator: 0.16563646514268304
-    MaximumParetoFrontError: 0.23766498325784063
-    Spacing: 139910.51772602124
+    Hypervolume: 0.0
+    GenerationalDistance: 4.957395687415053
+    InvertedGenerationalDistance: 6.923147285323764
+    AdditiveEpsilonIndicator: 6.994428354937145
+    MaximumParetoFrontError: 7.389411563597291
+    Spacing: 0.0
     Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 2.4744002960958008E7
-    R3Indicator: 2.6713565505884472E7
+    R2Indicator: 3.867664128207131E7
+    R3Indicator: 4.625161070139251E7

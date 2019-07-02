@@ -1,6 +1,7 @@
 package SCM_TA_V1;
 
 import java.lang.reflect.Array;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -73,7 +74,7 @@ public class GA_Problem_Parameter {
 	static ArrayList<Integer> schedules=new ArrayList<Integer>();
 	static Set<DefaultEdge> edgeSet;
 	static Set<Bug> nodeSet;
-	static DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
+	static DirectedAcyclicGraph<Bug, DefaultEdge> DEP_scheduling;
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){
@@ -112,6 +113,11 @@ public class GA_Problem_Parameter {
 		}	
 	}
 	
+	/**
+	 * This method is used to make a copy of a initialized graph
+	 * @param DAG
+	 * @return a list of validated schedules
+	 */
 	
 	public static ArrayList<ArrayList<Bug>> getValidSchedulings(DirectedAcyclicGraph<Bug, DefaultEdge> DAG){
 		//all valid schedules(without any loop)
@@ -121,7 +127,7 @@ public class GA_Problem_Parameter {
 		ArrayList<DefaultEdge> potentilEdges=new ArrayList<DefaultEdge>();
 		
 		System.out.println();
-		//generate all valid schedules 
+		//generate all possible nodes 
 		for(Bug b1:DAG.vertexSet()){
 			for(Bug b2:DAG.vertexSet()){
 				//System.out.print(b1.ID+">>>>"+b2.ID+"....."+CI.pathExists(b1, b2)+",,,");
@@ -136,13 +142,7 @@ public class GA_Problem_Parameter {
 		System.out.println();
 		pEdges=potentilEdges;
 
-		/*System.out.println();
-		ConnectivityInspector<Bug, DefaultEdge> GCI=new ConnectivityInspector<Bug, DefaultEdge>(DAG);
-		List<Set<Bug>> components = GCI.connectedSets();
-		ArrayList<AsSubgraph<Bug, DefaultEdge>> subgraphs=new ArrayList<AsSubgraph<Bug,DefaultEdge>>();
-		for(Set<Bug> s:components){
-			subgraphs.add(new AsSubgraph(DAG, s));
-		}*/
+		
 		ArrayList<ArrayList<Bug>> validSchedulings=new ArrayList<ArrayList<Bug>>();
 		for(int k=0;k<500;k++){
 			ArrayList<Bug> va=new ArrayList<Bug>();
@@ -387,8 +387,7 @@ public class GA_Problem_Parameter {
 		schedules.clear();
 		/*edgeSet=DEP_scheduling.edgeSet();
 		DEP_scheduling.removeAllEdges(edgeSet);*/
-		DEP_scheduling=new DefaultDirectedGraph<Bug, DefaultEdge>(DefaultEdge.class);
-		DEP_scheduling=GA_Problem_Parameter.convertToDirectedGraph(GA_Problem_Parameter.DEP, DEP_scheduling);	
+		DEP_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();	
 		int[] solu=EncodingUtils.getInt(solution);
 		for(int i=0;i<solu.length;i++){
 			if(solu[i]!=-100){
@@ -443,7 +442,7 @@ public class GA_Problem_Parameter {
 										GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(t)));
 						}
 					}
-					catch (IllegalArgumentException e) {
+					catch (Exception e) {
 						// TODO: handle exception
 					}
 				}
@@ -464,8 +463,8 @@ public class GA_Problem_Parameter {
 		for (int k = 0; k < solution.getNumberOfVariables(); k++) {
 			solution.getVariable(k).randomize();
 		}
-		
-		int[] so=EncodingUtils.getInt(solution);
+		DEP_scheduling=null;
+		paths=null;
 		return solution;
 	}
 	
@@ -484,10 +483,13 @@ public class GA_Problem_Parameter {
 	/** compare subtasks to find the potential links**/
 	public static Boolean compareSubtasksAssignee(int i, int j,int p, int k, ArrayList<Integer> assignment){
 		Boolean b=false;
+		outerloop:
 		for(int r=i;r<j;r++){
 			for(int s=p;s<k;s++)
-				if(assignment.get(r)==assignment.get(s))
+				if(assignment.get(r)==assignment.get(s)){
 					b=true;
+					break outerloop;
+				}
 		}
 		
 		return b;

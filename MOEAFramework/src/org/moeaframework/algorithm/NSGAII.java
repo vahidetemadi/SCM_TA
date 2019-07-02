@@ -37,6 +37,8 @@ import org.moeaframework.core.comparator.DominanceComparator;
 import org.moeaframework.core.comparator.ParetoDominanceComparator;
 import org.moeaframework.core.operator.TournamentSelection;
 
+import com.sun.tracing.ProbeName;
+
 /**
  * Implementation of NSGA-II, with the ability to attach an optional 
  * &epsilon;-dominance archive.
@@ -86,6 +88,13 @@ public class NSGAII extends AbstractEvolutionaryAlgorithm implements
 
 	@Override
 	public void iterate() {
+		String pName=new String(problem.getName());
+		long startTime, endTime, difference;
+		if(pName.equals("SchedulingDriven"))
+			startTime=System.currentTimeMillis();
+		else 
+			startTime=0;
+		
 		NondominatedSortingPopulation population = getPopulation();
 		EpsilonBoxDominanceArchive archive = getArchive();
 		Population offspring = new Population();
@@ -105,7 +114,7 @@ public class NSGAII extends AbstractEvolutionaryAlgorithm implements
 				// ensure the pool has enough solutions
 				while (pool.size() < 2*variation.getArity()) {
 					List<Solution> poolAdditions = new ArrayList<Solution>();
-					
+	
 					for (Solution solution : population) {
 						poolAdditions.add(solution);
 					}
@@ -146,6 +155,16 @@ public class NSGAII extends AbstractEvolutionaryAlgorithm implements
 
 		population.addAll(offspring);
 		population.truncate(populationSize);
+		//store end Time
+		if(startTime!=0){
+			endTime=System.currentTimeMillis();
+			difference=endTime-startTime;
+		}
+		else
+			endTime=0;
+		
+		
+		int t=0;
 	}
 
 	@Override
