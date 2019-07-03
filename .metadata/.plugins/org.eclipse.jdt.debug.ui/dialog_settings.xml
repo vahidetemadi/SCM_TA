@@ -8,4 +8,8 @@
 		<item value="816" key="WIDTH"/>
 		<item value="256" key="HEIGHT"/>
 	</section>
+	<section name="AddExceptionDialog">
+		<item value="true" key="caughtChecked"/>
+		<item value="true" key="uncaughtChecked"/>
+	</section>
 </section>

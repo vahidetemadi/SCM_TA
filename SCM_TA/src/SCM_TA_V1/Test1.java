@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -215,7 +216,9 @@ public class Test1 {
 		//System.out.println(sc.nextLine());
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+GA_Problem_Parameter.pName+"//efforts").listFiles()){
+		File[] files=new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//"+GA_Problem_Parameter.pName+"//efforts").listFiles();
+		Arrays.sort(files);
+		for(File fileEntry:files){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
