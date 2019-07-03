@@ -17,22 +17,16 @@
  */
 package org.moeaframework.core.operator;
 
-import java.util.ArrayList;
-
 import org.moeaframework.core.PRNG;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variable;
 import org.moeaframework.core.Variation;
-import org.moeaframework.core.variable.EncodingUtils;
-
-import SCM_TA_V1.GA_Problem_Parameter;
 
 /**
  * Crossover operator where each index is swapped with a specified probability.
  */
 public class UniformCrossover implements Variation {
 
-	private int x=-100;
 	/**
 	 * The probability an index is swapped between two solutions.
 	 */
@@ -60,37 +54,20 @@ public class UniformCrossover implements Variation {
 
 	@Override
 	public Solution[] evolve(Solution[] parents) {
-		long start=System.currentTimeMillis();
-		boolean b=false;
 		Solution result1 = parents[0].copy();
 		Solution result2 = parents[1].copy();
+
 		if (PRNG.nextDouble() <= probability) {
 			for (int i = 0; i < result1.getNumberOfVariables(); i++) {
-				this.x=EncodingUtils.getInt(result1.getVariable(i));				
-				if(x!=-100){
-					if (PRNG.nextBoolean()) {
-						Variable temp = result1.getVariable(i);
-						result1.setVariable(i, result2.getVariable(i));
-						result2.setVariable(i, temp);
-					}
-				}
-				else {
-					b=true;
-					break;
+				if (PRNG.nextBoolean()) {
+					Variable temp = result1.getVariable(i);
+					result1.setVariable(i, result2.getVariable(i));
+					result2.setVariable(i, temp);
 				}
 			}
 		}
-		
-		Solution[] results;
-		
-		results=new Solution[] { result1, result2 };
-		if(b){
-			results[0]=GA_Problem_Parameter.setValidSchdule(results[0], GA_Problem_Parameter.getVarToBug());
-			results[1]=GA_Problem_Parameter.setValidSchdule(results[1], GA_Problem_Parameter.getVarToBug());
-		}
-		long end=System.currentTimeMillis();
-		long diff=end-start;
-		return results;
+
+		return new Solution[] { result1, result2 };
 	}
 
 	@Override

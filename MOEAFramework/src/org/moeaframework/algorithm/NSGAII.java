@@ -54,7 +54,7 @@ import com.sun.tracing.ProbeName;
  * </ol>
  */
 public class NSGAII extends AbstractEvolutionaryAlgorithm implements
-		EpsilonBoxEvolutionaryAlgorithm {
+		EpsilonBoxEvolutionaryAlgorithm{
 
 	/**
 	 * The selection operator.  If {@code null}, this algorithm uses binary
@@ -134,6 +134,8 @@ public class NSGAII extends AbstractEvolutionaryAlgorithm implements
 				}
 				
 				// evolve the children
+				/*MultithreadEvolution_NSGAII thread=new MultithreadEvolution_NSGAII(offspring, variation, parents);
+				thread.run();*/
 				offspring.addAll(variation.evolve(parents));
 			}
 		} else {
@@ -155,6 +157,7 @@ public class NSGAII extends AbstractEvolutionaryAlgorithm implements
 
 		population.addAll(offspring);
 		population.truncate(populationSize);
+		
 		//store end Time
 		if(startTime!=0){
 			endTime=System.currentTimeMillis();
@@ -176,5 +179,7 @@ public class NSGAII extends AbstractEvolutionaryAlgorithm implements
 	public NondominatedSortingPopulation getPopulation() {
 		return (NondominatedSortingPopulation)super.getPopulation();
 	}
+
+
 
 }

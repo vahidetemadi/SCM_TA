@@ -513,6 +513,7 @@ public class GA_Problem_Parameter {
 			Bug b=tso_ID.next();
 			GA_Problem_Parameter.tasks.add(b);
 		}
+		tso_ID=GA_Problem_Parameter.getTopologicalSorted(DEP);
 	}
 	public static void createPriorityTable(){
 		priorities.put("P1", 0.9);

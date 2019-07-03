@@ -21,10 +21,7 @@ import org.moeaframework.core.PRNG;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variable;
 import org.moeaframework.core.Variation;
-import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.core.variable.RealVariable;
-
-import SCM_TA_V1.GA_Problem_Parameter;
 
 /**
  * Uniform mutation (UM) operator.  Each decision variable is mutated by
@@ -41,7 +38,6 @@ import SCM_TA_V1.GA_Problem_Parameter;
  */
 public class UM implements Variation {
 
-	private int x=-100;
 	/**
 	 * The probability of mutating each variable in a solution.
 	 */
@@ -69,28 +65,17 @@ public class UM implements Variation {
 
 	@Override
 	public Solution[] evolve(Solution[] parents) {
-		boolean b=false;
 		Solution result = parents[0].copy();
+
 		for (int i = 0; i < result.getNumberOfVariables(); i++) {
-			this.x=EncodingUtils.getInt(result.getVariable(i));
-			if(x!=-100){
-				Variable variable = result.getVariable(i);
-				if ((PRNG.nextDouble() <= probability)
-						&& (variable instanceof RealVariable)) {
-					evolve((RealVariable)variable);
-				}	
+			Variable variable = result.getVariable(i);
+
+			if ((PRNG.nextDouble() <= probability)
+					&& (variable instanceof RealVariable)) {
+				evolve((RealVariable)variable);
 			}
-			else{
-				b=true;
-				break;
-			}	
 		}
-		
-		if(b){
-			
-			result=GA_Problem_Parameter.setValidSchdule(result, GA_Problem_Parameter.getVarToBug());
-		}
-			
+
 		return new Solution[] { result };
 	}
 
@@ -100,7 +85,8 @@ public class UM implements Variation {
 	 * @param variable the variable to be mutated
 	 */
 	public static void evolve(RealVariable variable) {
-		variable.setValue(PRNG.nextDouble(variable.getLowerBound(),variable.getUpperBound()));
+		variable.setValue(PRNG.nextDouble(variable.getLowerBound(), variable
+				.getUpperBound()));
 	}
 
 	@Override

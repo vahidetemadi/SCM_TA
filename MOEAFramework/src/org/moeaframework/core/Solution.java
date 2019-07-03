@@ -18,8 +18,11 @@
 package org.moeaframework.core;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+
+import jmetal.encodings.variable.Int;
 
 import org.apache.commons.lang3.SerializationUtils;
 
@@ -51,6 +54,12 @@ public class Solution implements Serializable {
 	 * The constraints of this solution.
 	 */
 	private final double[] constraints;
+	
+	//////******
+	private ArrayList<Integer> schedule;	
+	
+	private ArrayList<ArrayList<Integer>> schedules=new ArrayList<ArrayList<Integer>>();
+	//////******
 
 	/**
 	 * The attributes of this solutions.
@@ -406,4 +415,18 @@ public class Solution implements Serializable {
 		attributes.clear();
 	}
 
+	public ArrayList<Integer> getSchedule(){
+		return this.schedule;
+	}
+	public ArrayList<ArrayList<Integer>> getSchedules(){
+		return this.schedules;
+	}
+	
+	public void setSchedule(ArrayList<Integer> schedule){
+		this.schedule=schedule;
+	}
+	
+	public void setSchedules(ArrayList<ArrayList<Integer>> schedules){
+		this.schedules=schedules;
+	}
 }
