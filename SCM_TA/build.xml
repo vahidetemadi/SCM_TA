@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. --><project basedir="." default="build" name="SCM_TA">
+    <property environment="env"/>
+    <property name="MOEAFramework.location" value="../MOEAFramework"/>
+    <property name="SCM_TA.location" value="."/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.8"/>
+    <property name="source" value="1.8"/>
+    <path id="MOEAFramework.classpath">
+        <pathelement location="${MOEAFramework.location}/bin"/>
+        <pathelement location="${MOEAFramework.location}/lib/commons-cli-1.2.jar"/>
+        <pathelement location="${MOEAFramework.location}/lib/commons-lang3-3.1.jar"/>
+        <pathelement location="${MOEAFramework.location}/lib/JMetal-4.3.jar"/>
+        <pathelement location="${MOEAFramework.location}/lib/commons-codec-1.8.jar"/>
+        <pathelement location="${MOEAFramework.location}/lib/junit-4.11.jar"/>
+        <pathelement location="${MOEAFramework.location}/lib/rsyntaxtextarea.jar"/>
+        <pathelement location="${MOEAFramework.location}/lib/commons-math3-3.4.1.jar"/>
+        <pathelement location="${MOEAFramework.location}/lib/jcommon-1.0.20.jar"/>
+        <pathelement location="${MOEAFramework.location}/lib/jfreechart-1.0.15.jar"/>
+        <path refid="SCM_TA.classpath"/>
+    </path>
+    <path id="SCM_TA.classpath">
+        <pathelement location="src"/>
+        <path refid="MOEAFramework.classpath"/>
+        <pathelement location="lib/combinatoricslib-2.0.jar"/>
+        <pathelement location="lib/commons-math3-3.6.1-javadoc.jar"/>
+        <pathelement location="lib/commons-math3-3.6.1.jar"/>
+        <pathelement location="lib/guava.jar"/>
+        <pathelement location="lib/jgrapht-ext-1.1.0-uber.jar"/>
+        <pathelement location="lib/jgraphx.jar"/>
+        <pathelement location="lib/commons-io-2.6.jar"/>
+    </path>
+    <path id="run.Test1.classpath">
+        <path refid="SCM_TA.classpath"/>
+        <path refid="MOEAFramework.classpath"/>
+    </path>
+    <path id="run.Test1.bootclasspath">
+        <fileset dir="${java.home}/lib" includes="*.jar"/>
+        <fileset dir="${java.home}/lib/ext" includes="*.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="src"/>
+        <copy includeemptydirs="false" todir="src">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="src"/>
+    </target>
+    <target depends="clean" name="cleanall">
+        <ant antfile="build.xml" dir="${MOEAFramework.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${SCM_TA.location}" inheritAll="false" target="clean"/>
+    </target>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects">
+        <ant antfile="build.xml" dir="${MOEAFramework.location}" inheritAll="false" target="build-project"/>
+        <ant antfile="build.xml" dir="${SCM_TA.location}" inheritAll="false" target="build-project"/>
+    </target>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="src" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="SCM_TA.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects">
+        <ant antfile="build.xml" dir="${MOEAFramework.location}" inheritAll="false" target="clean"/>
+        <ant antfile="build.xml" dir="${MOEAFramework.location}" inheritAll="false" target="build"/>
+    </target>
+    <target name="Test1">
+        <java classname="SCM_TA_V1.Test1" failonerror="true" fork="yes">
+            <jvmarg line="-Xmx13G"/>
+            <classpath refid="run.Test1.classpath"/>
+            <bootclasspath>
+                <path refid="run.Test1.bootclasspath"/>
+            </bootclasspath>
+        </java>
+    </target>
+</project>

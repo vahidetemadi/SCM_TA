@@ -21,10 +21,7 @@ import org.moeaframework.core.PRNG;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variable;
 import org.moeaframework.core.Variation;
-import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.core.variable.RealVariable;
-
-import SCM_TA_V1.GA_Problem_Parameter;
 
 /**
  * Polynomial mutation (PM) operator.  PM attempts to simulate the offspring 
@@ -50,7 +47,6 @@ import SCM_TA_V1.GA_Problem_Parameter;
  */
 public class PM implements Variation {
 
-	private int x=-100;
 	/**
 	 * The probability this operator is applied to each decision variable.
 	 */
@@ -100,32 +96,19 @@ public class PM implements Variation {
 
 	@Override
 	public Solution[] evolve(Solution[] parents) {
-		boolean b=false;
 		Solution result = parents[0].copy();
+
 		for (int i = 0; i < result.getNumberOfVariables(); i++) {
-			this.x=EncodingUtils.getInt(result.getVariable(i));
-			if(x!=-100){
-				Variable variable = result.getVariable(i);
-				if ((PRNG.nextDouble() <= probability)
-						&& (variable instanceof RealVariable)) {
-					evolve((RealVariable)variable, distributionIndex);
-				}	
+			Variable variable = result.getVariable(i);
+
+			if ((PRNG.nextDouble() <= probability)
+					&& (variable instanceof RealVariable)) {
+				evolve((RealVariable)variable, distributionIndex);
 			}
-			else{
-				b=true;
-				break;
-			}	
 		}
-		
-		if(b){
-			
-			result=GA_Problem_Parameter.setValidSchdule(result, GA_Problem_Parameter.getVarToBug());
-		}
-			
+
 		return new Solution[] { result };
 	}
-	
-	
 
 	/*
 	 * The following source code is modified from the DTLZ variator module for

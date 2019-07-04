@@ -17,17 +17,13 @@
 <fullyQualifiedTypeName name="org.apache.commons.io.FilenameUtils"/>
 <fullyQualifiedTypeName name="java.awt.List"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.SchedulingDriven"/>
-<fullyQualifiedTypeName name="org.moeaframework.core.Solution"/>
 <fullyQualifiedTypeName name="org.apache.commons.lang3.StringUtils"/>
 <fullyQualifiedTypeName name="java.lang.StringBuffer"/>
 <fullyQualifiedTypeName name="java.lang.StringBuilder"/>
 <fullyQualifiedTypeName name="java.io.File"/>
 <fullyQualifiedTypeName name="java.io.PrintStream"/>
 <fullyQualifiedTypeName name="com.sun.tracing.ProbeName"/>
-<fullyQualifiedTypeName name="org.moeaframework.core.variable.EncodingUtils"/>
 <fullyQualifiedTypeName name="org.jgrapht.alg.shortestpath.AllDirectedPaths"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
-<fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="java.lang.reflect.Array"/>
 <fullyQualifiedTypeName name="org.moeaframework.Instrumenter"/>
 <fullyQualifiedTypeName name="java.io.PrintWriter"/>
@@ -39,4 +35,14 @@
 <fullyQualifiedTypeName name="java.lang.System"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
 <fullyQualifiedTypeName name="java.util.Arrays"/>
+<fullyQualifiedTypeName name="java.lang.Runnable"/>
+<fullyQualifiedTypeName name="org.moeaframework.core.Population"/>
+<fullyQualifiedTypeName name="org.moeaframework.core.Variation"/>
+<fullyQualifiedTypeName name="java.lang.Thread"/>
+<fullyQualifiedTypeName name="org.moeaframework.algorithm.MultithreadEvolution_NSGAII"/>
+<fullyQualifiedTypeName name="jmetal.encodings.variable.Int"/>
+<fullyQualifiedTypeName name="org.moeaframework.core.variable.EncodingUtils"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="org.moeaframework.core.Solution"/>
 </qualifiedTypeNameHistroy>

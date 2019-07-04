@@ -2,20 +2,20 @@
 <section name="Workbench">
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="false" key="isRegEx"/>
-		<item value="" key="selection"/>
+		<item value="Encoding" key="selection"/>
 		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="true" key="wrap"/>
 		<item value="false" key="wholeword"/>
 		<list key="findhistory">
+			<item value="encoding"/>
+			<item value="population"/>
+			<item value="tso_ID"/>
 			<item value="Arrays"/>
 			<item value="Arrays.sort"/>
 			<item value="popul"/>
 			<item value="candidate"/>
 			<item value="candidateSolutonGeneration"/>
-			<item value="getValidSchedulings"/>
-			<item value="pedges"/>
-			<item value="pEdges"/>
 		</list>
 		<list key="replacehistory">
 			<item value="JDT"/>
