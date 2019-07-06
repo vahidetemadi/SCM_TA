@@ -382,7 +382,7 @@ public class Test1 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 		}
-		GA_Problem_Parameter.population=300;
+		GA_Problem_Parameter.population=500;
 		
 	}
 	
@@ -391,19 +391,19 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		String path=System.getProperty("user.dir")+"\\PS\\"+GA_Problem_Parameter.pName+"\\"+fileName+".ps";
-	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(6000).attachAll()
+	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(6000).attachAll()
+	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(24000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
 			NondominatedPopulation NDP_SD=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(24000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_2).run();
 			
 		    System.out.println("finished SD");
