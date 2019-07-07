@@ -74,7 +74,7 @@ public class Test1 {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=1;runNum<=30;runNum++){
+		for(int runNum=2;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -90,6 +90,7 @@ public class Test1 {
 				roundNum=10;
 			
 			//iterate over the under experiment files
+			GA_Problem_Parameter.fileNum=1;
 			for(int i=GA_Problem_Parameter.fileNum;i<=roundNum;i++){
 				GA_Problem_Parameter.fileNum=i;
 				starting(i, runNum);
@@ -397,13 +398,13 @@ public class Test1 {
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
 			NondominatedPopulation NDP_SD=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(25000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_2).run();
 			
 		    System.out.println("finished SD");
