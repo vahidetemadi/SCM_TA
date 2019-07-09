@@ -1,0 +1,22 @@
+OMOPSOTA:
+    Hypervolume: 0.0
+    GenerationalDistance: 0.7052004707806733
+    InvertedGenerationalDistance: 2.3230590091536296
+    AdditiveEpsilonIndicator: 2.6092538847716593
+    MaximumParetoFrontError: 2.3421158639285706
+    Spacing: 2057.6667261146927
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 166976.76074725747
+    R3Indicator: 187774.11611206603
+KRRGZ:
+    Hypervolume: 0.7545613613757087
+    GenerationalDistance: 0.0
+    InvertedGenerationalDistance: 0.0
+    AdditiveEpsilonIndicator: 0.0
+    MaximumParetoFrontError: 0.0
+    Spacing: 79.5930335839315
+    Contribution: 1.0
+    R1Indicator: 0.0
+    R2Indicator: 129948.07671411177
+    R3Indicator: 146133.42609217635

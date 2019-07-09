@@ -16,6 +16,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
+import org.moeaframework.core.variable.RealVariable;
 import org.moeaframework.problem.AbstractProblem;
 
 public class OMOPSOTA extends AbstractProblem {
@@ -26,12 +27,14 @@ public class OMOPSOTA extends AbstractProblem {
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
+	
 	public OMOPSOTA(){
 		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
 	
 	
 	public void init(){
+		int ttt=GA_Problem_Parameter.setNum_of_Variables(bugs);
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_ID;
 		/*
@@ -39,38 +42,43 @@ public class OMOPSOTA extends AbstractProblem {
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
+		int index=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
 			TopologicalOrderIterator<Zone,DefaultEdge> tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_zones.hasNext()){
 				genes.add(tso_zones.next());
+				index++;
 			}
 		}
+		int ffff=0;
 	}
+	
 	
 	@Override
 	public Solution newSolution(){
 		init();
 		//changed NUM of variables for the solution
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
+		int min=GA_Problem_Parameter.getMinIdofDeveloper();
+		int max=GA_Problem_Parameter.getMaxIdofDeveloper();
 		int j=0;
 		for(Zone z:genes){
-			int randDevId=GA_Problem_Parameter.getRandomDevId();
-			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
+			RealVariable r=new RealVariable(GA_Problem_Parameter.getMinIdofDeveloper(), GA_Problem_Parameter.getMaxIdofDeveloper());
+			r.randomize();
+			solution.setVariable(j,r);
 			j++;
 		}
 		return solution;
 	}
-		
+
 	
 	@Override 	
 	public void evaluate(Solution solution){
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		//reset all the associate time for the bugs and their zones
-		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
-		int[] sol=EncodingUtils.getInt(solution);
 		//assign associate Dev to zone
 		zoneAssignee.clear();
 		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
@@ -121,7 +129,6 @@ public class OMOPSOTA extends AbstractProblem {
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);
 	}
-		
 	
 }
 

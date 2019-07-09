@@ -74,7 +74,7 @@ public class Test1 {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=2;runNum<=30;runNum++){
+		for(int runNum=1;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -92,7 +92,7 @@ public class Test1 {
 			//iterate over the under experiment files
 			for(int i=GA_Problem_Parameter.fileNum;i<=roundNum;i++){
 				GA_Problem_Parameter.fileNum=i;
-				if(i==runNum)
+				if(i==roundNum)
 					GA_Problem_Parameter.fileNum=1;
 				starting(i, runNum);
 			}
@@ -393,20 +393,20 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		String path=System.getProperty("user.dir")+"\\PS\\"+GA_Problem_Parameter.pName+"\\"+fileName+".ps";
-	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(200000).attachAll()
+	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(200000).attachAll()
+	    Instrumenter instrumenter_2=new Instrumenter().withProblem("OMOPSOTA").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(1000000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
-					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withProperty("ux.rate", 0.9).withProperty("mutationProbability", 0.2).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(OMOPSOTA.class).withAlgorithm("OMOPSO")
-					.withMaxEvaluations(1000000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("mutationProbability",0.9)
-					.withProperty("perturbationIndex", 0.5).withProperty("epsilon", 0.01).withInstrumenter(instrumenter_2).run();
+			NondominatedPopulation NDP_OMOPSO=new Executor().withProblemClass(OMOPSOTA.class).withAlgorithm("OMOPSO")
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("archiveSize", 500)
+					.withInstrumenter(instrumenter_2).run();
 			
 		    System.out.println("finished SD");
 		 
@@ -426,7 +426,7 @@ public class Test1 {
 		    //pareto front of SD gets saved in csv format
 		    sb.setLength(0);
 		    //create string builder to include the nonDominated for KRRGZ
-		    for(Solution s:NDP_SD){
+		    for(Solution s:NDP_OMOPSO){
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
@@ -442,7 +442,7 @@ public class Test1 {
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
 		    analyzer.add("KRRGZ", NDP_KRRGZ);
-		    analyzer.add("Scheduling", NDP_SD);
+		    analyzer.add("OMOPSOTA", NDP_OMOPSO);
 		   
 		    
 		    //generate the pareto set in favor of archiving	    
