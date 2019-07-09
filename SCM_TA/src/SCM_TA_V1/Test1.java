@@ -90,9 +90,10 @@ public class Test1 {
 				roundNum=10;
 			
 			//iterate over the under experiment files
-			GA_Problem_Parameter.fileNum=1;
 			for(int i=GA_Problem_Parameter.fileNum;i<=roundNum;i++){
 				GA_Problem_Parameter.fileNum=i;
+				if(i==runNum)
+					GA_Problem_Parameter.fileNum=1;
 				starting(i, runNum);
 			}
 			System.gc();
@@ -392,20 +393,20 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		String path=System.getProperty("user.dir")+"\\PS\\"+GA_Problem_Parameter.pName+"\\"+fileName+".ps";
-	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(200000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(200000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withMaxEvaluations(1000000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
 					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
-					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_2).run();
+			NondominatedPopulation NDP_SD=new Executor().withProblemClass(OMOPSOTA.class).withAlgorithm("OMOPSO")
+					.withMaxEvaluations(1000000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("mutationProbability",0.9)
+					.withProperty("perturbationIndex", 0.5).withProperty("epsilon", 0.01).withInstrumenter(instrumenter_2).run();
 			
 		    System.out.println("finished SD");
 		 
@@ -450,7 +451,7 @@ public class Test1 {
 		    File f=new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults_"+runNum+"_"+fileNum+".txt");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
-			analyzer.withProblemClass(SchedulingDriven.class).printAnalysis(ps_ID);
+			analyzer.withProblemClass(OMOPSOTA.class).printAnalysis(ps_ID);
 			ps_ID.close();
 			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}
