@@ -384,7 +384,7 @@ public class Test1 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 		}
-		GA_Problem_Parameter.population=500;
+		GA_Problem_Parameter.population=100;
 		
 	}
 	
@@ -393,25 +393,27 @@ public class Test1 {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		String path=System.getProperty("user.dir")+"\\PS\\"+GA_Problem_Parameter.pName+"\\"+fileName+".ps";
-	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(10000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_2=new Instrumenter().withProblem("OMOPSOTA").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_2=new Instrumenter().withProblem("OMOPSOTA").withReferenceSet(new File(path)).withFrequency(10000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
+	    	GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
-					.withProperty("ux.rate", 0.9).withProperty("mutationProbability", 0.2).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
+					.withMaxEvaluations(50000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
+					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
+			GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_OMOPSO=new Executor().withProblemClass(OMOPSOTA.class).withAlgorithm("OMOPSO")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("archiveSize", 500)
-					.withInstrumenter(instrumenter_2).run();
+					.withMaxEvaluations(50000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("archiveSize", 100)
+					.withProperty("mutationProbability", 0.5).withInstrumenter(instrumenter_2).run();
 			
 		    System.out.println("finished SD");
 		 
 		    
-		    //pareto front of KRRGZ gets saved in csv format
+		    /*//pareto front of KRRGZ gets saved in csv format
 		    sb.setLength(0);
 		    //create string builder to include the nonDominated for KRRGZ
 		    for(Solution s:NDP_KRRGZ){
@@ -419,6 +421,15 @@ public class Test1 {
 				   sb.append("\n");
 		    }
 		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\KRRGZ_"+fileName+"_"+runNum+".csv"));
+		    pw.write(sb.toString());
+		    pw.close();*/
+			sb.setLength(0);
+		    for(Solution s:NDP_KRRGZ){
+		    	for(Integer i:EncodingUtils.getInt(s))
+					   sb.append(i+",");
+				   sb.append("\n");
+		    }
+		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\KRRGZ_"+fileName+"_"+runNum+".txt"));
 		    pw.write(sb.toString());
 		    pw.close();
 		   
@@ -443,7 +454,6 @@ public class Test1 {
 			
 		    analyzer.add("KRRGZ", NDP_KRRGZ);
 		    analyzer.add("OMOPSOTA", NDP_OMOPSO);
-		   
 		    
 		    //generate the pareto set in favor of archiving	    
 		    /*File targetRefSet=new File(System.getProperty("user.dir")+"//PS//"+GA_Problem_Parameter.pName+fileName+".ps");

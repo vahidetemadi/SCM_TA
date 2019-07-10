@@ -33,7 +33,6 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 	
 	public void init(){
 		bugs=GA_Problem_Parameter.bugs;
-		int ttt=GA_Problem_Parameter.setNum_of_Variables(bugs);
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_competenceMulti2;
 		/*
@@ -41,17 +40,14 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
-		int index=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
 			TopologicalOrderIterator<Zone,DefaultEdge> tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_zones.hasNext()){
 				genes.add(tso_zones.next());
-				index++;
 			}
 		}
-		int ffff=0;
 	}
 	
 	@Override

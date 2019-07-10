@@ -35,7 +35,6 @@ public class OMOPSOTA extends AbstractProblem {
 	
 	public void init(){
 		bugs=GA_Problem_Parameter.bugs;
-		int ttt=GA_Problem_Parameter.setNum_of_Variables(bugs);
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_ID;
 		/*
@@ -43,17 +42,14 @@ public class OMOPSOTA extends AbstractProblem {
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
-		int index=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
 			TopologicalOrderIterator<Zone,DefaultEdge> tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_zones.hasNext()){
 				genes.add(tso_zones.next());
-				index++;
 			}
 		}
-		int ffff=0;
 	}
 	
 	
@@ -63,8 +59,6 @@ public class OMOPSOTA extends AbstractProblem {
 			init();
 			GA_Problem_Parameter.flag=0;
 		}
-		
-		//changed NUM of variables for the solution
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		int min=GA_Problem_Parameter.getMinIdofDeveloper();
 		int max=GA_Problem_Parameter.getMaxIdofDeveloper();
@@ -84,6 +78,7 @@ public class OMOPSOTA extends AbstractProblem {
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		//reset all the associate time for the bugs and their zones
+		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign associate Dev to zone
 		zoneAssignee.clear();
 		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
@@ -98,7 +93,6 @@ public class OMOPSOTA extends AbstractProblem {
 		double totalEndTime=0.0;
 		double totalExecutionTime=0.0;
 		int index=0;
-		
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			//set Bug startTime
@@ -109,6 +103,7 @@ public class OMOPSOTA extends AbstractProblem {
 				Zone zone=tso_Zone.next();
 				double compeletionTime=0.0;
 				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
+				int id=EncodingUtils.getInt(solution.getVariable(index));
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
 				totalExecutionTime+=compeletionTime;
 				//need to be changed????///
@@ -127,7 +122,7 @@ public class OMOPSOTA extends AbstractProblem {
 			if(totalDelayTime>0)
 				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
 		}
-		//end=System.currentTimeMillis()-start;
+		
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
 		

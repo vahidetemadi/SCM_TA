@@ -79,6 +79,7 @@ public class GA_Problem_Parameter {
 	static Set<DefaultEdge> edgeSet;
 	static Set<Bug> nodeSet;
 	static DirectedAcyclicGraph<Bug, DefaultEdge> DEP_scheduling;
+	static int flag=0;
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){
