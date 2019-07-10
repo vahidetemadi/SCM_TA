@@ -36,7 +36,7 @@ public class SchedulingDriven extends AbstractProblem{
 	DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	public SchedulingDriven(){
-		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
+		super(GA_Problem_Parameter.setNum_of_Variables(GA_Problem_Parameter.bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 		//this.bugs=bugs;
 		//this.developers= new ArrayList<Developer>(Arrays.asList(developers));
 	}
@@ -70,6 +70,7 @@ public class SchedulingDriven extends AbstractProblem{
 	
 	
 	public void preInit(){
+		bugs=GA_Problem_Parameter.bugs;
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_ID;
 		/*
@@ -107,7 +108,10 @@ public class SchedulingDriven extends AbstractProblem{
 	
 	@Override
 	public Solution newSolution(){
-		preInit();
+		if(GA_Problem_Parameter.flag==1){
+			preInit();
+			GA_Problem_Parameter.flag=0;
+		}
 		//changed NUM of variables for the solution
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		int j=0;
