@@ -233,7 +233,7 @@ public class SchedulingDriven extends AbstractProblem{
 		GA_Problem_Parameter.shuffledTasks=(ArrayList<Bug>) GA_Problem_Parameter.tasks.clone();
 		Collections.shuffle(GA_Problem_Parameter.shuffledTasks);
 		int vertexSetSize=GA_Problem_Parameter.tasks.size()-1;
-		vertexSetSize/=vertexSetSize/4;
+		vertexSetSize/=10;
 		/*if(vertexSetSize>40)
 			vertexSetSize/=3;*/
 		for(int i=0;i<vertexSetSize;i++){
