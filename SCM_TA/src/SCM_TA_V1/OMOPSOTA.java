@@ -29,11 +29,12 @@ public class OMOPSOTA extends AbstractProblem {
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	
 	public OMOPSOTA(){
-		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
+		super(GA_Problem_Parameter.setNum_of_Variables(GA_Problem_Parameter.bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
 	
 	
 	public void init(){
+		bugs=GA_Problem_Parameter.bugs;
 		int ttt=GA_Problem_Parameter.setNum_of_Variables(bugs);
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_ID;
@@ -58,7 +59,11 @@ public class OMOPSOTA extends AbstractProblem {
 	
 	@Override
 	public Solution newSolution(){
-		init();
+		if(GA_Problem_Parameter.flag==1){
+			init();
+			GA_Problem_Parameter.flag=0;
+		}
+		
 		//changed NUM of variables for the solution
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		int min=GA_Problem_Parameter.getMinIdofDeveloper();

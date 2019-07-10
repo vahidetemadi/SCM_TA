@@ -20,18 +20,20 @@ import org.moeaframework.problem.AbstractProblem;
 
 public class KRRGZCompetenceMulti2 extends AbstractProblem {
 	
-	static Bug[] bugs=GA_Problem_Parameter.bugs;
+	static Bug[] bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	public KRRGZCompetenceMulti2(){
-		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Multi);
+		super(GA_Problem_Parameter.setNum_of_Variables(GA_Problem_Parameter.bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
 	
 	
 	public void init(){
+		bugs=GA_Problem_Parameter.bugs;
+		int ttt=GA_Problem_Parameter.setNum_of_Variables(bugs);
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_competenceMulti2;
 		/*
@@ -39,19 +41,25 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
+		int index=0;
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
 			TopologicalOrderIterator<Zone,DefaultEdge> tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_zones.hasNext()){
 				genes.add(tso_zones.next());
+				index++;
 			}
 		}
+		int ffff=0;
 	}
 	
 	@Override
 	public Solution newSolution(){
-		init();
+		if(GA_Problem_Parameter.flag==1){
+			init();
+			GA_Problem_Parameter.flag=0;
+		}
 		//changed NUM of variables for the solution
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		int j=0;
