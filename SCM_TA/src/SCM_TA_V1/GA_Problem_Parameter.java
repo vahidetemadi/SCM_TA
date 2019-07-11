@@ -4,6 +4,8 @@ import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Random;
@@ -21,6 +23,8 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.GabowStrongConnectivityInspector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
+
+import com.sun.java.swing.plaf.windows.WindowsTreeUI.CollapsedIcon;
 
 import java.util.Iterator;
 
@@ -100,6 +104,16 @@ public class GA_Problem_Parameter {
 		return DevList.get(index);
 	}
 	
+	
+	public static int getMaxIdofDeveloper(){
+		int maxID=Collections.max(DevList, null);
+		return maxID;
+	}
+	
+	public static int getMinIdofDeveloper(){
+		int minID=Collections.min(DevList, null);
+		return minID;
+	}
 	
 	public static int getDevId(){
 		if(DevList_forAssignment.size()>0){

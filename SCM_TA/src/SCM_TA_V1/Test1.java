@@ -74,7 +74,7 @@ public class Test1 {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=1;runNum<=30;runNum++){
+		for(int runNum=2;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -90,9 +90,10 @@ public class Test1 {
 				roundNum=10;
 			
 			//iterate over the under experiment files
-			GA_Problem_Parameter.fileNum=1;
 			for(int i=GA_Problem_Parameter.fileNum;i<=roundNum;i++){
 				GA_Problem_Parameter.fileNum=i;
+				if(i==roundNum)
+					GA_Problem_Parameter.fileNum=1;
 				starting(i, runNum);
 			}
 			System.gc();
@@ -405,11 +406,11 @@ public class Test1 {
 			System.out.println("finished KRRGZ");
 			
 			GA_Problem_Parameter.flag=1;
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(SchedulingDriven.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
-					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_2).run();
+			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAIII")
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "sbx+pm")
+					.withProperty("sbx.rate", 3.0).withProperty("pm.rate", 0.01).withProperty("divisions", 16).withInstrumenter(instrumenter_2).run();
 			
-		    System.out.println("finished SD");
+		    System.out.println("finished NSGAIII");
 		 
 		    
 		    //pareto front of KRRGZ gets saved in csv format
@@ -443,7 +444,7 @@ public class Test1 {
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
 		    analyzer.add("KRRGZ", NDP_KRRGZ);
-		    analyzer.add("Scheduling", NDP_SD);
+		    analyzer.add("NSGAIIITA", NDP_SD);
 		   
 		    
 		    //generate the pareto set in favor of archiving	    
@@ -452,7 +453,7 @@ public class Test1 {
 		    File f=new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults_"+runNum+"_"+fileNum+".txt");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
-			analyzer.withProblemClass(SchedulingDriven.class).printAnalysis(ps_ID);
+			analyzer.withProblemClass(NSGAIIITA.class).printAnalysis(ps_ID);
 			ps_ID.close();
 			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}

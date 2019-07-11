@@ -19,7 +19,7 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.core.variable.RealVariable;
 import org.moeaframework.problem.AbstractProblem;
 
-public class KRRGZCompetenceMulti2 extends AbstractProblem {
+public class NSGAIIITA extends AbstractProblem {
 	
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
@@ -27,7 +27,7 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
-	public KRRGZCompetenceMulti2(){
+	public NSGAIIITA(){
 		super(GA_Problem_Parameter.setNum_of_Variables(GA_Problem_Parameter.bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
 	
@@ -35,7 +35,7 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 	public void init(){
 		bugs=GA_Problem_Parameter.bugs;
 		DEP=GA_Problem_Parameter.DEP;
-		tso=GA_Problem_Parameter.tso_competenceMulti2;
+		tso=GA_Problem_Parameter.tso_ID;
 		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
