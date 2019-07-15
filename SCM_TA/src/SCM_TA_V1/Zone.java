@@ -2,7 +2,7 @@ package SCM_TA_V1;
 
 import java.util.ArrayList;
 
-public class Zone {
+public class Zone implements Cloneable{
 	public int zId;
 	public String zName;
 	public ArrayList<Zone> DZ=new ArrayList<Zone>();
@@ -18,5 +18,9 @@ public class Zone {
 	public ArrayList<Zone> getDZ(){
 		return DZ;
 	}
-
+	protected Object clone() throws CloneNotSupportedException{
+		
+		return super.clone();
+		
+	}
 }

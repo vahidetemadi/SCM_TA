@@ -325,6 +325,15 @@ public class GA_Problem_Parameter {
 		}
 	}
 	
+	public static void resetParameters_ZoneAndDevelopers(Bug b,Solution s, HashMap<Integer, Developer> developers){
+		for(Zone z:b.Zone_DEP.vertexSet()){
+			z.zoneStartTime_evaluate=0.0;
+			z.zoneEndTime_evaluate=0.0;
+		}
+		/*for(Entry<Integer, Developer> d:developers.entrySet()){
+			d.getValue().developerNextAvailableHour=0.0;
+		}*/
+	}
 	public static void assignZoneDev(ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee,ArrayList<Bug> tasks,Solution s){
 		int index=0;
 		for(Bug b:tasks){

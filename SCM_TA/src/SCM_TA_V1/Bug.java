@@ -103,6 +103,7 @@ public class Bug implements Cloneable{
 	}
 	public void setZoneDEP(){
 		Zone_DEP=new DirectedAcyclicGraph<Zone, DefaultEdge>(DefaultEdge.class);
+		int t=BZone_Coefficient.entrySet().size();
 		for (Entry<Zone, Double>  zone:BZone_Coefficient.entrySet()){
 				Zone_DEP.addVertex(zone.getKey());
 		}
@@ -115,5 +116,7 @@ public class Bug implements Cloneable{
 				}
 			}
 		}
+		int ttt=Zone_DEP.vertexSet().size();
+		int f=0;
 	}
 }

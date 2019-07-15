@@ -29,6 +29,7 @@ import org.moeaframework.Analyzer;
 import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
 import org.moeaframework.Instrumenter;
+import org.moeaframework.algorithm.NSGAIIITest;
 import org.moeaframework.algorithm.PeriodicAction.FrequencyType;
 import org.moeaframework.analysis.collector.Accumulator;
 import org.moeaframework.core.Indicator;
@@ -54,7 +55,7 @@ public class Test1 {
 	static PrintWriter pw;  
 	//DevMetrics devMetric=new DevMetrics();
 	
-	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
+	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		Scanner sc=new Scanner(System.in);
 		System.out.println("please insert the number of desired schedules:");
 		GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
@@ -72,9 +73,9 @@ public class Test1 {
 		
 	}
 	
-	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException{
+	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=2;runNum<=30;runNum++){
+		for(int runNum=15;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -101,7 +102,7 @@ public class Test1 {
 		
 	}
 
-	public static void starting(int roundNum, int runNum) throws IOException{
+	public static void starting(int roundNum, int runNum) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
 		//set the threshold to initialize the population 
 		GA_Problem_Parameter.thresoldForPopulationGeneration=0;
 		bugInitialization(roundNum);
@@ -186,7 +187,8 @@ public class Test1 {
 				for(Developer d:GA_Problem_Parameter.developers.values()){
 					for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
 						if(entry.getValue()==0)
-							d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
+							//d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
+							d.DZone_Coefficient.put(entry.getKey(),0.05);
 					}
 				}
 				
@@ -205,7 +207,7 @@ public class Test1 {
 	}
 	
 	// initialize the bugs objects for task assignment  
-	public static void bugInitialization(int roundNum) throws IOException,NoSuchElementException{	
+	public static void bugInitialization(int roundNum) throws IOException,NoSuchElementException, NumberFormatException, CloneNotSupportedException{	
 		bugs.clear();
 		Scanner sc;//=new Scanner(System.in);
 		int i=0;
@@ -244,6 +246,7 @@ public class Test1 {
 						String[] items=sc1.nextLine().split("\t",-1);
 						for(int k=0;k<items.length;k++){
 							if(j>2 && Double.parseDouble(items[k])!=0){
+								double d=Double.parseDouble(items[k]);
 								bug.BZone_Coefficient.put(project.zones.get(j-2),Double.parseDouble(items[k]));
 							}
 							else if(j==0){
@@ -400,15 +403,21 @@ public class Test1 {
 		//try{
 	    	GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "ux+um")
-					.withProperty("ux.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
 			GA_Problem_Parameter.flag=1;
+			/*NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_2).run();
+			*/
+			
 			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAIII")
 					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "sbx+pm")
-					.withProperty("sbx.rate", 3.0).withProperty("pm.rate", 0.01).withProperty("divisions", 16).withInstrumenter(instrumenter_2).run();
+					.withProperty("sbx.rate", 1.0).withProperty("pm.rate", 0.01).withProperty("divisions",4)
+					.withProperty("sbx.distributionIndex", 30).withProperty("pm.distributionIndex", 40).withInstrumenter(instrumenter_2).run();
 			
 		    System.out.println("finished NSGAIII");
 		 
@@ -559,13 +568,14 @@ public class Test1 {
 	}
 	
 	private static double getNonZeroMin(HashMap<Zone, Double> entrySet){
-		double min=300;
+		/*double min=300;
 		for(Double d:entrySet.values()){
 			if(min>d && d>0){
 				min=d;
 			}
 		}
-		return min;
+		return min;*/
+		return 0.05;
 	}
 	
 	private static void updateArchive(Instrumenter instrumenter_1, Instrumenter instrumenter_2, int runNum ) throws FileNotFoundException{
