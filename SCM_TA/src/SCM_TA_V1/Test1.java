@@ -404,7 +404,7 @@ public class Test1 {
 	    	GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
