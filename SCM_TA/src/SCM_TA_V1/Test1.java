@@ -75,7 +75,7 @@ public class Test1 {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=15;runNum<=30;runNum++){
+		for(int runNum=17;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -404,7 +404,7 @@ public class Test1 {
 	    	GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_1).run();
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
 			
 			System.out.println("finished KRRGZ");
 			
@@ -440,6 +440,8 @@ public class Test1 {
 		    for(Solution s:NDP_SD){
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
+				   if(s.getSchedule()!=null)
+					   System.out.println(s.getSchedule());
 		    }
 		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\SD_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());

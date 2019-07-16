@@ -2,6 +2,7 @@ package SCM_TA_V1;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -18,6 +19,8 @@ import org.moeaframework.problem.AbstractProblem;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import javax.swing.JFrame;
 	public class NSGAIIITA extends AbstractProblem{
 		static Bug[] bugs=GA_Problem_Parameter.bugs;
 		HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
@@ -57,10 +60,10 @@ import java.util.Date;
 				index++;
 			}
 			
-			for(int i=0;i<GA_Problem_Parameter.numOfEvaluationLocalSearch;i++){
-				schedules.add(generateSchedule());
+			for(int i=0;i<GA_Problem_Parameter.numOfEvaluationLocalSearch;i++)
+				schedules.add(generateSchedule_newDesign());
 			
-}
+			schedules.add(null);
 			
 		return schedules;
 	}
@@ -132,23 +135,29 @@ import java.util.Date;
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation;
 	
 		//reset all the associate time for the bugs and their zones
+
+		//assign Devs to zone
+		zoneAssignee.clear();
+		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution);
+		
 		
 		
 		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
 		solution.setSchedules(getSchedules(solution));
+		ArrayList<ArrayList<Integer>> ttt=solution.getSchedules();
 		int counter=0;
 		for(ArrayList<Integer> sche:solution.getSchedules()){
 			DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
 			GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
-			//assign Devs to zone
-			zoneAssignee.clear();
-			GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution);
-			for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++){
-				if(sche.get(i)==1){
-					DEP_evaluation.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(i)),
-							GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(i)));
+			if(sche!=null)
+				for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++){
+					if(sche.get(i)==1){
+						DEP_evaluation.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(i)),
+								GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(i)));
+					}
 				}
-			}
+			else if (sche==null)
+				DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 			TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 			double totalTime=0.0;
 			double totalCost=0.0;
@@ -275,6 +284,66 @@ import java.util.Date;
 		return schedule;
 	}
 
+	
+	
+	/*
+	 * generate the schedule- new design
+	 */
+	public ArrayList<Integer> generateSchedule_newDesign(){
+		ArrayList<Integer> schedule=new ArrayList<Integer>();
+		
+		for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++)
+			schedule.add(0);
+		//create DEP_scheduling graph to add potential links used for a new schedule 
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_scheduling=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
+		//shuffling the bug list to provide randomness in the scheduling
+		GA_Problem_Parameter.shuffledTasks=(ArrayList<Bug>) GA_Problem_Parameter.tasks.clone();
+		Collections.shuffle(GA_Problem_Parameter.shuffledTasks);
+		GA_Problem_Parameter.shuffledPEdges=(ArrayList<DefaultEdge>) GA_Problem_Parameter.pEdges.clone();
+		Collections.shuffle(GA_Problem_Parameter.shuffledPEdges);
+		int numOfBugs=GA_Problem_Parameter.DEP.vertexSet().size();
+		int numOfIteraration=GA_Problem_Parameter.shuffledPEdges.size()/numOfBugs;
+		int i=0;
+		while(numOfIteraration>0 && i<numOfIteraration){
+			if(checkHavingDeveloperInCommon(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.shuffledPEdges.get(i)),
+					GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.shuffledPEdges.get(i)))){
+				try{
+					schedule.set(GA_Problem_Parameter.pEdges.lastIndexOf(GA_Problem_Parameter.shuffledPEdges.get(i)), 1);
+					int pIndex=GA_Problem_Parameter.shuffledPEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.shuffledPEdges.get(i)),
+							GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.shuffledPEdges.get(i))));
+					GA_Problem_Parameter.shuffledPEdges.remove(pIndex);
+					DEP_scheduling.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.shuffledPEdges.get(i)),
+					GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.shuffledPEdges.get(i)));
+				}
+				catch(Exception e){
+					schedule.set(GA_Problem_Parameter.pEdges.lastIndexOf(GA_Problem_Parameter.shuffledPEdges.get(i)), 0);
+					//e.printStackTrace();
+				}
+			}
+			else{
+				int pIndex=GA_Problem_Parameter.shuffledPEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.shuffledPEdges.get(i)),
+						GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.shuffledPEdges.get(i))));
+				GA_Problem_Parameter.shuffledPEdges.remove(pIndex);
+			}
+			i++;
+		}
+		/*System.out.println(new CycleDetector<Bug, DefaultEdge>(DEP_scheduling).detectCycles());
+		System.out.println(DEP_scheduling.edgeSet().size());
+		
+		graphVisulaization gV=new graphVisulaization();
+		gV.init(DEP_scheduling);
+		
+		JFrame frame = new JFrame();
+        frame.getContentPane().add(gV);
+        frame.setTitle("JGraphT Adapter to JGraphX Demo");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);*/
+		
+		return schedule;
+	}
+	
+	
 	//get the start and end indices of each bug in the choromosome
 	public int[] getIndex(int index){
 		int[] indexes=new int[2];
@@ -305,6 +374,22 @@ import java.util.Date;
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 	}
 
+	public Boolean checkHavingDeveloperInCommon(Bug b1, Bug b2){
+		Collection<Integer> assigneeForB1=new ArrayList<Integer>();
+		Collection<Integer> assigneeForB2=new ArrayList<Integer>();
+		
+		for(Triplet<Bug, Zone, Integer> item:zoneAssignee){
+			if(item.getFirst().ID==b1.ID)
+				assigneeForB1.add(item.getThird());
+			else if(item.getFirst().ID==b2.ID)
+				assigneeForB2.add(item.getThird());
+		}
+		assigneeForB1.retainAll(assigneeForB2);
+		
+		return assigneeForB1.size()>0?true:false;
+	}
+	
+	
 	public int compare(double totalTime, double totalCost, Solution solution){
 		if(solution.getObjective(0)<totalTime && solution.getObjective(1)<totalCost)
 			return -1;
