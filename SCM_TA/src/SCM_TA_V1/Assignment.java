@@ -42,7 +42,7 @@ import org.paukov.combinatorics.ICombinatoricsVector;
 import org.apache.commons.io.FilenameUtils;
 
 
-public class Test1 {
+public class Assignment {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
 	static HashMap<Integer,Bug> bugs=new HashMap<Integer,Bug>();
 	static Queue<Bug> orderdBugs; 
@@ -75,7 +75,7 @@ public class Test1 {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=17;runNum<=30;runNum++){
+		for(int runNum=21;runNum<=30;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -460,8 +460,11 @@ public class Test1 {
 		    
 		    //generate the pareto set in favor of archiving	    
 		    /*File targetRefSet=new File(System.getProperty("user.dir")+"//PS//"+GA_Problem_Parameter.pName+fileName+".ps");
+		     *
+		     *
+		     *
 		    analyzer.saveReferenceSet(targetRefSet);*/
-		    File f=new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults_"+runNum+"_"+fileNum+".txt");
+		    File f=new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults_"+fileName+"_"+runNum+"_"+fileNum+".yaml");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
 			analyzer.withProblemClass(NSGAIIITA.class).printAnalysis(ps_ID);
