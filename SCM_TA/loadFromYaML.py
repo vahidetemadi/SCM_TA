@@ -35,7 +35,7 @@ class readResults:
 class statitisticalTest:
 	@staticmethod
 	def getWilcoxonTest(dataframe, indicator):
-		return wilcoxon(dataframe['NSGAIIITA_'+indicator], dataframe['KRRGZ_'+indicator]);
+		return wilcoxon(dataframe['NSGAIIITA_'+indicator].values, dataframe['KRRGZ_'+indicator].values);
 
 
 
