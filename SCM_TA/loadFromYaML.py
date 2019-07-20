@@ -23,7 +23,7 @@ class readResults:
 				dictOfDataFrames.get(milestoneName).loc[dictOfDataFrames.get(milestoneName).shape[0]+1]=[data['NSGAIIITA']['Hypervolume'],data['NSGAIIITA']['GenerationalDistance'], data['NSGAIIITA']['Spacing'], data['NSGAIIITA']['Contribution']
 																				 , data['KRRGZ']['Hypervolume'],data['KRRGZ']['GenerationalDistance'], data['KRRGZ']['Spacing'], data['KRRGZ']['Contribution'] ]
 
-				print(dictOfDataFrames.get(milestoneName))
+				#print(dictOfDataFrames.get(milestoneName))
 		return dictOfDataFrames	
 
 	@staticmethod
@@ -35,7 +35,7 @@ class readResults:
 class statitisticalTest:
 	@staticmethod
 	def getWilcoxonTest(dataframe, indicator):
-		return wilcoxon(dataframe['NSGAIIITA_'+indicator].values, dataframe['KRRGZ_'+indicator].values);
+		return wilcoxon(dataframe['NSGAIIITA_'+indicator], dataframe['KRRGZ_'+indicator]);
 
 
 
@@ -49,18 +49,12 @@ dictOfStatTestDataFrame={}
 for key, value in dictOfDataFrames.items():
 	dataframeName=str('wilcoxonDataframeResults_'+key)
 	dataframeName=pd.DataFrame(pd.np.empty((4, 2)), index=["Hypervolume", "GenerationalDistance", "Spacing", "Contribution"],
-								columns=["wilcoxonTestResult", "p-value"] )
+								columns=["wilcoxonTestResult", "p-value"])
 
 	for i, row in dataframeName.iterrows():
-		result=statTest.getWilcoxonTest(dataframeName,i)
+		result=statTest.getWilcoxonTest(value,i)
 		dataframeName.loc[i]=result
-
+		print(result)
 	dictOfStatTestDataFrame.update({key:dataframeName})
 
-
-
-
-
-
-
-#
+#supposed to work properly
