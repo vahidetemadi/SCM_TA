@@ -11001,3 +11001,69 @@ Caused by: java.io.IOException: CreateProcess error=87, The parameter is incorre
 	at java.lang.ProcessImpl.<init>(Unknown Source)
 	at java.lang.ProcessImpl.start(Unknown Source)
 	... 12 more
+
+!ENTRY org.eclipse.visualvm.launcher 4 0 2019-07-29 20:33:09.879
+!MESSAGE Cannot run program "": CreateProcess error=87, The parameter is incorrect
+!STACK 0
+java.io.IOException: Cannot run program "": CreateProcess error=87, The parameter is incorrect
+	at java.lang.ProcessBuilder.start(Unknown Source)
+	at java.lang.Runtime.exec(Unknown Source)
+	at java.lang.Runtime.exec(Unknown Source)
+	at org.eclipse.visualvm.launcher.api.VisualVMHelper.openInVisualVM(VisualVMHelper.java:81)
+	at org.eclipse.visualvm.launcher.java.VisualVMJavaDelegate.getVMRunner(VisualVMJavaDelegate.java:61)
+	at org.eclipse.jdt.launching.JavaLaunchDelegate.launch(JavaLaunchDelegate.java:51)
+	at org.eclipse.visualvm.launcher.java.VisualVMJavaDelegate.launch(VisualVMJavaDelegate.java:44)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:885)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:739)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1039)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1256)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.io.IOException: CreateProcess error=87, The parameter is incorrect
+	at java.lang.ProcessImpl.create(Native Method)
+	at java.lang.ProcessImpl.<init>(Unknown Source)
+	at java.lang.ProcessImpl.start(Unknown Source)
+	... 12 more
+
+!ENTRY org.eclipse.visualvm.launcher 4 0 2019-07-29 20:36:56.468
+!MESSAGE Cannot run program "": CreateProcess error=87, The parameter is incorrect
+!STACK 0
+java.io.IOException: Cannot run program "": CreateProcess error=87, The parameter is incorrect
+	at java.lang.ProcessBuilder.start(Unknown Source)
+	at java.lang.Runtime.exec(Unknown Source)
+	at java.lang.Runtime.exec(Unknown Source)
+	at org.eclipse.visualvm.launcher.api.VisualVMHelper.openInVisualVM(VisualVMHelper.java:81)
+	at org.eclipse.visualvm.launcher.java.VisualVMJavaDelegate.getVMRunner(VisualVMJavaDelegate.java:61)
+	at org.eclipse.jdt.launching.JavaLaunchDelegate.launch(JavaLaunchDelegate.java:51)
+	at org.eclipse.visualvm.launcher.java.VisualVMJavaDelegate.launch(VisualVMJavaDelegate.java:44)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:885)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:739)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1039)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1256)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.io.IOException: CreateProcess error=87, The parameter is incorrect
+	at java.lang.ProcessImpl.create(Native Method)
+	at java.lang.ProcessImpl.<init>(Unknown Source)
+	at java.lang.ProcessImpl.start(Unknown Source)
+	... 12 more
+
+!ENTRY org.eclipse.visualvm.launcher 4 0 2019-07-29 20:49:37.210
+!MESSAGE Cannot run program "": CreateProcess error=87, The parameter is incorrect
+!STACK 0
+java.io.IOException: Cannot run program "": CreateProcess error=87, The parameter is incorrect
+	at java.lang.ProcessBuilder.start(Unknown Source)
+	at java.lang.Runtime.exec(Unknown Source)
+	at java.lang.Runtime.exec(Unknown Source)
+	at org.eclipse.visualvm.launcher.api.VisualVMHelper.openInVisualVM(VisualVMHelper.java:81)
+	at org.eclipse.visualvm.launcher.java.VisualVMJavaDelegate.getVMRunner(VisualVMJavaDelegate.java:61)
+	at org.eclipse.jdt.launching.JavaLaunchDelegate.launch(JavaLaunchDelegate.java:51)
+	at org.eclipse.visualvm.launcher.java.VisualVMJavaDelegate.launch(VisualVMJavaDelegate.java:44)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:885)
+	at org.eclipse.debug.internal.core.LaunchConfiguration.launch(LaunchConfiguration.java:739)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin.buildAndLaunch(DebugUIPlugin.java:1039)
+	at org.eclipse.debug.internal.ui.DebugUIPlugin$8.run(DebugUIPlugin.java:1256)
+	at org.eclipse.core.internal.jobs.Worker.run(Worker.java:54)
+Caused by: java.io.IOException: CreateProcess error=87, The parameter is incorrect
+	at java.lang.ProcessImpl.create(Native Method)
+	at java.lang.ProcessImpl.<init>(Unknown Source)
+	at java.lang.ProcessImpl.start(Unknown Source)
+	... 12 more

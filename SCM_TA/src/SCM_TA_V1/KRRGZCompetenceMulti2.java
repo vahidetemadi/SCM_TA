@@ -73,7 +73,6 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 	
 	@Override 	
 	public void evaluate(Solution solution){
-		int[] test=EncodingUtils.getInt(solution);
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		//reset all the associate time for the bugs and their zones
