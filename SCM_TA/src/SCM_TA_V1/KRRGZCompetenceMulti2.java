@@ -8,7 +8,6 @@ import java.util.Map.Entry;
 
 import javax.xml.stream.events.StartDocument;
 
-import org.jgraph.JGraph;
 import org.jgrapht.ListenableGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.ListenableDirectedGraph;

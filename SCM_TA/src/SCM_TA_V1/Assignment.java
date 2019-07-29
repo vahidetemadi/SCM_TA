@@ -22,7 +22,6 @@ import java.util.Scanner;
 import java.util.Queue;
 import java.io.PrintWriter;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.math3.filter.KalmanFilter;
 import org.jgrapht.graph.DefaultEdge;
 import org.moeaframework.Analyzer;
@@ -40,6 +39,13 @@ import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
 import org.apache.commons.io.FilenameUtils;
+
+
+import org.apache.log4j.BasicConfigurator;
+import org.jppf.client.JPPFClient;
+import org.jppf.client.concurrent.JPPFExecutorService;
+import org.moeaframework.Executor;
+import org.moeaframework.core.NondominatedPopulation;
 
 
 public class Assignment {
@@ -396,32 +402,63 @@ public class Assignment {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		String path=System.getProperty("user.dir")+"\\PS\\"+GA_Problem_Parameter.pName+"\\"+fileName+".ps";
-	    Instrumenter instrumenter_1=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_KRRGZ=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_2=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    		.withFrequencyType(FrequencyType.EVALUATIONS);
+	    Instrumenter instrumenter_RS=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 	    	GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_1).run();
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_KRRGZ).run();
 			
 			System.out.println("finished KRRGZ");
 			
 			GA_Problem_Parameter.flag=1;
-			/*NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAII")
+			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_2).run();
-			*/
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_NSGAIIITA).run();
 			
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAIII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "sbx+pm")
-					.withProperty("sbx.rate", 1.0).withProperty("pm.rate", 0.01).withProperty("divisions",4)
-					.withProperty("sbx.distributionIndex", 30).withProperty("pm.distributionIndex", 40).withInstrumenter(instrumenter_2).run();
+			System.out.println("finished NSGAIITA");
 			
-		    System.out.println("finished NSGAIII");
-		 
-		    
+			
+			NondominatedPopulation NDP_RS=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("Random").withProperty("populationSize", GA_Problem_Parameter.population)
+											.withMaxEvaluations(250000).withInstrumenter(instrumenter_RS).run();	
+			
+			/*//instantiation of target JPPF
+			//BasicConfigurator.configure();
+			JPPFClient jppfClient = null;
+			JPPFExecutorService jppfExecutor = null;
+			NondominatedPopulation NDP_SD=null;
+			BasicConfigurator.configure();
+			
+			try{
+				jppfClient=new JPPFClient();
+				jppfExecutor=new JPPFExecutorService(jppfClient);
+				jppfExecutor.setBatchSize(GA_Problem_Parameter.population);
+				
+				
+				NDP_SD=new Executor().withProblemClass(NSGAIIITA_paralleled.class).withAlgorithm("NSGAIII")
+						.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "sbx+pm")
+						.withProperty("sbx.rate", 1.0).withProperty("pm.rate", 0.01).withProperty("divisions",4)
+						.withProperty("sbx.distributionIndex", 30).withProperty("pm.distributionIndex", 40).withInstrumenter(instrumenter_2)
+						.distributeWith(jppfExecutor).run();
+			}
+			catch(Exception e){
+				e.printStackTrace();
+			}finally {
+				if (jppfExecutor != null) {
+					jppfExecutor.shutdown();
+				}
+			
+				if (jppfClient != null) {
+					jppfClient.close();
+				}
+		        
+			}    
+*/
 		    //pareto front of KRRGZ gets saved in csv format
 		    sb.setLength(0);
 		    //create string builder to include the nonDominated for KRRGZ
@@ -447,8 +484,20 @@ public class Assignment {
 		    pw.write(sb.toString());
 		    pw.close();
 		    
+		    
+		    //pareto front for RS method   
+		    for(Solution s:NDP_RS){
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+				   if(s.getSchedule()!=null)
+					   System.out.println(s.getSchedule());
+		    }
+		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\RS_"+fileName+"_"+runNum+".csv"));
+		    pw.write(sb.toString());
+		    pw.close();
+		    
 		    //write down instrumenters results
-		    updateArchive(instrumenter_1, instrumenter_2, runNum);
+		    updateArchive(instrumenter_KRRGZ, instrumenter_NSGAIIITA,instrumenter_RS, runNum);
 		    
 		    
 		    //write down the analyzer results
@@ -456,6 +505,7 @@ public class Assignment {
 			
 		    analyzer.add("KRRGZ", NDP_KRRGZ);
 		    analyzer.add("NSGAIIITA", NDP_SD);
+		    analyzer.add("RS", NDP_RS);
 		   
 		    
 		    //generate the pareto set in favor of archiving	    
@@ -583,10 +633,10 @@ public class Assignment {
 		return 0.05;
 	}
 	
-	private static void updateArchive(Instrumenter instrumenter_1, Instrumenter instrumenter_2, int runNum ) throws FileNotFoundException{
+	private static void updateArchive(Instrumenter instrumenter_KRRGZ, Instrumenter instrumenter_NSGAIIITA, Instrumenter instrumenter_RS , int runNum ) throws FileNotFoundException{
 		 PrintWriter pw=null;
 		//instrumenter for KRRGZ 
-		   Accumulator accumulator = instrumenter_1.getLastAccumulator();
+		   Accumulator accumulator = instrumenter_KRRGZ.getLastAccumulator();
 		   for (int i=0; i<accumulator.size("NFE"); i++) {
 			   System.out.println(accumulator.get("NFE", i) + "\t" +
 					   accumulator.get("GenerationalDistance", i));
@@ -615,7 +665,7 @@ public class Assignment {
 		   
 		   
 		   //Instrumenter for SD
-		   accumulator=instrumenter_2.getLastAccumulator();
+		   accumulator=instrumenter_NSGAIIITA.getLastAccumulator();
 		   for (int i=0; i<accumulator.size("NFE"); i++) {
 			   System.out.println(accumulator.get("NFE", i) + "\t" +
 					   accumulator.get("GenerationalDistance", i));
@@ -633,6 +683,30 @@ public class Assignment {
 			   System.out.println();
 			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+GA_Problem_Parameter.pName+"\\"+fileName+"\\"
 					   +"\\SD\\"+fileName+"_"+runNum+"_SD_"+accumulator.get("NFE", i)+".csv");
+			   f.getParentFile().mkdirs();
+			   pw=new PrintWriter(f);
+			   pw.write(sb.toString());
+			   pw.close();
+			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
+			  }
+		   accumulator=instrumenter_RS.getLastAccumulator();
+		   for (int i=0; i<accumulator.size("NFE"); i++) {
+			   System.out.println(accumulator.get("NFE", i) + "\t" +
+					   accumulator.get("GenerationalDistance", i));
+			   System.out.println();
+			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
+			   sb.setLength(0);
+			   sb.append("Time,Cost");
+			   sb.append("\n");
+			   for(Solution s:solutions){
+				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+			   }
+			   System.out.println();
+			   System.out.println();
+			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+GA_Problem_Parameter.pName+"\\"+fileName+"\\"
+					   +"\\RS\\"+fileName+"_"+runNum+"_RS_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);
 			   pw.write(sb.toString());

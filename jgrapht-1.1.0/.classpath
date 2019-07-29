@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="jgrapht-1.1.0/source/jgrapht-core/src/main/java"/>
+	<classpathentry kind="src" path="jgrapht-1.1.0/source/jgrapht-demo/src/main/java"/>
+	<classpathentry kind="src" path="jgrapht-1.1.0/source/jgrapht-ext/src/main/java"/>
+	<classpathentry kind="src" path="jgrapht-1.1.0/source/jgrapht-io/src/main/java"/>
+	<classpathentry kind="src" path="jgrapht-1.1.0/source/jgrapht-touchgraph/src/main/java"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/antlr4-runtime-4.6.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/commons-lang3-3.5.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/jgraph-5.13.0.0.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/jgrapht-core-1.1.0.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/jgrapht-demo-1.1.0.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/jgrapht-ext-1.1.0-uber.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/jgrapht-ext-1.1.0.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/jgrapht-io-1.1.0-uber.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/jgrapht-io-1.1.0.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/lib/jgraphx-2.0.0.1.jar"/>
+	<classpathentry kind="lib" path="jgrapht-1.1.0/source/jgrapht-touchgraph/3rdparty/com/touchgraph/TGGraphLayout/UNKNOWN/TGGraphLayout-UNKNOWN.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

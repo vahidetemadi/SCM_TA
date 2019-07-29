@@ -1,5 +1,6 @@
 package SCM_TA_V1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -7,7 +8,7 @@ import java.util.Map.Entry;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
-public class Bug implements Cloneable{
+public class Bug implements Cloneable, Serializable{
 	public ArrayList<Bug> DB=new ArrayList<Bug>();
 	int competenceProfileCount;
 	int ID;

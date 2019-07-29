@@ -1,8 +1,9 @@
 package SCM_TA_V1;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Developer 
+public class Developer implements Serializable
 {
 	private int competenceProfileCount;
 	private int ID;

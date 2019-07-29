@@ -35,8 +35,15 @@ class readResults:
 class statitisticalTest:
 	@staticmethod
 	def getWilcoxonTest(dataframe, indicator):
-		return wilcoxon(dataframe['NSGAIIITA_'+indicator], dataframe['KRRGZ_'+indicator]);
+		if indicator=='GenerationalDistance' or indicator=='Spacing':
+			return wilcoxon(dataframe['KRRGZ_'+indicator].tolist(), dataframe['NSGAIIITA_'+indicator].tolist(), alternative='greater')
+		else:
+			return wilcoxon(dataframe['NSGAIIITA_'+indicator].tolist(), dataframe['KRRGZ_'+indicator].tolist(),alternative='greater')
 
+	@staticmethod
+	def saveWilcoxonResultIntoFile(dictOfStatTestDataFrame):
+		for key, value in dictOfStatTestDataFrame.items():
+			value.to_csv(os.path.join(os.getcwd(),"results",sys.argv[1], key+'stat.csv'))
 
 
 
@@ -51,10 +58,12 @@ for key, value in dictOfDataFrames.items():
 	dataframeName=pd.DataFrame(pd.np.empty((4, 2)), index=["Hypervolume", "GenerationalDistance", "Spacing", "Contribution"],
 								columns=["wilcoxonTestResult", "p-value"])
 
+	print(key)
 	for i, row in dataframeName.iterrows():
 		result=statTest.getWilcoxonTest(value,i)
 		dataframeName.loc[i]=result
 		print(result)
 	dictOfStatTestDataFrame.update({key:dataframeName})
+	statTest.saveWilcoxonResultIntoFile(dictOfStatTestDataFrame)
 
 #supposed to work properly

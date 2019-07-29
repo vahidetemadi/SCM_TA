@@ -1,8 +1,9 @@
 package SCM_TA_V1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Zone implements Cloneable{
+public class Zone implements Cloneable, Serializable{
 	public int zId;
 	public String zName;
 	public ArrayList<Zone> DZ=new ArrayList<Zone>();

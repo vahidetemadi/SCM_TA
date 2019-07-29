@@ -1,6 +1,8 @@
 package SCM_TA_V1;
 
-public class Triplet<T, U, V> {
+import java.io.Serializable;
+
+public class Triplet<T, U, V> implements Serializable {
 
     private final T first;
     private final U second;

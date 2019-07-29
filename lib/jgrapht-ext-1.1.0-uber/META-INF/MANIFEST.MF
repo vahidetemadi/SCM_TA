@@ -1,0 +1,30 @@
+Manifest-Version: 1.0
+Bundle-Description: A Java class library for graph-theory data structu
+ res and algorithms.
+Bundle-License: http://jgrapht.sourceforge.net/LGPL.html, http://www.e
+ clipse.org/legal/epl-v10.html
+Bundle-SymbolicName: org.jgrapht.ext.uber
+Archiver-Version: Plexus Archiver
+Built-By: jvs
+Bnd-LastModified: 1510705899084
+Bundle-ManifestVersion: 2
+Bundle-Vendor: Barak Naveh, John V. Sichi and contributors (seehttp://
+ sourceforge.net/projects/jgrapht/)
+Import-Package: org.jgraph.event;resolution:=optional,org.jgraph.graph
+ ;resolution:=optional,com.mxgraph.model,com.mxgraph.view,javax.swing,
+ javax.swing.border,javax.swing.tree,javax.swing.undo,javax.xml.transf
+ orm,javax.xml.transform.sax,javax.xml.transform.stream,org.jgrapht;ve
+ rsion="[1.1,2)",org.jgrapht.event;version="[1.1,2)",org.jgrapht.graph
+ ;version="[1.1,2)",org.jgrapht.io;version="[1.1,2)",org.jgrapht.util;
+ version="[1.1,2)",org.xml.sax,org.xml.sax.helpers
+Require-Capability: osgi.ee;filter:="(&(osgi.ee=JavaSE)(version=1.8))"
+Tool: Bnd-3.0.0.201509101326
+Originally-Created-By: Apache Maven Bundle Plugin
+Export-Package: org.jgrapht.ext;version="1.1.0";uses:="com.mxgraph.mod
+ el,com.mxgraph.view,org.jgraph.graph,org.jgrapht,org.jgrapht.event,or
+ g.jgrapht.io"
+Bundle-Name: JGraphT - Ext
+Bundle-Version: 1.1.0
+Created-By: Apache Maven Bundle Plugin
+Build-Jdk: 1.8.0_131
+

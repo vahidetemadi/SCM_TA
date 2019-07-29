@@ -1,10 +1,12 @@
 package SCM_TA_V1;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+
 import SCM_TA_V1.Sorting;
 
-public class DevMetrics extends Metrics{
+public class DevMetrics extends Metrics implements Serializable{
 	
 	public static void sortByMetric(ArrayList<Ranking<Developer, Double>> Devs){
 		//sort by the value of specific metric

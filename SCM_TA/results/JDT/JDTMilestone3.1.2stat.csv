@@ -1,0 +1,5 @@
+,wilcoxonTestResult,p-value
+Hypervolume,63.0,0.000489690070533264
+GenerationalDistance,18.0,1.0246327832617613e-05
+Spacing,1.0,1.9209211049031396e-06
+Contribution,173.0,0.22102157481330342
