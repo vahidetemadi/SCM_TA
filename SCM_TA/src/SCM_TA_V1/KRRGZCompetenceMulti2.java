@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.Iterator;
 
 import javax.xml.stream.events.StartDocument;
 
@@ -36,6 +37,8 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		bugs=GA_Problem_Parameter.bugs;
 		DEP=GA_Problem_Parameter.DEP;
 		tso=GA_Problem_Parameter.tso_competenceMulti2;
+		Iterator bugs=tso.it
+		
 		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);

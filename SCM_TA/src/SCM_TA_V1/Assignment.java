@@ -401,12 +401,12 @@ public class Assignment {
 	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		String path=System.getProperty("user.dir")+"\\PS\\"+GA_Problem_Parameter.pName+"\\"+fileName+".ps";
+		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
 	    Instrumenter instrumenter_KRRGZ=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_RS=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_RS=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 	    	GA_Problem_Parameter.flag=1;
@@ -471,7 +471,7 @@ public class Assignment {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\KRRGZ_"+fileName+"_"+runNum+".csv"));
+		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
 		   
@@ -485,7 +485,7 @@ public class Assignment {
 				   if(s.getSchedule()!=null)
 					   System.out.println(s.getSchedule());
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\SD_"+fileName+"_"+runNum+".csv"));
+		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"SD_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
 		    
@@ -497,7 +497,7 @@ public class Assignment {
 				   if(s.getSchedule()!=null)
 					   System.out.println(s.getSchedule());
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+"\\paretoFronts\\RS_"+fileName+"_"+runNum+".csv"));
+		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"RS_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
 		    
@@ -519,12 +519,12 @@ public class Assignment {
 		     *
 		     *
 		    analyzer.saveReferenceSet(targetRefSet);*/
-		    File f=new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults_"+fileName+"_"+runNum+"_"+fileNum+".yaml");
+		    File f=new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults_"+fileName+"_"+runNum+"_"+fileNum+".yaml");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
 			analyzer.withProblemClass(NSGAIIITA.class).printAnalysis(ps_ID);
 			ps_ID.close();
-			analyzer.saveData(new File(System.getProperty("user.dir")+"//results//"+GA_Problem_Parameter.pName+"//AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
+			analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}
 		//catch(Exception e){
 			//starting(fileNum, runNum);
@@ -657,8 +657,8 @@ public class Assignment {
 			   }
 			   System.out.println();
 			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+GA_Problem_Parameter.pName+"\\"+fileName+"\\"
-					   +"\\KRRGZ\\"+fileName+"_"+runNum+"_KRRGZ_"+accumulator.get("NFE", i)+".csv");
+			   File f=new File(System.getProperty("user.dir")+File.separator+"archives"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
+					   +File.separator+"KRRGZ"+File.separator+fileName+"_"+runNum+"_KRRGZ_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);
 			   pw.write(sb.toString());
@@ -686,8 +686,8 @@ public class Assignment {
 			   }
 			   System.out.println();
 			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+GA_Problem_Parameter.pName+"\\"+fileName+"\\"
-					   +"\\SD\\"+fileName+"_"+runNum+"_SD_"+accumulator.get("NFE", i)+".csv");
+			   File f=new File(System.getProperty("user.dir")+File.separator+"archives"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
+					   +File.separator+"SD"+File.separator+fileName+"_"+runNum+"_SD_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);
 			   pw.write(sb.toString());
@@ -710,8 +710,8 @@ public class Assignment {
 			   }
 			   System.out.println();
 			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+"\\archives\\"+runNum+"\\"+GA_Problem_Parameter.pName+"\\"+fileName+"\\"
-					   +"\\RS\\"+fileName+"_"+runNum+"_RS_"+accumulator.get("NFE", i)+".csv");
+			   File f=new File(System.getProperty("user.dir")+File.separator+"archives"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
+					   +File.separator+"RS"+File.separator+fileName+"_"+runNum+"_RS_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);
 			   pw.write(sb.toString());
