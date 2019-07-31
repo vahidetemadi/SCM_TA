@@ -1,6 +1,5 @@
 .metadata/
 .recommenders/
 *.class
-*.jar
 SCM_TA/archives/
 SCM_TA/paretoFronts/
