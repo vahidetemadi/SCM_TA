@@ -410,7 +410,7 @@ public class Assignment {
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 	    	GA_Problem_Parameter.flag=1;
-	    	NondominatedPopulation NDP_RS=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("Random")
+	    	NondominatedPopulation NDP_RS=new Executor().withProblemClass(RandomSearch.class).withAlgorithm("Random")
 	    			.withProperty("populationSize", GA_Problem_Parameter.population).withMaxEvaluations(250000)
 	    			.withInstrumenter(instrumenter_RS).run();	
 
@@ -424,7 +424,7 @@ public class Assignment {
 			System.out.println("finished KRRGZ");
 			
 			GA_Problem_Parameter.flag=1;
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAII")
+			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAIII")
 					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_NSGAIIITA).run();
 			

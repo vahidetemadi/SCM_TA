@@ -50,7 +50,7 @@ import org.jgrapht.util.*;
  * @since December 2004
  */
 public class TopologicalOrderIterator<V, E>
-    extends AbstractGraphIterator<V, E> implements Serializable
+    extends AbstractGraphIterator<V, E> implements Serializable, Cloneable
 {
     private static final String GRAPH_IS_NOT_A_DAG = "Graph is not a DAG";
 
@@ -249,6 +249,14 @@ public class TopologicalOrderIterator<V, E>
 
         return result;
     }
+    
+    //override clone method form super class
+	public Object clone() throws CloneNotSupportedException{
+			
+			TopologicalOrderIterator<V, E> t=(TopologicalOrderIterator<V, E>) super.clone();
+			return t;
+			
+		}
 
 }
 

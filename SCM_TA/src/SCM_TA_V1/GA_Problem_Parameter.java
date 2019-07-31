@@ -17,6 +17,7 @@ import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
+import org.jgrapht.traverse.*;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.KosarajuStrongConnectivityInspector;
 import org.jgrapht.graph.DefaultDirectedGraph;
@@ -62,6 +63,7 @@ public class GA_Problem_Parameter {
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_competenceMulti2;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_ID;
+	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_RS;
 	public static ArrayList<Bug> tasks=new ArrayList<Bug>();
 	public static ArrayList<Bug> shuffledTasks;
 	public static ArrayList<DefaultEdge> pEdges;
@@ -392,6 +394,7 @@ public class GA_Problem_Parameter {
 		//topologically sort the graph
 		tso_competenceMulti2=GA_Problem_Parameter.getTopologicalSorted(DEP);
 		tso_ID=GA_Problem_Parameter.getTopologicalSorted(DEP);
+		tso_RS=GA_Problem_Parameter.getTopologicalSorted(DEP);
 	}
 	
 	
