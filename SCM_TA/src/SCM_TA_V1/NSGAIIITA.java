@@ -144,7 +144,6 @@ import javax.swing.JFrame;
 		
 		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
 		solution.setSchedules(getSchedules(solution));
-		ArrayList<ArrayList<Integer>> ttt=solution.getSchedules();
 		int counter=0;
 		for(ArrayList<Integer> sche:solution.getSchedules()){
 			DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
@@ -174,8 +173,6 @@ import javax.swing.JFrame;
 				b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 				GA_Problem_Parameter.resetParameters_ZoneAndDevelopers(b,solution,developers);
 				TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-				int jgjfs=b.Zone_DEP.vertexSet().size();
-				int kkk=tso_Zone.getGraph().vertexSet().size();
 				//iterate by the order provided in y graph
 				while(tso_Zone.hasNext()){
 					Zone zone=tso_Zone.next();
@@ -206,6 +203,7 @@ import javax.swing.JFrame;
 				solution.setObjective(0, totalTime);
 				solution.setObjective(1, totalCost);
 				solution.setSchedule(sche);
+				counter++;
 			}
 			else if(compare(totalTime, totalCost, solution)==1){
 				solution.setObjective(0, totalTime);
@@ -398,6 +396,10 @@ import javax.swing.JFrame;
 		else if(solution.getObjective(0)==totalTime && solution.getObjective(1)<totalCost)
 			return -1;
 		else if(solution.getObjective(0)==totalTime && solution.getObjective(1)==totalCost)
+			return 0;
+		else if(solution.getObjective(0)<totalTime && solution.getObjective(1)>totalCost)
+			return 0;
+		else if(solution.getObjective(0)>totalTime && solution.getObjective(1)<totalCost)
 			return 0;
 		else 
 			return 1;

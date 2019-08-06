@@ -3,3 +3,4 @@
 *.class
 SCM_TA/archives/
 SCM_TA/paretoFronts/
+.*/

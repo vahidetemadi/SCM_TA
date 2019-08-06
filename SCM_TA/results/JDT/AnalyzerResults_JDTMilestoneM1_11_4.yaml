@@ -1,22 +1,33 @@
 NSGAIIITA:
-    Hypervolume: 0.707916317886606
-    GenerationalDistance: 0.0023870322652941515
-    InvertedGenerationalDistance: 0.0023056392843174922
-    AdditiveEpsilonIndicator: 0.0385629436052346
-    MaximumParetoFrontError: 0.529165101256445
-    Spacing: 182.06763936242163
-    Contribution: 0.906054279749478
+    Hypervolume: 0.741092666387322
+    GenerationalDistance: 3.6820647108283105E-4
+    InvertedGenerationalDistance: 7.889144041612479E-4
+    AdditiveEpsilonIndicator: 0.015337747439325967
+    MaximumParetoFrontError: 0.1485083728981849
+    Spacing: 251.29547663584393
+    Contribution: 0.9351851851851852
     R1Indicator: 0.0
-    R2Indicator: 76932.72288164665
-    R3Indicator: 87678.44303067641
+    R2Indicator: 77183.00547210216
+    R3Indicator: 87250.9641519745
+RS:
+    Hypervolume: 0.0
+    GenerationalDistance: 0.2631020116548223
+    InvertedGenerationalDistance: 0.9861947168780248
+    AdditiveEpsilonIndicator: 1.2602422702533682
+    MaximumParetoFrontError: 0.760223388161009
+    Spacing: 301.2526738366126
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 96463.72948748372
+    R3Indicator: 109046.74308806297
 KRRGZ:
-    Hypervolume: 0.6883409709436468
-    GenerationalDistance: 0.001454263963049933
-    InvertedGenerationalDistance: 0.023376476963789347
-    AdditiveEpsilonIndicator: 0.035319643588315214
-    MaximumParetoFrontError: 0.041094140380314025
-    Spacing: 66.66897330994766
-    Contribution: 0.09394572025052192
+    Hypervolume: 0.7119900712765483
+    GenerationalDistance: 0.0015511809497725645
+    InvertedGenerationalDistance: 0.02299780153097602
+    AdditiveEpsilonIndicator: 0.043035674617084095
+    MaximumParetoFrontError: 0.044297949711834525
+    Spacing: 71.11548087267455
+    Contribution: 0.06481481481481481
     R1Indicator: 0.0
-    R2Indicator: 77434.48544990004
-    R3Indicator: 88250.2978303511
+    R2Indicator: 77841.3938655269
+    R3Indicator: 87995.23845826447
