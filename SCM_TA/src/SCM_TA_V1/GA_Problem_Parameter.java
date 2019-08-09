@@ -4,7 +4,7 @@ import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
+import org.moeaframework.core.Algorithm;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -83,6 +83,7 @@ public class GA_Problem_Parameter {
 	static Set<Bug> nodeSet;
 	static DirectedAcyclicGraph<Bug, DefaultEdge> DEP_scheduling;
 	static int flag=0;
+	public static Algorithm algorithm;
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){

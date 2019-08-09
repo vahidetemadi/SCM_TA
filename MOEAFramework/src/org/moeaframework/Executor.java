@@ -42,6 +42,7 @@ import org.moeaframework.util.io.FileUtils;
 import org.moeaframework.util.progress.ProgressHelper;
 import org.moeaframework.util.progress.ProgressListener;
 
+import SCM_TA_V1.*;
 /**
  * Configures and executes algorithms while hiding the underlying boilerplate 
  * code needed to setup and safely execute an algorithm.  For example, the 
@@ -766,7 +767,8 @@ public class Executor extends ProblemBuilder {
 		Problem problem = null;
 		Algorithm algorithm = null;
 		ExecutorService executor = null;
-		
+		//added by me!!!!
+		GA_Problem_Parameter.algorithm=algorithm;		
 		try {
 			problem = getProblemInstance();
 			try {

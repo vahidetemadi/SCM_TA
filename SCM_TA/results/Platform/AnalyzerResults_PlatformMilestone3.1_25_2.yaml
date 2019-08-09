@@ -1,33 +1,33 @@
 NSGAIIITA:
-    Hypervolume: 0.7884757015694119
+    Hypervolume: 0.8591105617745924
     GenerationalDistance: 0.0
-    InvertedGenerationalDistance: 0.016604853574836702
-    AdditiveEpsilonIndicator: 0.029894201091083886
+    InvertedGenerationalDistance: 0.003403802551270097
+    AdditiveEpsilonIndicator: 0.005892657421193883
     MaximumParetoFrontError: 0.0
-    Spacing: 17373.291148298285
-    Contribution: 0.9506849315068493
+    Spacing: 77193.8194250314
+    Contribution: 0.9865771812080537
     R1Indicator: 0.0
-    R2Indicator: 1.281714381458868E7
-    R3Indicator: 1.4294453785142805E7
+    R2Indicator: 1.313050017539729E7
+    R3Indicator: 1.4301874709461795E7
 RS:
     Hypervolume: 0.0
-    GenerationalDistance: 3.391667024526677
-    InvertedGenerationalDistance: 7.372041021240681
-    AdditiveEpsilonIndicator: 7.5320127553140015
-    MaximumParetoFrontError: 7.113410373526626
-    Spacing: 2128691.458699743
+    GenerationalDistance: 1.5307230107189584
+    InvertedGenerationalDistance: 4.650335180249985
+    AdditiveEpsilonIndicator: 4.6464143717754185
+    MaximumParetoFrontError: 4.798231577012843
+    Spacing: 2253156.490388977
     Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 5.058757790467995E7
-    R3Indicator: 5.641835097840378E7
+    R2Indicator: 4.831848184014894E7
+    R3Indicator: 5.262898492259441E7
 KRRGZ:
-    Hypervolume: 0.6324205507261697
-    GenerationalDistance: 0.012091400609785783
-    InvertedGenerationalDistance: 0.12736495177114707
-    AdditiveEpsilonIndicator: 0.15146077677503098
-    MaximumParetoFrontError: 0.16590852772433443
-    Spacing: 43938.56778902377
-    Contribution: 0.049315068493150684
+    Hypervolume: 0.6986713595455638
+    GenerationalDistance: 0.0133809147030518
+    InvertedGenerationalDistance: 0.12459221860965634
+    AdditiveEpsilonIndicator: 0.13592713625929095
+    MaximumParetoFrontError: 0.1798514324987796
+    Spacing: 218292.7308826467
+    Contribution: 0.013422818791946308
     R1Indicator: 0.0
-    R2Indicator: 1.3576646739363382E7
-    R3Indicator: 1.5141500206060493E7
+    R2Indicator: 1.395047975875236E7
+    R3Indicator: 1.5195004593208896E7
