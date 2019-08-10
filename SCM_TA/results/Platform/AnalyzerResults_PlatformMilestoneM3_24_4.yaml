@@ -1,33 +1,33 @@
 NSGAIIITA:
-    Hypervolume: 0.0
-    GenerationalDistance: 0.4111878967537157
-    InvertedGenerationalDistance: 1.142308029732932
-    AdditiveEpsilonIndicator: 1.5399056452222961
-    MaximumParetoFrontError: 2.708857355038248
-    Spacing: 678387.829772784
-    Contribution: 0.0
+    Hypervolume: 0.7797174835164642
+    GenerationalDistance: 0.0
+    InvertedGenerationalDistance: 0.028012817431738044
+    AdditiveEpsilonIndicator: 0.02644302789728172
+    MaximumParetoFrontError: 0.0
+    Spacing: 21850.22145174422
+    Contribution: 0.9051724137931034
     R1Indicator: 0.0
-    R2Indicator: 1.5929899360275054E7
-    R3Indicator: 1.802015621117749E7
+    R2Indicator: 1.042474533110309E7
+    R3Indicator: 1.1625032633336479E7
 RS:
     Hypervolume: 0.0
-    GenerationalDistance: 3.2203314515879153
-    InvertedGenerationalDistance: 5.368448753127779
-    AdditiveEpsilonIndicator: 5.738808740171441
-    MaximumParetoFrontError: 6.26609657345131
-    Spacing: 110085.19816392254
+    GenerationalDistance: 3.9951770145195673
+    InvertedGenerationalDistance: 4.649239244090275
+    AdditiveEpsilonIndicator: 4.934789935371772
+    MaximumParetoFrontError: 3.9951770145195673
+    Spacing: 0.0
     Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 2.961615535953238E7
-    R3Indicator: 3.350223593314283E7
+    R2Indicator: 2.946389634014465E7
+    R3Indicator: 3.2856319842953023E7
 KRRGZ:
-    Hypervolume: 0.7310562915710141
-    GenerationalDistance: 0.0
-    InvertedGenerationalDistance: 0.0
-    AdditiveEpsilonIndicator: 0.0
-    MaximumParetoFrontError: 0.0
-    Spacing: 44246.48452360185
-    Contribution: 1.0
+    Hypervolume: 0.6328341664612653
+    GenerationalDistance: 0.010976823223749304
+    InvertedGenerationalDistance: 0.10933056009072495
+    AdditiveEpsilonIndicator: 0.17673996927372404
+    MaximumParetoFrontError: 0.17387801715933823
+    Spacing: 33071.524793559925
+    Contribution: 0.09482758620689655
     R1Indicator: 0.0
-    R2Indicator: 1.0910754388289608E7
-    R3Indicator: 1.2342411145910842E7
+    R2Indicator: 1.1106610872818701E7
+    R3Indicator: 1.2385409709864233E7

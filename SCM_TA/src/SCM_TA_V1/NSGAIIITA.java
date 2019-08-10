@@ -63,7 +63,7 @@ import javax.swing.JFrame;
 			for(int i=0;i<GA_Problem_Parameter.numOfEvaluationLocalSearch;i++)
 				schedules.add(generateSchedule_newDesign());
 			
-			schedules.add(null);
+			//schedules.add(null);
 			
 		return schedules;
 	}
@@ -141,20 +141,29 @@ import javax.swing.JFrame;
 		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution);
 		
 		
-		
+		int t=GA_Problem_Parameter.algorithm.getNumberOfEvaluations();
 		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
+		/*if(GA_Problem_Parameter.algorithm.getNumberOfEvaluations()>(GA_Problem_Parameter.evaluation/5)*4)
+			solution.setSchedules(getSchedules(solution));
+		else{
+			schedules.clear();
+			schedules.add(null);
+			solution.setSchedules(schedules);
+		}*/
 		solution.setSchedules(getSchedules(solution));
 		int counter=0;
 		for(ArrayList<Integer> sche:solution.getSchedules()){
 			DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
 			GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
-			if(sche!=null)
+			if(sche!=null){
 				for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++){
 					if(sche.get(i)==1){
 						DEP_evaluation.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(i)),
 								GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(i)));
 					}
 				}
+				int rt=0;
+			}
 			else if (sche==null)
 				DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 			TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);

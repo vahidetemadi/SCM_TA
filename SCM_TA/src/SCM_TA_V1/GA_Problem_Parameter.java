@@ -39,6 +39,7 @@ public class GA_Problem_Parameter {
 	static int Num_of_Zones;
 	//set GA parameters
 	static int population;
+	static int evaluation;
 	static double sbx_rate=0.0;
 	static double sbx_distribution_index;
 	static double pm_rate=0.50;
@@ -83,7 +84,7 @@ public class GA_Problem_Parameter {
 	static Set<Bug> nodeSet;
 	static DirectedAcyclicGraph<Bug, DefaultEdge> DEP_scheduling;
 	static int flag=0;
-	public static Algorithm algorithm;
+	public static Algorithm algorithm=null;
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){

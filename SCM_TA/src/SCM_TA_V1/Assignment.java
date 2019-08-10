@@ -394,6 +394,7 @@ public class Assignment {
 			}
 		}
 		GA_Problem_Parameter.population=500;
+		GA_Problem_Parameter.evaluation=250000;
 		
 	}
 	
@@ -402,31 +403,31 @@ public class Assignment {
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
-	    Instrumenter instrumenter_KRRGZ=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_KRRGZ=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_RS=new Instrumenter().withProblem("RandomSearch").withReferenceSet(new File(path)).withFrequency(50000).attachAll()
+	    Instrumenter instrumenter_RS=new Instrumenter().withProblem("RandomSearch").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 	    
 		    GA_Problem_Parameter.flag=1;
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAIII")
+					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_NSGAIIITA).run();
 			
 			System.out.println("finished NSGAIITA");
 	    
 	    	GA_Problem_Parameter.flag=1;
 	    	NondominatedPopulation NDP_RS=new Executor().withProblemClass(RandomSearch.class).withAlgorithm("Random")
-	    			.withProperty("populationSize", GA_Problem_Parameter.population).withMaxEvaluations(250000)
+	    			.withProperty("populationSize", GA_Problem_Parameter.population).withMaxEvaluations(GA_Problem_Parameter.evaluation)
 	    			.withInstrumenter(instrumenter_RS).run();	
 
 	    	System.out.println("finished RS");
 	    	
 	    	GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_KRRGZ).run();
 			
 			System.out.println("finished KRRGZ");
