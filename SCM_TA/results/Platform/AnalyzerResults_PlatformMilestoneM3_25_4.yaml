@@ -1,33 +1,33 @@
 NSGAIIITA:
-    Hypervolume: 0.7845688042273788
-    GenerationalDistance: 0.0
-    InvertedGenerationalDistance: 0.021520377161834917
-    AdditiveEpsilonIndicator: 0.013197054812797275
-    MaximumParetoFrontError: 0.0
-    Spacing: 8102.770527942175
-    Contribution: 0.9025974025974026
+    Hypervolume: 0.0
+    GenerationalDistance: 0.3651389667085129
+    InvertedGenerationalDistance: 1.1669383549904198
+    AdditiveEpsilonIndicator: 1.540642080642173
+    MaximumParetoFrontError: 2.04109885548295
+    Spacing: 1629258.2124944683
+    Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 1.024856905712186E7
-    R3Indicator: 1.145548568477899E7
+    R2Indicator: 1.6937369142765526E7
+    R3Indicator: 1.8883345009222846E7
 RS:
     Hypervolume: 0.0
-    GenerationalDistance: 4.094330936424587
-    InvertedGenerationalDistance: 6.38357870650062
-    AdditiveEpsilonIndicator: 6.5943785375223545
-    MaximumParetoFrontError: 5.823221726108446
+    GenerationalDistance: 3.76507010741728
+    InvertedGenerationalDistance: 4.963814264250738
+    AdditiveEpsilonIndicator: 5.358362190703553
+    MaximumParetoFrontError: 6.0865426417708655
     Spacing: 0.0
     Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 3.2092238540748276E7
-    R3Indicator: 3.587156606999506E7
+    R2Indicator: 3.162700830717231E7
+    R3Indicator: 3.526068949988819E7
 KRRGZ:
-    Hypervolume: 0.5900962717470892
-    GenerationalDistance: 0.012853265349220544
-    InvertedGenerationalDistance: 0.13453608972950967
-    AdditiveEpsilonIndicator: 0.2091436981797215
-    MaximumParetoFrontError: 0.20977283889831627
-    Spacing: 32497.923265634512
-    Contribution: 0.09740259740259741
+    Hypervolume: 0.791790916200774
+    GenerationalDistance: 0.0
+    InvertedGenerationalDistance: 0.0
+    AdditiveEpsilonIndicator: 0.0
+    MaximumParetoFrontError: 0.0
+    Spacing: 107937.75342392073
+    Contribution: 1.0
     R1Indicator: 0.0
-    R2Indicator: 1.0941329203265253E7
-    R3Indicator: 1.2229830950099442E7
+    R2Indicator: 1.100949437693131E7
+    R3Indicator: 1.227439641485791E7

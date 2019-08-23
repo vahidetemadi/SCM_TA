@@ -1,33 +1,33 @@
 NSGAIIITA:
-    Hypervolume: 0.7797174835164642
-    GenerationalDistance: 0.0
-    InvertedGenerationalDistance: 0.028012817431738044
-    AdditiveEpsilonIndicator: 0.02644302789728172
-    MaximumParetoFrontError: 0.0
-    Spacing: 21850.22145174422
-    Contribution: 0.9051724137931034
-    R1Indicator: 0.0
-    R2Indicator: 1.042474533110309E7
-    R3Indicator: 1.1625032633336479E7
-RS:
     Hypervolume: 0.0
-    GenerationalDistance: 3.9951770145195673
-    InvertedGenerationalDistance: 4.649239244090275
-    AdditiveEpsilonIndicator: 4.934789935371772
-    MaximumParetoFrontError: 3.9951770145195673
-    Spacing: 0.0
+    GenerationalDistance: 0.5698911925443993
+    InvertedGenerationalDistance: 1.9244936994111217
+    AdditiveEpsilonIndicator: 2.257637714545648
+    MaximumParetoFrontError: 3.3798472379030136
+    Spacing: 734525.2909314146
     Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 2.946389634014465E7
-    R3Indicator: 3.2856319842953023E7
-KRRGZ:
-    Hypervolume: 0.6328341664612653
-    GenerationalDistance: 0.010976823223749304
-    InvertedGenerationalDistance: 0.10933056009072495
-    AdditiveEpsilonIndicator: 0.17673996927372404
-    MaximumParetoFrontError: 0.17387801715933823
-    Spacing: 33071.524793559925
-    Contribution: 0.09482758620689655
+    R2Indicator: 1.755649419782225E7
+    R3Indicator: 1.994920965105533E7
+RS:
+    Hypervolume: 0.0
+    GenerationalDistance: 2.8641002196541128
+    InvertedGenerationalDistance: 7.001966099221
+    AdditiveEpsilonIndicator: 7.23216556072759
+    MaximumParetoFrontError: 7.679414232381114
+    Spacing: 869784.9903586425
+    Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 1.1106610872818701E7
-    R3Indicator: 1.2385409709864233E7
+    R2Indicator: 3.2227920959641084E7
+    R3Indicator: 3.6620139503719494E7
+KRRGZ:
+    Hypervolume: 0.7231044287487903
+    GenerationalDistance: 0.0
+    InvertedGenerationalDistance: 0.0
+    AdditiveEpsilonIndicator: 0.0
+    MaximumParetoFrontError: 0.0
+    Spacing: 34063.566931288864
+    Contribution: 1.0
+    R1Indicator: 0.0
+    R2Indicator: 1.089810146307806E7
+    R3Indicator: 1.238336340950485E7

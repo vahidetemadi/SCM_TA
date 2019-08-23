@@ -143,14 +143,14 @@ import javax.swing.JFrame;
 		
 		int t=GA_Problem_Parameter.algorithm.getNumberOfEvaluations();
 		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
-		/*if(GA_Problem_Parameter.algorithm.getNumberOfEvaluations()>(GA_Problem_Parameter.evaluation/5)*4)
+		if(GA_Problem_Parameter.algorithm.getNumberOfEvaluations()<(GA_Problem_Parameter.evaluation/5))
 			solution.setSchedules(getSchedules(solution));
 		else{
 			schedules.clear();
 			schedules.add(null);
 			solution.setSchedules(schedules);
-		}*/
-		solution.setSchedules(getSchedules(solution));
+		}
+		//solution.setSchedules(getSchedules(solution));
 		int counter=0;
 		for(ArrayList<Integer> sche:solution.getSchedules()){
 			DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) GA_Problem_Parameter.DEP.clone();
