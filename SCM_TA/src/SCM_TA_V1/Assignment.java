@@ -405,14 +405,14 @@ public class Assignment {
 		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
 	    Instrumenter instrumenter_KRRGZ=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("SchedulignDriven").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
+	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 	    Instrumenter instrumenter_RS=new Instrumenter().withProblem("RandomSearch").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 	    
 		    GA_Problem_Parameter.flag=1;
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITA.class).withAlgorithm("NSGAIII")
+			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITAGLS.class).withAlgorithm("NSGAIII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_NSGAIIITA).run();
 			
@@ -511,7 +511,7 @@ public class Assignment {
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
 		    analyzer.add("KRRGZ", NDP_KRRGZ);
-		    analyzer.add("NSGAIIITA", NDP_SD);
+		    analyzer.add("NSGAIIITAGLS", NDP_SD);
 		    analyzer.add("RS", NDP_RS);
 		   
 		    

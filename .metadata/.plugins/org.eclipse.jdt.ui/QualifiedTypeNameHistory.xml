@@ -8,7 +8,6 @@
 <fullyQualifiedTypeName name="java.io.FileReader"/>
 <fullyQualifiedTypeName name="java.util.StringTokenizer"/>
 <fullyQualifiedTypeName name="java.util.Map.Entry"/>
-<fullyQualifiedTypeName name="SCM_TA_V1.Bug"/>
 <fullyQualifiedTypeName name="javax.xml.stream.events.StartDocument"/>
 <fullyQualifiedTypeName name="org.moeaframework.analysis.collector.Accumulator"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.NondominatedPopulation"/>
@@ -41,8 +40,9 @@
 <fullyQualifiedTypeName name="org.moeaframework.algorithm.MultithreadEvolution_NSGAII"/>
 <fullyQualifiedTypeName name="jmetal.encodings.variable.Int"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.variable.EncodingUtils"/>
-<fullyQualifiedTypeName name="java.util.ArrayList"/>
 <fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="org.moeaframework.core.Solution"/>
 <fullyQualifiedTypeName name="SCM_TA_V1.GA_Problem_Parameter"/>
+<fullyQualifiedTypeName name="SCM_TA_V1.Bug"/>
+<fullyQualifiedTypeName name="java.util.ArrayList"/>
 </qualifiedTypeNameHistroy>
