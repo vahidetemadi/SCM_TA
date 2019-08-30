@@ -157,7 +157,7 @@ import javax.swing.JFrame;
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_sch_evaluate;
 		int counter=0;
 		for(int i=0; i<sortedBugList.size()-1;i++){
-			for(int j=0;j<sortedBugList.size();j++){
+			for(int j=i+1;j<sortedBugList.size();j++){
 				isParallel=allPaths.getAllPaths(sortedBugList.get(i), sortedBugList.get(j), true, 100000000).isEmpty();
 				if(isParallel)
 					numOfDevsInCommon=getNumOfDeveloperInCommon(sortedBugList.get(i), sortedBugList.get(j));
@@ -171,6 +171,7 @@ import javax.swing.JFrame;
 					catch(Exception e){
 						continue;
 					}
+					GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 					tso_sch_evaluate=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);				
 					double totalTime=0.0;
 					double totalCost=0.0;
