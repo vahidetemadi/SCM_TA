@@ -1,33 +1,33 @@
-NSGAIIITA:
-    Hypervolume: 0.8370820873245906
+RS:
+    Hypervolume: 0.0
+    GenerationalDistance: 1.8418629556325066
+    InvertedGenerationalDistance: 2.8343291128569432
+    AdditiveEpsilonIndicator: 3.1208610425462813
+    MaximumParetoFrontError: 4.403688514170226
+    Spacing: 78930.49254844911
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 308421.9216794058
+    R3Indicator: 342001.77573313983
+NSGAIIITAGLS:
+    Hypervolume: 0.4923682134737847
+    GenerationalDistance: 0.023355791240400308
+    InvertedGenerationalDistance: 0.20333008664687785
+    AdditiveEpsilonIndicator: 0.4499023702284025
+    MaximumParetoFrontError: 0.19197184570730447
+    Spacing: 3650.7463141486564
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 207437.1359216199
+    R3Indicator: 230022.17939751013
+KRRGZ:
+    Hypervolume: 0.8016086388050643
     GenerationalDistance: 0.0
     InvertedGenerationalDistance: 0.0
     AdditiveEpsilonIndicator: 0.0
     MaximumParetoFrontError: 0.0
-    Spacing: 275.0025957766106
+    Spacing: 1030.4255468463434
     Contribution: 1.0
     R1Indicator: 0.0
-    R2Indicator: 182600.10037625977
-    R3Indicator: 200182.42949825866
-RS:
-    Hypervolume: 0.0
-    GenerationalDistance: 1.485823989222072
-    InvertedGenerationalDistance: 2.988748925744717
-    AdditiveEpsilonIndicator: 3.210944621649924
-    MaximumParetoFrontError: 3.185887108575902
-    Spacing: 26289.448065449382
-    Contribution: 0.0
-    R1Indicator: 0.0
-    R2Indicator: 304261.36808676546
-    R3Indicator: 333558.22963931155
-KRRGZ:
-    Hypervolume: 0.6080047917512815
-    GenerationalDistance: 0.021311857645086738
-    InvertedGenerationalDistance: 0.15234646684968473
-    AdditiveEpsilonIndicator: 0.22590512886120742
-    MaximumParetoFrontError: 0.5690102708599855
-    Spacing: 1043.4037990488605
-    Contribution: 0.0
-    R1Indicator: 0.0
-    R2Indicator: 191159.46739592866
-    R3Indicator: 209565.96915229605
+    R2Indicator: 190427.1726055197
+    R3Indicator: 211160.22524802372

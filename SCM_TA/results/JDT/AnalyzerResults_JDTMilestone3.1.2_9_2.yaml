@@ -1,33 +1,33 @@
-NSGAIIITA:
-    Hypervolume: 0.725945452214718
-    GenerationalDistance: 8.721141237002391E-4
-    InvertedGenerationalDistance: 0.0013176522528748106
-    AdditiveEpsilonIndicator: 0.020102493499359178
-    MaximumParetoFrontError: 0.23230400191725686
-    Spacing: 25.764094745979403
-    Contribution: 0.7699115044247787
-    R1Indicator: 0.0
-    R2Indicator: 42854.77001089289
-    R3Indicator: 48809.36391098776
 RS:
     Hypervolume: 0.0
-    GenerationalDistance: 0.2739621591031941
-    InvertedGenerationalDistance: 1.1917904761861553
-    AdditiveEpsilonIndicator: 1.4619773064934514
-    MaximumParetoFrontError: 0.947194981601959
-    Spacing: 514.3998578946747
+    GenerationalDistance: 0.2786984097029108
+    InvertedGenerationalDistance: 1.0491287977160026
+    AdditiveEpsilonIndicator: 1.3040113497544596
+    MaximumParetoFrontError: 1.205485538274064
+    Spacing: 1218.8094761032485
     Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 53640.701179528915
-    R3Indicator: 61094.011077517855
-KRRGZ:
-    Hypervolume: 0.7246625032906175
-    GenerationalDistance: 1.425800806488731E-4
-    InvertedGenerationalDistance: 0.003710467153692309
-    AdditiveEpsilonIndicator: 0.014247417019596798
-    MaximumParetoFrontError: 0.012469718725024979
-    Spacing: 26.69453408273402
-    Contribution: 0.23008849557522124
+    R2Indicator: 52683.727296781224
+    R3Indicator: 60780.42297967415
+NSGAIIITAGLS:
+    Hypervolume: 0.5851223197647731
+    GenerationalDistance: 0.004294852988245752
+    InvertedGenerationalDistance: 0.09674748092660237
+    AdditiveEpsilonIndicator: 0.24529210689500153
+    MaximumParetoFrontError: 0.13735733299803216
+    Spacing: 103.64653524693394
+    Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 42959.87104201514
-    R3Indicator: 48929.07031917945
+    R2Indicator: 44776.54219301063
+    R3Indicator: 51658.01095469249
+KRRGZ:
+    Hypervolume: 0.6833659900940039
+    GenerationalDistance: 0.0
+    InvertedGenerationalDistance: 0.0
+    AdditiveEpsilonIndicator: 0.0
+    MaximumParetoFrontError: 0.0
+    Spacing: 48.192795799728565
+    Contribution: 1.0
+    R1Indicator: 0.0
+    R2Indicator: 42944.61785271206
+    R3Indicator: 49544.53399755841

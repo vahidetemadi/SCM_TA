@@ -105,8 +105,6 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 			b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			GA_Problem_Parameter.resetParameters_ZoneAndDevelopers(b,solution,developers);
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-			int jgjfs=b.Zone_DEP.vertexSet().size();
-			int kkk=tso_Zone.getGraph().vertexSet().size();
 			//iterate by the order provided in y graph
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();

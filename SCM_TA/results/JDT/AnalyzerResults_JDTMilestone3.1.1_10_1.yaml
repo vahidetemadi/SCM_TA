@@ -1,33 +1,33 @@
-NSGAIIITA:
-    Hypervolume: 0.8017437580097995
+RS:
+    Hypervolume: 0.0
+    GenerationalDistance: 1.2898052919950822
+    InvertedGenerationalDistance: 2.597532861535164
+    AdditiveEpsilonIndicator: 2.8334213065177924
+    MaximumParetoFrontError: 6.078306841692824
+    Spacing: 38117.48207918728
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 292091.19380342145
+    R3Indicator: 321294.52116076445
+NSGAIIITAGLS:
+    Hypervolume: 0.38217386954372
+    GenerationalDistance: 0.027196858984134608
+    InvertedGenerationalDistance: 0.2874769630598141
+    AdditiveEpsilonIndicator: 0.5572016019249237
+    MaximumParetoFrontError: 0.2483201881920534
+    Spacing: 810.9687673202538
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 210004.28534279086
+    R3Indicator: 231000.61456890346
+KRRGZ:
+    Hypervolume: 0.8245180309208711
     GenerationalDistance: 0.0
     InvertedGenerationalDistance: 0.0
     AdditiveEpsilonIndicator: 0.0
     MaximumParetoFrontError: 0.0
-    Spacing: 280.05345902358937
+    Spacing: 1004.1503565891851
     Contribution: 1.0
     R1Indicator: 0.0
-    R2Indicator: 184758.91999996488
-    R3Indicator: 205379.933099348
-RS:
-    Hypervolume: 0.0
-    GenerationalDistance: 1.254992468203202
-    InvertedGenerationalDistance: 3.3690435719599003
-    AdditiveEpsilonIndicator: 3.216100448159791
-    MaximumParetoFrontError: 4.280178028696164
-    Spacing: 13643.096852902008
-    Contribution: 0.0
-    R1Indicator: 0.0
-    R2Indicator: 306061.21946922236
-    R3Indicator: 340220.73289414914
-KRRGZ:
-    Hypervolume: 0.5826161560554126
-    GenerationalDistance: 0.01852224410075895
-    InvertedGenerationalDistance: 0.14228826339536982
-    AdditiveEpsilonIndicator: 0.18762912824012265
-    MaximumParetoFrontError: 0.2654312892920878
-    Spacing: 855.0879316408068
-    Contribution: 0.0
-    R1Indicator: 0.0
-    R2Indicator: 191620.92327965904
-    R3Indicator: 213007.80816606886
+    R2Indicator: 189910.28246685996
+    R3Indicator: 208897.5999557317

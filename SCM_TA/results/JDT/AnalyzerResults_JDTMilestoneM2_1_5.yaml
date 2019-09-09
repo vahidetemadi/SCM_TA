@@ -1,33 +1,33 @@
-NSGAIIITA:
-    Hypervolume: 0.8059480643339025
+RS:
+    Hypervolume: 0.0
+    GenerationalDistance: 1.1914060617995534
+    InvertedGenerationalDistance: 2.2118542747961656
+    AdditiveEpsilonIndicator: 2.5036256168529003
+    MaximumParetoFrontError: 2.942606015983549
+    Spacing: 8552.080430785978
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 214293.91613279918
+    R3Indicator: 234618.30666344086
+NSGAIIITAGLS:
+    Hypervolume: 0.41041149282013756
+    GenerationalDistance: 0.03751422964513014
+    InvertedGenerationalDistance: 0.3413487860022577
+    AdditiveEpsilonIndicator: 0.5460974491929647
+    MaximumParetoFrontError: 0.1420554838971484
+    Spacing: 1547.1106494444764
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 149733.50630853942
+    R3Indicator: 163934.78568243343
+KRRGZ:
+    Hypervolume: 0.8416298685289475
     GenerationalDistance: 0.0
     InvertedGenerationalDistance: 0.0
     AdditiveEpsilonIndicator: 0.0
     MaximumParetoFrontError: 0.0
-    Spacing: 115.21722085681431
+    Spacing: 453.86139254056434
     Contribution: 1.0
     R1Indicator: 0.0
-    R2Indicator: 126007.68319555762
-    R3Indicator: 139175.6454078048
-RS:
-    Hypervolume: 0.0
-    GenerationalDistance: 1.2578886218341543
-    InvertedGenerationalDistance: 3.356921907409135
-    AdditiveEpsilonIndicator: 3.6909723259690117
-    MaximumParetoFrontError: 4.890518404059006
-    Spacing: 7135.6330474118295
-    Contribution: 0.0
-    R1Indicator: 0.0
-    R2Indicator: 208160.08679069867
-    R3Indicator: 229913.04870120494
-KRRGZ:
-    Hypervolume: 0.6053917387772159
-    GenerationalDistance: 0.016477809987612512
-    InvertedGenerationalDistance: 0.1262884640442993
-    AdditiveEpsilonIndicator: 0.19567973966154475
-    MaximumParetoFrontError: 0.3691043443548129
-    Spacing: 768.5749179575075
-    Contribution: 0.0
-    R1Indicator: 0.0
-    R2Indicator: 130363.078175159
-    R3Indicator: 143986.18073801484
+    R2Indicator: 131723.0229129873
+    R3Indicator: 144216.11982624527

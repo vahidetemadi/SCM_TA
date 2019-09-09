@@ -766,9 +766,7 @@ public class Executor extends ProblemBuilder {
 		
 		Problem problem = null;
 		Algorithm algorithm = null;
-		ExecutorService executor = null;
-		//added by me!!!!
-		GA_Problem_Parameter.algorithm=algorithm;		
+		ExecutorService executor = null;		
 		try {
 			problem = getProblemInstance();
 			try {
@@ -787,11 +785,15 @@ public class Executor extends ProblemBuilder {
 								algorithmName, 
 								properties.getProperties(), 
 								problem);
+						//added by me!!!!
+						GA_Problem_Parameter.algorithm=algorithm;
 					} else {
 						algorithm = algorithmFactory.getAlgorithm(
 								algorithmName, 
 								properties.getProperties(),
 								problem);
+						//added by me!!!!
+						GA_Problem_Parameter.algorithm=algorithm;
 					}
 
 					if (checkpointFile != null) {

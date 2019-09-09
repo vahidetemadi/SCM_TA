@@ -1,33 +1,33 @@
-NSGAIIITA:
-    Hypervolume: 0.8278423041219025
-    GenerationalDistance: 0.0
-    InvertedGenerationalDistance: 0.0
-    AdditiveEpsilonIndicator: 0.0
-    MaximumParetoFrontError: 0.0
-    Spacing: 374.54759282324267
-    Contribution: 1.0
-    R1Indicator: 0.0
-    R2Indicator: 185572.06119670992
-    R3Indicator: 203775.9963564853
 RS:
     Hypervolume: 0.0
-    GenerationalDistance: 1.53531435102206
-    InvertedGenerationalDistance: 3.554670643354829
-    AdditiveEpsilonIndicator: 3.7679878858723215
-    MaximumParetoFrontError: 5.165374786434994
-    Spacing: 28938.400728280845
+    GenerationalDistance: 1.5441639545128003
+    InvertedGenerationalDistance: 3.3324528534121876
+    AdditiveEpsilonIndicator: 3.6219486503283256
+    MaximumParetoFrontError: 3.970339067760427
+    Spacing: 6423.274588328759
     Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 307602.1813665413
-    R3Indicator: 337776.730125953
+    R2Indicator: 299664.1972153013
+    R3Indicator: 323008.46562964603
+NSGAIIITAGLS:
+    Hypervolume: 0.8509118311735103
+    GenerationalDistance: 0.0
+    InvertedGenerationalDistance: 0.020374946637218273
+    AdditiveEpsilonIndicator: 0.07297591731936723
+    MaximumParetoFrontError: 0.0
+    Spacing: 208.75515681666465
+    Contribution: 0.9230769230769231
+    R1Indicator: 0.0
+    R2Indicator: 193789.3855627208
+    R3Indicator: 208885.88688967624
 KRRGZ:
-    Hypervolume: 0.6090200814399988
-    GenerationalDistance: 0.020309133882524706
-    InvertedGenerationalDistance: 0.14396207337622935
-    AdditiveEpsilonIndicator: 0.15857488652639962
-    MaximumParetoFrontError: 0.22509777642669965
-    Spacing: 869.4499021283997
-    Contribution: 0.0
+    Hypervolume: 0.7956249230821487
+    GenerationalDistance: 0.010112731920446132
+    InvertedGenerationalDistance: 0.07128224023166219
+    AdditiveEpsilonIndicator: 0.08878119211529267
+    MaximumParetoFrontError: 0.23035289070353898
+    Spacing: 722.0883310398973
+    Contribution: 0.07692307692307693
     R1Indicator: 0.0
-    R2Indicator: 188294.87201831248
-    R3Indicator: 206765.89587657293
+    R2Indicator: 191612.47246158533
+    R3Indicator: 206539.37874888376

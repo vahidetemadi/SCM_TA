@@ -132,21 +132,21 @@ import javax.swing.JFrame;
 	@Override 	
 	public void evaluate(Solution solution){
 		@SuppressWarnings("unchecked")
-		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation;
+		//copy the TDG graph into another object
+		DirectedAcyclicGraph<Bug, DefaultEdge>  DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		TopologicalOrderIterator<Bug, DefaultEdge> tso_sch_evaluate;
 		ArrayList<Integer> schedule=new ArrayList<Integer>();
 		
 		for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++)
 			schedule.add(0);
 		//reset all the associate time for the bugs and their zones
-
+		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign Devs to zone
 		zoneAssignee.clear();
 		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution);
 		
-		//copy the TDG graph into another object
-		DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
-		if(GA_Problem_Parameter.algorithm.getNumberOfEvaluations()%50000==0)
+		//if((GA_Problem_Parameter.algorithm.getNumberOfEvaluations()/500)%100==0)
+		if(true)
 		{
 			AllDirectedPaths<Bug, DefaultEdge> allPaths=new AllDirectedPaths<Bug, DefaultEdge>(DEP_evaluation);
 			TopologicalOrderIterator<Bug, DefaultEdge> tso_sortedBugList=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
@@ -158,7 +158,7 @@ import javax.swing.JFrame;
 			boolean isParallel=false;
 			int numOfDevsInCommon=0;
 			int counter=0;
-			for(int i=0; i<sortedBugList.size();i++){
+			for(int i=0; i<sortedBugList.size()-1;i++){
 				for(int j=i+1;j<sortedBugList.size();j++){
 					isParallel=allPaths.getAllPaths(sortedBugList.get(i), sortedBugList.get(j), true, 100000000).isEmpty();
 					if(isParallel)
@@ -166,7 +166,7 @@ import javax.swing.JFrame;
 					else
 						continue;
 					
-					if(numOfDevsInCommon>2){
+					if(numOfDevsInCommon>0){
 						try{
 							DEP_evaluation.addEdge(sortedBugList.get(i), sortedBugList.get(j));	
 						}
@@ -235,6 +235,7 @@ import javax.swing.JFrame;
 					}
 				}
 			}
+			solution.setSchedule(schedule);
 		}
 		else{
 			tso_sch_evaluate=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);				
@@ -282,16 +283,8 @@ import javax.swing.JFrame;
 			solution.setObjective(0, totalTime);
 			solution.setObjective(1, totalCost);
 		}
-		
-		
-		
-		
-		
-		
-		
-		
-				
-		}
+			
+	}
 		
 	
 	public ArrayList<Integer> generateSchedule(){

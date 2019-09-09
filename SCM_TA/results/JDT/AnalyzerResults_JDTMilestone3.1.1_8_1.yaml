@@ -1,33 +1,33 @@
-NSGAIIITA:
-    Hypervolume: 0.8048812861653462
+RS:
+    Hypervolume: 0.0
+    GenerationalDistance: 1.0010255811509345
+    InvertedGenerationalDistance: 2.3011922056891407
+    AdditiveEpsilonIndicator: 2.5486288943643682
+    MaximumParetoFrontError: 3.8718667868918453
+    Spacing: 41428.61013101244
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 298251.86834049824
+    R3Indicator: 321988.69961613446
+NSGAIIITAGLS:
+    Hypervolume: 0.5319111071197775
+    GenerationalDistance: 0.012335957978574919
+    InvertedGenerationalDistance: 0.2579987359624255
+    AdditiveEpsilonIndicator: 0.43685500012965284
+    MaximumParetoFrontError: 0.13646547211370505
+    Spacing: 1073.1267939898826
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 207577.15332711107
+    R3Indicator: 224097.5497929728
+KRRGZ:
+    Hypervolume: 0.8704223036328202
     GenerationalDistance: 0.0
     InvertedGenerationalDistance: 0.0
     AdditiveEpsilonIndicator: 0.0
     MaximumParetoFrontError: 0.0
-    Spacing: 449.1564101587785
+    Spacing: 546.7833884510524
     Contribution: 1.0
     R1Indicator: 0.0
-    R2Indicator: 187348.63786298208
-    R3Indicator: 207412.7179396967
-RS:
-    Hypervolume: 0.0
-    GenerationalDistance: 1.5482222559286476
-    InvertedGenerationalDistance: 2.874038585468175
-    AdditiveEpsilonIndicator: 2.9004761272679347
-    MaximumParetoFrontError: 3.8172163506895296
-    Spacing: 10746.9545857126
-    Contribution: 0.0
-    R1Indicator: 0.0
-    R2Indicator: 302643.41854478134
-    R3Indicator: 335054.9078424997
-KRRGZ:
-    Hypervolume: 0.6076269608022548
-    GenerationalDistance: 0.02557866538050808
-    InvertedGenerationalDistance: 0.13271216559021148
-    AdditiveEpsilonIndicator: 0.14627609201138814
-    MaximumParetoFrontError: 0.5761400344064003
-    Spacing: 944.3229888562685
-    Contribution: 0.0
-    R1Indicator: 0.0
-    R2Indicator: 191084.97838283968
-    R3Indicator: 211549.19499320176
+    R2Indicator: 188819.91250572127
+    R3Indicator: 203847.47157475914

@@ -1,33 +1,33 @@
-NSGAIIITA:
-    Hypervolume: 0.9001068462586753
-    GenerationalDistance: 0.0
-    InvertedGenerationalDistance: 0.020796278804566023
-    AdditiveEpsilonIndicator: 0.019644622225894234
-    MaximumParetoFrontError: 0.0
-    Spacing: 118.04032749105384
-    Contribution: 0.9580838323353293
-    R1Indicator: 0.0
-    R2Indicator: 186148.64385441976
-    R3Indicator: 199087.5713932429
 RS:
     Hypervolume: 0.0
-    GenerationalDistance: 0.9339595158278058
-    InvertedGenerationalDistance: 2.0604839340725336
-    AdditiveEpsilonIndicator: 2.024176595816665
-    MaximumParetoFrontError: 2.288121328862435
-    Spacing: 14646.425787583796
+    GenerationalDistance: 1.119848679038595
+    InvertedGenerationalDistance: 3.1151441796696755
+    AdditiveEpsilonIndicator: 3.2156512305056753
+    MaximumParetoFrontError: 3.0192068891948614
+    Spacing: 4471.5781987708715
     Contribution: 0.0
     R1Indicator: 0.0
-    R2Indicator: 300039.0664129236
-    R3Indicator: 320894.3083208468
-KRRGZ:
-    Hypervolume: 0.774274985110062
-    GenerationalDistance: 0.024274951252920837
-    InvertedGenerationalDistance: 0.09967436788209938
-    AdditiveEpsilonIndicator: 0.10948559279432105
-    MaximumParetoFrontError: 0.6068815804319007
-    Spacing: 1530.8780104981397
-    Contribution: 0.041916167664670656
+    R2Indicator: 299068.3003682345
+    R3Indicator: 329447.9105076133
+NSGAIIITAGLS:
+    Hypervolume: 0.8133306401047626
+    GenerationalDistance: 0.0
+    InvertedGenerationalDistance: 0.0
+    AdditiveEpsilonIndicator: 0.0
+    MaximumParetoFrontError: 0.0
+    Spacing: 227.28434428423472
+    Contribution: 1.0
     R1Indicator: 0.0
-    R2Indicator: 187973.8290161754
-    R3Indicator: 201039.6220207739
+    R2Indicator: 183154.3185996371
+    R3Indicator: 201759.31438144937
+KRRGZ:
+    Hypervolume: 0.631792314678431
+    GenerationalDistance: 0.017391685616161796
+    InvertedGenerationalDistance: 0.12376741631832879
+    AdditiveEpsilonIndicator: 0.14663607616874605
+    MaximumParetoFrontError: 0.5107652620571722
+    Spacing: 467.3280530503217
+    Contribution: 0.0
+    R1Indicator: 0.0
+    R2Indicator: 187891.58647532653
+    R3Indicator: 206977.79160790824
