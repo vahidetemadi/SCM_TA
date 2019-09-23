@@ -7,6 +7,7 @@ import java.util.Map.Entry;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class Bug implements Cloneable, Serializable{
 	public ArrayList<Bug> DB=new ArrayList<Bug>();
@@ -18,6 +19,8 @@ public class Bug implements Cloneable, Serializable{
 	double arrivalTime=0;
 	HashMap<Zone, Double> BZone_Coefficient=new HashMap<Zone,Double>();
 	DirectedAcyclicGraph<Zone, DefaultEdge> Zone_DEP; 
+	TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
+	ArrayList<Zone> sortedZoneList=new ArrayList<Zone>();
 	double startTime=0.0;
 	double startTime_evaluate=0.0;
 	double endTime=0.0;
@@ -117,7 +120,18 @@ public class Bug implements Cloneable, Serializable{
 				}
 			}
 		}
-		int ttt=Zone_DEP.vertexSet().size();
-		int f=0;
+	}
+	
+	public void setTopo(){
+		try{
+
+			tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(Zone_DEP);
+		}
+		catch(Exception e){
+			e.printStackTrace();
+		}	
+		while(tso_Zone.hasNext()){
+			sortedZoneList.add(tso_Zone.next());
+		}
 	}
 }

@@ -394,6 +394,7 @@ public class Assignment {
 			for(Map.Entry<Zone, Double>  zone:b.getValue().BZone_Coefficient.entrySet()){
 				GA_Problem_Parameter.Num_of_variables++;
 			}
+			b.getValue().setTopo();
 		}
 		GA_Problem_Parameter.population=500;
 		GA_Problem_Parameter.evaluation=250000;
@@ -414,7 +415,7 @@ public class Assignment {
 		//try{
 	    
 		    GA_Problem_Parameter.flag=1;
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITAGLS.class).withAlgorithm("NSGAIII")
+			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITAGLS.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_NSGAIIITA).run();
 			

@@ -1,7 +1,9 @@
-.metadata/
+.metadata
 .recommenders/
 *.class
 SCM_TA/archives/
+SCM_TA/results/
+SCM_TA/paretoFronts/
 SCM_TA/paretoFronts/
 .*/
 
