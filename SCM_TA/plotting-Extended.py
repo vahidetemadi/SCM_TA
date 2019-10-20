@@ -33,7 +33,9 @@ for filename in os.listdir(os.path.join(os.getcwd(),'archives',sys.argv[1],sys.a
 			df3=pd.read_csv(os.path.join(os.getcwd(),'archives',sys.argv[1],sys.argv[2],sys.argv[3],
 				'RS',name[0]+'_'+name[1]+'_RS_'+name[3]+os.path.splitext(filename)[1]))
 
-		ax1=df.plot(kind='scatter', x='Time', y='Cost', title=name[0]+'_'+name[1]+'_'+name[3], c='blue', s=30)
-		ax2=df2.plot(kind='scatter', x='Time', y='Cost', title=name[0]+'_'+name[1]+'_'+name[3], c='green',marker='^', ax=ax1, s=30)
-		df3.plot(kind='scatter', x='Time',c='red' ,y='Cost', title=name[0]+'_'+name[1]+'_'+name[3], marker='s', ax=ax2, s=30)	
-		plt.savefig(os.path.join(os.getcwd(),'archives',sys.argv[1],sys.argv[2],sys.argv[3],name[0]+'_'+name[1]+'_'+name[3]+'.png'))
+		ax1=df.plot(kind='scatter', x='Time', label='KRRGZ', y='Cost', title=name[0]+'_'+name[1]+'_'+name[3], c='blue', s=30)
+		ax2=df2.plot(kind='scatter', x='Time', y='Cost', label='SD', title=name[0]+'_'+name[1]+'_'+name[3], c='green',marker='^', ax=ax1, s=30)
+		df3.plot(kind='scatter', x='Time',c='red' ,y='Cost', label='RD', title=name[0], marker='s', ax=ax2, s=30)	
+		plt.grid(linestyle='dotted')
+		plt.tight_layout()
+		plt.savefig(os.path.join(os.getcwd(),'archives',sys.argv[1],sys.argv[2],sys.argv[3],name[0]+'_'+name[1]+'_'+name[3]+'.pdf'))
