@@ -48,7 +48,7 @@ import org.moeaframework.Executor;
 import org.moeaframework.core.NondominatedPopulation;
 
 
-public class Assignment {
+public class Assignment_Tuning {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
 	static HashMap<Integer,Bug> bugs=new HashMap<Integer,Bug>();
 	static Queue<Bug> orderdBugs; 
@@ -59,6 +59,9 @@ public class Assignment {
 	static String fileName;
 	static StringBuilder sb=new StringBuilder();
 	static PrintWriter pw;  
+	static double[] listOfCrossover=new double[]{0.6, 0.7, 0.8, 0.9, 1.0};
+	static double[] listOfMutation=new double[]{0.01, 0.05, 0.10, 0.20, 0.30};
+	static int[] populationList=new int[]{100, 200, 300, 400, 500};
 	//DevMetrics devMetric=new DevMetrics();
 	
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
@@ -83,45 +86,42 @@ public class Assignment {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNum;runNum++){
-			double[] costs=new double[2];
-			developers.clear();
-			bugs.clear();
-			
-			//load developers into the system
-			devInitialization();
-			
-			//set the round number upon the project name
-			int numOfFiles=9;
-			if(GA_Problem_Parameter.pName.equals("JDT")){
-				numOfFiles=9;
-				GA_Problem_Parameter.numOfDevs=20;
+		for(double corssover: listOfCrossover){
+			for(double mutation:listOfMutation){
+				for(int population:populationList){
+					for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+						double[] costs=new double[2];
+						developers.clear();
+						bugs.clear();
+						
+						//load developers into the system
+						devInitialization();
+						
+						//set the round number upon the project name
+						int numOfFiles=9;
+						if(GA_Problem_Parameter.pName.equals("JDT"))
+							numOfFiles=9;
+						else 
+							numOfFiles=10;
+						
+						//iterate over the under experiment files
+						starting(GA_Problem_Parameter.fileNum, runNum, corssover, mutation, population);
+						System.gc();
+					}
+				}
 			}
-			else {
-				numOfFiles=10;
-				GA_Problem_Parameter.numOfDevs=78;
-			}
-			
-			//iterate over the under experiment files
-			for(int i=GA_Problem_Parameter.fileNum;i<=GA_Problem_Parameter.fileNum;i++){
-				GA_Problem_Parameter.fileNum=i;
-				if(i==numOfFiles)
-					GA_Problem_Parameter.fileNum=1;
-				starting(i, runNum);
-			}
-			System.gc();
 		}
 		
 	}
 
-	public static void starting(int fileNum, int runNum) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
+	public static void starting(int fileNum, int runNum, double crossover, double mutation, int population) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
 		//set the threshold to initialize the population 
 		GA_Problem_Parameter.thresoldForPopulationGeneration=0;
 		bugInitialization(fileNum);
 		GA_Problem_Parameter.generateModelofBugs();
 		GA_Problem_Parameter.candidateSolutonGeneration();
 		NondominatedPopulation[] results = new NondominatedPopulation[2]; 
-		Assigning(results,runNum,fileNum);
+		Assigning(results,runNum,fileNum, crossover, mutation, population);
 		//solution=results[1].get(results[1].size()/2);
 		//writeResult(runNum,i,results);
 		//System.out.println("finished writing");
@@ -406,17 +406,12 @@ public class Assignment {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
+	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum, double crossover, double mutaiton, int population) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
-		
+
 		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
-	    Instrumenter instrumenter_KRRGZ=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
+	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
-	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_RS=new Instrumenter().withProblem("RandomSearch").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
-	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-		//try{
 	    
 		    GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITAGLS.class).withAlgorithm("NSGAII")
@@ -424,69 +419,6 @@ public class Assignment {
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_NSGAIIITA).run();
 			
 			System.out.println("finished NSGAIITAGLS");
-	    
-	    	GA_Problem_Parameter.flag=1;
-	    	NondominatedPopulation NDP_RS=new Executor().withProblemClass(RandomSearch.class).withAlgorithm("Random")
-	    			.withProperty("populationSize", GA_Problem_Parameter.population).withMaxEvaluations(GA_Problem_Parameter.evaluation)
-	    			.withInstrumenter(instrumenter_RS).run();	
-
-	    	System.out.println("finished RS");
-	    	
-	    	GA_Problem_Parameter.flag=1;
-			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_KRRGZ).run();
-			
-			System.out.println("finished KRRGZ");
-			
-			
-			
-			
-			
-			/*//instantiation of target JPPF
-			//BasicConfigurator.configure();
-			JPPFClient jppfClient = null;
-			JPPFExecutorService jppfExecutor = null;
-			NondominatedPopulation NDP_SD=null;
-			BasicConfigurator.configure();
-			
-			try{
-				jppfClient=new JPPFClient();
-				jppfExecutor=new JPPFExecutorService(jppfClient);
-				jppfExecutor.setBatchSize(GA_Problem_Parameter.population);
-				
-				
-				NDP_SD=new Executor().withProblemClass(NSGAIIITA_paralleled.class).withAlgorithm("NSGAIII")
-						.withMaxEvaluations(250000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "sbx+pm")
-						.withProperty("sbx.rate", 1.0).withProperty("pm.rate", 0.01).withProperty("divisions",4)
-						.withProperty("sbx.distributionIndex", 30).withProperty("pm.distributionIndex", 40).withInstrumenter(instrumenter_2)
-						.distributeWith(jppfExecutor).run();
-			}
-			catch(Exception e){
-				e.printStackTrace();
-			}finally {
-				if (jppfExecutor != null) {
-					jppfExecutor.shutdown();
-				}
-			
-				if (jppfClient != null) {
-					jppfClient.close();
-				}
-		        
-			}    
-*/
-		    //pareto front of KRRGZ gets saved in csv format
-		    sb.setLength(0);
-		    //create string builder to include the nonDominated for KRRGZ
-		    for(Solution s:NDP_KRRGZ){
-				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
-				   sb.append("\n");
-		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv"));
-		    pw.write(sb.toString());
-		    pw.close();
-		   
-		    
 		    //pareto front of SD gets saved in csv format
 		    sb.setLength(0);
 		    //create string builder to include the nonDominated for KRRGZ
@@ -496,35 +428,18 @@ public class Assignment {
 				   if(s.getSchedule()!=null)
 					   System.out.println(s.getSchedule());
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"SD_"+fileName+"_"+runNum+".csv"));
-		    pw.write(sb.toString());
-		    pw.close();
-		    
-		    
-		    //pareto front for RS method   
-		    for(Solution s:NDP_RS){
-				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
-				   sb.append("\n");
-		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"RS_"+fileName+"_"+runNum+".csv"));
+		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+"paretoFronts"+File.separator+(crossover+"_"+mutaiton+"_"+population)+File.separator+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
 		    
 		    //write down instrumenters results
-		    updateArchive(instrumenter_KRRGZ, instrumenter_NSGAIIITA,instrumenter_RS, runNum);
+		    updateArchive(instrumenter_NSGAIIITA, runNum, crossover, mutaiton, population);
 		    
 		    
 		    //write down the analyzer results
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
-		    analyzer.add("KRRGZ", NDP_KRRGZ);
 		    analyzer.add("NSGAIIITAGLS", NDP_SD);
-		    try{
-		    	analyzer.add("RS", NDP_RS);
-		    }
-		    catch(Exception e){
-		    	System.out.println("went wrong");
-		    }
 		   
 		    
 		    //generate the pareto set in favor of archiving	    
@@ -533,12 +448,12 @@ public class Assignment {
 		     *
 		     *
 		    analyzer.saveReferenceSet(targetRefSet);*/
-		    File f=new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults_"+fileName+"_"+runNum+"_"+fileNum+".yaml");
+		    File f=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+"results"+File.separator+fileName+File.separator+(crossover+"_"+mutaiton+"_"+population)+File.separator+fileName+"_"+runNum+".yaml");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
 			analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
 			ps_ID.close();
-			analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
+			//analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}
 		//catch(Exception e){
 			//starting(fileNum, runNum);
@@ -546,7 +461,6 @@ public class Assignment {
 		//return results;
 	    
 	}
-	
 	//write the results for testing
 	public static void writeResult(int runNum,int roundNum, NondominatedPopulation[] result) throws FileNotFoundException{
 		//write results to CSV for each round
@@ -732,5 +646,35 @@ public class Assignment {
 			   pw.close();
 			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
 			  }
+	}
+	
+	
+	
+	private static void updateArchive(Instrumenter instrumenter_NSGAIIITA, int runNum, double crossover, double mutaiton, int population) throws FileNotFoundException{
+		 PrintWriter pw=null;
+		 Accumulator accumulator = instrumenter_NSGAIIITA.getLastAccumulator();
+		   for (int i=0; i<accumulator.size("NFE"); i++) {
+			   System.out.println(accumulator.get("NFE", i) + "\t" +
+					   accumulator.get("GenerationalDistance", i));
+			   System.out.println();
+			   ArrayList<Solution> solutions = (ArrayList<Solution>)accumulator.get("Approximation Set", i);
+			   sb.setLength(0);
+			   sb.append("Time,Cost");
+			   sb.append("\n");
+			   for(Solution s:solutions){
+				   System.out.println(s.getObjective(0)+ "  "+s.getObjective(1));
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+			   }
+			   System.out.println();
+			   System.out.println();
+			   File f=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+"archives"+File.separator+fileName+File.separator+(crossover+"_"+mutaiton+"_"+population)+File.separator+runNum+File.separator+accumulator.get("NFE", i)+".csv");
+			   f.getParentFile().mkdirs();
+			   pw=new PrintWriter(f);
+			   pw.write(sb.toString());
+			   pw.close();
+			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
+		   }
+	
 	}
 }

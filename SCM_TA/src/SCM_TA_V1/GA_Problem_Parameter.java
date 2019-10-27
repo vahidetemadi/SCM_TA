@@ -77,6 +77,7 @@ public class GA_Problem_Parameter {
 	public static ArrayList<ArrayList<Integer>> encodedSolutions= new ArrayList<ArrayList<Integer>>();
 	public static int thresoldForPopulationGeneration=0;
 	public static String pName=null;
+	public static int numOfDevs=0;
 	public static int fileNum=1;
 	public static int runNum=1;
 	static ArrayList<Integer> assignment=new ArrayList<Integer>();	

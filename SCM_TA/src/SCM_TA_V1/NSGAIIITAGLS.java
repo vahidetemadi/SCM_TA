@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
+import java.util.Random;
 
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
@@ -153,7 +154,6 @@ import javax.swing.JFrame;
 		String[] twoSidedLabel={"forward","backward"};
 		String selected="";
 		double[] selectedDirection=new double[2];
-
 		int test=0;
 		if(true)
 		{
@@ -185,124 +185,131 @@ import javax.swing.JFrame;
 			int numOfDevsInCommon=0;
 			int counter=0;
 			int sizeOfSortedBugList=sortedBugList.size();
-			int maxNumOfEdges=(sizeOfSortedBugList*(sizeOfSortedBugList-1))/2;
 			int firstBugID=0;
+			Random r=new Random();
 			for(int i=0; i<sizeOfSortedBugList-1;i++){
 				firstBugID=sortedBugList.get(i).ID;
 				for(int j=i+1;j<sizeOfSortedBugList;j++){
-					long st7=System.nanoTime();
-					numOfDevsInCommon=getNumOfDeveloperInCommon_enhanced(listOfBugAssignee.get(firstBugID),listOfBugAssignee.get(sortedBugList.get(j).ID), numOfDevs);
-					long st8=System.nanoTime()-st7;		
-					if(numOfDevsInCommon>1){
-						isParallel=allPaths.getAllPaths(sortedBugList.get(i), sortedBugList.get(j), true, 100000000).isEmpty();
-						isParallel= isParallel & allPaths.getAllPaths(sortedBugList.get(j), sortedBugList.get(i), true, 100000000).isEmpty();
-						if(isParallel){
-							long st9=System.nanoTime();
-							test++;
-							for(String edgeLabel:twoSidedLabel){
-								if(edgeLabel.equals("forward"))
-									DEP_evaluation.addEdge(sortedBugList.get(i), sortedBugList.get(j));
-								else{
-									DEP_evaluation.removeEdge(sortedBugList.get(i), sortedBugList.get(j));
-									DEP_evaluation.addEdge(sortedBugList.get(j), sortedBugList.get(i));
-								}
-								
-								GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
-								tso_sch_evaluate=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
-								double totalTime=0.0;
-								double totalCost=0.0;
-								double totalDevCost=0.0;
-								double totalDelayTime=0.0;
-								double totalDelayCost=0.0;
-								double totalStartTime=0.0;
-								double totalEndTime=0.0;
-								double totalExecutionTime=0.0;
-								int index=0;
-								long st30=System.nanoTime();
-								while(tso_sch_evaluate.hasNext()){
-									Bug b=tso_sch_evaluate.next();
-									//set Bug startTime
-									b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
-									GA_Problem_Parameter.resetParameters_ZoneAndDevelopers(b,solution,developers);
-									long st32=System.nanoTime();
-									for(Zone zone:b.sortedZoneList){
-										double compeletionTime=0.0;
-										Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
-										compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
-										totalExecutionTime+=compeletionTime;
-										//need to be changed????///
-										totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
-										zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
-										zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
-										/*developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
-										zone.zoneStartTime_evaluate)+compeletionTime;*/
-										developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=zone.zoneEndTime_evaluate;
-										b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
-										index++;
+					if(r.nextDouble()>0.0){
+						numOfDevsInCommon=getNumOfDeveloperInCommon_enhanced(listOfBugAssignee.get(firstBugID),listOfBugAssignee.get(sortedBugList.get(j).ID), numOfDevs);
+						/*int[] devs=new int[numOfDevs];
+						int[] b1=listOfBugAssignee.get(firstBugID);
+						int[] b2=listOfBugAssignee.get(sortedBugList.get(j).ID);
+						for(int k=0;k<b1.length;k++)
+							devs[b1[k]-1]++;
+						
+						for(int m=0;m<b2.length;m++)
+							if(devs[b2[m]-1]>0){
+								numOfDevsInCommon++;
+								devs[b2[m]-1]--;
+							}*/
+						
+						if(numOfDevsInCommon>1){
+							isParallel=allPaths.getAllPaths(sortedBugList.get(i), sortedBugList.get(j), true, 100000000).isEmpty();
+							isParallel= isParallel & allPaths.getAllPaths(sortedBugList.get(j), sortedBugList.get(i), true, 100000000).isEmpty();
+							if(isParallel){
+								test++;
+								for(String edgeLabel:twoSidedLabel){
+									if(edgeLabel.equals("forward"))
+										DEP_evaluation.addEdge(sortedBugList.get(i), sortedBugList.get(j));
+									else{
+										DEP_evaluation.removeEdge(sortedBugList.get(i), sortedBugList.get(j));
+										DEP_evaluation.addEdge(sortedBugList.get(j), sortedBugList.get(i));
 									}
-									long st33=System.nanoTime()-st32;
-									totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
-									totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
-									//pay for those 
-									totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
-									if(totalDelayTime>0)
-										totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
-								}
-								long st31=System.nanoTime()-st30;
-								totalTime=totalEndTime-totalStartTime;
-								totalCost=totalDevCost+totalDelayCost;
-								if(edgeLabel.equals("forward")){
-									forward[0]=totalTime;
-									forward[1]=totalCost;
-								}
-								else{
-									backward[0]=totalTime;
-									backward[1]=totalCost;
-								}
-							}
-							DEP_evaluation.removeEdge(sortedBugList.get(j), sortedBugList.get(i));
-							
-							if(compare(forward, backward)==1){
-								selected="forward";
-								selectedDirection=forward;
-							}
-							else{
-								selected="backward";
-								selectedDirection=backward;
-							}
+									GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
+									tso_sch_evaluate=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 								
-							if(counter==0){
-								solution.setObjective(0, selectedDirection[0]);
-								solution.setObjective(1, selectedDirection[1]);
-								if(selected.equals("forward")){
-									schedule.set(GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(sortedBugList.get(i), 
-										sortedBugList.get(j))), 1);
-									DEP_evaluation.addEdge(sortedBugList.get(i), sortedBugList.get(j));
+									double totalTime=0.0;
+									double totalCost=0.0;
+									double totalDevCost=0.0;
+									double totalDelayTime=0.0;
+									double totalDelayCost=0.0;
+									double totalStartTime=0.0;
+									double totalEndTime=0.0;
+									double totalExecutionTime=0.0;
+									int index=0;
+									int test2=0;
+									while(tso_sch_evaluate.hasNext()){
+										Bug b=tso_sch_evaluate.next();
+										//set Bug startTime
+										b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
+										GA_Problem_Parameter.resetParameters_ZoneAndDevelopers(b,solution,developers);
+										for(Zone zone:b.sortedZoneList){
+											test2++;
+											double compeletionTime=0.0;
+											Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
+											compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
+											totalExecutionTime+=compeletionTime;
+											//need to be changed????///
+											totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
+											zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
+											zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
+											/*developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
+											zone.zoneStartTime_evaluate)+compeletionTime;*/
+											developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=zone.zoneEndTime_evaluate;
+											b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
+											index++;
+										}
+										totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
+										totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
+										//pay for those 
+										totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
+										if(totalDelayTime>0)
+											totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
+									}
+									
+									totalTime=totalEndTime-totalStartTime;
+									totalCost=totalDevCost+totalDelayCost;
+									if(edgeLabel.equals("forward")){
+										forward[0]=totalTime;
+										forward[1]=totalCost;
+									}
+									else{
+										backward[0]=totalTime;
+										backward[1]=totalCost;
+									}
+								}
+								DEP_evaluation.removeEdge(sortedBugList.get(j), sortedBugList.get(i));
+								
+								if(compare(forward, backward)==1){
+									selected="forward";
+									selectedDirection=forward;
 								}
 								else{
-									schedule.set(GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(sortedBugList.get(j), 
-											sortedBugList.get(i))), 1);
-										DEP_evaluation.addEdge(sortedBugList.get(j), sortedBugList.get(i));
+									selected="backward";
+									selectedDirection=backward;
 								}
-								counter++;
+									
+								if(counter==0){
+									solution.setObjective(0, selectedDirection[0]);
+									solution.setObjective(1, selectedDirection[1]);
+									if(selected.equals("forward")){
+										schedule.set(GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(sortedBugList.get(i), 
+											sortedBugList.get(j))), 1);
+										DEP_evaluation.addEdge(sortedBugList.get(i), sortedBugList.get(j));
+									}
+									else{
+										schedule.set(GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(sortedBugList.get(j), 
+												sortedBugList.get(i))), 1);
+											DEP_evaluation.addEdge(sortedBugList.get(j), sortedBugList.get(i));
+									}
+									counter++;
+								}
+								else if(compare(selectedDirection[0], selectedDirection[1], solution)==1){
+									solution.setObjective(0, selectedDirection[0]);
+									solution.setObjective(1, selectedDirection[1]);
+									if(selected.equals("forward")){
+										schedule.set(GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(sortedBugList.get(i), 
+											sortedBugList.get(j))), 1);
+										DEP_evaluation.addEdge(sortedBugList.get(i), sortedBugList.get(j));
+									}
+									else{
+										schedule.set(GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(sortedBugList.get(j), 
+												sortedBugList.get(i))), 1);
+											DEP_evaluation.addEdge(sortedBugList.get(j), sortedBugList.get(i));
+									}
+								}
 							}
-							else if(compare(selectedDirection[0], selectedDirection[1], solution)==1){
-								solution.setObjective(0, selectedDirection[0]);
-								solution.setObjective(1, selectedDirection[1]);
-								if(selected.equals("forward")){
-									schedule.set(GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(sortedBugList.get(i), 
-										sortedBugList.get(j))), 1);
-									DEP_evaluation.addEdge(sortedBugList.get(i), sortedBugList.get(j));
-								}
-								else{
-									schedule.set(GA_Problem_Parameter.pEdges.indexOf(GA_Problem_Parameter.DDG.getEdge(sortedBugList.get(j), 
-											sortedBugList.get(i))), 1);
-										DEP_evaluation.addEdge(sortedBugList.get(j), sortedBugList.get(i));
-								}
-							}
-
-							long st11=System.nanoTime()-st9;
-							//System.out.println();
 						}
 					}
 				}
@@ -358,8 +365,10 @@ import javax.swing.JFrame;
 			solution.setObjective(1, totalCost);
 		}
 		long st4=System.nanoTime()-st3;
-		System.out.println(st4);
-		System.out.println("Test: "+test);
+		//System.out.println(st4);
+		if(GA_Problem_Parameter.algorithm.getNumberOfEvaluations()%50000==0)
+			System.out.println(GA_Problem_Parameter.algorithm.getNumberOfEvaluations());
+			
 	}
 		
 	
