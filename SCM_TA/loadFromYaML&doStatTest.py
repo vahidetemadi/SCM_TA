@@ -6,7 +6,7 @@ from scipy.stats import wilcoxon
 import settings
 import a12
 
-
+# input arguments example: python loadFromYaML&doStatTest.py JDT NSGAIIITA
 class readResults:
     row=[]
 	@staticmethod
@@ -24,7 +24,7 @@ class readResults:
             row.clear()
             for algortihmName in settings.algorithmList:
                 for qi in settings.QIList:
-                    row.append(data[algortihmName][qi])
+                    row.extend(data[algortihmName][qi])
 			dictOfDataFrames.get(milestoneName).loc[dictOfDataFrames.get(milestoneName).shape[0]+1]=row
 
 		return dictOfDataFrames	
@@ -44,11 +44,11 @@ class readResults:
 
 class statitisticalTest:
 	@staticmethod
-	def getWilcoxonTest(dataframe, indicator):
+	def getWilcoxonTest(dataframe, algortihmName,indicator):
 		if indicator=='GenerationalDistance' or indicator=='Spacing':
-			return wilcoxon(dataframe['KRRGZ_'+indicator].tolist(), dataframe['NSGAIIITA_'+indicator].tolist(), alternative='greater')
+			return wilcoxon(dataframe[algortihmName+'_'+indicator].tolist(), dataframe[args[2]+'_'+indicator].tolist(), alternative='greater')
 		else:
-			return wilcoxon(dataframe['NSGAIIITA_'+indicator].tolist(), dataframe['KRRGZ_'+indicator].tolist(),alternative='greater')
+			return wilcoxon(dataframe[args[2]+'_'+indicator].tolist(), dataframe[algortihmName+'_'+indicator].tolist(),alternative='greater')
 
 
     @staticmethod
@@ -71,6 +71,9 @@ class statitisticalTest:
 loadResults=readResults()
 dictOfDataFrames=loadResults.loadDataIntoDataFrames(sys.argv)
 loadResults.storeDataIntoCSV(dictOfDataFrames)
+for key, value in dictOfDataFrames:
+    dictOfDataFrames.get(key).
+
 
 statTest=statitisticalTest()
 statTestResults=pd.dataframe()
@@ -83,8 +86,8 @@ for key, value in dictOfDataFrames.items():
             resultRow.clear()
         	for qi in settings.QIList:
                 result.extend([args[1],key],"A_"+args[1]+"_"algortihmName, qi)
-        		result.extend(statTest.getWilcoxonTest(value,qi))
-                result.extend(statTest.getEffectSize(value,algortihmName,qi))
+        		result.extend(statitisticalTest.getWilcoxonTest(value,qi))
+                result.extend(statitisticalTest.getEffectSize(value,algortihmName,qi))
         		statTestdataframe.loc[i]=result
         		print(result)
 	

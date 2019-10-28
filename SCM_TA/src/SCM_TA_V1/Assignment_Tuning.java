@@ -57,7 +57,7 @@ public class Assignment_Tuning {
 	static String fileName;
 	static StringBuilder sb=new StringBuilder();
 	static PrintWriter pw;  
-	static double[] listOfCrossover=new double[]{0.6, 0.7, 0.8, 0.9, 1.0};
+	static double[] listOfCrossover=new double[]{0.5, 0.6, 0.7, 0.8, 0.9};
 	static double[] listOfMutation=new double[]{0.01, 0.05, 0.10, 0.20, 0.30};
 	static int[] listOfPopulation=new int[]{100, 200, 300, 400, 500};
 	//DevMetrics devMetric=new DevMetrics();
