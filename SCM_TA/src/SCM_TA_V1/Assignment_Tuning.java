@@ -59,7 +59,7 @@ public class Assignment_Tuning {
 	static PrintWriter pw;  
 	static double[] listOfCrossover=new double[]{0.6, 0.7, 0.8, 0.9, 1.0};
 	static double[] listOfMutation=new double[]{0.01, 0.05, 0.10, 0.20, 0.30};
-	static int[] populationList=new int[]{100, 200, 300, 400, 500};
+	static int[] listOfPopulation=new int[]{100, 200, 300, 400, 500};
 	//DevMetrics devMetric=new DevMetrics();
 	
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
@@ -84,88 +84,94 @@ public class Assignment_Tuning {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(double corssover: listOfCrossover){
-			for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
-				double[] costs=new double[2];
-				developers.clear();
-				bugs.clear();
-				
-				//load developers into the system
-				devInitialization();
-				
-				//set the round number upon the project name
-				int numOfFiles=9;
-				if(GA_Problem_Parameter.pName.equals("JDT")){
-					numOfFiles=9;
-					GA_Problem_Parameter.numOfDevs=20;
+		for(int i=0;i<listOfCrossover.length-1;i++){
+			for(int j=i+1;j<listOfCrossover.length;j++){
+				for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+					double[] costs=new double[2];
+					developers.clear();
+					bugs.clear();
+					
+					//load developers into the system
+					devInitialization();
+					
+					//set the round number upon the project name
+					int numOfFiles=9;
+					if(GA_Problem_Parameter.pName.equals("JDT")){
+						numOfFiles=9;
+						GA_Problem_Parameter.numOfDevs=20;
+					}
+					else {
+						numOfFiles=10;
+						GA_Problem_Parameter.numOfDevs=78;
+					}
+					
+					//iterate over the under experiment files
+					starting(GA_Problem_Parameter.fileNum, runNum, new double[]{listOfCrossover[i], listOfCrossover[j]}, new double[]{0.01,0.01}, new int[]{300,300});
+					System.gc();
 				}
-				else {
-					numOfFiles=10;
-					GA_Problem_Parameter.numOfDevs=78;
-				}
-				
-				//iterate over the under experiment files
-				starting(GA_Problem_Parameter.fileNum, runNum, corssover, 0.01, 500);
-				System.gc();
 			}
 		}
 			
 		
-		for(double mutation:listOfMutation){
-			for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
-				double[] costs=new double[2];
-				developers.clear();
-				bugs.clear();
-				
-				//load developers into the system
-				devInitialization();
-				
-				//set the round number upon the project name
-				int numOfFiles=9;
-				if(GA_Problem_Parameter.pName.equals("JDT")){
-					numOfFiles=9;
-					GA_Problem_Parameter.numOfDevs=20;
+		for(int i=0;i<listOfMutation.length-1;i++){
+			for(int j=i;j<listOfMutation.length;j++){
+				for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+					double[] costs=new double[2];
+					developers.clear();
+					bugs.clear();
+					
+					//load developers into the system
+					devInitialization();
+					
+					//set the round number upon the project name
+					int numOfFiles=9;
+					if(GA_Problem_Parameter.pName.equals("JDT")){
+						numOfFiles=9;
+						GA_Problem_Parameter.numOfDevs=20;
+					}
+					else {
+						numOfFiles=10;
+						GA_Problem_Parameter.numOfDevs=78;
+					}
+					
+					//iterate over the under experiment files
+					starting(GA_Problem_Parameter.fileNum, runNum, new double[]{0.9,0.9}, new double[]{listOfMutation[i],listOfMutation[1]}, new int[]{300,300});
+					System.gc();
 				}
-				else {
-					numOfFiles=10;
-					GA_Problem_Parameter.numOfDevs=78;
-				}
-				
-				//iterate over the under experiment files
-				starting(GA_Problem_Parameter.fileNum, runNum, 0.9, mutation, 500);
-				System.gc();
 			}
 		}
 			
 				
-		for(int population:populationList){
-			for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
-				double[] costs=new double[2];
-				developers.clear();
-				bugs.clear();
-				
-				//load developers into the system
-				devInitialization();
-				
-				//set the round number upon the project name
-				int numOfFiles=9;
-				if(GA_Problem_Parameter.pName.equals("JDT")){
-					numOfFiles=9;
-					GA_Problem_Parameter.numOfDevs=20;
+		for(int i=0;i<listOfPopulation.length-1;i++){
+			for(int j=i;j<listOfPopulation.length;j++){
+				for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+					double[] costs=new double[2];
+					developers.clear();
+					bugs.clear();
+					
+					//load developers into the system
+					devInitialization();
+					
+					//set the round number upon the project name
+					int numOfFiles=9;
+					if(GA_Problem_Parameter.pName.equals("JDT")){
+						numOfFiles=9;
+						GA_Problem_Parameter.numOfDevs=20;
+					}
+					else {
+						numOfFiles=10;
+						GA_Problem_Parameter.numOfDevs=78;
+					}
+					
+					//iterate over the under experiment files
+					starting(GA_Problem_Parameter.fileNum, runNum, new double[]{0.9,0.9}, new double[]{0.01,0.01}, new int[]{listOfPopulation[i],listOfPopulation[j]});
+					System.gc();
 				}
-				else {
-					numOfFiles=10;
-					GA_Problem_Parameter.numOfDevs=78;
-				}
-				
-				//iterate over the under experiment files
-				starting(GA_Problem_Parameter.fileNum, runNum, 0.9, 0.01, population);
-				System.gc();
 			}
 		}
 	}
 
-	public static void starting(int fileNum, int runNum, double crossover, double mutation, int population) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
+	public static void starting(int fileNum, int runNum, double[] crossover, double[] mutation, int[] population) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
 		//set the threshold to initialize the population 
 		GA_Problem_Parameter.thresoldForPopulationGeneration=0;
 		bugInitialization(fileNum);
@@ -457,40 +463,84 @@ public class Assignment_Tuning {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum, double crossover, double mutaiton, int population) throws IOException{
+	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum, double[] crossover, double[] mutaiton, int[] population) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
-
+		String tuningParam=null;
+		if(crossover[0]!=crossover[1])
+			tuningParam="crossover";
+		else if(mutaiton[0]!=mutaiton[1])
+			tuningParam="mutation";
+		else 
+			tuningParam="population";
+		
+		String dirName=tuningParam+File.separator+fileName+("_"+crossover[0]+"_"+crossover[1]+"_"+mutaiton[0]+"_"+mutaiton[1]+"_"+population[0]+"_"+population[1])+"_"+runNum;
+		
+		
 		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
-	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation).attachAll()
+	    Instrumenter instrumenter_NSGAIIITA_f=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation).attachAll()
+	    		.withFrequencyType(FrequencyType.EVALUATIONS);
+	    Instrumenter instrumenter_NSGAIIITA_s=new Instrumenter().withProblem("NSGAIIITAGLS_Conf").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 	    
 		    GA_Problem_Parameter.flag=1;
-			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITAGLS.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_NSGAIIITA).run();
+			NondominatedPopulation NDP_SD_f=new Executor().withProblemClass(NSGAIIITAGLS.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",population[0]).withProperty("operator", "1x+um")
+					.withProperty("1x.rate", crossover[0]).withProperty("um.rate", mutaiton[1]).withInstrumenter(instrumenter_NSGAIIITA_f).run();
+			GA_Problem_Parameter.flag=1;
+			NondominatedPopulation NDP_SD_s=new Executor().withProblemClass(NSGAIIITAGLS_Conf.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",population[1]).withProperty("operator", "1x+um")
+					.withProperty("1x.rate", crossover[1]).withProperty("um.rate", mutaiton[1]).withInstrumenter(instrumenter_NSGAIIITA_s).run();
 			
 			System.out.println("finished NSGAIITAGLS");
 		    //pareto front of SD gets saved in csv format
 		    sb.setLength(0);
 		    //create string builder to include the nonDominated for KRRGZ
-		    for(Solution s:NDP_SD){
+		    for(Solution s:NDP_SD_f){
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 				   if(s.getSchedule()!=null)
 					   System.out.println(s.getSchedule());
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+"paretoFronts"+File.separator+(crossover+"_"+mutaiton+"_"+population)+File.separator+fileName+"_"+runNum+".csv"));
+		    File f_result=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+fileName+File.separator+"paretoFronts"+File.separator+dirName+".csv");
+		    f_result.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_result);
+		    pw.write(sb.toString());
+		    pw.close();
+		    
+		    
+		    sb.setLength(0);
+		    //create string builder to include the nonDominated for KRRGZ
+		    for(Solution s:NDP_SD_f){
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+				   if(s.getSchedule()!=null)
+					   System.out.println(s.getSchedule());
+		    }
+		    File s_result=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+fileName+File.separator+"paretoFronts"+File.separator+dirName+".csv");
+		    s_result.getParentFile().mkdirs();
+		    pw=new PrintWriter(s_result);
 		    pw.write(sb.toString());
 		    pw.close();
 		    
 		    //write down instrumenters results
-		    updateArchive(instrumenter_NSGAIIITA, runNum, crossover, mutaiton, population);
+		    //updateArchive(instrumenter_NSGAIIITA_f, runNum, crossover, mutaiton, population);
 		    
 		    
 		    //write down the analyzer results
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
 			
-		    analyzer.add("NSGAIIITAGLS", NDP_SD);
+		    switch(tuningParam){
+		    	case "crossover":
+		    		analyzer.add("crossover_"+crossover[0], NDP_SD_f);
+		 		    analyzer.add("crossover_"+crossover[1], NDP_SD_s);
+		 		    break;
+		    	case "mutation":
+		    		analyzer.add("mutation"+mutaiton[0], NDP_SD_f);
+		 		    analyzer.add("mutation"+mutaiton[1], NDP_SD_s);
+		    	case "population":
+		    		analyzer.add("population"+population[0], NDP_SD_f);
+		 		    analyzer.add("population"+population[1], NDP_SD_s);
+		    }
 		   
 		    
 		    //generate the pareto set in favor of archiving	    
@@ -499,7 +549,7 @@ public class Assignment_Tuning {
 		     *
 		     *
 		    analyzer.saveReferenceSet(targetRefSet);*/
-		    File f=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+"results"+File.separator+fileName+File.separator+(crossover+"_"+mutaiton+"_"+population)+File.separator+fileName+"_"+runNum+".yaml");
+		    File f=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+fileName+File.separator+"results"+File.separator+dirName+".yaml");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
 			analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
@@ -698,8 +748,6 @@ public class Assignment_Tuning {
 			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
 			  }
 	}
-	
-	
 	
 	private static void updateArchive(Instrumenter instrumenter_NSGAIIITA, int runNum, double crossover, double mutaiton, int population) throws FileNotFoundException{
 		 PrintWriter pw=null;
