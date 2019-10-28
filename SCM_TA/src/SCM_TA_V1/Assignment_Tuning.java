@@ -39,8 +39,6 @@ import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
 import org.apache.commons.io.FilenameUtils;
-
-
 import org.apache.log4j.BasicConfigurator;
 import org.jppf.client.JPPFClient;
 import org.jppf.client.concurrent.JPPFExecutorService;
@@ -87,31 +85,84 @@ public class Assignment_Tuning {
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
 		for(double corssover: listOfCrossover){
-			for(double mutation:listOfMutation){
-				for(int population:populationList){
-					for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
-						double[] costs=new double[2];
-						developers.clear();
-						bugs.clear();
-						
-						//load developers into the system
-						devInitialization();
-						
-						//set the round number upon the project name
-						int numOfFiles=9;
-						if(GA_Problem_Parameter.pName.equals("JDT"))
-							numOfFiles=9;
-						else 
-							numOfFiles=10;
-						
-						//iterate over the under experiment files
-						starting(GA_Problem_Parameter.fileNum, runNum, corssover, mutation, population);
-						System.gc();
-					}
+			for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+				double[] costs=new double[2];
+				developers.clear();
+				bugs.clear();
+				
+				//load developers into the system
+				devInitialization();
+				
+				//set the round number upon the project name
+				int numOfFiles=9;
+				if(GA_Problem_Parameter.pName.equals("JDT")){
+					numOfFiles=9;
+					GA_Problem_Parameter.numOfDevs=20;
 				}
+				else {
+					numOfFiles=10;
+					GA_Problem_Parameter.numOfDevs=78;
+				}
+				
+				//iterate over the under experiment files
+				starting(GA_Problem_Parameter.fileNum, runNum, corssover, 0.01, 500);
+				System.gc();
 			}
 		}
+			
 		
+		for(double mutation:listOfMutation){
+			for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+				double[] costs=new double[2];
+				developers.clear();
+				bugs.clear();
+				
+				//load developers into the system
+				devInitialization();
+				
+				//set the round number upon the project name
+				int numOfFiles=9;
+				if(GA_Problem_Parameter.pName.equals("JDT")){
+					numOfFiles=9;
+					GA_Problem_Parameter.numOfDevs=20;
+				}
+				else {
+					numOfFiles=10;
+					GA_Problem_Parameter.numOfDevs=78;
+				}
+				
+				//iterate over the under experiment files
+				starting(GA_Problem_Parameter.fileNum, runNum, 0.9, mutation, 500);
+				System.gc();
+			}
+		}
+			
+				
+		for(int population:populationList){
+			for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+				double[] costs=new double[2];
+				developers.clear();
+				bugs.clear();
+				
+				//load developers into the system
+				devInitialization();
+				
+				//set the round number upon the project name
+				int numOfFiles=9;
+				if(GA_Problem_Parameter.pName.equals("JDT")){
+					numOfFiles=9;
+					GA_Problem_Parameter.numOfDevs=20;
+				}
+				else {
+					numOfFiles=10;
+					GA_Problem_Parameter.numOfDevs=78;
+				}
+				
+				//iterate over the under experiment files
+				starting(GA_Problem_Parameter.fileNum, runNum, 0.9, 0.01, population);
+				System.gc();
+			}
+		}
 	}
 
 	public static void starting(int fileNum, int runNum, double crossover, double mutation, int population) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
