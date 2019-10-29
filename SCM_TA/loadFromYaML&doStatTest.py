@@ -24,7 +24,7 @@ class readResults:
             row.clear()
             for algortihmName in settings.algorithmList:
                 for qi in settings.QIList:
-                    row.extend(data[algortihmName][qi])
+                    row.append(data[algortihmName][qi])
 			dictOfDataFrames.get(milestoneName).loc[dictOfDataFrames.get(milestoneName).shape[0]+1]=row
 
 		return dictOfDataFrames	
