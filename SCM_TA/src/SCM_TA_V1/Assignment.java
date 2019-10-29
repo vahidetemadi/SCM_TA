@@ -523,7 +523,7 @@ public class Assignment {
 		    	analyzer.add("RS", NDP_RS);
 		    }
 		    catch(Exception e){
-		    	System.out.println("went wrong");
+		    	Assigning(results, runNum, fileNum);
 		    }
 		   
 		    
@@ -536,7 +536,12 @@ public class Assignment {
 		    File f=new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults_"+fileName+"_"+runNum+"_"+fileNum+".yaml");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
-			analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
+			try{
+				analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
+			}
+			catch(Exception e){
+				Assigning(results, runNum, fileNum);
+			}
 			ps_ID.close();
 			analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}

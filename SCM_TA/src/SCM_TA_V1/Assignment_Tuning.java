@@ -117,7 +117,7 @@ public class Assignment_Tuning {
 		
 		for(int i=0;i<listOfMutation.length-1;i++){
 			for(int j=i;j<listOfMutation.length;j++){
-				for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+				for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNumUpTo;runNum++){
 					double[] costs=new double[2];
 					developers.clear();
 					bugs.clear();
@@ -146,7 +146,7 @@ public class Assignment_Tuning {
 				
 		for(int i=0;i<listOfPopulation.length-1;i++){
 			for(int j=i;j<listOfPopulation.length;j++){
-				for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+				for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNumUpTo;runNum++){
 					double[] costs=new double[2];
 					developers.clear();
 					bugs.clear();
@@ -539,9 +539,11 @@ public class Assignment_Tuning {
 		    	case "mutation":
 		    		analyzer.add("mutation"+mutaiton[0], NDP_SD_f);
 		 		    analyzer.add("mutation"+mutaiton[1], NDP_SD_s);
+		 		    break;
 		    	case "population":
 		    		analyzer.add("population"+population[0], NDP_SD_f);
 		 		    analyzer.add("population"+population[1], NDP_SD_s);
+		 		    break;
 		    }
 		   
 		    
@@ -554,7 +556,12 @@ public class Assignment_Tuning {
 		    File f=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+fileName+File.separator+"results"+File.separator+dirName+".yaml");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
-			analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
+			try{
+				analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
+			}
+			catch(Exception e){
+				Assigning(results, runNum, fileNum, crossover, mutaiton, population);
+			}
 			ps_ID.close();
 			//analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}
