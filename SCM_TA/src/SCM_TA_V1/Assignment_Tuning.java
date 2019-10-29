@@ -72,6 +72,8 @@ public class Assignment_Tuning {
 		GA_Problem_Parameter.fileNum=sc.nextInt();
 		System.out.println("The run number you want to launch the run from:");
 		GA_Problem_Parameter.runNum=sc.nextInt();
+		System.out.println("The run number you want to launch the run up to:");
+		GA_Problem_Parameter.runNumUpTo=sc.nextInt();
 		String mode="running";
 		if(mode=="running"){
 			runExperiment();
@@ -86,7 +88,7 @@ public class Assignment_Tuning {
 		GA_Problem_Parameter.createPriorityTable();
 		for(int i=0;i<listOfCrossover.length-1;i++){
 			for(int j=i+1;j<listOfCrossover.length;j++){
-				for(int runNum=1;runNum<=GA_Problem_Parameter.runNum;runNum++){
+				for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNumUpTo;runNum++){
 					double[] costs=new double[2];
 					developers.clear();
 					bugs.clear();

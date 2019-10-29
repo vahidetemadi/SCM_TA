@@ -80,6 +80,7 @@ public class GA_Problem_Parameter {
 	public static int numOfDevs=0;
 	public static int fileNum=1;
 	public static int runNum=1;
+	public static int runNumUpTo=30;
 	static ArrayList<Integer> assignment=new ArrayList<Integer>();	
 	static ArrayList<Integer> schedules=new ArrayList<Integer>();
 	static Set<DefaultEdge> edgeSet;
