@@ -406,7 +406,7 @@ public class Assignment {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException{
+	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
 		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
@@ -516,14 +516,14 @@ public class Assignment {
 		    
 		    //write down the analyzer results
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
-			
-		    analyzer.add("KRRGZ", NDP_KRRGZ);
-		    analyzer.add("NSGAIIITAGLS", NDP_SD);
 		    try{
+			    analyzer.add("KRRGZ", NDP_KRRGZ);
+			    analyzer.add("NSGAIIITAGLS", NDP_SD);
 		    	analyzer.add("RS", NDP_RS);
 		    }
 		    catch(Exception e){
-		    	Assigning(results, runNum, fileNum);
+		    	starting(fileNum, runNum);
+		    	return;
 		    }
 		   
 		    
@@ -540,7 +540,8 @@ public class Assignment {
 				analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
 			}
 			catch(Exception e){
-				Assigning(results, runNum, fileNum);
+				starting(fileNum, runNum);
+		    	return;
 			}
 			ps_ID.close();
 			analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));

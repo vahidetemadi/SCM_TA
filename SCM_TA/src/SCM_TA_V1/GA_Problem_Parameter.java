@@ -24,9 +24,6 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.GabowStrongConnectivityInspector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
-
-import com.sun.java.swing.plaf.windows.WindowsTreeUI.CollapsedIcon;
-
 import java.util.Iterator;
 
 

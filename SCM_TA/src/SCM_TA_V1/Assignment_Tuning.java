@@ -116,7 +116,7 @@ public class Assignment_Tuning {
 			
 		
 		for(int i=0;i<listOfMutation.length-1;i++){
-			for(int j=i;j<listOfMutation.length;j++){
+			for(int j=i+1;j<listOfMutation.length;j++){
 				for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNumUpTo;runNum++){
 					double[] costs=new double[2];
 					developers.clear();
@@ -137,7 +137,7 @@ public class Assignment_Tuning {
 					}
 					
 					//iterate over the under experiment files
-					starting(GA_Problem_Parameter.fileNum, runNum, new double[]{0.9,0.9}, new double[]{listOfMutation[i],listOfMutation[1]}, new int[]{300,300});
+					starting(GA_Problem_Parameter.fileNum, runNum, new double[]{0.9,0.9}, new double[]{listOfMutation[i],listOfMutation[j]}, new int[]{300,300});
 					System.gc();
 				}
 			}
@@ -145,7 +145,7 @@ public class Assignment_Tuning {
 			
 				
 		for(int i=0;i<listOfPopulation.length-1;i++){
-			for(int j=i;j<listOfPopulation.length;j++){
+			for(int j=i+1;j<listOfPopulation.length;j++){
 				for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNumUpTo;runNum++){
 					double[] costs=new double[2];
 					developers.clear();
@@ -465,17 +465,17 @@ public class Assignment_Tuning {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum, double[] crossover, double[] mutaiton, int[] population) throws IOException{
+	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum, double[] crossover, double[] mutation, int[] population) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
 		GA_Problem_Parameter.setArrivalTasks();
 		String tuningParam=null;
 		if(crossover[0]!=crossover[1])
 			tuningParam="crossover";
-		else if(mutaiton[0]!=mutaiton[1])
+		else if(mutation[0]!=mutation[1])
 			tuningParam="mutation";
 		else 
 			tuningParam="population";
 		
-		String dirName=tuningParam+File.separator+fileName+("_"+crossover[0]+"_"+crossover[1]+"_"+mutaiton[0]+"_"+mutaiton[1]+"_"+population[0]+"_"+population[1])+"_"+runNum;
+		String dirName=tuningParam+File.separator+fileName+("_"+crossover[0]+"_"+crossover[1]+"_"+mutation[0]+"_"+mutation[1]+"_"+population[0]+"_"+population[1])+"_"+runNum;
 		
 		
 		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
@@ -487,11 +487,11 @@ public class Assignment_Tuning {
 		    GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_SD_f=new Executor().withProblemClass(NSGAIIITAGLS.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",population[0]).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", crossover[0]).withProperty("um.rate", mutaiton[1]).withInstrumenter(instrumenter_NSGAIIITA_f).run();
+					.withProperty("1x.rate", crossover[0]).withProperty("um.rate", mutation[0]).withInstrumenter(instrumenter_NSGAIIITA_f).run();
 			GA_Problem_Parameter.flag=1;
 			NondominatedPopulation NDP_SD_s=new Executor().withProblemClass(NSGAIIITAGLS_Conf.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",population[1]).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", crossover[1]).withProperty("um.rate", mutaiton[1]).withInstrumenter(instrumenter_NSGAIIITA_s).run();
+					.withProperty("1x.rate", crossover[1]).withProperty("um.rate", mutation[1]).withInstrumenter(instrumenter_NSGAIIITA_s).run();
 			
 			System.out.println("finished NSGAIITAGLS");
 		    //pareto front of SD gets saved in csv format
@@ -500,8 +500,8 @@ public class Assignment_Tuning {
 		    for(Solution s:NDP_SD_f){
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
-				   if(s.getSchedule()!=null)
-					   System.out.println(s.getSchedule());
+				   /*if(s.getSchedule()!=null)
+					   System.out.println(s.getSchedule());*/
 		    }
 		    File f_result=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+fileName+File.separator+"paretoFronts"+File.separator+dirName+".csv");
 		    f_result.getParentFile().mkdirs();
@@ -515,8 +515,8 @@ public class Assignment_Tuning {
 		    for(Solution s:NDP_SD_f){
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
-				   if(s.getSchedule()!=null)
-					   System.out.println(s.getSchedule());
+//				   if(s.getSchedule()!=null)
+//					   System.out.println(s.getSchedule());
 		    }
 		    File s_result=new File(System.getProperty("user.dir")+File.separator+"config"+File.separator+fileName+File.separator+"paretoFronts"+File.separator+dirName+".csv");
 		    s_result.getParentFile().mkdirs();
@@ -537,8 +537,8 @@ public class Assignment_Tuning {
 		 		    analyzer.add("crossover_"+crossover[1], NDP_SD_s);
 		 		    break;
 		    	case "mutation":
-		    		analyzer.add("mutation"+mutaiton[0], NDP_SD_f);
-		 		    analyzer.add("mutation"+mutaiton[1], NDP_SD_s);
+		    		analyzer.add("mutation"+mutation[0], NDP_SD_f);
+		 		    analyzer.add("mutation"+mutation[1], NDP_SD_s);
 		 		    break;
 		    	case "population":
 		    		analyzer.add("population"+population[0], NDP_SD_f);
@@ -560,7 +560,9 @@ public class Assignment_Tuning {
 				analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
 			}
 			catch(Exception e){
-				Assigning(results, runNum, fileNum, crossover, mutaiton, population);
+				System.out.println("somthing went wrong");
+				starting(fileNum, runNum, crossover, mutation, population);
+				return;
 			}
 			ps_ID.close();
 			//analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
