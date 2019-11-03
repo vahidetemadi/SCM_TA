@@ -543,7 +543,9 @@ public class Assignment {
 				starting(fileNum, runNum);
 		    	return;
 			}
-			ps_ID.close();
+			finally{
+				ps_ID.close();
+			}
 			analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}
 		//catch(Exception e){

@@ -5,6 +5,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -537,12 +538,12 @@ public class Assignment_Tuning {
 		 		    analyzer.add("crossover_"+crossover[1], NDP_SD_s);
 		 		    break;
 		    	case "mutation":
-		    		analyzer.add("mutation"+mutation[0], NDP_SD_f);
-		 		    analyzer.add("mutation"+mutation[1], NDP_SD_s);
+		    		analyzer.add("mutation_"+mutation[0], NDP_SD_f);
+		 		    analyzer.add("mutation_"+mutation[1], NDP_SD_s);
 		 		    break;
 		    	case "population":
-		    		analyzer.add("population"+population[0], NDP_SD_f);
-		 		    analyzer.add("population"+population[1], NDP_SD_s);
+		    		analyzer.add("population_"+population[0], NDP_SD_f);
+		 		    analyzer.add("population_"+population[1], NDP_SD_s);
 		 		    break;
 		    }
 		   
@@ -560,11 +561,17 @@ public class Assignment_Tuning {
 				analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
 			}
 			catch(Exception e){
+				FileWriter ff=new FileWriter(new File(System.getProperty("user.dir")+File.separator+"log.txt"));
 				System.out.println("somthing went wrong");
+				ff.write(fileName+"\n");
+				ff.close();
 				starting(fileNum, runNum, crossover, mutation, population);
 				return;
 			}
-			ps_ID.close();
+			finally{
+				ps_ID.close();	
+			}
+			
 			//analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 		//}
 		//catch(Exception e){

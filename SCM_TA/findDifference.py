@@ -41,6 +41,8 @@ def printDiff():
             jdt.write(str(item)+'\n') 
     #(allRequiredFiles_JDT-alreadyExistingFiles_JDT).write(os.path.join(os.getcwd(),'JDTDiff'))
     with open('PlatformDiffs.txt', 'w') as platform:
+        print(len(allRequiredFiles_Platform))
+        print(len(alreadyExistingFiles_Platform))
         for item in sorted(allRequiredFiles_Platform-alreadyExistingFiles_Platform):
             platform.write(str(item)+'\n')
     #(allRequiredFiles_Platform-alreadyExistingFiles_Platform).write(os.path.join(os.getcwd(),'PlatformDiff'))

@@ -38,12 +38,10 @@ def VD_A(treatment: List[float], control: List[float]):
     # Compute the measure
     # A = (r1/m - (m+1)/2)/n # formula (14) in Vargha and Delaney, 2000
     A = (2 * r1 - m * (m + 1)) / (2 * n * m)  # equivalent formula to avoid accuracy errors
-
     levels = [0.147, 0.33, 0.474]  # effect sizes from Hess and Kromrey, 2004
     magnitude = ["negligible", "small", "medium", "large"]
     scaled_A = (A - 0.5) * 2
-
     magnitude = magnitude[bisect_left(levels, abs(scaled_A))]
     estimate = A
-
-    return estimate, magnitude
+    print(estimate)
+    return estimate
