@@ -7,14 +7,13 @@ import settings
 import a12
 import numpy as np
 
-
+import pdb
+#pdb.set_trace()
 #gets param from input, load as dataframe and perform effectsize test
 def getEmptyDataframe(paramName):
-	dataFrameParam=pd.DataFrame()
 	columns_param=pd.MultiIndex.from_product([settings.QIList, settings.dictOfParamsList.get(paramName)])
-	dataFrameParam=pd.DataFrame(np.random.rand(len(settings.dictOfParamsList.get(paramName)), len(settings.dictOfParamsList.get(paramName))
-	* len(settings.QIList)), 
-	index=[settings.dictOfParamsList.get(paramName)],
+	dataFrameParam=pd.DataFrame(
+	index=settings.dictOfParamsList.get(paramName),
 	columns=columns_param )
 	#print(dataFrameParam)
 	return dataFrameParam
@@ -30,23 +29,23 @@ def fillDataframeTest(paramName:str, param:str):
 	dataFrameTestCon=getEmptyDataframe(paramName)
 	for param_index in settings.dictOfParamsList.get(paramName):
 		for param_column in settings.dictOfParamsList.get(paramName):
-			if param_index!=param_column:
-				dataFrameTest=getDataframeOfParamValue([param_index,param_column], param)
-				for qi in settings.QIList:
-					if qi is'GenerationalDistance' or qi is'Spacing':
-						dataFrameTestCon.insert(loc=param_index,column=[param+'_'+str(param_column)+'_'+qi],
-											 value=a12.VD_A(dataFrameTest[param+'_'+srt(param_column)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist()))
-						dataFrameTestCon.insert(loc=param_column,column=[param+'_'+str(param_index)+'_'+qi],
-											 value=a12.VD_A(dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist()))
-					else:
-						dataFrameTestCon.insert(loc=param_index,column=[param+'_'+str(param_column)+'_'+qi],
-											 value=a12.VD_A(dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist()))
-						dataFrameTestCon.insert(loc=param_column,column=[param+'_'+str(param_index)+'_'+qi],
-											 value=a12.VD_A(dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist()))
+			print(str(param_index)+'---->'+str(param_column))
+			if param_index<param_column:
 				print(dataFrameTestCon)
+				dataFrameTest=getDataframeOfParamValue([param_index,param_column], param)
+				#print(dataFrameTest)
+				for qi in settings.QIList:
+					print('its working')
+					if qi is'GenerationalDistance' or qi is'Spacing':
+						dataFrameTestCon.loc[param_index,(qi,param_column)]=a12.VD_A(dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist())
+						dataFrameTestCon.loc[param_column,(qi,param_index)]=a12.VD_A(dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist())
+					else:
+						dataFrameTestCon.loc[param_index, (qi, param_column)]= a12.VD_A(dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist())
+						dataFrameTestCon.loc[param_column,(qi,param_index)]=a12.VD_A(dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist())
+
+					with open(os.path.join(os.getcwd(), "config", sys.argv[1], 'test.txt'), 'w+') as file:
+						file.write(dataFrameTestCon.to_latex())
 	#convert&save into latex table
-	#with open(os.path.join(os.getcwd(),"config",sys.argv[1],param+'.txt'),'w+') as file:
-	#	file.write(dataFrameTest.to_latex())
 
 def getDataframeOfParamValue(listOfParams, param):
 	dataFramePaird=pd.DataFrame(np.random.rand(0,2*len(settings.QIList)))
@@ -60,8 +59,8 @@ def getDataframeOfParamValue(listOfParams, param):
 				row.clear()
 				for paramValue in listOfParams:
 					for qi in settings.QIList:
-						row.append(data[param+'_'+str(paramValue)][qi])
-				dataFramePaird.loc[len(dataFramePaird)]=row
+						row.append(data[param + '_' + str(paramValue)][qi])
+				dataFramePaird.loc[len(dataFramePaird)] = row
 	#print(dataFramePaird)
 	return dataFramePaird
 

@@ -43,5 +43,4 @@ def VD_A(treatment: List[float], control: List[float]):
     scaled_A = (A - 0.5) * 2
     magnitude = magnitude[bisect_left(levels, abs(scaled_A))]
     estimate = A
-    print(estimate)
     return estimate
