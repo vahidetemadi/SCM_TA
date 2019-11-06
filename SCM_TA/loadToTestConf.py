@@ -12,7 +12,7 @@ import pdb
 #gets param from input, load as dataframe and perform effectsize test
 def getEmptyDataframe(paramName):
 	columns_param=pd.MultiIndex.from_product([settings.QIList, settings.dictOfParamsList.get(paramName)])
-	dataFrameParam=pd.DataFrame(
+	dataFrameParam=pd.DataFrame('-',
 	index=settings.dictOfParamsList.get(paramName),
 	columns=columns_param )
 	#print(dataFrameParam)
@@ -37,13 +37,13 @@ def fillDataframeTest(paramName:str, param:str):
 				for qi in settings.QIList:
 					print('its working')
 					if qi is'GenerationalDistance' or qi is'Spacing':
-						dataFrameTestCon.loc[param_index,(qi,param_column)]=a12.VD_A(dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist())
-						dataFrameTestCon.loc[param_column,(qi,param_index)]=a12.VD_A(dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist())
+						dataFrameTestCon.loc[param_index,(qi,param_column)]=round(a12.VD_A(dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist()),2)
+						dataFrameTestCon.loc[param_column,(qi,param_index)]=round(a12.VD_A(dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist()),2)
 					else:
-						dataFrameTestCon.loc[param_index, (qi, param_column)]= a12.VD_A(dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist())
-						dataFrameTestCon.loc[param_column,(qi,param_index)]=a12.VD_A(dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist())
+						dataFrameTestCon.loc[param_index, (qi, param_column)]= round(a12.VD_A(dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist()),2)
+						dataFrameTestCon.loc[param_column,(qi,param_index)]=round(a12.VD_A(dataFrameTest[param+'_'+str(param_column)+'_'+qi].tolist(), dataFrameTest[param+'_'+str(param_index)+'_'+qi].tolist()),2)
 
-					with open(os.path.join(os.getcwd(), "config", sys.argv[1], 'test.txt'), 'w+') as file:
+					with open(os.path.join(os.getcwd(), "config", sys.argv[1],param+'.txt'), 'w+') as file:
 						file.write(dataFrameTestCon.to_latex())
 	#convert&save into latex table
 
