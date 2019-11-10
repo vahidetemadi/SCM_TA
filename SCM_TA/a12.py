@@ -34,7 +34,6 @@ def VD_A(treatment: List[float], control: List[float]):
 
     r = ss.rankdata(treatment + control)
     r1 = sum(r[0:m])
-
     # Compute the measure
     # A = (r1/m - (m+1)/2)/n # formula (14) in Vargha and Delaney, 2000
     A = (2 * r1 - m * (m + 1)) / (2 * n * m)  # equivalent formula to avoid accuracy errors

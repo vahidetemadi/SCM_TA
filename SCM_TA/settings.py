@@ -25,7 +25,7 @@ Platform_dataset_list={
 
 projectList=['JDT','Platform']
 
-algorithmList=['NSGAIIIGLS', 'KRRGZ', 'RS']
+algorithmList=['NSGAIIITAGLS', 'KRRGZ', 'RS']
 
 QIList=['Hypervolume', 'GenerationalDistance', 'Spacing', 'Contribution']
 
