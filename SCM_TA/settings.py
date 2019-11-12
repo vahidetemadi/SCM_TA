@@ -36,3 +36,5 @@ populationParams=[100, 200, 300, 400, 500]
 dictOfParamsList={'crossoverParams':[0.5, 0.6, 0.7, 0.8, 0.9],'mutationParams':[0.01, 0.05, 0.10, 0.20, 0.30], 'populationParams':[100, 200, 300, 400, 500] }
 
 dictOfParamIndex={'crossover':[1,2], 'mutation':[3,4], 'population':[5,6]}
+
+statTest=["Win", "Tie", "Lose"]
