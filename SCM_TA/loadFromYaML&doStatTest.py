@@ -144,15 +144,36 @@ if __name__=="__main__":
 
 
     #plot and save boxplot of datasets per QIs which relatively compare SD and 
-    dictOfPairs={}
+    colors = ['black', 'red']
+    columns=['SD','KRRGZ']
     for qi in settings.QIList:
-        position=1
-        for key , value in settings.JDT_dataset_list.items():
-            dictOfPairs.clear()
-            dictOfPairs.update({'SD':dictOfDataFrames.get(key)['NSGAIIITA'+'_'+qi]})
-            dictOfPairs.update({'KRRGZ':dictOfDataFrames.get(kdsdsadasey)['NSGAIIITA'+'_'+qi]})
-            bp=boxplot(dictOfPairs, positions=[position, position+1])
-            position+=1
+        dfOfPairs=pd.DataFrame()
+        for key , value in settings.getListOfFiles(sys.argv[1]).items():
+            #dfOfPairs.iloc[0:0]
+            # dictOfPairs.update({'SD':dictOfDataFrames.get(key)[sys.argv[2]+'_'+qi]})
+            # dictOfPairs.update({'KRRGZ':dictOfDataFrames.get(key)[sys.argv[2]+'_'+qi]})
+            #print(dictOfPairs)
+            for item in settings.algorithmListUnderCom:
+                #dfOfPairs.join(dictOfDataFrames.get(key)[item+'_'+qi])
+                dfOfPairs=pd.concat([dfOfPairs,dictOfDataFrames.get(key)[item+'_'+qi]], axis=1)
+                dfOfPairs.rename(columns={item+'_'+qi: settings.mapToRightName.get(item)})
+            #bp=boxplot(dictOfPairs, positions=[position, position+1])
+            # bp=boxplot(dfOfPairs, positions=[position+1, position+2])
+            # plt.set_xticklabels(['SD','KRRGZ'])
+        
+        # box=dfOfPairs.boxplot(patch_artist = True,  return_type='both',)
+        # for row_key, (ax,row) in box.iteritems():
+        #     print(row_key)
+        fig = plt.figure()
+        ax = plt.subplot(111)
+        for i in range(len(settings.getListOfFiles(sys.argv[1]).items())*2):
+            ax.boxplot(dfOfPairs.ix[:,i].values, positions = [i], label='RD')
+            ax.set_label('SD')
+            if i%2==0:
+                ax.set_fc('b')
+        plt.grid(False)
+        #plt.yaxis.grid(True)
+        plt.show()
     
     statTest.saveStatTestIntoFile(statTestDataFrame)
     #supposed to work properly

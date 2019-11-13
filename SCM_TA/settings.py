@@ -23,9 +23,17 @@ Platform_dataset_list={
     'PlatformMilestoneM9':'10',
 }
 
+def getListOfFiles(keyName):
+    if keyName=='JDT':
+        return JDT_dataset_list
+    if keyName=='Platform':
+        return Platform_dataset_list
+
 projectList=['JDT','Platform']
 
 algorithmList=['NSGAIIITAGLS', 'KRRGZ', 'RS']
+algorithmListUnderCom=['NSGAIIITAGLS', 'KRRGZ']
+mapToRightName={'NSGAIIITAGLS':'SD', 'KRRGZ':'KRRGZ'}
 
 QIList=['Hypervolume', 'GenerationalDistance', 'Spacing', 'Contribution']
 
