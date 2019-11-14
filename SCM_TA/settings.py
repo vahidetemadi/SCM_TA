@@ -10,6 +10,18 @@ JDT_dataset_list={
     'JDTMilestoneM6':'9',
 }
 
+JDT_dataset_list_byId={
+    '1':'MS3.1.1',
+    '2':'MS3.1.2',
+    '3':'MS3.1',
+    '4':'MSM1',
+    '5':'MSM2',
+    '6':'MSM3',
+    '7':'MSM4',
+    '8':'MSM5',
+    '9':'MSM6',
+}
+
 Platform_dataset_list={
     'PlatformMilestone3.0':'1',
     'PlatformMilestone3.1':'2',
@@ -23,11 +35,29 @@ Platform_dataset_list={
     'PlatformMilestoneM9':'10',
 }
 
+Platform_dataset_list_byId={
+    '1':'MS3.0',
+    '2':'MS3.1',
+    '3':'MSM2',
+    '4':'MSM3',
+    '5':'MSM4',
+    '6':'MSM5',
+    '7':'MSM6',
+    '8':'MSM7',
+    '9':'MSM8',
+    '10':'MSM9',
+}
+
 def getListOfFiles(keyName):
     if keyName=='JDT':
         return JDT_dataset_list
     if keyName=='Platform':
         return Platform_dataset_list
+def getListOfFiles_byID(keyName):
+    if keyName=='JDT':
+        return JDT_dataset_list_byId
+    if keyName=='Platform':
+        return Platform_dataset_list_byId
 
 projectList=['JDT','Platform']
 

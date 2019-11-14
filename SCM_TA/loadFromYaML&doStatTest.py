@@ -104,10 +104,71 @@ def plotAndSave_stackedChart(dataFrameWinTieLose):
             x = rect.get_x()
             y = rect.get_y()
             height = rect.get_height()
-            ax.text(x + width/2., y + height/2., label, ha='center', va='center')
+            ax.text(x + width/2., y + height/2., label, ha='center', va='center', size='x-small')
 
     plt.tight_layout()
     plt.savefig(os.path.join(os.getcwd(),'results','wintielose.pdf'))
+
+def plotAndSave_boxPlotCharts(dictOfDataFrames):
+    colors = ['black', 'red']
+    columns=['SD','KRRGZ']
+    for qi in settings.QIList:
+        dfOfPairs=pd.DataFrame()
+        for key , value in settings.getListOfFiles(sys.argv[1]).items():
+            #dfOfPairs.iloc[0:0]
+            # dictOfPairs.update({'SD':dictOfDataFrames.get(key)[sys.argv[2]+'_'+qi]})
+            # dictOfPairs.update({'KRRGZ':dictOfDataFrames.get(key)[sys.argv[2]+'_'+qi]})
+            #print(dictOfPairs)
+            for item in settings.algorithmListUnderCom:
+                #dfOfPairs.join(dictOfDataFrames.get(key)[item+'_'+qi])
+                dfOfPairs=pd.concat([dfOfPairs,dictOfDataFrames.get(key)[item+'_'+qi]], axis=1)
+                dfOfPairs.rename(columns={item+'_'+qi: settings.mapToRightName.get(item)})
+            #bp=boxplot(dictOfPairs, positions=[position, position+1])
+            # bp=boxplot(dfOfPairs, positions=[position+1, position+2])
+            # plt.set_xticklabels(['SD','KRRGZ'])
+        
+        # box=dfOfPairs.boxplot(patch_artist = True,  return_type='both',)
+        # for row_key, (ax,row) in box.iteritems():
+        #     print(row_key)
+        fig = plt.figure()
+        ax = plt.subplot(111)
+        j=1;
+        #set for access to name of dataset
+        lbs_bottom=[]
+        x_ticks_top_pos=[]
+        x_ticks_bottom_pos=[]
+        for i in range(len(settings.getListOfFiles(sys.argv[1]).items())*2):
+            if i%2==0:
+                lbs_bottom.append('SD')
+            else:
+                lbs_bottom.append('KRRGZ')
+            bp=ax.boxplot(dfOfPairs.ix[:,i].values, positions = [j], widths=.7, showfliers=False, patch_artist=True)
+            x_ticks_bottom_pos.append(j)
+            if j%3==1:
+                x_ticks_top_pos.append((j+(j+1))/2)
+            if i%2==1:
+                bp['boxes'][0].set(color='blue')
+                j+=2
+            else:
+                bp['boxes'][0].set(color='green')
+                j+=1
+        #ax_bottom = ax.twiny()
+        ax.tick_params(labelsize=4, labelbottom=True,labeltop=False,top=False, bottom=True)
+        ax.set_xticks(x_ticks_bottom_pos)
+        ax.set_xticklabels(lbs_bottom)
+        ax.grid(b=True, linestyle='dotted')
+        print(x_ticks_bottom_pos)
+        print(x_ticks_top_pos)
+        ax_top = ax.twiny()
+        ax_top.tick_params(labelsize=4, labelbottom=False,labeltop=True,top=True, bottom=False )
+        ax_top.set_xticks(x_ticks_top_pos)
+        ax_top.set_xticklabels(settings.getListOfFiles_byID(sys.argv[1]).values())
+        
+        #plt.grid(True)
+        #plt.grid(linestyle='dotted')
+        #plt.yaxis.grid(True)
+        plt.savefig(os.path.join(os.getcwd(),'results',qi+'.pdf'))
+    
 
 if __name__=="__main__":
     loadResults=readResults
@@ -136,6 +197,7 @@ if __name__=="__main__":
     for item in settings.statTest:
         statitisticalTest.fillWinTieLose(statTestDataFrame, dataFrameWinTieLose, item)
 
+
     # plotStacked charts
     plotAndSave_stackedChart(dataFrameWinTieLose)
 
@@ -144,36 +206,8 @@ if __name__=="__main__":
 
 
     #plot and save boxplot of datasets per QIs which relatively compare SD and 
-    colors = ['black', 'red']
-    columns=['SD','KRRGZ']
-    for qi in settings.QIList:
-        dfOfPairs=pd.DataFrame()
-        for key , value in settings.getListOfFiles(sys.argv[1]).items():
-            #dfOfPairs.iloc[0:0]
-            # dictOfPairs.update({'SD':dictOfDataFrames.get(key)[sys.argv[2]+'_'+qi]})
-            # dictOfPairs.update({'KRRGZ':dictOfDataFrames.get(key)[sys.argv[2]+'_'+qi]})
-            #print(dictOfPairs)
-            for item in settings.algorithmListUnderCom:
-                #dfOfPairs.join(dictOfDataFrames.get(key)[item+'_'+qi])
-                dfOfPairs=pd.concat([dfOfPairs,dictOfDataFrames.get(key)[item+'_'+qi]], axis=1)
-                dfOfPairs.rename(columns={item+'_'+qi: settings.mapToRightName.get(item)})
-            #bp=boxplot(dictOfPairs, positions=[position, position+1])
-            # bp=boxplot(dfOfPairs, positions=[position+1, position+2])
-            # plt.set_xticklabels(['SD','KRRGZ'])
-        
-        # box=dfOfPairs.boxplot(patch_artist = True,  return_type='both',)
-        # for row_key, (ax,row) in box.iteritems():
-        #     print(row_key)
-        fig = plt.figure()
-        ax = plt.subplot(111)
-        for i in range(len(settings.getListOfFiles(sys.argv[1]).items())*2):
-            ax.boxplot(dfOfPairs.ix[:,i].values, positions = [i], label='RD')
-            ax.set_label('SD')
-            if i%2==0:
-                ax.set_fc('b')
-        plt.grid(False)
-        #plt.yaxis.grid(True)
-        plt.show()
-    
+    plotAndSave_boxPlotCharts(dictOfDataFrames)
+
+
     statTest.saveStatTestIntoFile(statTestDataFrame)
     #supposed to work properly
