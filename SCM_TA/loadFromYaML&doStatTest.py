@@ -6,6 +6,8 @@ from scipy.stats import wilcoxon
 from sklearn import preprocessing
 import matplotlib.pyplot as plt
 from pylab import boxplot
+from matplotlib.ticker import FormatStrFormatter
+from sklearn import preprocessing
 import settings
 import a12
 
@@ -45,6 +47,11 @@ class readResults:
     def storeDataIntoCSV(dictOfDataFrames):
         for key, value in dictOfDataFrames.items():
             value.to_csv(os.path.join(os.getcwd(),"results",sys.argv[1], key+'.csv'))
+
+
+    @staticmethod
+    def normalize(df):
+        return (df-df.min())/(df.max()-df.min())
 
 class statitisticalTest:
     @staticmethod
@@ -90,7 +97,9 @@ class statitisticalTest:
                     & (statTestDataFrame['Ax']==algortihmName)])
 
 def plotAndSave_stackedChart(dataFrameWinTieLose):
-    ax=dataFrameWinTieLose.plot.bar(stacked=True, width=.20)
+    dataFrameWinTieLose=dataFrameWinTieLose.rename(index=settings.index)
+    print(dataFrameWinTieLose)
+    ax=dataFrameWinTieLose.plot.bar(stacked=True, width=.20, colors=['lime', 'cornflowerblue', 'red'])
     plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.2),fancybox=False, shadow=False, ncol=3)
     labels = []
     for j in dataFrameWinTieLose.columns:
@@ -105,9 +114,9 @@ def plotAndSave_stackedChart(dataFrameWinTieLose):
             y = rect.get_y()
             height = rect.get_height()
             ax.text(x + width/2., y + height/2., label, ha='center', va='center', size='x-small')
-
+    ax.grid(b=True, linestyle='dotted', axis='y')
     plt.tight_layout()
-    plt.savefig(os.path.join(os.getcwd(),'results','wintielose.pdf'))
+    plt.savefig(os.path.join(os.getcwd(),'results',sys.argv[1]+'_stackChartPlot',sys.argv[1]+'_winTieLose.pdf'))
 
 def plotAndSave_boxPlotCharts(dictOfDataFrames):
     colors = ['black', 'red']
@@ -147,12 +156,14 @@ def plotAndSave_boxPlotCharts(dictOfDataFrames):
             if j%3==1:
                 x_ticks_top_pos.append((j+(j+1))/2)
             if i%2==1:
-                bp['boxes'][0].set(color='blue')
+                bp['boxes'][0].set(color='cornflowerblue')
                 j+=2
             else:
-                bp['boxes'][0].set(color='green')
+                bp['boxes'][0].set(color='lime')
                 j+=1
+            bp['medians'][0].set(color='red')
         #ax_bottom = ax.twiny()
+        ax.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
         ax.tick_params(labelsize=4, labelbottom=True,labeltop=False,top=False, bottom=True)
         ax.set_xticks(x_ticks_bottom_pos)
         ax.set_xticklabels(lbs_bottom)
@@ -160,19 +171,31 @@ def plotAndSave_boxPlotCharts(dictOfDataFrames):
         print(x_ticks_bottom_pos)
         print(x_ticks_top_pos)
         ax_top = ax.twiny()
-        ax_top.tick_params(labelsize=4, labelbottom=False,labeltop=True,top=True, bottom=False )
+        ax_top.tick_params(labelsize=4, labelbottom=False,labeltop=True,top=True, bottom=False)
+        ax_top.yaxis.set_major_formatter(FormatStrFormatter('%.2f'))
+        ax_top.minorticks_off()
+        ax_top.set_xlim(ax.get_xlim())
         ax_top.set_xticks(x_ticks_top_pos)
         ax_top.set_xticklabels(settings.getListOfFiles_byID(sys.argv[1]).values())
-        
+        #ax_top.grid(b=True, linestyle='dotted')
         #plt.grid(True)
         #plt.grid(linestyle='dotted')
         #plt.yaxis.grid(True)
-        plt.savefig(os.path.join(os.getcwd(),'results',qi+'.pdf'))
+        plt.savefig(os.path.join(os.getcwd(),'results',sys.argv[1]+'_boxPlotsForQIs',sys.argv[1]+'_'+qi+'_boxplot.pdf'))
     
 
+
+
+
+#the script starts at this line
 if __name__=="__main__":
     loadResults=readResults
     dictOfDataFrames=loadResults.loadDataIntoDataFrames(sys.argv)
+    #make item normalize
+    # for key, value in dictOfDataFrames.items():
+    #     #dictOfDataFrames[key]=loadResults.normalize(value)
+    #     print(dictOfDataFrames[key])
+
     loadResults.storeDataIntoCSV(dictOfDataFrames)
     # for key, value in dictOfDataFrames:
     #     print(key)

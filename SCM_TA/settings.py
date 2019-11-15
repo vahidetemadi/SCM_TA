@@ -76,3 +76,5 @@ dictOfParamsList={'crossoverParams':[0.5, 0.6, 0.7, 0.8, 0.9],'mutationParams':[
 dictOfParamIndex={'crossover':[1,2], 'mutation':[3,4], 'population':[5,6]}
 
 statTest=["Win", "Tie", "Lose"]
+
+index={"NSGAIIITAGLS":"SD", "KRRGZ":"KRRGZ", "RS":"RS"}
