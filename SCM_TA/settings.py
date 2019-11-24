@@ -78,3 +78,10 @@ dictOfParamIndex={'crossover':[1,2], 'mutation':[3,4], 'population':[5,6]}
 statTest=["Win", "Tie", "Lose"]
 
 index={"NSGAIIITAGLS":"SD", "KRRGZ":"KRRGZ", "RS":"RS"}
+
+listOfApproaches=['SD', 'KRRGZ', 'RS']
+
+devCategory=["All Devs", "Core Devs"]
+
+dataFrameOfMilestones_AllDevs={}
+dataFrameOfMilestones_CoreDevs={}
