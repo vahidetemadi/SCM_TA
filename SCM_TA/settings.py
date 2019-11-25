@@ -200,11 +200,13 @@ def setDict(dict, keyName):
     else if keyName='CoreDevs':
         CoreDevs=dict
 
+
 def setDF(dataFrame, keyName):
     if keyName=='AllDevs':
         All_Devs=dataFrame
     else if keyName='CoreDevs':
         Core_Devs=dataFrame
+
 
 def getStatTestDFs():
     return [All_Devs]

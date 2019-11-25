@@ -247,6 +247,7 @@ if __name__=="__main__":
         settings.setDF(statTestDataFrame) 
         statTest.saveStatTestIntoFile(statTestDataFrame)
         
+        
     for statTestDataFrame in settings.getStatTestDFs():
         dataFrameWinTieLose=pd.DataFrame(index=settings.algorithmList, columns=['Win', 'Tie', 'Lose']) 
         # print(statTestDataFrame[(statTestDataFrame['wilcoxonTest']>300) | (statTestDataFrame['effectSize']>0.8)].groupby('Axy').size())
