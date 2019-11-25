@@ -78,3 +78,28 @@ dictOfParamIndex={'crossover':[1,2], 'mutation':[3,4], 'population':[5,6]}
 statTest=["Win", "Tie", "Lose"]
 
 index={"NSGAIIITAGLS":"SD", "KRRGZ":"KRRGZ", "RS":"RS"}
+
+listOfApproaches=['SD', 'KRRGZ', 'RS']
+
+devCategory={"AllDevs":"", "CoreDevs":"_CoreDevs"}
+
+AllDevs={}
+CoreDevs={}
+
+All_Devs=[]
+Core_Devs=[]
+
+def setDict(dict, keyName):
+    if keyName=='AllDevs':
+        AllDevs=dict
+    else if keyName='CoreDevs':
+        CoreDevs=dict
+
+def setDF(dataFrame, keyName):
+    if keyName=='AllDevs':
+        All_Devs=dataFrame
+    else if keyName='CoreDevs':
+        Core_Devs=dataFrame
+
+def getStatTestDFs():
+    return [All_Devs]
