@@ -17,6 +17,7 @@ import saveIntoLatex
 class readResults:
     @staticmethod
     def loadDataIntoDataFrames(args, typeOfFExp):
+        print(typeOfFExp)
         row = []
         dictOfDataFrames = {}
         for fileName in os.listdir(os.path.join(os.getcwd(),"results"+typeOfFExp,args[1])):
@@ -75,12 +76,12 @@ class statitisticalTest:
             value.to_csv(os.path.join(os.getcwd(),"results"+typeOfFExp,sys.argv[1], key+'stat.csv'))
 
     @staticmethod
-    def saveStatTestIntoFile(statTestDataFrame, typeOfFExp):
-        statTestDataFrame.to_csv(os.path.join(os.getcwd(),"results"+typeOfFExp,sys.argv[1], 'statTestResults.csv'))
+    def saveStatTestIntoFile(statTestDataFrame, typeOfExp):
+        print(statTestDataFrame)
+        statTestDataFrame.to_csv(os.path.join(os.getcwd(),"results"+typeOfExp,sys.argv[1], 'statTestResults.csv'))
 
     @staticmethod
     def fillWinTieLose_onlyWilc(statTestDataFrame, dataFrameWinTieLose, typeOf):
-        print(dataFrameWinTieLose)
         if typeOf=='Win':
             for algortihmName in settings.algorithmList:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[ 
@@ -115,7 +116,7 @@ class statitisticalTest:
                     (statTestDataFrame['effectSize']<=0.7)
                     & (statTestDataFrame['Ax']==algortihmName)])
 
-def plotAndSave_stackedChart(dataFrameWinTieLose, typeOfComparison):
+def plotAndSave_stackedChart(dataFrameWinTieLose, typeOfComparison, pathPart):
     dataFrameWinTieLose=dataFrameWinTieLose.rename(index=settings.index)
     print(dataFrameWinTieLose)
     ax=dataFrameWinTieLose.plot.bar(stacked=True, width=.20, colors=['lime', 'cornflowerblue', 'red'])
@@ -135,7 +136,7 @@ def plotAndSave_stackedChart(dataFrameWinTieLose, typeOfComparison):
             ax.text(x + width/2., y + height/2., label, ha='center', va='center', size='x-small')
     ax.grid(b=True, linestyle='dotted', axis='y')
     plt.tight_layout()
-    plt.savefig(os.path.join(os.getcwd(),"results_"+sys.argv[3],sys.argv[1]+'_stackChartPlot',sys.argv[1]+'_winTieLose_'+typeOfComparison+'.pdf'))
+    plt.savefig(os.path.join(os.getcwd(),"results"+pathPart,sys.argv[1]+'_stackChartPlot',sys.argv[1]+'_winTieLose_'+typeOfComparison+'.pdf'))
 
 def plotAndSave_boxPlotCharts(dictOfDataFrames):
     colors = ['black', 'red']
@@ -200,34 +201,35 @@ def plotAndSave_boxPlotCharts(dictOfDataFrames):
         #plt.grid(True)
         #plt.grid(linestyle='dotted')
         #plt.yaxis.grid(True)
-        plt.savefig(os.path.join(os.getcwd(),"results_"+sys.argv[3],sys.argv[1]+'_boxPlotsForQIs',sys.argv[1]+'_'+qi+'_boxplot.pdf'))
+        plt.savefig(os.path.join(os.getcwd(),"results"+pathPart,sys.argv[1]+'_boxPlotsForQIs',sys.argv[1]+'_'+qi+'_boxplot.pdf'))
 
 
-def fillTableOfSimpleStat():
-    simpleStateDataFrame=df.read_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))
-    for key, value in settings.dataFrameOfMilestones.items():#need to iterate over two lists same time
-        for approach in listOfApproaches:
-            for column in value.columns:#need to iterate over two set of columns
-                simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(key), sys.argv[3])
-                ,(column.split('_')[1], approach)]=
-
-
+def fillTableOfSimpleStat(typeOfFExp):
+    simpleStateDataFrame=pd.read_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))
+    print(simpleStateDataFrame)
+    for MSFile in settings.getDict(sys.argv[typeOfFExp]).values():#need to iterate over two lists same time
+        for devKey in settings.devCategory.keys():
+            for qi in settings.QIList:
+                for approach in settings.listOfApproaches:
+                    simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(settings.getListOfFiles(sys.argv[1]).get()), devKey) ,(qi, approach)]=str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].mean(),2))+';'+ str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].std(),2))
+    print(simpleStateDataFrame)
     simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))  
 
 #the script starts at this line
 if __name__=="__main__":
-    for key,value in settings.devCategory.items():
+    simpleStateDataFrame=pd.DataFrame()
+    for keyDev,valueDev in settings.devCategory.items():
         loadResults=readResults
-        dictOfDataFrames=loadResults.loadDataIntoDataFrames(sys.argv, value)
+        dictOfDataFrames=loadResults.loadDataIntoDataFrames(sys.argv, valueDev)
         #make item normalize
         # for key, value in dictOfDataFrames.items():
         #     #dictOfDataFrames[key]=loadResults.normalize(value)
         #     print(dictOfDataFrames[key])
 
-        loadResults.storeDataIntoCSV(dictOfDataFrames)
+        loadResults.storeDataIntoCSV(dictOfDataFrames, valueDev)
         # for key, value in dictOfDataFrames:
         #     print(key)
-        statTest=statitisticalTest()
+        statTest=statitisticalTest
         statTestResults=pd.DataFrame()
         statTestDataFrame=pd.DataFrame(columns=["projectName", "fileName", "Ax", "Ay", "QI","wilcoxonTest", "p-value", "effectSize"])
         resultRow=[]
@@ -243,35 +245,44 @@ if __name__=="__main__":
                             statTestDataFrame.loc[len(statTestDataFrame)]=resultRow
                             resultRow.clear()
 
-        settings.setDict(dictOfDataFrames)
-        settings.setDF(statTestDataFrame) 
-        statTest.saveStatTestIntoFile(statTestDataFrame)
+        # settings.setDict(dictOfDataFrames, keyDev)
+        # settings.setDF(statTestDataFrame, keyDev) 
+
+        if keyDev == 'AllDevs':
+            settings.AllDevs = dictOfDataFrames
+        elif keyDev == 'CoreDevs':
+            settings.CoreDevs = dictOfDataFrames
+
+        if keyDev == 'AllDevs':
+            settings.All_Devs = statTestDataFrame
+        elif keyDev == 'CoreDevs':
+            settings.Core_Devs = statTestDataFrame
         
-        
-    for statTestDataFrame in settings.getStatTestDFs():
+        #statTest.saveStatTestIntoFile(statTestDataFrame, value)
+
+    for keyNameDev, statTestDF in settings.getStatTestDFs().items():
         dataFrameWinTieLose=pd.DataFrame(index=settings.algorithmList, columns=['Win', 'Tie', 'Lose']) 
         # print(statTestDataFrame[(statTestDataFrame['wilcoxonTest']>300) | (statTestDataFrame['effectSize']>0.8)].groupby('Axy').size())
         # print(statTestDataFrame[(statTestDataFrame['wilcoxonTest']<300) | (statTestDataFrame['effectSize']<0.8)].groupby('Axy').size())
         
         #fill and plot stacked charts using only wilcoxson
         for item in settings.statTest:
-            statitisticalTest.fillWinTieLose_onlyWilc(statTestDataFrame, dataFrameWinTieLose, item)
-        plotAndSave_stackedChart(dataFrameWinTieLose, "wilcoxson")
+            statitisticalTest.fillWinTieLose_onlyWilc(statTestDF, dataFrameWinTieLose, item)
+        plotAndSave_stackedChart(dataFrameWinTieLose, "wilcoxson",keyNameDev )
         #fill and plot stacked charts using effect size
         for item in settings.statTest:
-            statitisticalTest.fillWinTieLose_withA12(statTestDataFrame, dataFrameWinTieLose, item)
-        plotAndSave_stackedChart(dataFrameWinTieLose, "A12")
-
-
+            statitisticalTest.fillWinTieLose_withA12(statTestDF, dataFrameWinTieLose, item)
+        plotAndSave_stackedChart(dataFrameWinTieLose, "A12", keyNameDev)
 
 
     #plot and save table of results---using a multi-index strucutre
-    if path.exists(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")):
+    if not os.path.exists(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")):
         #simpleStateDataFrame=getEmptyDataframe_simpleDataFrame_multiIndex()
-        saveIntoLatex.create_simpleDataFrame_multiIndex()
+        simpleStateDataFrame=saveIntoLatex.create_simpleDataFrame_multiIndex()
+        simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")) 
 
-    # fillTableOfSimpleStat(simpleStateDataFrame)
-    # saveIntoLatex.saveAsLatex()
+    fillTableOfSimpleStat("AllDevs")
+    saveIntoLatex.saveAsLatex()
 
     #plot and save boxplot of datasets per QIs which relatively compare SD and KRRGZ
     plotAndSave_boxPlotCharts(dictOfDataFrames)

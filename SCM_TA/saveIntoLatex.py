@@ -14,17 +14,28 @@ import a12
 
 
 def create_simpleDataFrame_multiIndex():
-    index_param=pd.MultiIndex.from_product([settings.projectList, [settings.getListOfFiles_byID('JDT'), settings.getListOfFiles_byID('Platform')], settings.devCategory])
-    column_param=pd.MultiIndex.from_product([settings.QIList, settings.listOfApproaches])
-    simpleStateDataFrame=pd.DataFrame('-',
-    index=index_param,
-    columns=columns_param)
+    index_param1=pd.MultiIndex.from_product([['JDT']
+        , settings.getListOfFiles_byID('JDT').values()
+        , settings.devCategoryList])
+    index_param2=pd.MultiIndex.from_product([['Platform']
+        , settings.getListOfFiles_byID('Platform').values()
+        , settings.devCategoryList])
+    column_param=pd.MultiIndex.from_product([settings.QIList
+                                            , settings.listOfApproaches])
+    simpleStateDataFrame1=pd.DataFrame('-',
+    index=index_param1,
+    columns=column_param)
+    simpleStateDataFrame2=pd.DataFrame('-',
+    index=index_param2,
+    columns=column_param)
+    simpleStateDataFrame=pd.concat([simpleStateDataFrame1, simpleStateDataFrame2], axis=0)
     #print(dataFrameParam)
     #return simpleStateDataFrame
+    return simpleStateDataFrame
 
 
 def saveAsLatex():
-    simpleStateDataFrame=df.read_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))
+    simpleStateDataFrame=pd.read_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))
     with open(os.path.join(os.getcwd(), "results_"+sys.argv[3], sys.argv[1],param+'.txt'), 'w+') as file:
         file.write(simpleStateDataFrame.to_latex())
 
