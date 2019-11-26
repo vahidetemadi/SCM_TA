@@ -36,7 +36,7 @@ def create_simpleDataFrame_multiIndex():
 
 def saveAsLatex():
     simpleStateDataFrame=pd.read_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))
-    with open(os.path.join(os.getcwd(), "results_"+sys.argv[3], sys.argv[1],param+'.txt'), 'w+') as file:
+    with open(os.path.join(os.getcwd(),'Table.txt'), 'w+') as file:
         file.write(simpleStateDataFrame.to_latex())
 
 

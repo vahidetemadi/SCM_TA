@@ -116,7 +116,7 @@ def setDF(dataFrame, keyName):
         Core_Devs = dataFrame.copy()
 
 def getStatTestDFs():
-    return {"":All_Devs}
+    return {"AllDevs":All_Devs}
 
 def getPath(keyName):
     if keyName == 'AllDevs':

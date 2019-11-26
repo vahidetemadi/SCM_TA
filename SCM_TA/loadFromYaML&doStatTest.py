@@ -28,6 +28,7 @@ class readResults:
                 if milestoneName not in dictOfDataFrames:
                     name[1]=pd.DataFrame(columns=loadResults.getColumnList())
                     #name[1].columns=getColumnList()
+                    name[1].name=milestoneName
                     dictOfDataFrames.update({milestoneName:name[1]})
                 row.clear()
                 for algortihmName in settings.algorithmList:
@@ -136,7 +137,8 @@ def plotAndSave_stackedChart(dataFrameWinTieLose, typeOfComparison, pathPart):
             ax.text(x + width/2., y + height/2., label, ha='center', va='center', size='x-small')
     ax.grid(b=True, linestyle='dotted', axis='y')
     plt.tight_layout()
-    plt.savefig(os.path.join(os.getcwd(),"results"+pathPart,sys.argv[1]+'_stackChartPlot',sys.argv[1]+'_winTieLose_'+typeOfComparison+'.pdf'))
+    print(pathPart)
+    plt.savefig(os.path.join(os.getcwd(),"results"+settings.devCategory.get(pathPart),sys.argv[1]+'_stackChartPlot',sys.argv[1]+'_winTieLose_'+typeOfComparison+'.pdf'))
 
 def plotAndSave_boxPlotCharts(dictOfDataFrames):
     colors = ['black', 'red']
@@ -201,17 +203,18 @@ def plotAndSave_boxPlotCharts(dictOfDataFrames):
         #plt.grid(True)
         #plt.grid(linestyle='dotted')
         #plt.yaxis.grid(True)
-        plt.savefig(os.path.join(os.getcwd(),"results"+pathPart,sys.argv[1]+'_boxPlotsForQIs',sys.argv[1]+'_'+qi+'_boxplot.pdf'))
+        plt.savefig(os.path.join(os.getcwd(),"results",sys.argv[1]+'_boxPlotsForQIs',sys.argv[1]+'_'+qi+'_boxplot.pdf'))
 
 
-def fillTableOfSimpleStat(typeOfFExp):
+def fillTableOfSimpleStat(typeOfExp):
     simpleStateDataFrame=pd.read_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))
-    print(simpleStateDataFrame)
-    for MSFile in settings.getDict(sys.argv[typeOfFExp]).values():#need to iterate over two lists same time
+    #print(simpleStateDataFrame)
+    for MSFile in settings.getDict(typeOfExp).values():#need to iterate over two lists same time
+        print(MSFile.name)
         for devKey in settings.devCategory.keys():
             for qi in settings.QIList:
                 for approach in settings.listOfApproaches:
-                    simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(settings.getListOfFiles(sys.argv[1]).get()), devKey) ,(qi, approach)]=str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].mean(),2))+';'+ str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].std(),2))
+                    simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(settings.getListOfFiles(sys.argv[1]).get(MSFile.name)), devKey) ,(qi, approach)]=str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].mean(),2))+';'+ str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].std(),2))
     print(simpleStateDataFrame)
     simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))  
 
@@ -281,9 +284,10 @@ if __name__=="__main__":
         simpleStateDataFrame=saveIntoLatex.create_simpleDataFrame_multiIndex()
         simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")) 
 
-    fillTableOfSimpleStat("AllDevs")
+    fillTableOfSimpleStat(sys.argv[3])
     saveIntoLatex.saveAsLatex()
 
     #plot and save boxplot of datasets per QIs which relatively compare SD and KRRGZ
-    plotAndSave_boxPlotCharts(dictOfDataFrames)
+    if sys.argv[3]== 'AllDevs':
+        plotAndSave_boxPlotCharts(dictOfDataFrames)
 
