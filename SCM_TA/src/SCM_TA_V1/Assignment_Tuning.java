@@ -89,7 +89,7 @@ public class Assignment_Tuning {
 		GA_Problem_Parameter.createPriorityTable();
 		for(int i=0;i<listOfCrossover.length-1;i++){
 			for(int j=i+1;j<listOfCrossover.length;j++){
-				for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNumUpTo;runNum++){
+				for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNum;runNum++){
 					double[] costs=new double[2];
 					developers.clear();
 					bugs.clear();

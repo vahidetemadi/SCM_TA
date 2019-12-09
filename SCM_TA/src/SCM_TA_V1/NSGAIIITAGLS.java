@@ -39,6 +39,7 @@ import javax.swing.JFrame;
 		AllDirectedPaths<Bug, DefaultEdge> paths;
 		DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
 		ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
+		Random r=new Random();
 	public NSGAIIITAGLS(){
 		super(GA_Problem_Parameter.setNum_of_Variables(GA_Problem_Parameter.bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
@@ -117,13 +118,13 @@ import javax.swing.JFrame;
 			GA_Problem_Parameter.flag=0;
 		}
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
-		int min=GA_Problem_Parameter.getMinIdofDeveloper();
-		int max=GA_Problem_Parameter.getMaxIdofDeveloper();
+		int rand=r.nextInt(GA_Problem_Parameter.listOfdevs.length);
+		int var=GA_Problem_Parameter.listOfdevs[rand];
 		int j=0;
 		for(Zone z:genes){
 			//RealVariable r=new RealVariable(GA_Problem_Parameter.getMinIdofDeveloper(), GA_Problem_Parameter.getMaxIdofDeveloper());
 			//r.randomize();
-			solution.setVariable(j,EncodingUtils.newInt(min, max));
+			solution.setVariable(j,EncodingUtils.newInt(var, var));
 			j++;
 		}
 		return solution;
@@ -162,12 +163,10 @@ import javax.swing.JFrame;
 			ArrayList<Bug> sortedBugList=new ArrayList<Bug>();
 			ArrayList<Bug> sortedBugListToBeUpdated=new ArrayList<Bug>();
 			int c=0;
-			int[] Devs;
 			int numOfDevs=GA_Problem_Parameter.numOfDevs;
 			while(tso_sortedBugList.hasNext()){
 				sortedBugList.add(tso_sortedBugList.next());
 				sortedBugListToBeUpdated.add(sortedBugList.get(c));
-				int c2=0;
 				int[] tempListToKeep=new int[sortedBugList.get(c).Zone_DEP.vertexSet().size()];
 				int i=0;
 				for(Triplet<Bug, Zone, Integer> item:zoneAssignee){
@@ -190,7 +189,7 @@ import javax.swing.JFrame;
 			for(int i=0; i<sizeOfSortedBugList-1;i++){
 				firstBugID=sortedBugList.get(i).ID;
 				for(int j=i+1;j<sizeOfSortedBugList;j++){
-					if(r.nextDouble()>0.0){
+					if(r.nextDouble()>0.75){
 						numOfDevsInCommon=getNumOfDeveloperInCommon_enhanced(listOfBugAssignee.get(firstBugID),listOfBugAssignee.get(sortedBugList.get(j).ID), numOfDevs);
 						/*int[] devs=new int[numOfDevs];
 						int[] b1=listOfBugAssignee.get(firstBugID);
@@ -204,7 +203,7 @@ import javax.swing.JFrame;
 								devs[b2[m]-1]--;
 							}*/
 						
-						if(numOfDevsInCommon>1){
+						if(numOfDevsInCommon>2){
 							isParallel=allPaths.getAllPaths(sortedBugList.get(i), sortedBugList.get(j), true, 100000000).isEmpty();
 							isParallel= isParallel & allPaths.getAllPaths(sortedBugList.get(j), sortedBugList.get(i), true, 100000000).isEmpty();
 							if(isParallel){
@@ -244,7 +243,7 @@ import javax.swing.JFrame;
 											totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
 											zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
 											zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
-											/*developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
+											/*developers.get(GA_Problem_Parameter.listOfdevs[EncodingUtils.getInt(solution.getVariable(index))]).developerNextAvailableHour=Math.max(developers.get(GA_Problem_Parameter.listOfdevs[EncodingUtils.getInt(solution.getVariable(index))]).developerNextAvailableHour,
 											zone.zoneStartTime_evaluate)+compeletionTime;*/
 											developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=zone.zoneEndTime_evaluate;
 											b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
@@ -340,15 +339,15 @@ import javax.swing.JFrame;
 					Zone zone=tso_Zone.next();
 					double compeletionTime=0.0;
 					Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
-					compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
+					compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(GA_Problem_Parameter.listOfdevs[EncodingUtils.getInt(solution.getVariable(index))]));
 					totalExecutionTime+=compeletionTime;
 					//need to be changed????///
-					totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
-					zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
+					totalDevCost+=compeletionTime*developers.get(GA_Problem_Parameter.listOfdevs[EncodingUtils.getInt(solution.getVariable(index))]).hourlyWage;
+					zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(GA_Problem_Parameter.listOfdevs[EncodingUtils.getInt(solution.getVariable(index))]), zone.DZ);
 					zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
-					/*developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
+					/*developers.get(GA_Problem_Parameter.listOfdevs[EncodingUtils.getInt(solution.getVariable(index))]).developerNextAvailableHour=Math.max(developers.get(GA_Problem_Parameter.listOfdevs[EncodingUtils.getInt(solution.getVariable(index))]).developerNextAvailableHour,
 					zone.zoneStartTime_evaluate)+compeletionTime;*/
-					developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=zone.zoneEndTime_evaluate;
+					developers.get(GA_Problem_Parameter.listOfdevs[EncodingUtils.getInt(solution.getVariable(index))]).developerNextAvailableHour=zone.zoneEndTime_evaluate;
 					b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 					index++;
 				}

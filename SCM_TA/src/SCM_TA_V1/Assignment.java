@@ -71,6 +71,8 @@ public class Assignment {
 		GA_Problem_Parameter.fileNum=sc.nextInt();
 		System.out.println("The run number you want to launch the run from:");
 		GA_Problem_Parameter.runNum=sc.nextInt();
+		System.out.println("The run number you want to launch the run up to:");
+		GA_Problem_Parameter.runNumUpTo=sc.nextInt();
 		String mode="running";
 		if(mode=="running"){
 			runExperiment();
@@ -83,7 +85,7 @@ public class Assignment {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNum;runNum++){
+		for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNumUpTo;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -215,7 +217,10 @@ public class Assignment {
 				}
 
 				//GA_Problem_Parameter.pruneDevList(developers);
-				GA_Problem_Parameter.pruneDevList(developers,Devs,100);
+				//prune 20 upper percentile of devs
+				GA_Problem_Parameter.pruneDevList(developers,Devs,20);
+				GA_Problem_Parameter.setPrunedDevsId();
+				GA_Problem_Parameter.numOfDevs=GA_Problem_Parameter.listOfdevs.length+1;
 	}
 	
 	// initialize the bugs objects for task assignment  
@@ -482,7 +487,9 @@ public class Assignment {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv"));
+		    File f_KRRGZ_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv");
+		    f_KRRGZ_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_KRRGZ_pf);
 		    pw.write(sb.toString());
 		    pw.close();
 		   
@@ -496,7 +503,9 @@ public class Assignment {
 				   if(s.getSchedule()!=null)
 					   System.out.println(s.getSchedule());
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"SD_"+fileName+"_"+runNum+".csv"));
+		    File f_SD_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"SD_"+fileName+"_"+runNum+".csv");
+		    f_SD_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_SD_pf);
 		    pw.write(sb.toString());
 		    pw.close();
 		    
@@ -506,7 +515,9 @@ public class Assignment {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"RS_"+fileName+"_"+runNum+".csv"));
+		    File f_RS_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"RS_"+fileName+"_"+runNum+".csv");
+		    f_RS_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_RS_pf);
 		    pw.write(sb.toString());
 		    pw.close();
 		    
@@ -533,7 +544,7 @@ public class Assignment {
 		     *
 		     *
 		    analyzer.saveReferenceSet(targetRefSet);*/
-		    File f=new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults_"+fileName+"_"+runNum+"_"+fileNum+".yaml");
+		    File f=new File(System.getProperty("user.dir")+File.separator+"results_CoreDevs"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults_"+fileName+"_"+runNum+"_"+fileNum+".yaml");
 		    f.getParentFile().mkdirs();
 			PrintStream ps_ID=new PrintStream(f);
 			try{
@@ -546,7 +557,9 @@ public class Assignment {
 			finally{
 				ps_ID.close();
 			}
-			analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
+			File f_analyzer=new File(System.getProperty("user.dir")+File.separator+"results_CoreDevs"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults");
+			f_analyzer.getParentFile().mkdirs();
+			analyzer.saveData(f_analyzer,Integer.toString(runNum) , Integer.toString(fileNum));
 		//}
 		//catch(Exception e){
 			//starting(fileNum, runNum);
@@ -679,7 +692,7 @@ public class Assignment {
 			   }
 			   System.out.println();
 			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+File.separator+"archives"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
+			   File f=new File(System.getProperty("user.dir")+File.separator+"archives_CoreDevs"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
 					   +File.separator+"KRRGZ"+File.separator+fileName+"_"+runNum+"_KRRGZ_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);
@@ -708,7 +721,7 @@ public class Assignment {
 			   }
 			   System.out.println();
 			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+File.separator+"archives"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
+			   File f=new File(System.getProperty("user.dir")+File.separator+"archives_CoreDevs"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
 					   +File.separator+"SD"+File.separator+fileName+"_"+runNum+"_SD_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);
@@ -732,7 +745,7 @@ public class Assignment {
 			   }
 			   System.out.println();
 			   System.out.println();
-			   File f=new File(System.getProperty("user.dir")+File.separator+"archives"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
+			   File f=new File(System.getProperty("user.dir")+File.separator+"archives_CoreDevs"+File.separator+runNum+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+File.separator
 					   +File.separator+"RS"+File.separator+fileName+"_"+runNum+"_RS_"+accumulator.get("NFE", i)+".csv");
 			   f.getParentFile().mkdirs();
 			   pw=new PrintWriter(f);

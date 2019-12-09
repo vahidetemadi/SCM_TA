@@ -4,7 +4,10 @@ import java.lang.reflect.Array;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
+
 import org.moeaframework.core.Algorithm;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map.Entry;
@@ -16,7 +19,6 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
-import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.jgrapht.traverse.*;
 import org.jgrapht.alg.ConnectivityInspector;
 import org.jgrapht.alg.KosarajuStrongConnectivityInspector;
@@ -24,6 +26,7 @@ import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.alg.CycleDetector;
 import org.jgrapht.alg.GabowStrongConnectivityInspector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
+
 import java.util.Iterator;
 
 
@@ -85,6 +88,7 @@ public class GA_Problem_Parameter {
 	static DirectedAcyclicGraph<Bug, DefaultEdge> DEP_scheduling;
 	static int flag=0;
 	public static Algorithm algorithm=null;
+	public static int[] listOfdevs;
 	//paramter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs){
@@ -598,6 +602,16 @@ public class GA_Problem_Parameter {
 			}
 
 			System.out.println(devs_prune.size()+"///devs");
+	}
+	
+	public static void setPrunedDevsId(){
+		listOfdevs=new int[developers.size()];
+		int i=0;
+		for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
+			listOfdevs[i]=dev.getKey();
+			i++;
+		}
+		
 	}
 	
 	
