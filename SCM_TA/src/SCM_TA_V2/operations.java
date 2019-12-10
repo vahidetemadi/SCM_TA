@@ -3,7 +3,7 @@ package SCM_TA_V2;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class operations {
+public class Operations {
 	
 	static ArrayList<ArrayList<String>> setOfObjective=new ArrayList<ArrayList<String>>();
 
@@ -45,7 +45,7 @@ public class operations {
 	}
 	
 	//implement the policy function to get the right action 
-	public static ArrayList<String> policyFunction(state s){
+	public static ArrayList<String> policyFunction(State s){
 		switch (s.name){
 			case "steday_state":
 				return setOfObjective.get(0);

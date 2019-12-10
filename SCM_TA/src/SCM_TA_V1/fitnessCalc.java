@@ -9,7 +9,7 @@ import java.util.Set;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
-import SCM_TA_V2.environment_s1;
+import SCM_TA_V2.Environment_s1;
 
 public class fitnessCalc {
 
@@ -180,7 +180,7 @@ Developer developer){
  }
 
  public static double getEstimatedDiffusionTime(Map.Entry<Integer, Developer> sourceDev ,Map.Entry<Integer, Developer> targetDev,double estimatedEffort){
-	 double estimeatedTime=estimatedEffort/environment_s1.getDevNetwork().getEdgeWeight(environment_s1.getDevNetwork().getEdge(sourceDev,targetDev));
+	 double estimeatedTime=estimatedEffort/Environment_s1.getDevNetwork().getEdgeWeight(Environment_s1.getDevNetwork().getEdge(sourceDev,targetDev));
 	 return estimatedEffort;
  }
  

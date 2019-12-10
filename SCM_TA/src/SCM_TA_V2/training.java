@@ -5,7 +5,7 @@ import java.util.Random;
 import smile.sequence.HMM;
 
 
-public class training {
+public class Training {
 
 	
 	//set the initial states
@@ -18,9 +18,9 @@ public class training {
 	double[][] emissions=new double[2][2];
 
 	//generate a new HMM
-	public HMM<observation> getHMM() {
+	public HMM<Observation> getHMM() {
 		initialize_params();
-		HMM<observation> HMM=new HMM<observation>(initialStates,transitions,emissions, environment_s1.getObservationSymbols());
+		HMM<Observation> HMM=new HMM<Observation>(initialStates,transitions,emissions, Environment_s1.getObservationSymbols());
 		
 		return HMM;
 	}

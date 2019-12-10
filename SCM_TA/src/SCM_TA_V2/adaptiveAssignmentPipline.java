@@ -15,20 +15,20 @@ import org.jgrapht.alg.color.SaturationDegreeColoring;
 import smile.sequence.HMM;
 import SCM_TA_V1.*;
 
-public class adaptiveAssignmentPipline {
+public class AdaptiveAssignmentPipline {
 
-	static training training_instance=new training();
+	static Training training_instance=new Training();
 	static ArrayList<String> objectiveSet=new ArrayList<String>();
 	static Random random=new Random();
-	static HMM<observation> HMM=null;
+	static HMM<Observation> HMM=null;
 	static String datasetName=null;
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 		//get the trained Markov model
 		HMM=training_instance.getHMM();
-		environment_s1.generaetListOfState();
-		environment_s1.generaetListOfObservation(); 
+		Environment_s1.generaetListOfState();
+		Environment_s1.generaetListOfObservation(); 
 		
-		environment_s1.insantiateObjects(); 
+		Environment_s1.insantiateObjects(); 
 		
 		System.out.println("Enter the dataset name:");
 		Scanner sc=new Scanner(System.in);
@@ -39,34 +39,34 @@ public class adaptiveAssignmentPipline {
 		
 		//cut off the low experienced developers---add ready for attachment developers
 		//starting with half of the developers
-		environment_s1.rankDevs();
+		Environment_s1.rankDevs();
 		
 		//Initialize the devNetwork
-		environment_s1.initializeDevNetwork();
+		Environment_s1.initializeDevNetwork();
 		
 		//supposed to change initialize the deletion and attachment rate
-		environment_s1.initializeR(0.3);
-		environment_s1.initializeParameters();
+		Environment_s1.initializeR(0.3);
+		Environment_s1.initializeParameters();
 		
-		for(Entry<Integer, Developer> i:environment_s1.getDevNetwork().vertexSet()){
+		for(Entry<Integer, Developer> i:Environment_s1.getDevNetwork().vertexSet()){
 			System.out.print(i.getKey()+" , ");
 		}
 		
 		System.out.println();
 		
-		for(Integer i:environment_s1.readyForAttachment){
+		for(Integer i:Environment_s1.readyForAttachment){
 			System.out.print(i+" , ");
 		}
 		
 		//set the number of files
 		if(datasetName=="JDT")
-			environment_s1.numberOfFiles=9;
+			Environment_s1.numberOfFiles=9;
 		else
-			environment_s1.numberOfFiles=10;
+			Environment_s1.numberOfFiles=10;
 		
 		//set the initial observation and 
 		int roundNum=1;
-		for(int i=1; i<=environment_s1.numberOfFiles;i++){
+		for(int i=1; i<=Environment_s1.numberOfFiles;i++){
 			//call for run
 			GA_Problem_Parameter.listOfSubBugs.clear();
 			Test2.run(datasetName, i);
@@ -83,26 +83,26 @@ public class adaptiveAssignmentPipline {
 				GA_Problem_Parameter.candidateSolutonGeneration();
 				
 				//find most probable state
-				state state=getState(HMM);
-				environment_s1.addToSequenceOfStates(state);
+				State state=getState(HMM);
+				Environment_s1.addToSequenceOfStates(state);
 
 				Test2.Assigning(state.actionSet.get(0), 1, roundNum, datasetName);
 				
 				//make the update onto devNetwork
-				environment_s1.nodeDeletion();
-				environment_s1.nodeAttachment();
+				Environment_s1.nodeDeletion();
+				Environment_s1.nodeAttachment();
 
 				GA_Problem_Parameter.setDevelopersIDForRandom();
-				System.out.println("number of developers---devNetwork: "+environment_s1.devNetwork.vertexSet().size()
+				System.out.println("number of developers---devNetwork: "+Environment_s1.devNetwork.vertexSet().size()
 						+"*** total changed: "
-						+environment_s1.totalChanged);
+						+Environment_s1.totalChanged);
 				//add to the sequence of observation
 				//the updates behind poisson process
 				//update lambda
-				environment_s1.reinitializeParameters(random.nextInt(environment_s1.getDevNetwork().vertexSet().size()),
-						random.nextInt((environment_s1.getDevNetwork().vertexSet().size()/2)));
+				Environment_s1.reinitializeParameters(random.nextInt(Environment_s1.getDevNetwork().vertexSet().size()),
+						random.nextInt((Environment_s1.getDevNetwork().vertexSet().size()/2)));
 				
-				environment_s1.addToSequenceOfObservation(environment_s1.getObservation());
+				Environment_s1.addToSequenceOfObservation(Environment_s1.getObservation());
 
 				j++;
 				roundNum++;
@@ -110,34 +110,34 @@ public class adaptiveAssignmentPipline {
 		}	
 	}
 	
-	public static state getState(HMM<observation> HMM){
-		HashMap<state, Double> stateProbability=new HashMap<state, Double>();
+	public static State getState(HMM<Observation> HMM){
+		HashMap<State, Double> stateProbability=new HashMap<State, Double>();
 		
-		int[] observation=environment_s1.getObsercationSequence();
+		int[] observation=Environment_s1.getObsercationSequence();
 		int[] states=null;
 		 
-		int i=environment_s1.observationSequence.size();
-		for(Map.Entry<Integer, state> s:environment_s1.listOfState.entrySet()){
+		int i=Environment_s1.observationSequence.size();
+		for(Map.Entry<Integer, State> s:Environment_s1.listOfState.entrySet()){
 			if(states!=null || i>1)
-				environment_s1.addToSequenceOfStates(s.getValue());
-			states=environment_s1.getStateSequence();
+				Environment_s1.addToSequenceOfStates(s.getValue());
+			states=Environment_s1.getStateSequence();
 			stateProbability.put(s.getValue(), HMM.p(observation,states));
-			environment_s1.stateSequence.remove(environment_s1.stateSequence.size()-1);
+			Environment_s1.stateSequence.remove(Environment_s1.stateSequence.size()-1);
 			i++;
 		}
 		
 		double totalProb=0;
-		for(Map.Entry<state, Double> stateProb:stateProbability.entrySet()){
+		for(Map.Entry<State, Double> stateProb:stateProbability.entrySet()){
 			totalProb+=stateProb.getValue();
 		}
-		for(Map.Entry<state, Double> stateProb:stateProbability.entrySet()){
+		for(Map.Entry<State, Double> stateProb:stateProbability.entrySet()){
 			stateProbability.put(stateProb.getKey(), stateProb.getValue()/totalProb);
 		}
 		
 		double r=random.nextDouble();
-		Map.Entry<state, Double> selectedState=null;
+		Map.Entry<State, Double> selectedState=null;
 		double lowerBound=0;
-		for(Map.Entry<state, Double> stateProb:stateProbability.entrySet()){
+		for(Map.Entry<State, Double> stateProb:stateProbability.entrySet()){
 			if ((lowerBound < r) && (r < (lowerBound+stateProb.getValue())))
 				selectedState=stateProb;
 			else

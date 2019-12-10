@@ -534,7 +534,7 @@ public class GA_Problem_Parameter {
 			for(Ranking<Developer, Double> r:devs){
 				if(i<_size){
 					//create the potential dev list---- those who tend to attach to the list
-					environment_s1.readyForAttachment.add(r.getEntity().getID());
+					Environment_s1.readyForAttachment.add(r.getEntity().getID());
 					devs_prune.remove(r.getEntity().getID());
 				}
 					

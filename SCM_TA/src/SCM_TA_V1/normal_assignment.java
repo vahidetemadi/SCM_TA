@@ -17,7 +17,7 @@ import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 
-import SCM_TA_V2.environment_s1;
+import SCM_TA_V2.Environment_s1;
 
 public class normal_assignment extends AbstractProblem {
 	
@@ -126,7 +126,7 @@ public class normal_assignment extends AbstractProblem {
 				double estimatedEmissionTime=0;
 				int sourceDevId = 0;
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
-					if(environment_s1.getDevNetwork().containsEdge(dev,candidate))
+					if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
 						estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
 								(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
 					if(estimatedEmissionTime<emissionTime){

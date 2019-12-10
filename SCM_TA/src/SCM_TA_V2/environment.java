@@ -10,7 +10,7 @@ import org.jgrapht.graph.DefaultEdge;
 
 import SCM_TA_V1.Developer;
 
-public abstract class environment {
+public abstract class Environment {
 	
 	static PoissonDistribution TCR;
 	static DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge> devNetwork;	

@@ -1,10 +1,10 @@
 package SCM_TA_V2;
 
 import org.apache.commons.math3.distribution.*;
-public class observation {
+public class Observation {
 	private int teamChangeRate;
 	private int symbol;
-	public observation(double teamChangeRate){
+	public Observation(double teamChangeRate){
 		if(teamChangeRate>0.6)
 			this.teamChangeRate=1;
 		else 

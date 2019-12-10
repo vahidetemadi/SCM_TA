@@ -15,7 +15,7 @@ public class adaptiveModelV1 {
 	
 	public void feedbackFunction(){
 		//at first all the observations get updated at the same time
-		operations.applyFeedback();
+		Operations.applyFeedback();
 		
 		//change the params for SLA source of data:
 		

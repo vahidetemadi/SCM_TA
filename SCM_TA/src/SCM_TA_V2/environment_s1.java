@@ -13,7 +13,7 @@ import smile.stat.distribution.PoissonDistribution;
 
 import SCM_TA_V1.*;
 
-public class environment_s1 extends environment {
+public class Environment_s1 extends Environment {
 	public static double deletionRate=0;
 	public static double attachmentRate=0;
 	public static double TCR_ratio=0;
@@ -23,10 +23,10 @@ public class environment_s1 extends environment {
 	static Random random;
 	static int numOfNodes;
 	static int numberOfFiles=0;
-	static ArrayList<state> stateSequence=new ArrayList<state>();
-	static ArrayList<observation> observationSequence=new ArrayList<observation>();
-	static HashMap<Integer, observation> listOfObservation=new HashMap<Integer, observation>();
-	static HashMap<Integer, state> listOfState=new HashMap<Integer, state>();
+	static ArrayList<State> stateSequence=new ArrayList<State>();
+	static ArrayList<Observation> observationSequence=new ArrayList<Observation>();
+	static HashMap<Integer, Observation> listOfObservation=new HashMap<Integer, Observation>();
+	static HashMap<Integer, State> listOfState=new HashMap<Integer, State>();
 	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(){
@@ -41,17 +41,17 @@ public class environment_s1 extends environment {
 	}
 	//prepare the input data set for training
 	public static void generaetListOfObservation(){
-		observation o1=new observation(0.1);
-		observation o2=new observation(0.9);
+		Observation o1=new Observation(0.1);
+		Observation o2=new Observation(0.9);
 		listOfObservation.put(0, o1);
 		listOfObservation.put(1,o2);
 	}
 	
 	public static void generaetListOfState(){
 		//introduce the states
-		final state steady_state=new state("steady",0);
+		final State steady_state=new State("steady",0);
 		steady_state.setAction("diffusion");
-		final state dynamic_state=new state("dynamic",1);
+		final State dynamic_state=new State("dynamic",1);
 		dynamic_state.setAction("cost");
 		
 		listOfState.put(0, steady_state);
@@ -194,8 +194,8 @@ public class environment_s1 extends environment {
 	}
 	
 	public static void initializeR(double probability){
-		environment_s1.deletionRate=probability;
-		environment_s1.attachmentRate=1-deletionRate;
+		Environment_s1.deletionRate=probability;
+		Environment_s1.attachmentRate=1-deletionRate;
 		
 	}
 	
@@ -261,7 +261,7 @@ public class environment_s1 extends environment {
 		return TCR_ratio;
 	}
 	
-	public static observation getObservation(){
+	public static Observation getObservation(){
 		double d=random.nextDouble();
 		if(d<getTCR_ratio())
 			return listOfObservation.get(1);
@@ -269,23 +269,23 @@ public class environment_s1 extends environment {
 			return listOfObservation.get(0);
 	}
 	
-	public static void addToSequenceOfStates(state state){
+	public static void addToSequenceOfStates(State state){
 		stateSequence.add(state);
 	}
 	
-	public static void addToSequenceOfObservation(observation observation){
+	public static void addToSequenceOfObservation(Observation observation){
 		observationSequence.add(observation);
 	}
 	
-	public static state getTheLastState(){
+	public static State getTheLastState(){
 		return stateSequence.get(stateSequence.size()-1);
 	}
 
-	public static observation[] getObservationSymbols(){
-		observation o1=new observation(0.7);
-		observation o2=new observation(0.3);
+	public static Observation[] getObservationSymbols(){
+		Observation o1=new Observation(0.7);
+		Observation o2=new Observation(0.3);
 		
-		return new observation[]{o1,o2};
+		return new Observation[]{o1,o2};
 	}
 
 	@SuppressWarnings("null")
@@ -306,8 +306,8 @@ public class environment_s1 extends environment {
 	}
 	
 	public static void initializeParameters(){
-		environment_s1.addToSequenceOfStates(listOfState.get(0));
-		environment_s1.addToSequenceOfObservation(environment_s1.getObservation());	
+		Environment_s1.addToSequenceOfStates(listOfState.get(0));
+		Environment_s1.addToSequenceOfObservation(Environment_s1.getObservation());	
 	}
 
 	public static void reinitializeParameters(double newLambda, double bussFactor){
