@@ -84,8 +84,8 @@ listOfApproaches=['SD', 'KRRGZ', 'RS']
 
 devCategoryList=["AllDevs", "CoreDevs"]
 
-devCategory={"AllDevs":""}
-#devCategory={"AllDevs":"", "CoreDevs":"_CoreDevs"}
+#devCategory={"AllDevs":""}
+devCategory={"AllDevs":"", "CoreDevs":"_CoreDevs"}
 
 
 AllDevs={}
@@ -116,7 +116,7 @@ def setDF(dataFrame, keyName):
         Core_Devs = dataFrame.copy()
 
 def getStatTestDFs():
-    return {"AllDevs":All_Devs}
+    return {"AllDevs":All_Devs, "CoreDevs":Core_Devs}
 
 def getPath(keyName):
     if keyName == 'AllDevs':

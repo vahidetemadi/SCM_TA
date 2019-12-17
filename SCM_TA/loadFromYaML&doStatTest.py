@@ -60,14 +60,20 @@ class statitisticalTest:
     @staticmethod
     def getWilcoxonTest(dataframe, algortihmName1, algortihmName2, indicator):
         if indicator=='GenerationalDistance' or indicator=='Spacing':
-            return wilcoxon(dataframe[algortihmName2+'_'+indicator].tolist(), dataframe[algortihmName1+'_'+indicator].tolist(), alternative='greater', zero_method= "zsplit")
+            if indicator=='Spacing':
+                return wilcoxon([ 100000000 if x==0 else x for x in dataframe[algortihmName2+'_'+indicator].tolist()], [ 100000000 if x==0 else x for x in dataframe[algortihmName1+'_'+indicator].tolist()], alternative='greater', zero_method= "zsplit")
+            else:
+                return wilcoxon(dataframe[algortihmName2+'_'+indicator].tolist(), dataframe[algortihmName1+'_'+indicator].tolist(), alternative='greater', zero_method= "zsplit")
         else:
             return wilcoxon(dataframe[algortihmName1+'_'+indicator].tolist(), dataframe[algortihmName2+'_'+indicator].tolist(),alternative='greater', zero_method= "zsplit")
 
     @staticmethod
     def getEffectSize(dataframe,algortihmName1, algortihmName2, indicator):
         if indicator=='GenerationalDistance' or indicator=='Spacing':
-            return a12.VD_A(dataframe[algortihmName2+'_'+indicator].tolist(), dataframe[algortihmName1+'_'+indicator].tolist())
+            if indicator=='Spacing':
+                return a12.VD_A([100000000 if x==0 else x for x in dataframe[algortihmName2+'_'+indicator].tolist()], [100000000 if x==0 else x for x in dataframe[algortihmName1+'_'+indicator].tolist()])
+            else:
+                return a12.VD_A(dataframe[algortihmName2+'_'+indicator].tolist(), dataframe[algortihmName1+'_'+indicator].tolist())
         else:
             return a12.VD_A(dataframe[algortihmName1+'_'+indicator].tolist(), dataframe[algortihmName2+'_'+indicator].tolist())
 
@@ -78,7 +84,6 @@ class statitisticalTest:
 
     @staticmethod
     def saveStatTestIntoFile(statTestDataFrame, typeOfExp):
-        print(statTestDataFrame)
         statTestDataFrame.to_csv(os.path.join(os.getcwd(),"results"+typeOfExp,sys.argv[1], 'statTestResults.csv'))
 
     @staticmethod
@@ -91,16 +96,15 @@ class statitisticalTest:
         if typeOf=='Tie':
             for algortihmName in settings.algorithmList:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[
-                    (statTestDataFrame['wilcoxonTest']<150) & (statTestDataFrame['wilcoxonTest']>0)
+                    (statTestDataFrame['wilcoxonTest']<150) & (statTestDataFrame['wilcoxonTest']>100)
                     & (statTestDataFrame['Ax']==algortihmName)])
         if typeOf=='Lose':
             for algortihmName in settings.algorithmList:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[
-                    (statTestDataFrame['wilcoxonTest']<=0)
+                    (statTestDataFrame['wilcoxonTest']<=100)
                     & (statTestDataFrame['Ax']==algortihmName)])
 
     def fillWinTieLose_withA12(statTestDataFrame, dataFrameWinTieLose, typeOf):
-        print(dataFrameWinTieLose)
         if typeOf=='Win':
             for algortihmName in settings.algorithmList:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[ 
@@ -206,15 +210,13 @@ def plotAndSave_boxPlotCharts(dictOfDataFrames):
         plt.savefig(os.path.join(os.getcwd(),"results",sys.argv[1]+'_boxPlotsForQIs',sys.argv[1]+'_'+qi+'_boxplot.pdf'))
 
 
-def fillTableOfSimpleStat(typeOfExp):
+def fillTableOfSimpleStat(devKey):
     simpleStateDataFrame=pd.read_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))
     #print(simpleStateDataFrame)
-    for MSFile in settings.getDict(typeOfExp).values():#need to iterate over two lists same time
-        print(MSFile.name)
-        for devKey in settings.devCategory.keys():
-            for qi in settings.QIList:
-                for approach in settings.listOfApproaches:
-                    simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(settings.getListOfFiles(sys.argv[1]).get(MSFile.name)), devKey) ,(qi, approach)]=str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].mean(),2))+';'+ str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].std(),2))
+    for MSFile in settings.getDict(devKey).values():#need to iterate over two lists same time
+        for qi in settings.QIList:
+            for approach in settings.listOfApproaches:
+                simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(settings.getListOfFiles(sys.argv[1]).get(MSFile.name)), devKey) ,(qi, approach)]=str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].mean(),2))+';'+ str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].std(),2))
     print(simpleStateDataFrame)
     simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))  
 
@@ -222,6 +224,7 @@ def fillTableOfSimpleStat(typeOfExp):
 if __name__=="__main__":
     simpleStateDataFrame=pd.DataFrame()
     for keyDev,valueDev in settings.devCategory.items():
+        print('/////////---> '+keyDev)
         loadResults=readResults
         dictOfDataFrames=loadResults.loadDataIntoDataFrames(sys.argv, valueDev)
         #make item normalize
@@ -233,7 +236,7 @@ if __name__=="__main__":
         # for key, value in dictOfDataFrames:
         #     print(key)
         statTest=statitisticalTest
-        statTestResults=pd.DataFrame()
+        #statTestResults=pd.DataFrame()
         statTestDataFrame=pd.DataFrame(columns=["projectName", "fileName", "Ax", "Ay", "QI","wilcoxonTest", "p-value", "effectSize"])
         resultRow=[]
         for key, value in dictOfDataFrames.items():
@@ -260,7 +263,13 @@ if __name__=="__main__":
             settings.All_Devs = statTestDataFrame
         elif keyDev == 'CoreDevs':
             settings.Core_Devs = statTestDataFrame
+            print('/////////////////')
+            print(statTestDataFrame)
         
+
+
+        fillTableOfSimpleStat(keyDev)
+        saveIntoLatex.saveAsLatex()
         #statTest.saveStatTestIntoFile(statTestDataFrame, value)
 
     for keyNameDev, statTestDF in settings.getStatTestDFs().items():
@@ -271,10 +280,15 @@ if __name__=="__main__":
         #fill and plot stacked charts using only wilcoxson
         for item in settings.statTest:
             statitisticalTest.fillWinTieLose_onlyWilc(statTestDF, dataFrameWinTieLose, item)
+        
+        print('senario[wilcoxson]--->'+ keyNameDev)
         plotAndSave_stackedChart(dataFrameWinTieLose, "wilcoxson",keyNameDev )
+
         #fill and plot stacked charts using effect size
         for item in settings.statTest:
             statitisticalTest.fillWinTieLose_withA12(statTestDF, dataFrameWinTieLose, item)
+
+        print('senario[effectSize]--->'+ keyNameDev)
         plotAndSave_stackedChart(dataFrameWinTieLose, "A12", keyNameDev)
 
 
@@ -284,8 +298,6 @@ if __name__=="__main__":
         simpleStateDataFrame=saveIntoLatex.create_simpleDataFrame_multiIndex()
         simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")) 
 
-    fillTableOfSimpleStat(sys.argv[3])
-    saveIntoLatex.saveAsLatex()
 
     #plot and save boxplot of datasets per QIs which relatively compare SD and KRRGZ
     if sys.argv[3]== 'AllDevs':
