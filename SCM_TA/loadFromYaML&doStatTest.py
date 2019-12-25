@@ -11,6 +11,7 @@ from sklearn import preprocessing
 import settings
 import a12
 import saveIntoLatex
+from  matplotlib.patches import Patch
 
 
 # input arguments example: python loadFromYaML&doStatTest.py JDT NSGAIIITAGLS AllDevs(CoreDevs)
@@ -59,19 +60,25 @@ class readResults:
 class statitisticalTest:
     @staticmethod
     def getWilcoxonTest(dataframe, algortihmName1, algortihmName2, indicator):
-        if indicator=='GenerationalDistance' or indicator=='Spacing':
-            if indicator=='Spacing':
-                return wilcoxon([ 100000000 if x==0 else x for x in dataframe[algortihmName2+'_'+indicator].tolist()], [ 100000000 if x==0 else x for x in dataframe[algortihmName1+'_'+indicator].tolist()], alternative='greater', zero_method= "zsplit")
+        try:
+            if indicator=='GenerationalDistance' or indicator=='Spacing':
+                if indicator=='Spacing':
+                    return wilcoxon([ 100000000 if x==0 and algortihmName2=='RS' else x for x in dataframe[algortihmName2+'_'+indicator].tolist()]
+                                    , [ 100000000 if x==0 and algortihmName1=='RS' else x for x in dataframe[algortihmName1+'_'+indicator].tolist()], alternative='greater', zero_method= "wilcox")
+                else:
+                    return wilcoxon(dataframe[algortihmName2+'_'+indicator].tolist(), dataframe[algortihmName1+'_'+indicator].tolist(), alternative='greater', zero_method= "wilcox")
             else:
-                return wilcoxon(dataframe[algortihmName2+'_'+indicator].tolist(), dataframe[algortihmName1+'_'+indicator].tolist(), alternative='greater', zero_method= "zsplit")
-        else:
-            return wilcoxon(dataframe[algortihmName1+'_'+indicator].tolist(), dataframe[algortihmName2+'_'+indicator].tolist(),alternative='greater', zero_method= "zsplit")
+                return wilcoxon(dataframe[algortihmName1+'_'+indicator].tolist(), dataframe[algortihmName2+'_'+indicator].tolist(),alternative='greater', zero_method= "wilcox")
+
+        except ValueError:
+            return [0.0, 0.5]
 
     @staticmethod
     def getEffectSize(dataframe,algortihmName1, algortihmName2, indicator):
         if indicator=='GenerationalDistance' or indicator=='Spacing':
             if indicator=='Spacing':
-                return a12.VD_A([100000000 if x==0 else x for x in dataframe[algortihmName2+'_'+indicator].tolist()], [100000000 if x==0 else x for x in dataframe[algortihmName1+'_'+indicator].tolist()])
+                return a12.VD_A([100000000 if x==0 and algortihmName2=='RS' else x for x in dataframe[algortihmName2+'_'+indicator].tolist()] 
+                                , [100000000 if x==0 and algortihmName1=='RS' else x for x in dataframe[algortihmName1+'_'+indicator].tolist()])
             else:
                 return a12.VD_A(dataframe[algortihmName2+'_'+indicator].tolist(), dataframe[algortihmName1+'_'+indicator].tolist())
         else:
@@ -93,6 +100,9 @@ class statitisticalTest:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[ 
                     (statTestDataFrame['wilcoxonTest']>=150) 
                     & (statTestDataFrame['Ax']==algortihmName)])
+            print(algortihmName+'----'+typeOf+'---'+str(len(statTestDataFrame[ 
+                    (statTestDataFrame['wilcoxonTest']>=150) 
+                    & (statTestDataFrame['Ax']==algortihmName)])))
         if typeOf=='Tie':
             for algortihmName in settings.algorithmList:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[
@@ -124,22 +134,28 @@ class statitisticalTest:
 def plotAndSave_stackedChart(dataFrameWinTieLose, typeOfComparison, pathPart):
     dataFrameWinTieLose=dataFrameWinTieLose.rename(index=settings.index)
     print(dataFrameWinTieLose)
-    ax=dataFrameWinTieLose.plot.bar(stacked=True, width=.20, colors=['lime', 'cornflowerblue', 'red'])
-    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.2),fancybox=False, shadow=False, ncol=3)
+    hatches=['\\', '\\', '\\','//', '//', '//','.', '.', '.']
+    ax=dataFrameWinTieLose.plot.bar(stacked=True, width=.20, colors=['lime', 'cornflowerblue', 'lightcoral'])
+    win = Patch(facecolor='lime', label='Win', hatch='\\')
+    tie = Patch(facecolor='cornflowerblue', label='Tie', hatch='//')
+    lose = Patch(facecolor='lightcoral', label='Lose', hatch='.')
+    plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.2),fancybox=False, shadow=False, ncol=3, handles=[win, tie, lose])
     labels = []
     for j in dataFrameWinTieLose.columns:
         for i in dataFrameWinTieLose.index:
             label=str(dataFrameWinTieLose.loc[i][j])
             labels.append(label)
     patches=ax.patches
-    for label, rect in zip(labels, patches):
+    for label, rect, hatch in zip(labels, patches, hatches):
         width = rect.get_width()
+        rect.set_hatch(hatch)
         if width > 0 and int(label)>0:
             x = rect.get_x()
             y = rect.get_y()
             height = rect.get_height()
             ax.text(x + width/2., y + height/2., label, ha='center', va='center', size='x-small')
-    ax.grid(b=True, linestyle='dotted', axis='y')
+            ax
+    ax.grid(b=True, linestyle='dotted', axis='y')   
     plt.tight_layout()
     print(pathPart)
     plt.savefig(os.path.join(os.getcwd(),"results"+settings.devCategory.get(pathPart),sys.argv[1]+'_stackChartPlot',sys.argv[1]+'_winTieLose_'+typeOfComparison+'.pdf'))
@@ -217,6 +233,7 @@ def fillTableOfSimpleStat(devKey):
         for qi in settings.QIList:
             for approach in settings.listOfApproaches:
                 simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(settings.getListOfFiles(sys.argv[1]).get(MSFile.name)), devKey) ,(qi, approach)]=str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].mean(),2))+';'+ str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].std(),2))
+    simpleStateDataFrame.fillna(0, inplace=True)
     print(simpleStateDataFrame)
     simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))  
 
@@ -227,6 +244,29 @@ if __name__=="__main__":
         print('/////////---> '+keyDev)
         loadResults=readResults
         dictOfDataFrames=loadResults.loadDataIntoDataFrames(sys.argv, valueDev)
+        features=[]
+
+
+
+
+
+
+        for qi in settings.QIList_needToBeNormalized:
+                    for an in settings.algorithmList:
+                        features.append(an+'_'+qi)
+
+        for key,value in dictOfDataFrames.items():
+            dictOfDataFrames[key][features]=dictOfDataFrames[key][features].apply(lambda row:(row-row.min())/(row.max()-row.min()), axis=1)
+            dictOfDataFrames[key].fillna(0, inplace=True)
+
+        #print(dictOfDataFrames['PlatformMilestone3.0'].to_string())
+
+
+
+
+
+
+
         #make item normalize
         # for key, value in dictOfDataFrames.items():
         #     #dictOfDataFrames[key]=loadResults.normalize(value)
@@ -264,9 +304,8 @@ if __name__=="__main__":
         elif keyDev == 'CoreDevs':
             settings.Core_Devs = statTestDataFrame
             print('/////////////////')
-            print(statTestDataFrame)
+        print(statTestDataFrame)#[(statTestDataFrame.wilcoxonTest>150) & (statTestDataFrame.Ax=='RS')])
         
-
 
         fillTableOfSimpleStat(keyDev)
         saveIntoLatex.saveAsLatex()
@@ -292,7 +331,7 @@ if __name__=="__main__":
         plotAndSave_stackedChart(dataFrameWinTieLose, "A12", keyNameDev)
 
 
-    #plot and save table of results---using a multi-index strucutre
+    #create(if not exist) and save table of results---using a multi-index strucutre
     if not os.path.exists(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")):
         #simpleStateDataFrame=getEmptyDataframe_simpleDataFrame_multiIndex()
         simpleStateDataFrame=saveIntoLatex.create_simpleDataFrame_multiIndex()

@@ -66,6 +66,7 @@ algorithmListUnderCom=['NSGAIIITAGLS', 'KRRGZ']
 mapToRightName={'NSGAIIITAGLS':'SD', 'KRRGZ':'KRRGZ'}
 
 QIList=['Hypervolume', 'GenerationalDistance', 'Spacing', 'Contribution']
+QIList_needToBeNormalized=['GenerationalDistance','Spacing']
 
 crossoverParams=[0.5, 0.6, 0.7, 0.8, 0.9]
 mutationParams=[0.01, 0.05, 0.10, 0.20, 0.30]
