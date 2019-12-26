@@ -99,20 +99,65 @@ class statitisticalTest:
             for algortihmName in settings.algorithmList:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[ 
                     (statTestDataFrame['wilcoxonTest']>=150) 
-                    & (statTestDataFrame['Ax']==algortihmName)])
-            print(algortihmName+'----'+typeOf+'---'+str(len(statTestDataFrame[ 
-                    (statTestDataFrame['wilcoxonTest']>=150) 
-                    & (statTestDataFrame['Ax']==algortihmName)])))
+                    & (statTestDataFrame['Ax']==algortihmName)
+                    & (statTestDataFrame['p-value']<=0.05)])
         if typeOf=='Tie':
             for algortihmName in settings.algorithmList:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[
-                    (statTestDataFrame['wilcoxonTest']<150) & (statTestDataFrame['wilcoxonTest']>100)
+                    (   (statTestDataFrame['wilcoxonTest']<150) 
+                        & (statTestDataFrame['wilcoxonTest']>100)
+                        & (statTestDataFrame['p-value']>0.05)
+                    )
+                    | 
+                    (   (statTestDataFrame['wilcoxonTest']>=150) 
+                        & (statTestDataFrame['p-value']>0.05)
+                    )
                     & (statTestDataFrame['Ax']==algortihmName)])
         if typeOf=='Lose':
             for algortihmName in settings.algorithmList:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[
                     (statTestDataFrame['wilcoxonTest']<=100)
-                    & (statTestDataFrame['Ax']==algortihmName)])
+                    & (statTestDataFrame['Ax']==algortihmName)
+                    & (statTestDataFrame['p-value']>0.05)])
+
+    def fillWinTieLose_onlyWilc_enhanced(statTestDataFrame, dataFrameWinTieLose):
+        dataFrameWinTieLose.fillna(0,inplace=True)
+        print(dataFrameWinTieLose)
+        statTestDataFrame_temp=statTestDataFrame[(statTestDataFrame.Ax=='NSGAIIITAGLS') |
+                                                 ((statTestDataFrame.Ax=='KRRGZ') & (statTestDataFrame.Ay=='RS'))]
+
+        for index,row in statTestDataFrame_temp.iterrows():
+            algortihmName1=statTestDataFrame_temp.loc[index]['Ax']
+            algortihmName2=statTestDataFrame_temp.loc[index]['Ay']
+            res= statitisticalTest.makeComparison_wilcoxon(algortihmName1, algortihmName2, index, statTestDataFrame_temp)
+            if res==1:
+                dataFrameWinTieLose.loc[algortihmName1, 'Win']+=1;
+                dataFrameWinTieLose.loc[algortihmName2, 'Lose']+=1;
+            elif res==-1:
+                dataFrameWinTieLose.loc[algortihmName1, 'Lose']+=1;
+                dataFrameWinTieLose.loc[algortihmName2, 'Win']+=1;
+            elif res==0:
+                dataFrameWinTieLose.loc[algortihmName1, 'Tie']+=1;
+                dataFrameWinTieLose.loc[algortihmName2, 'Tie']+=1;
+        #return dataFrameWinTieLose
+
+    
+    def makeComparison_wilcoxon(algortihmName1, algortihmName2, rowOfStatTestDataFrame, statTestDataFrame_temp):
+        if (    (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ax']==algortihmName1) 
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ay']==algortihmName2)        
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['wilcoxonTest']>=200)
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['p-value']<=0.05)
+            ):
+            return 1;
+        elif( (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ax']==algortihmName2) 
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ay']==algortihmName1)        
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['wilcoxonTest']>=200)
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['p-value']<=0.05)
+            ):
+            return -1;
+        else:
+            return 0;
+ 
 
     def fillWinTieLose_withA12(statTestDataFrame, dataFrameWinTieLose, typeOf):
         if typeOf=='Win':
@@ -130,6 +175,46 @@ class statitisticalTest:
                 dataFrameWinTieLose.loc[algortihmName, typeOf]=len(statTestDataFrame[
                     (statTestDataFrame['effectSize']<=0.7)
                     & (statTestDataFrame['Ax']==algortihmName)])
+
+
+
+    def fillWinTieLose_withA12_enhanced(statTestDataFrame, dataFrameWinTieLose):
+        for col in dataFrameWinTieLose.columns:
+            dataFrameWinTieLose[col].values[:] = 0
+
+        print(dataFrameWinTieLose)
+        statTestDataFrame_temp=statTestDataFrame[(statTestDataFrame.Ax=='NSGAIIITAGLS') |
+                                                 ((statTestDataFrame.Ax=='KRRGZ') & (statTestDataFrame.Ay=='RS'))]
+
+        for index,row in statTestDataFrame_temp.iterrows():
+            algortihmName1=statTestDataFrame_temp.loc[index]['Ax']
+            algortihmName2=statTestDataFrame_temp.loc[index]['Ay']
+            res= statitisticalTest.makeComparison_effectSize(algortihmName1, algortihmName2, index, statTestDataFrame_temp)
+            if res==1:
+                dataFrameWinTieLose.loc[algortihmName1, 'Win']+=1;
+                dataFrameWinTieLose.loc[algortihmName2, 'Lose']+=1;
+            elif res==-1:
+                dataFrameWinTieLose.loc[algortihmName1, 'Lose']+=1;
+                dataFrameWinTieLose.loc[algortihmName2, 'Win']+=1;
+            elif res==0:
+                dataFrameWinTieLose.loc[algortihmName1, 'Tie']+=1;
+                dataFrameWinTieLose.loc[algortihmName2, 'Tie']+=1;
+
+    def makeComparison_effectSize(algortihmName1, algortihmName2, rowOfStatTestDataFrame, statTestDataFrame_temp):
+        if (    (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ax']==algortihmName1) 
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ay']==algortihmName2)        
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['effectSize']>=0.8)
+            ):
+            return 1;
+        elif( (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ax']==algortihmName2) 
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ay']==algortihmName1)        
+                and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['effectSize']>=0.8)
+            ):
+            return -1;
+        else:
+            return 0;
+
+
 
 def plotAndSave_stackedChart(dataFrameWinTieLose, typeOfComparison, pathPart):
     dataFrameWinTieLose=dataFrameWinTieLose.rename(index=settings.index)
@@ -304,7 +389,8 @@ if __name__=="__main__":
         elif keyDev == 'CoreDevs':
             settings.Core_Devs = statTestDataFrame
             print('/////////////////')
-        print(statTestDataFrame)#[(statTestDataFrame.wilcoxonTest>150) & (statTestDataFrame.Ax=='RS')])
+        #print(statTestDataFrame[(statTestDataFrame.wilcoxonTest>150) & (statTestDataFrame.Ay=='NSGAIIITAGLS')].round(2))
+        print(statTestDataFrame)
         
 
         fillTableOfSimpleStat(keyDev)
@@ -317,15 +403,20 @@ if __name__=="__main__":
         # print(statTestDataFrame[(statTestDataFrame['wilcoxonTest']<300) | (statTestDataFrame['effectSize']<0.8)].groupby('Axy').size())
         
         #fill and plot stacked charts using only wilcoxson
-        for item in settings.statTest:
-            statitisticalTest.fillWinTieLose_onlyWilc(statTestDF, dataFrameWinTieLose, item)
+        #for item in settings.statTest:
+        #   statitisticalTest.fillWinTieLose_onlyWilc(statTestDF, dataFrameWinTieLose, item)
+
+
+        statitisticalTest.fillWinTieLose_onlyWilc_enhanced(statTestDF, dataFrameWinTieLose);
         
         print('senario[wilcoxson]--->'+ keyNameDev)
         plotAndSave_stackedChart(dataFrameWinTieLose, "wilcoxson",keyNameDev )
 
         #fill and plot stacked charts using effect size
-        for item in settings.statTest:
-            statitisticalTest.fillWinTieLose_withA12(statTestDF, dataFrameWinTieLose, item)
+        # for item in settings.statTest:
+        #     statitisticalTest.fillWinTieLose_withA12(statTestDF, dataFrameWinTieLose, item)
+
+        statitisticalTest.fillWinTieLose_withA12_enhanced(statTestDF, dataFrameWinTieLose);   
 
         print('senario[effectSize]--->'+ keyNameDev)
         plotAndSave_stackedChart(dataFrameWinTieLose, "A12", keyNameDev)
