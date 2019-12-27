@@ -7,11 +7,13 @@ from sklearn import preprocessing
 import matplotlib.pyplot as plt
 from pylab import boxplot
 from matplotlib.ticker import FormatStrFormatter
+import matplotlib
 from sklearn import preprocessing
 import settings
 import a12
 import saveIntoLatex
 from  matplotlib.patches import Patch
+import subprocess
 
 
 # input arguments example: python loadFromYaML&doStatTest.py JDT NSGAIIITAGLS AllDevs(CoreDevs)
@@ -243,7 +245,11 @@ def plotAndSave_stackedChart(dataFrameWinTieLose, typeOfComparison, pathPart):
     ax.grid(b=True, linestyle='dotted', axis='y')   
     plt.tight_layout()
     print(pathPart)
-    plt.savefig(os.path.join(os.getcwd(),"results"+settings.devCategory.get(pathPart),sys.argv[1]+'_stackChartPlot',sys.argv[1]+'_winTieLose_'+typeOfComparison+'.pdf'))
+    matplotlib.rc('pdf', fonttype=42)
+    #plt.savefig(os.path.join(os.getcwd(),"results"+settings.devCategory.get(pathPart),sys.argv[1]+'_stackChartPlot',sys.argv[1]+'_winTieLose_'+typeOfComparison+'.pdf'))
+    pathOfFig=str(os.path.join(os.getcwd(),"results"+settings.devCategory.get(pathPart),sys.argv[1]+'_stackChartPlot'))
+    nameOfFig=str(sys.argv[1]+'_winTieLose_'+typeOfComparison)
+    savePdfViaSvg(plt, nameOfFig, pathOfFig)
 
 def plotAndSave_boxPlotCharts(dictOfDataFrames):
     colors = ['black', 'red']
@@ -308,6 +314,7 @@ def plotAndSave_boxPlotCharts(dictOfDataFrames):
         #plt.grid(True)
         #plt.grid(linestyle='dotted')
         #plt.yaxis.grid(True)
+        matplotlib.rc('pdf', fonttype=42)
         plt.savefig(os.path.join(os.getcwd(),"results",sys.argv[1]+'_boxPlotsForQIs',sys.argv[1]+'_'+qi+'_boxplot.pdf'))
 
 
@@ -321,6 +328,14 @@ def fillTableOfSimpleStat(devKey):
     simpleStateDataFrame.fillna(0, inplace=True)
     print(simpleStateDataFrame)
     simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))  
+
+
+def savePdfViaSvg(fig,nameOfFig, pathOfFig, **kwargs):
+    fig.savefig(os.path.join(pathOfFig, nameOfFig+".svg"), format="svg", **kwargs)
+    incmd = ["inkscape", os.path.join(pathOfFig, nameOfFig+".svg"), "--export-pdf="+os.path.join(pathOfFig, nameOfFig+".pdf"),
+             "--export-pdf-version=1.5"] #"--export-ignore-filters",
+    subprocess.call(incmd, shell=True)
+    os.remove(os.path.join(pathOfFig, nameOfFig+".svg"))
 
 #the script starts at this line
 if __name__=="__main__":
