@@ -17,7 +17,14 @@ public class Training {
 	double[][] transitions=new double[2][2];
 	double[][] emissions=new double[2][2];
 
-	//generate a new HMM
+	/*
+	 * generate new HMM model
+	 *  <p>
+	 *  
+	 *  @param iVector Holds the initializatin vector data
+	 *  @return HMM<T> the generated HMM used for adaptive assignment
+	 * 
+	 */
 	public HMM<Observation> getHMM() {
 		initialize_params();
 		HMM<Observation> HMM=new HMM<Observation>(initialStates,transitions,emissions, Environment_s1.getObservationSymbols());
@@ -25,7 +32,11 @@ public class Training {
 		return HMM;
 	}
 
-	//initialize the params 
+	/*
+	 * perform hmm initialization in terms of probability matrices
+	 * 
+	 * <p> the transition and emisson matrices will be initialized afterwards 
+	 */
 	public void initialize_params(){
 		
 		//initialize transitions probabilities

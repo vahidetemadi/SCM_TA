@@ -1,3 +1,6 @@
+/* Copyright 2019- Vahid Etemadi
+ * 
+ */
 package SCM_TA_V2;
 
 import java.io.IOException;
@@ -22,9 +25,21 @@ public class AdaptiveAssignmentPipline {
 	static Random random=new Random();
 	static HMM<Observation> HMM=null;
 	static String datasetName=null;
+	/*
+	 * Gets invoked to run a new pipeline of task assignment in an adaptive way
+	 *
+	 * <p> 
+	 * the method orchestrates the sequnce of tasks prior to self-adaptive assingment  
+	 */
+			
+	public void run(){
+		
+		
+	}
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 		//get the trained Markov model
 		HMM=training_instance.getHMM();
+		
 		Environment_s1.generaetListOfState();
 		Environment_s1.generaetListOfObservation(); 
 		
