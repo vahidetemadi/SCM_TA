@@ -11,7 +11,8 @@ public class InitializedFeatures extends AbstractProblem {
 		// TODO Auto-generated constructor stub
 	}
 
-	// MODIFY 
+	// MODIFY  
+	// EFFECT the cost associated to a solution is computed
 	@Override
 	public void evaluate(Solution solution) {
 		// TODO Auto-generated method stub
@@ -23,6 +24,7 @@ public class InitializedFeatures extends AbstractProblem {
 	@Override
 	public Solution newSolution() {
 		// TODO Auto-generated method stub
+		Solution solution=new  Solution(numberOfVariables, numberOfObjectives);
 		return null;
 	}
 
