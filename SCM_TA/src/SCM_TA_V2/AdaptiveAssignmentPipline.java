@@ -14,6 +14,7 @@ import java.util.Random;
 import java.util.Scanner;
 
 import org.jgrapht.alg.color.SaturationDegreeColoring;
+import org.moeaframework.core.Solution;
 
 import smile.sequence.HMM;
 import SCM_TA_V1.*;
