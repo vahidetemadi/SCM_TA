@@ -25,16 +25,21 @@ public class AdaptiveAssignmentPipline {
 	static Random random=new Random();
 	static HMM<Observation> HMM=null;
 	static String datasetName=null;
+	
 	/*
 	 * Gets invoked to run a new pipeline of task assignment in an adaptive way
 	 *
 	 * <p> 
-	 * the method orchestrates the sequnce of tasks prior to self-adaptive assingment  
-	 */
-			
-	public void run(){
+	 * the method orchestrates the sequence of tasks prior to self-adaptive assignment
+	 * the objective is to compute the overall cost for a particular optimization
+	 * this method only initialize the inputs
+	 * 
+	 * EFFECT the overall cost is computed and is returned as the fitness of input solution 
+	 */		
+	public double run(Solution solution){
+		//set the num of devs
 		
-		
+		return null;
 	}
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException{
 		//get the trained Markov model
