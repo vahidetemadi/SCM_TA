@@ -4,14 +4,14 @@ import org.moeaframework.core.Solution;
 public interface FeatureGeneration {
 	public Solution getTheFeatureVector(Solution solution);
 	
-	public  Double getTCR();
+	public void setTCR(Solution solution);
 	
-	public Integer getNumOfDevs();
+	public void setNumOfDevs(Solution solution);
 	
-	public Integer getNumOfBugs();
+	public void setNumOfBugs(Solution solution);
 	
-	public Double[][] getmissionMatrix();
+	public void setEM(Solution solution);
 	
-	public Double[][] getTransitionMatrix();
+	public void setTM(Solution solution);
 	
 }

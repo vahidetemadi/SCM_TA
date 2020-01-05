@@ -19,7 +19,7 @@ public class InitializedFeatures extends AbstractProblem {
 		
 	}
 
-	JsonObject jObject=Json.createObjectBuilder().build();
+	//JsonObject jObject=Json.createObjectBuilder().build();
 	
 	@Override
 	public Solution newSolution() {
