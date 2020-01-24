@@ -2,3 +2,4 @@
 *.recommenders
 *.class
 .metadata/
+SCM_TA/results/

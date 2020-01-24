@@ -4,18 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
-import java.util.Scanner;
 import java.util.Queue;
+import java.util.Scanner;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -26,8 +22,8 @@ import org.moeaframework.core.Population;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 
-import com.amihaiemil.eoyaml.*;
-import com.opencsv.*;
+import com.amihaiemil.eoyaml.Yaml;
+import com.amihaiemil.eoyaml.YamlMapping;
 
 
 public class Test2 {
@@ -41,7 +37,7 @@ public class Test2 {
 	//DevMetrics devMetric=new DevMetrics();
 	
 
-	public static void run( String datasetName, int fileNumber) throws NoSuchElementException, IOException, URISyntaxException{	
+	public static void run( String datasetName, int fileNumber, int portion) throws NoSuchElementException, IOException, URISyntaxException{	
 		
 		/*int numOfFiles=0;
 			if(dataset_name=="Platform")
@@ -49,23 +45,23 @@ public class Test2 {
 			else 
 				numOfFiles=9;*/
 			
-			runExperiment(fileNumber, datasetName);
+			runExperiment(fileNumber, datasetName, portion);
 		
 	}
 	
-	public static void runExperiment(int fileNumber,String datasetName) throws NoSuchElementException, IOException, URISyntaxException{
+	public static void runExperiment(int fileNumber,String datasetName, int portion) throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
 		for(int runNum=1;runNum<=1;runNum++){
 			//developers.clear();
 			bugs.clear();
-			starting(fileNumber, runNum, datasetName);
+			starting(fileNumber, runNum, datasetName, portion);
 			System.gc();
 		}
 		
 	}
 	
-	public static void starting(int fileNumber, int runNum, String datasetName) throws IOException{
-		bugInitialization(fileNumber, datasetName);
+	public static void starting(int fileNumber, int runNum, String datasetName, int portion) throws IOException{
+		bugInitialization(fileNumber, datasetName, portion);
 		//Assigning(actionSet.get(0),runNum,fileNumber, datasetName);
 		//solution=results[1].get(results[1].size()/2);
 		//writeResult(runNum,i,results);
@@ -81,7 +77,7 @@ public class Test2 {
 	}
 	
 	// initialize the developer objects  
-	public static void devInitialization(String datasetName) throws IOException,NoSuchElementException, URISyntaxException{
+	public static void devInitialization(String datasetName, int portion) throws IOException,NoSuchElementException, URISyntaxException{
 		//initialize developers
 				System.out.println("enter the developrs file");
 				Developer developer = null;
@@ -146,11 +142,13 @@ public class Test2 {
 							d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
 					}
 				}
+				//cut randomly portion of developers
+				GA_Problem_Parameter.cutDevs(portion);
 		
 	}
 	
-	// initialize the bugs objects for task assignment  
-	public static void bugInitialization(int fileNumber, String datasetName) throws IOException,NoSuchElementException{	
+	// initialize the bugs objects for task assignment
+	public static void bugInitialization(int fileNumber, String datasetName, int portion) throws IOException,NoSuchElementException{	
 		bugs.clear();
 		Scanner sc;//=new Scanner(System.in);
 		int i=0;
@@ -209,6 +207,9 @@ public class Test2 {
 				
 
 		
+		//cut portion of tasks randomly
+		GA_Problem_Parameter.cutTasks(portion, bugs);
+		
 		//prune bug list
 		GA_Problem_Parameter.splitBugList(bugs);
 		
@@ -236,6 +237,7 @@ public class Test2 {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 		}
+		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
 		GA_Problem_Parameter.population=500;
 	}
@@ -313,7 +315,7 @@ public class Test2 {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(String action, int runNum, int fileNum, String datasetName) throws IOException{
+	public static void Assigning(String action, int runNum, int fileNum, String datasetName, Double TCT, Double TID) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		
@@ -334,6 +336,8 @@ public class Test2 {
 		{
 			switch(action){
 			case "cost":
+				
+				
 				Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 				.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
@@ -346,6 +350,9 @@ public class Test2 {
 				for(Solution s:result_normal)
 					NormalSolution=s;
 				int c=0;
+				
+				
+				
 				while(GA_Problem_Parameter.tso.hasNext()){
 					Bug b=GA_Problem_Parameter.tso.next();
 					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
@@ -368,6 +375,11 @@ public class Test2 {
 						.add("ID", NormalSolution.getAttribute("diffusedKnowledge").toString())
 						.add("Cost",Double.toString(NormalSolution.getObjective(0)))
 						.build();
+				
+				//add to total cost ove time and total information diffusion
+				TCT+=NormalSolution.getObjective(0);
+				TID+=(Double)NormalSolution.getAttribute("diffusedKnowledge");
+				
 				System.out.println(yaml_Dynamic.toString());
 				
 				//log in a file
@@ -397,7 +409,7 @@ public class Test2 {
 				//Performing the update
 				Solution IDSolution=null;
 				for(Solution s:result_ID)
-						IDSolution=s;
+					IDSolution=s;
 				int c2=0;
 				while(GA_Problem_Parameter.tso.hasNext()){
 					Bug b=GA_Problem_Parameter.tso.next();
@@ -419,6 +431,10 @@ public class Test2 {
 						.add("ID", Double.toString(-1*IDSolution.getObjective(0)))
 						.add("Cost", IDSolution.getAttribute("cost").toString())
 						.build();
+				
+				//add to total cost over time and total information diffusion
+				TID+=(-1)*IDSolution.getObjective(0);
+				TCT+=(Double) IDSolution.getAttribute("cost");
 				System.out.println(yaml_Steady.toString());
 				
 				//log in YAML format

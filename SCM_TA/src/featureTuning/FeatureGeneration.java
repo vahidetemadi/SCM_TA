@@ -2,7 +2,7 @@ package featureTuning;
 import org.moeaframework.core.Solution;
 
 public interface FeatureGeneration {
-	public Solution getTheFeatureVector(Solution solution);
+	public void setFeatureVector(Solution solution);
 	
 	public void setTCR(Solution solution);
 	

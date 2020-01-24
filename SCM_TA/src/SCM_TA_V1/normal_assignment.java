@@ -17,7 +17,7 @@ import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 
-import SCM_TA_V2.Environment_s1;
+import context.Environment_s1;
 
 public class normal_assignment extends AbstractProblem {
 	

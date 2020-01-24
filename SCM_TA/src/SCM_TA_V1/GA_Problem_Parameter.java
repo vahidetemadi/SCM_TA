@@ -1,16 +1,23 @@
 package SCM_TA_V1;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.omg.PortableInterceptor.INACTIVE;
+
+import context.*;
+
 import org.jgrapht.graph.AsSubgraph;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.jgrapht.graph.DefaultEdge;
@@ -23,8 +30,6 @@ import org.jgrapht.alg.GabowStrongConnectivityInspector;
 import org.jgrapht.alg.shortestpath.AllDirectedPaths;
 
 import java.util.Iterator;
-
-import SCM_TA_V2.*;
 
 
 public class GA_Problem_Parameter {
@@ -546,7 +551,49 @@ public class GA_Problem_Parameter {
 			
 			
 	}
-
+	/**
+	 * the method to randomly cut portion of developers
+	 * @param portion portion of developers will be removed in percentage
+	 */
+	public static void cutDevs(double portion) {
+		System.out.println("Devs size-----------------------"+ developers.size());
+		System.out.println("portion--------"+portion);
+		int length=(int)(developers.size()*(portion/100));
+		System.out.println("Devs to be cut-----------------------"+ length);
+		Random r=new Random();
+		int rand=0;
+		for(int i=0; i<length; i++) {
+			rand=r.nextInt(developers.size());
+			if(developers.containsKey(rand))
+				developers.remove(rand);	
+		}
+		System.out.println("Devs after being cut-----------------------"+ developers.size());
+	}
+	
+	/**
+	 *  removing some tasks in random from the bugs(stored in a hashmap structure)
+	 * @param portion in percentage reveals how many bugs should be ignored at the first of period of time
+	 */
+	public static void cutTasks(double portion, HashMap<Integer, Bug> bugs) {
+		System.out.println("Tasks size----------------"+bugs.entrySet().size());
+		System.out.println("portion--------"+portion);
+		int length=(int)(bugs.size()*(portion/100));
+		System.out.println("Tasks to be cut----------------"+length);
+		Random r=new Random();
+		List<Integer> keys;
+		int rand=0;
+		for(int i=0; i<length; i++) {
+			keys=bugs.keySet().stream().collect(Collectors.toList());
+			rand=r.nextInt(keys.size());
+			bugs.remove(keys.get(rand));		
+		}
+		System.out.println("Tasks after being cut----------------"+bugs.entrySet().size());
+	}
+	
+	
+	
+	
+	
 	public static Map.Entry<Integer, Developer> getDev(Integer i){
 		Map.Entry<Integer, Developer> developer=null;
 		for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers_all.entrySet()){
