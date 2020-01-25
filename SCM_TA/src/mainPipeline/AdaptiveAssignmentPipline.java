@@ -37,6 +37,7 @@ public class AdaptiveAssignmentPipline {
 	//keeps the total cost over time and total information diffusion
 	static Double[] totals=new Double[2];
 	private static AdaptiveAssignmentPipline adaptivePipeline=null;
+	Test2 test;
 	
 	static FeatureInitialization featureIni=FeatureInitializationV1.getInstance();
 	static HashMap<String, Integer> listOfConfig=new HashMap<String, Integer>(){
@@ -50,8 +51,9 @@ public class AdaptiveAssignmentPipline {
 	};
 	
 	private AdaptiveAssignmentPipline() {
-	
+		test=Test2.getInstance();
 	}
+
 	
 	public static AdaptiveAssignmentPipline getInstance() {
 
@@ -64,7 +66,7 @@ public class AdaptiveAssignmentPipline {
 	/*
 	 * Gets invoked to run a new pipeline of task assignment in an adaptive way
 	 *
-	 * <p> 
+	 * <p>
 	 * the method orchestrates the sequence of tasks prior to self-adaptive assignment
 	 * the objective is to compute the overall cost for a particular optimization
 	 * this method only initialize the inputs
@@ -74,15 +76,24 @@ public class AdaptiveAssignmentPipline {
 	public Double[] run(Solution solution) throws NoSuchElementException, IOException, URISyntaxException{
 		//set the num of devs-- all dev set will be pruned by the number comes from solution
 		listOfConfig.put("numOfDevs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
-		System.out.println("num of devs-----"+EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
+		System.out.println("% of devs should be ignored-----"+featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
+		
 		//set the number of bugs -- the bug list will be cut down by the number of valid bugs 
 		listOfConfig.put("numOfBugs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfBugs"))));
-		System.out.println("num of bugs------"+EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfBugs"))));
+		System.out.println("% of bugs should be ignored------"+featureIni.getBugNum().get(listOfConfig.get("numOfBugs")));
+		
 		//create the Poisson distribution with the lambda value from solution
 		listOfConfig.put("TCR", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("TCR"))));
+		System.out.println("Value of lambda------"+featureIni.getTCR().get(listOfConfig.get("TCR")));
+		
 		//initialize HMM with the value of solution
 		listOfConfig.put("TM", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("TM"))));
-		listOfConfig.put("EM", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("EM"))));
+		System.out.println("Candidate TM------"+featureIni.getTm().get(listOfConfig.get("TM")));
+		listOfConfig.put("EM", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("EM"))));	
+		System.out.println("Candidate EM------"+featureIni.getEm().get(listOfConfig.get("EM")).toString());
+		
+		//set dataset name
+		datasetName=FeatureInitializationV1.datasetName;
 		
 		//start the pipeline
 		start();
@@ -90,21 +101,18 @@ public class AdaptiveAssignmentPipline {
 		return totals;
 	}
 	
-	public static void start() throws NoSuchElementException, IOException, URISyntaxException{
+	public void start() throws NoSuchElementException, IOException, URISyntaxException{
 		//get the trained Markov model with the predefined model
 		training_instance.initialize_params(featureIni.getTm().get(listOfConfig.get("TM")), featureIni.getTm().get(listOfConfig.get("EM")));
 		HMM=training_instance.getHMM();
 		
-		//create the sequence of states and observation  
+		//create the sequence of states and observation
 		Environment_s1.generaetListOfState();
 		Environment_s1.generaetListOfObservation();
 		
-		//instantiate the objects required for the environment 
+		//instantiate the objects required for the environment
 		Environment_s1.insantiateObjects(featureIni.getTCR().get(listOfConfig.get("TCR"))); 
-		
-		System.out.println("Enter the dataset name:");
-		Scanner sc=new Scanner(System.in);
-		datasetName=sc.next();
+
 		
 		//pull in the developer  profile
 		Test2.devInitialization(datasetName, featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
@@ -163,7 +171,7 @@ public class AdaptiveAssignmentPipline {
 				//call the assignment algorithm
 				totals[0]=0.0;
 				totals[1]=0.0;
-				Test2.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals[0], totals[1]);
+				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals[0], totals[1]);
 				
 				//make the update onto devNetwork
 				Environment_s1.nodeDeletion();

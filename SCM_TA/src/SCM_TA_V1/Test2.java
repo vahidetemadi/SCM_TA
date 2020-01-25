@@ -17,10 +17,21 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
+import org.moeaframework.algorithm.single.GeneticAlgorithm;
+import org.moeaframework.core.Initialization;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Population;
+import org.moeaframework.core.Selection;
 import org.moeaframework.core.Solution;
+import org.moeaframework.core.Variation;
+import org.moeaframework.core.comparator.ParetoDominanceComparator;
+import org.moeaframework.core.operator.GAVariation;
+import org.moeaframework.core.operator.RandomInitialization;
+import org.moeaframework.core.operator.TournamentSelection;
+import org.moeaframework.core.operator.real.PM;
+import org.moeaframework.core.operator.real.SBX;
 import org.moeaframework.core.variable.EncodingUtils;
+import org.moeaframework.problem.AbstractProblem;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
@@ -35,8 +46,37 @@ public class Test2 {
 	static Project project=new Project();
 	static int roundnum=0;
 	//DevMetrics devMetric=new DevMetrics();
+	private static Test2 instance=null;
+	AbstractProblem normal_assginment;
+	AbstractProblem ID_assginment;
+	Selection selection;
+	Variation variation;
+	Initialization inintialization_normal;
+	Initialization inintialization_ID;
+	GeneticAlgorithm GA_normal;
+	GeneticAlgorithm GA_ID;
+	NondominatedPopulation result;
 	
-
+	private Test2() {
+		selection=new TournamentSelection(2, 
+				new ParetoDominanceComparator()); 
+		 variation = new GAVariation(
+	                new SBX(15.0, 1.0),
+	                new PM(20.0, 0.5));
+		 normal_assginment=new normal_assignment();
+		 ID_assginment=new InformationDifussion();
+		 inintialization_normal = new RandomInitialization(normal_assginment, GA_Problem_Parameter.population);
+		 inintialization_ID=new RandomInitialization(ID_assginment, GA_Problem_Parameter.population);
+		 GA_normal=new GeneticAlgorithm(normal_assginment, null, inintialization_normal, selection, variation);
+		 GA_ID=new GeneticAlgorithm(ID_assginment, null, inintialization_ID, selection, variation);
+	}
+	
+	public static Test2 getInstance() {
+		if(instance==null)
+			instance=new Test2();
+		return instance;
+	}
+	
 	public static void run( String datasetName, int fileNumber, int portion) throws NoSuchElementException, IOException, URISyntaxException{	
 		
 		/*int numOfFiles=0;
@@ -315,155 +355,145 @@ public class Test2 {
 	}
 	
 	//find solution to assign tasks to the developers
-	public static void Assigning(String action, int runNum, int fileNum, String datasetName, Double TCT, Double TID) throws IOException{
+	public void Assigning(String action, int runNum, int fileNum, String datasetName, Double TCT, Double TID) throws IOException{
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		
-		/*NondominatedPopulation result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
-		results[0]=result_Karim;
-		
-		System.out.println("finished first one");
-		
-		NondominatedPopulation result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.6).withProperty("pm.rate", 0.1).run();
-	    results[1]=result_me;*/
-		
-		//try{
 		try(PrintWriter pw=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.yml"),true)))
 		{
 			switch(action){
-			case "cost":
-				
-				
-				Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
-		
-				System.out.println("finished cost-based assignment");
-				
-				//cost based///
-				////
-				Solution NormalSolution=null;
-				for(Solution s:result_normal)
-					NormalSolution=s;
-				int c=0;
-				
-				
-				
-				while(GA_Problem_Parameter.tso.hasNext()){
-					Bug b=GA_Problem_Parameter.tso.next();
-					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-					while(tso_Zone.hasNext()){
-						Developer d=developers.get(NormalSolution.getVariable(c));
-						updateDevProfile(b, tso_Zone.next(), d);
-						c++;
+				case "cost":
+					while(GA_normal.getNumberOfEvaluations()<250000) {
+						GA_normal.step();
 					}
-				}
-				
-				//report the cost
-				/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
-						"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
-						+"\n	the total cost:" + NormalSolution.getObjective(0));*/
-				
-				//write down the results in yaml format
-				
-				YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder()
-						.add("state name", "Dynamic")
-						.add("ID", NormalSolution.getAttribute("diffusedKnowledge").toString())
-						.add("Cost",Double.toString(NormalSolution.getObjective(0)))
-						.build();
-				
-				//add to total cost ove time and total information diffusion
-				TCT+=NormalSolution.getObjective(0);
-				TID+=(Double)NormalSolution.getAttribute("diffusedKnowledge");
-				
-				System.out.println(yaml_Dynamic.toString());
-				
-				//log in a file
-				pw.write(yaml_Dynamic.toString());
-				pw.append("\n");
-				pw.append("\n");
-				pw.append("\n");
-				pw.close();
-				
-				PrintWriter pw2=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
-				StringBuilder sb=new StringBuilder();
-				sb.append(fileNum +", Dynamic, Cost, "+ Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.getAttribute("diffusedKnowledge").toString());
-				sb.append('\n');
-				pw2.write(sb.toString());
-				pw2.close();
-				
-				
-				
-				break;
-			
-			case "diffusion":
-				Population result_ID=new Executor().withProblemClass(InformationDifussion_adaptive.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
-		
-				System.out.println("finished diffusion-based assignment");
-				//Performing the update
-				Solution IDSolution=null;
-				for(Solution s:result_ID)
-					IDSolution=s;
-				int c2=0;
-				while(GA_Problem_Parameter.tso.hasNext()){
-					Bug b=GA_Problem_Parameter.tso.next();
-					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-					while(tso_Zone.hasNext()){
-						Developer d=developers.get(IDSolution.getVariable(0));
-						updateDevProfile(b, tso_Zone.next(), d);
-						c2++;
+					
+					result=GA_normal.getResult();
+					
+				/***those that has been commented in favor of better GA implementation*****
+				 * 
+					Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+				**/
+					System.out.println("finished cost-based assignment");
+					
+					//cost based///
+					////
+					Solution NormalSolution=null;
+					for(Solution s:result)
+						NormalSolution=s;
+					int c=0;
+					
+					
+					
+					while(GA_Problem_Parameter.tso.hasNext()){
+						Bug b=GA_Problem_Parameter.tso.next();
+						TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+						while(tso_Zone.hasNext()){
+							Developer d=developers.get(NormalSolution.getVariable(c));
+							updateDevProfile(b, tso_Zone.next(), d);
+							c++;
+						}
 					}
-				}
-				//report the cost---logging the cost
-				/*System.out.println("knowlwdge and cost of diffusion-based approach (state Steady)"+
-						"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
-						+"\n"+
-						"	the total cost:"+ IDSolution.getAttribute("cost"));*/
+					
+					//report the cost
+					/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
+							"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
+							+"\n	the total cost:" + NormalSolution.getObjective(0));*/
+					
+					//write down the results in yaml format
+					
+					YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder()
+							.add("state name", "Dynamic")
+							.add("ID", NormalSolution.getAttribute("diffusedKnowledge").toString())
+							.add("Cost",Double.toString(NormalSolution.getObjective(0)))
+							.build();
+					
+					//add to total cost ove time and total information diffusion
+					TCT+=NormalSolution.getObjective(0);
+					TID+=(Double)NormalSolution.getAttribute("diffusedKnowledge");
+					
+					System.out.println(yaml_Dynamic.toString());
+					
+					//log in a file
+					pw.write(yaml_Dynamic.toString());
+					pw.append("\n");
+					pw.append("\n");
+					pw.append("\n");
+					pw.close();
+					
+					PrintWriter pw2=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
+					StringBuilder sb=new StringBuilder();
+					sb.append(fileNum +", Dynamic, Cost, "+ Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.getAttribute("diffusedKnowledge").toString());
+					sb.append('\n');
+					pw2.write(sb.toString());
+					pw2.close();
+					
+					
+					
+					break;
 				
-				YamlMapping yaml_Steady=Yaml.createYamlMappingBuilder()
-						.add("state name", "Steady")
-						.add("ID", Double.toString(-1*IDSolution.getObjective(0)))
-						.add("Cost", IDSolution.getAttribute("cost").toString())
-						.build();
-				
-				//add to total cost over time and total information diffusion
-				TID+=(-1)*IDSolution.getObjective(0);
-				TCT+=(Double) IDSolution.getAttribute("cost");
-				System.out.println(yaml_Steady.toString());
-				
-				//log in YAML format
-				pw.write(yaml_Steady.toString());
-				pw.append("\n");
-				pw.append("\n");
-				pw.append("\n");
-				pw.close();
-				
-				//write down to CSV file
-				PrintWriter pw3=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
-				StringBuilder sb2=new StringBuilder();
-				sb2.append(fileNum +", Steady, Diffusion, "+IDSolution.getAttribute("cost").toString()+","+Double.toString(-1*IDSolution.getObjective(0)));
-				sb2.append('\n');
-				pw3.write(sb2.toString());
-				pw3.close();
-				pw3.close();
-				break;	
+				case "diffusion":
+					while(GA_ID.getNumberOfEvaluations()<250000) {
+						GA_ID.step();
+					}
+					
+					result=GA_ID.getResult();
+				/***those that has been commented in favor of better GA implementation*****
+					Population result_ID=new Executor().withProblemClass(InformationDifussion_adaptive.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+				 ***/
+					System.out.println("finished diffusion-based assignment");
+					//Performing the update
+					Solution IDSolution=null;
+					for(Solution s:result)
+						IDSolution=s;
+					int c2=0;
+					while(GA_Problem_Parameter.tso.hasNext()){
+						Bug b=GA_Problem_Parameter.tso.next();
+						TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+						while(tso_Zone.hasNext()){
+							Developer d=developers.get(IDSolution.getVariable(0));
+							updateDevProfile(b, tso_Zone.next(), d);
+							c2++;
+						}
+					}
+					//report the cost---logging the cost
+					/*System.out.println("knowlwdge and cost of diffusion-based approach (state Steady)"+
+							"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
+							+"\n"+
+							"	the total cost:"+ IDSolution.getAttribute("cost"));*/
+					
+					YamlMapping yaml_Steady=Yaml.createYamlMappingBuilder()
+							.add("state name", "Steady")
+							.add("ID", Double.toString(-1*IDSolution.getObjective(0)))
+							.add("Cost", IDSolution.getAttribute("cost").toString())
+							.build();
+					
+					//add to total cost over time and total information diffusion
+					TID+=(-1)*IDSolution.getObjective(0);
+					TCT+=(Double) IDSolution.getAttribute("cost");
+					System.out.println(yaml_Steady.toString());
+					
+					//log in YAML format
+					pw.write(yaml_Steady.toString());
+					pw.append("\n");
+					pw.append("\n");
+					pw.append("\n");
+					pw.close();
+					
+					//write down to CSV file
+					PrintWriter pw3=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
+					StringBuilder sb2=new StringBuilder();
+					sb2.append(fileNum +", Steady, Diffusion, "+IDSolution.getAttribute("cost").toString()+","+Double.toString(-1*IDSolution.getObjective(0)));
+					sb2.append('\n');
+					pw3.write(sb2.toString());
+					pw3.close();
+					pw3.close();
+					break;	
 			}
 		}
-		
-		
-		
-			
-		/*}
-		catch(Exception e){
-			starting(fileNum, runNum);
-		}*/
-		//return results;
 	    
 	}
 	

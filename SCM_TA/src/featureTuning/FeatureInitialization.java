@@ -8,6 +8,7 @@ public abstract class FeatureInitialization {
 	ArrayList<Integer> TCR=new ArrayList<Integer>();
  	ArrayList<double[][]> em=new ArrayList<double[][]>();
  	ArrayList<double[][]> tm=new ArrayList<double[][]>();
+ 	public static String datasetName;
  	
  	public ArrayList<Integer> getDevNum() {
 		return this.devNum;

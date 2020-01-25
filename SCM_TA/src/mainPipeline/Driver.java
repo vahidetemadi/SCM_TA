@@ -2,15 +2,12 @@ package mainPipeline;
 import featureTuning.*;
 
 import java.util.Arrays;
-import java.util.List;
+import java.util.Scanner;
 
-import org.moeaframework.Executor;
-import org.moeaframework.algorithm.AbstractEvolutionaryAlgorithm;
 import org.moeaframework.algorithm.single.GeneticAlgorithm;
 import org.moeaframework.core.Initialization;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Population;
-import org.moeaframework.core.Problem;
 import org.moeaframework.core.Selection;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variation;
@@ -23,24 +20,29 @@ import org.moeaframework.core.operator.real.SBX;
 import org.moeaframework.core.variable.EncodingUtils;
 
 public class Driver {
-	
+	static Population finalPopulation;
 	public static void main(String[] args) {
 		//run single seed
-		runSeed();
+		finalPopulation= runSeed();
 	}
 	
 	
-	public static void runSeed() {
+	public static Population runSeed() {
 		//create object of type "FeatureInitialization"
 		FeatureInitialization featureInitializatin=FeatureInitializationV1.getInstance();
 		featureInitializatin.initializeAllFeatures();
 		
-		//Run GA for InitializedfFeatureProblem
+		//get dataset name 
 		
+		System.out.println("Enter the dataset name:");
+		Scanner sc=new Scanner(System.in);
+		FeatureInitializationV1.datasetName=sc.next();
+		
+		//Run GA for InitializedfFeatureProblem
 		InitializedFeaturesProbelm problem=new InitializedFeaturesProbelm(5, 1);
 
         Selection selection = new TournamentSelection(2, 
-                new ParetoDominanceComparator());
+        								new ParetoDominanceComparator());
 
         Variation variation = new GAVariation(
                 new SBX(15.0, 1.0),
@@ -57,14 +59,16 @@ public class Driver {
         
         NondominatedPopulation result=GA.getResult();
         Population p=GA.getPopulation();
-        for(int i=0; i<p.size(); i++)
-        	System.out.println(p.get(i));
         
         for (Solution solution : result) {
             System.out.println(Arrays.toString(EncodingUtils.getReal(solution)) +
                     " => " + solution.getObjective(0));
         }
 		
+        return p;
 	}
 	
+	public static void writeResults(Population population) {
+		
+	}
 }
