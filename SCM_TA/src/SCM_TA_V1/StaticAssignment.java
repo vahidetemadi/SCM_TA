@@ -19,7 +19,7 @@ import org.moeaframework.problem.AbstractProblem;
 
 import context.Environment_s1;
 
-public class normal_assignment extends AbstractProblem {
+public class StaticAssignment extends AbstractProblem {
 	
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
@@ -27,7 +27,7 @@ public class normal_assignment extends AbstractProblem {
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
-	public normal_assignment(){
+	public StaticAssignment(){
 		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_objectives);
 	}
 	
@@ -102,7 +102,7 @@ public class normal_assignment extends AbstractProblem {
 					System.out.println(g);
 				}*/
 				int d=EncodingUtils.getInt(solution.getVariable(index));
-				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
+				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))), "static");
 				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
 					if(developer.getKey()== (EncodingUtils.getInt(solution.getVariable(index))))
 						candidate=developer;

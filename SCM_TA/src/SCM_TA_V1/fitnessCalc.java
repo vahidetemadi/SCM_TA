@@ -21,6 +21,21 @@ public class fitnessCalc {
 		return tct;
 	}
 	
+	public static double compeletionTime(Bug bug, Entry<Zone, Double> zone, Developer developer, String approach) {	
+		double tct=0;
+		//compute the total time for each zone 
+		switch(approach) {
+		case "static":
+			tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient_static().get(zone.getKey())));
+			break;
+		case "adaptive":
+			tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
+			break;
+		}
+
+	
+		return tct;
+	}
 	
 	
 	public static double getDelayTime(Bug bug, Entry<Zone, Double> zone, Developer developer){

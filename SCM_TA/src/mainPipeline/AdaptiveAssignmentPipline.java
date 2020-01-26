@@ -34,10 +34,8 @@ public class AdaptiveAssignmentPipline {
 	static Random random=new Random();
 	static HMM<Observation> HMM=null;
 	static String datasetName=null;
-	//keeps the total cost over time and total information diffusion
-	static Double[] totals=new Double[2];
 	private static AdaptiveAssignmentPipline adaptivePipeline=null;
-	Test2 test;
+	GATaskAssignment test;
 	
 	static FeatureInitialization featureIni=FeatureInitializationV1.getInstance();
 	static HashMap<String, Integer> listOfConfig=new HashMap<String, Integer>(){
@@ -51,7 +49,7 @@ public class AdaptiveAssignmentPipline {
 	};
 	
 	private AdaptiveAssignmentPipline() {
-		test=Test2.getInstance();
+		test=GATaskAssignment.getInstance();
 	}
 
 	
@@ -73,7 +71,7 @@ public class AdaptiveAssignmentPipline {
 	 * 
 	 * EFFECT the overall cost is computed and is returned as the fitness of input solution 
 	 */	
-	public Double[] run(Solution solution) throws NoSuchElementException, IOException, URISyntaxException{
+	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException{
 		//set the num of devs-- all dev set will be pruned by the number comes from solution
 		listOfConfig.put("numOfDevs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
 		System.out.println("% of devs should be ignored-----"+featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
@@ -89,19 +87,24 @@ public class AdaptiveAssignmentPipline {
 		//initialize HMM with the value of solution
 		listOfConfig.put("TM", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("TM"))));
 		System.out.println("Candidate TM------"+featureIni.getTm().get(listOfConfig.get("TM")));
+		double[][] t=featureIni.getTm().get(listOfConfig.get("TM"));
 		listOfConfig.put("EM", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("EM"))));	
 		System.out.println("Candidate EM------"+featureIni.getEm().get(listOfConfig.get("EM")).toString());
-		
+		double[][] te=featureIni.getTm().get(listOfConfig.get("TM"));
 		//set dataset name
 		datasetName=FeatureInitializationV1.datasetName;
+		//initialize return array
+		totals.put("TCT_static", 0.0);
+		totals.put("TCT_Adaptive", 0.0);
+		totals.put("TID", 0.0);
 		
 		//start the pipeline
-		start();
+		start(totals);
 		
 		return totals;
 	}
 	
-	public void start() throws NoSuchElementException, IOException, URISyntaxException{
+	public void start(HashMap<String, Double> totals) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException{
 		//get the trained Markov model with the predefined model
 		training_instance.initialize_params(featureIni.getTm().get(listOfConfig.get("TM")), featureIni.getTm().get(listOfConfig.get("EM")));
 		HMM=training_instance.getHMM();
@@ -115,7 +118,7 @@ public class AdaptiveAssignmentPipline {
 
 		
 		//pull in the developer  profile
-		Test2.devInitialization(datasetName, featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
+		GATaskAssignment.devInitialization(datasetName, featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
 		
 		//cut off the low experienced developers---need to fill ready for attachment list
 		//starting with half of the developers
@@ -151,15 +154,16 @@ public class AdaptiveAssignmentPipline {
 		for(int i=1; i<=Environment_s1.numberOfFiles;i++){
 			//call for run
 			GA_Problem_Parameter.listOfSubBugs.clear();
-			Test2.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
+			GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
 				//set bug dependencies
-				Test2.setBugDependencies(datasetName, bugList);
+				GATaskAssignment.setBugDependencies(datasetName, bugList);
 				
 				//call the GA initialization--after party call
-				Test2.initializeGAParameter(bugList);
+				GATaskAssignment.initializeGAParameter(bugList);
 				
+				test.initializeProblems();
 				//generate the models for create the candidates
 				GA_Problem_Parameter.generateModelofBugs();
 				GA_Problem_Parameter.candidateSolutonGeneration();
@@ -169,9 +173,7 @@ public class AdaptiveAssignmentPipline {
 				Environment_s1.addToSequenceOfStates(state);
 				
 				//call the assignment algorithm
-				totals[0]=0.0;
-				totals[1]=0.0;
-				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals[0], totals[1]);
+				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals.get("TCT_static"), totals.get("TCT_adaptive"), totals.get("TID"));
 				
 				//make the update onto devNetwork
 				Environment_s1.nodeDeletion();
@@ -197,7 +199,7 @@ public class AdaptiveAssignmentPipline {
 		}	
 	}
 	
-	public static State getState(HMM<Observation> HMM){
+	public State getState(HMM<Observation> HMM){
 		HashMap<State, Double> stateProbability=new HashMap<State, Double>();
 		
 		int[] observation=Environment_s1.getObsercationSequence();

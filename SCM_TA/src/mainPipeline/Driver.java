@@ -1,10 +1,13 @@
 package mainPipeline;
 import featureTuning.*;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import org.moeaframework.algorithm.single.AggregateObjectiveComparator;
 import org.moeaframework.algorithm.single.GeneticAlgorithm;
+import org.moeaframework.algorithm.single.LinearDominanceComparator;
 import org.moeaframework.core.Initialization;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Population;
@@ -49,8 +52,9 @@ public class Driver {
                 new PM(20.0, 0.5));
 
         Initialization initialization = new RandomInitialization(problem, 100);
-		
-        GeneticAlgorithm GA=new GeneticAlgorithm(problem, null, initialization, selection, variation);
+		AggregateObjectiveComparator comparator=new LinearDominanceComparator();
+        
+        GeneticAlgorithm GA=new GeneticAlgorithm(problem, comparator, initialization, selection, variation);
         
         //run GA single objective
         while (GA.getNumberOfEvaluations() < 10000) {
@@ -68,7 +72,5 @@ public class Driver {
         return p;
 	}
 	
-	public static void writeResults(Population population) {
-		
-	}
+
 }

@@ -2,8 +2,7 @@ package SCM_TA_V1;
 
 import java.util.HashMap;
 
-public class Developer 
-{
+public class Developer implements Cloneable{
 	private int competenceProfileCount;
 	private int ID;
 	private double competenceProfile[];
@@ -14,6 +13,7 @@ public class Developer
 	public DevMetrics devMetrics=new DevMetrics();
 	public HashMap<Zone, Double> DZone_Wage=new HashMap<Zone,Double>();
 	public HashMap<Zone, Double> DZone_Coefficient=new HashMap<Zone,Double>();
+	public HashMap<Zone, Double> DZone_Coefficient_static=new HashMap<Zone,Double>();
 	public double preferentialAttachment=0;
 	public double fitness=0;
 	
@@ -61,9 +61,15 @@ public class Developer
 	public HashMap< Zone, Double> getDZone_Coefficient(){
 		return DZone_Coefficient;
 	}
+	public HashMap< Zone, Double> getDZone_Coefficient_static(){
+		return DZone_Coefficient_static;
+	}
 	
 	public HashMap< Zone, Double> getDZone_Wage(){
 		return DZone_Wage;
 	}
 	
+	public Object clone() throws CloneNotSupportedException{
+		return super.clone();
+	}
 }

@@ -17,7 +17,9 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
+import org.moeaframework.algorithm.single.AggregateObjectiveComparator;
 import org.moeaframework.algorithm.single.GeneticAlgorithm;
+import org.moeaframework.algorithm.single.LinearDominanceComparator;
 import org.moeaframework.core.Initialization;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Population;
@@ -37,7 +39,7 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 
 
-public class Test2 {
+public class GATaskAssignment {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
 	static HashMap<Integer,Bug> bugs=new HashMap<Integer,Bug>();
 	static Queue<Bug> orderdBugs; 
@@ -46,34 +48,33 @@ public class Test2 {
 	static Project project=new Project();
 	static int roundnum=0;
 	//DevMetrics devMetric=new DevMetrics();
-	private static Test2 instance=null;
+	private static GATaskAssignment instance=null;
 	AbstractProblem normal_assginment;
-	AbstractProblem ID_assginment;
+	AbstractProblem ID_assignment;
+	AbstractProblem static_assignment;
 	Selection selection;
 	Variation variation;
+	AggregateObjectiveComparator comparator;
 	Initialization inintialization_normal;
 	Initialization inintialization_ID;
+	Initialization inintialization_static;
 	GeneticAlgorithm GA_normal;
 	GeneticAlgorithm GA_ID;
+	GeneticAlgorithm GA_static;
 	NondominatedPopulation result;
 	
-	private Test2() {
+	private GATaskAssignment() {
 		selection=new TournamentSelection(2, 
 				new ParetoDominanceComparator()); 
-		 variation = new GAVariation(
+		variation = new GAVariation(
 	                new SBX(15.0, 1.0),
 	                new PM(20.0, 0.5));
-		 normal_assginment=new normal_assignment();
-		 ID_assginment=new InformationDifussion();
-		 inintialization_normal = new RandomInitialization(normal_assginment, GA_Problem_Parameter.population);
-		 inintialization_ID=new RandomInitialization(ID_assginment, GA_Problem_Parameter.population);
-		 GA_normal=new GeneticAlgorithm(normal_assginment, null, inintialization_normal, selection, variation);
-		 GA_ID=new GeneticAlgorithm(ID_assginment, null, inintialization_ID, selection, variation);
+		comparator=new LinearDominanceComparator();
 	}
 	
-	public static Test2 getInstance() {
+	public static GATaskAssignment getInstance() {
 		if(instance==null)
-			instance=new Test2();
+			instance=new GATaskAssignment();
 		return instance;
 	}
 	
@@ -117,7 +118,8 @@ public class Test2 {
 	}
 	
 	// initialize the developer objects  
-	public static void devInitialization(String datasetName, int portion) throws IOException,NoSuchElementException, URISyntaxException{
+	@SuppressWarnings("unchecked")
+	public static void devInitialization(String datasetName, int portion) throws IOException,NoSuchElementException, URISyntaxException, CloneNotSupportedException{
 		//initialize developers
 				System.out.println("enter the developrs file");
 				Developer developer = null;
@@ -154,6 +156,7 @@ public class Test2 {
 								//developer.DZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
 								//System.out.println(columns.get(j));
 								developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
+								developer.DZone_Coefficient_static.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
 								developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
 								developer.hourlyWage=Double.parseDouble(wage_items[wage_items.length-1]);
 								//System.out.println(Double.parseDouble(wage_items[k]));
@@ -175,7 +178,6 @@ public class Test2 {
 				}
 				GA_Problem_Parameter.developers_all=(HashMap<Integer, Developer>) developers.clone();
 				GA_Problem_Parameter.developers=developers;
-				
 				for(Developer d:GA_Problem_Parameter.developers.values()){
 					for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
 						if(entry.getValue()==0)
@@ -282,6 +284,17 @@ public class Test2 {
 		GA_Problem_Parameter.population=500;
 	}
 	
+	public void initializeProblems() {
+		normal_assginment=new NormalAssignment();
+		ID_assignment=new InformationDifussion();
+		static_assignment=new StaticAssignment();
+		inintialization_normal = new RandomInitialization(normal_assginment, GA_Problem_Parameter.population);
+		inintialization_ID=new RandomInitialization(ID_assignment, GA_Problem_Parameter.population);
+		inintialization_static=new RandomInitialization(static_assignment, GA_Problem_Parameter.population);
+		GA_normal=new GeneticAlgorithm(normal_assginment, comparator, inintialization_normal, selection, variation);
+		GA_ID=new GeneticAlgorithm(ID_assignment, comparator, inintialization_ID, selection, variation);
+		GA_static=new GeneticAlgorithm(static_assignment, comparator, inintialization_static, selection, variation);
+	}
 	public static void setBugDependencies(String datasetName, HashMap<Integer,Bug> bugList) throws FileNotFoundException{
 		/*set bug dependencies*/
 		int f = 0,i=0;
@@ -355,7 +368,61 @@ public class Test2 {
 	}
 	
 	//find solution to assign tasks to the developers
-	public void Assigning(String action, int runNum, int fileNum, String datasetName, Double TCT, Double TID) throws IOException{
+	public void Assigning(String action, int runNum, int fileNum, String datasetName, Double TCT_static, Double TCT_adaptive, Double TID) throws IOException{
+		//static part
+		GA_Problem_Parameter.setArrivalTasks();
+		GA_Problem_Parameter.setDevelopersIDForRandom();
+		
+		while(GA_static.getNumberOfEvaluations()<250000) {
+			GA_static.step();
+		}
+		
+		result=GA_static.getResult();
+		
+		/***those that has been commented in favor of better GA implementation*****
+		* 
+		Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
+		.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+		.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+		 **/
+		System.out.println("finished cost-based assignment");
+		
+		//cost based///
+		////
+		Solution staticSolution=null;
+		for(Solution s:result)
+			staticSolution=s;
+		int c=0;
+		
+		while(GA_Problem_Parameter.tso.hasNext()){
+			Bug b=GA_Problem_Parameter.tso.next();
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			while(tso_Zone.hasNext()){
+				Developer d=developers.get(staticSolution.getVariable(c));
+				updateDevProfile(b, tso_Zone.next(), d);
+				c++;
+			}
+		}
+		
+		//report the cost
+		/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
+				"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
+				+"\n	the total cost:" + NormalSolution.getObjective(0));*/
+		
+		//write down the results in yaml format
+		
+		/*
+		 * YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder() .add("state name",
+		 * "Dynamic") .add("ID",
+		 * staticSolution.getAttribute("diffusedKnowledge").toString())
+		 * .add("Cost",Double.toString(staticSolution.getObjective(0))) .build();
+		 */
+		
+		//add to total cost ove time and total information diffusion
+		TCT_static+=staticSolution.getObjective(0);
+		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");
+		
+/************************************************starting the self-adaptive part***************************/
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		
@@ -382,7 +449,7 @@ public class Test2 {
 					Solution NormalSolution=null;
 					for(Solution s:result)
 						NormalSolution=s;
-					int c=0;
+					c=0;
 					
 					
 					
@@ -410,7 +477,7 @@ public class Test2 {
 							.build();
 					
 					//add to total cost ove time and total information diffusion
-					TCT+=NormalSolution.getObjective(0);
+					TCT_adaptive+=NormalSolution.getObjective(0);
 					TID+=(Double)NormalSolution.getAttribute("diffusedKnowledge");
 					
 					System.out.println(yaml_Dynamic.toString());
@@ -473,7 +540,7 @@ public class Test2 {
 					
 					//add to total cost over time and total information diffusion
 					TID+=(-1)*IDSolution.getObjective(0);
-					TCT+=(Double) IDSolution.getAttribute("cost");
+					TCT_adaptive+=(Double) IDSolution.getAttribute("cost");
 					System.out.println(yaml_Steady.toString());
 					
 					//log in YAML format
