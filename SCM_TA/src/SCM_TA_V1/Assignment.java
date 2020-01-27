@@ -231,7 +231,7 @@ public class Assignment {
 
 		
 		//prune bug list
-		GA_Problem_Parameter.pruneList(bugs);
+		//GA_Problem_Parameter.pruneList(bugs);
 		
 		
 		

@@ -3,6 +3,7 @@ package SCM_TA_V1;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -30,7 +31,7 @@ import javax.swing.DebugGraphics;
 
 public class InformationDifussion_adaptive extends AbstractProblem{
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
-	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
+	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers_all;
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
@@ -51,7 +52,7 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 	
 	public void init(){
 		DEP=GA_Problem_Parameter.DEP;
-		tso=GA_Problem_Parameter.tso_ID;
+		tso=GA_Problem_Parameter.tso_IDAssignment;
 		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
@@ -74,8 +75,8 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		int j=0;
 		for(Zone z:genes){
-			int randDevId=GA_Problem_Parameter.getRandomDevId();
-			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
+			//int randDevId=GA_Problem_Parameter.getRandomDevId();
+			solution.setVariable(j,EncodingUtils.newInt(0, GA_Problem_Parameter.devListIdSize-1));
 			j++;
 		}
 		return solution;
@@ -89,20 +90,9 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
 		//assign Devs to zone
 		zoneAssignee.clear();
-		GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
+		GA_Problem_Parameter.assignZoneDev(zoneAssignee, Arrays.asList(GA_Problem_Parameter.bugs) , solution);
 		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
-		ArrayList<Integer> sche=new ArrayList<Integer>();
-		int[] solu=EncodingUtils.getInt(solution);
-		for(int i=assignment.size()+1;i<solu.length-1;i++){
-			sche.add(solu[i]);
-		}
 		
-		for(int i=0;i<GA_Problem_Parameter.pEdges.size();i++){
-			if(sche.get(i)==1){
-				DEP_evaluation.addEdge(GA_Problem_Parameter.DDG.getEdgeSource(GA_Problem_Parameter.pEdges.get(i)),
-						GA_Problem_Parameter.DDG.getEdgeTarget(GA_Problem_Parameter.pEdges.get(i)));
-			}
-		}
 		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 		double totalTime=0.0;
 		double totalCost=0.0;
@@ -112,8 +102,6 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 		double totalStartTime=0.0;
 		double totalEndTime=0.0;
 		double totalExecutionTime=0.0;
-		double diffusionTime=0;
-		double extraDiffuionCost=0.0;
 		
 		//including the amount of knowledge would be diffused
 		double totalDiffusedKnowledge=0.0;
@@ -123,18 +111,10 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 			double totalSimToAssignedST=0;
 			double totalSimToUnAssignedST=0;
 			Bug b=tso.next();
-			
-			//set Bug startTime
-			Date date=new Date();
-			SimpleDateFormat d=new SimpleDateFormat();
-			Date d1=null;
-			Date d2=null;
 			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			b.startTime_evaluate=x;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			GA_Problem_Parameter.tso_Zone=tso_Zone;
-			//make a list to keep the teammate list
-			ArrayList<Integer> teammate_list=new ArrayList<Integer>();
 			Map.Entry<Integer, Developer> candidate=null;
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
@@ -145,6 +125,8 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 					if(developer.getKey()==devId)
 						candidate=developer;
 				}
+				int dID=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
+				
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(devId), "adaptive");
 				totalExecutionTime+=compeletionTime;
 				totalDevCost+=compeletionTime*developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
@@ -173,8 +155,8 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 				int sourceDevId = 0;
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
 					//check weather the devs are linked together-- essential for data flow
-					if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
-						estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
+					//if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
+					estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
 								(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
 					if(estimatedEmissionTime<emissionTime){
 						emissionTime=estimatedEmissionTime;

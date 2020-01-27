@@ -38,6 +38,8 @@ import org.moeaframework.problem.AbstractProblem;
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 
+import mainPipeline.GA;
+
 
 public class GATaskAssignment {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
@@ -123,7 +125,7 @@ public class GATaskAssignment {
 		//initialize developers
 				System.out.println("enter the developrs file");
 				Developer developer = null;
-				 System.out.println(System.getProperty("user.dir"));
+				System.out.println(System.getProperty("user.dir"));
 				Scanner sc=new Scanner(System.in);
 				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+datasetName+"Developer.txt"));
 				System.out.println("enter the devlopers wage file");
@@ -182,6 +184,7 @@ public class GATaskAssignment {
 					for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
 						if(entry.getValue()==0)
 							d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
+							d.DZone_Coefficient_static.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
 					}
 				}
 				//cut randomly portion of developers
@@ -286,7 +289,7 @@ public class GATaskAssignment {
 	
 	public void initializeProblems() {
 		normal_assginment=new NormalAssignment();
-		ID_assignment=new InformationDifussion();
+		ID_assignment=new InformationDifussion_adaptive();
 		static_assignment=new StaticAssignment();
 		inintialization_normal = new RandomInitialization(normal_assginment, GA_Problem_Parameter.population);
 		inintialization_ID=new RandomInitialization(ID_assignment, GA_Problem_Parameter.population);
@@ -295,6 +298,7 @@ public class GATaskAssignment {
 		GA_ID=new GeneticAlgorithm(ID_assignment, comparator, inintialization_ID, selection, variation);
 		GA_static=new GeneticAlgorithm(static_assignment, comparator, inintialization_static, selection, variation);
 	}
+	
 	public static void setBugDependencies(String datasetName, HashMap<Integer,Bug> bugList) throws FileNotFoundException{
 		/*set bug dependencies*/
 		int f = 0,i=0;
@@ -373,7 +377,7 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		
-		while(GA_static.getNumberOfEvaluations()<250000) {
+		while(GA_static.getNumberOfEvaluations()<1000) {
 			GA_static.step();
 		}
 		
@@ -398,7 +402,7 @@ public class GATaskAssignment {
 			Bug b=GA_Problem_Parameter.tso.next();
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
-				Developer d=developers.get(staticSolution.getVariable(c));
+				Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(c))));
 				updateDevProfile(b, tso_Zone.next(), d);
 				c++;
 			}
@@ -430,7 +434,7 @@ public class GATaskAssignment {
 		{
 			switch(action){
 				case "cost":
-					while(GA_normal.getNumberOfEvaluations()<250000) {
+					while(GA_normal.getNumberOfEvaluations()<1000) {
 						GA_normal.step();
 					}
 					
@@ -457,7 +461,7 @@ public class GATaskAssignment {
 						Bug b=GA_Problem_Parameter.tso.next();
 						TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 						while(tso_Zone.hasNext()){
-							Developer d=developers.get(NormalSolution.getVariable(c));
+							Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(NormalSolution.getVariable(c))));
 							updateDevProfile(b, tso_Zone.next(), d);
 							c++;
 						}
@@ -501,7 +505,7 @@ public class GATaskAssignment {
 					break;
 				
 				case "diffusion":
-					while(GA_ID.getNumberOfEvaluations()<250000) {
+					while(GA_ID.getNumberOfEvaluations()<1000) {
 						GA_ID.step();
 					}
 					
@@ -516,14 +520,15 @@ public class GATaskAssignment {
 					Solution IDSolution=null;
 					for(Solution s:result)
 						IDSolution=s;
-					int c2=0;
+					c=0;
+					
 					while(GA_Problem_Parameter.tso.hasNext()){
 						Bug b=GA_Problem_Parameter.tso.next();
 						TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 						while(tso_Zone.hasNext()){
-							Developer d=developers.get(IDSolution.getVariable(0));
+							Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(c))));
 							updateDevProfile(b, tso_Zone.next(), d);
-							c2++;
+							c++;
 						}
 					}
 					//report the cost---logging the cost

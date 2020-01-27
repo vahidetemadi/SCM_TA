@@ -53,6 +53,8 @@ public class GA_Problem_Parameter {
 	static Bug[] bugs;
 	public static HashMap<Integer,Developer> developers=null;
 	public static HashMap<Integer, Developer> developers_all=null;
+	public static ArrayList<Integer> devListId=new ArrayList<Integer>();
+	public static int devListIdSize;
 	public static final int startDevId=1;
 	public static final int endDevId=20;
 	private static DAGEdge EClass=new DAGEdge();
@@ -67,6 +69,8 @@ public class GA_Problem_Parameter {
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_competenceMulti2;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_ID;
+	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_NormalAssignment;
+	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_IDAssignment;
 	public static ArrayList<Bug> tasks=new ArrayList<Bug>();
 	public static ArrayList<Bug> shuffledTasks;
 	public static ArrayList<DefaultEdge> pEdges;
@@ -314,16 +318,14 @@ public class GA_Problem_Parameter {
 		}
 	}
 	
-	public static void assignZoneDev(ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee,ArrayList<Bug> tasks,Solution s){
-		int index=0;
-		int tIndex=0;
-		while(EncodingUtils.getInt(s.getVariable(index))!=-100){
-			Bug b=tasks.get(tIndex);
+	public static void assignZoneDev(ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee, List<Bug> tasks, Solution s){
+		int[] listOfSolutionsID=EncodingUtils.getInt(s);
+		int variableIndex=0;
+		for(Bug b:tasks){
 			for(Zone zone:b.Zone_DEP){
-				zoneAssignee.add(new Triplet<Bug, Zone, Integer>(b, zone, EncodingUtils.getInt(s.getVariable(index))));
-				index++;
-			}
-			tIndex++;
+				zoneAssignee.add(new Triplet<Bug, Zone, Integer>(b, zone, GA_Problem_Parameter.devListId.get(listOfSolutionsID[variableIndex])));
+				variableIndex++;
+			};
 		}
 	}
 	
@@ -363,7 +365,10 @@ public class GA_Problem_Parameter {
 		//topologically sort the graph
 		tso_competenceMulti2=GA_Problem_Parameter.getTopologicalSorted(DEP);
 		tso_ID=GA_Problem_Parameter.getTopologicalSorted(DEP);
+		tso_NormalAssignment=GA_Problem_Parameter.getTopologicalSorted(DEP);
+		tso_IDAssignment=GA_Problem_Parameter.getTopologicalSorted(DEP);
 	}
+	
 	
 	public static void candidateSolutonGeneration(){
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP=GA_Problem_Parameter.getDAGModel(GA_Problem_Parameter.bugs);
@@ -532,21 +537,31 @@ public class GA_Problem_Parameter {
 		System.out.println(devs_prune.size()+"///devs");
 	}
 	
+	/**
+	 * cut 70 percent of devs--add ids to devListId-- keep them in a list for attachment in future--
+	 *  set a fixed size of devs ready to be assigned--GA_Problem_parameters.developers is divided to 2 different sets
+	 *  different set 
+	 * @param devs_prune
+	 * @param devs
+	 * @param portion
+	 */
 	public static void pruneDevList(HashMap<Integer, Developer> devs_prune, ArrayList<Ranking<Developer, Double>> devs, int portion ){
 			int _size=devs_prune.size()-(int)(devs_prune.size()*portion)/100;
 			System.out.println(devs_prune.size()+"***devs");
 			int i=1;
 			for(Ranking<Developer, Double> r:devs){
 				if(i<_size){
-					//create the potential dev list---- those who tend to attach to the list
-					Environment_s1.readyForAttachment.add(r.getEntity().getID());
 					devs_prune.remove(r.getEntity().getID());
+					GA_Problem_Parameter.devListId.add(r.getEntity().getID());
 				}
 					
 				i++;
 			}
-
-			System.out.println(devs_prune.size()+"///devs");
+			for(Map.Entry<Integer, Developer> d:devs_prune.entrySet())
+				Environment_s1.readyForAttachment.add(d.getKey());
+			//set dev fixed size
+			GA_Problem_Parameter.devListIdSize=GA_Problem_Parameter.devListId.size();
+			System.out.println(devs_prune.size()+"///devs--ready for attachment");
 			
 			
 			
@@ -565,7 +580,7 @@ public class GA_Problem_Parameter {
 		for(int i=0; i<length; i++) {
 			rand=r.nextInt(developers.size());
 			if(developers.containsKey(rand))
-				developers.remove(rand);	
+				developers.remove(rand);
 		}
 		System.out.println("Devs after being cut-----------------------"+ developers.size());
 	}

@@ -22,7 +22,7 @@ import context.Environment_s1;
 public class StaticAssignment extends AbstractProblem {
 	
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
-	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
+	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers_all;
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
@@ -57,8 +57,8 @@ public class StaticAssignment extends AbstractProblem {
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
 		int j=0;
 		for(Zone z:genes){
-			int randDevId=GA_Problem_Parameter.getRandomDevId();
-			solution.setVariable(j,EncodingUtils.newInt(randDevId, randDevId));
+			//int randDevId=GA_Problem_Parameter.getRandomDevId();
+			solution.setVariable(j,EncodingUtils.newInt(0, GA_Problem_Parameter.devListIdSize-1));
 			j++;
 		}
 		return solution;
@@ -101,21 +101,19 @@ public class StaticAssignment extends AbstractProblem {
 					int[] g=EncodingUtils.getInt(solution);
 					System.out.println(g);
 				}*/
-				int d=EncodingUtils.getInt(solution.getVariable(index));
-				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))), "static");
+				int dID=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
+				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(dID), "static");
 				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
-					if(developer.getKey()== (EncodingUtils.getInt(solution.getVariable(index))))
+					if(developer.getKey()== dID)
 						candidate=developer;
 				}
 				totalExecutionTime+=compeletionTime;
-				totalDevCost+=compeletionTime*developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
-				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
+				totalDevCost+=compeletionTime*developers.get(dID).hourlyWage;
+				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(dID), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
-				int DId=EncodingUtils.getInt(solution.getVariable(index));
-				double x1=developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour;
-				developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
+				developers.get(dID).developerNextAvailableHour=Math.max(developers.get(dID).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
-				x1=developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour;
+				double x1=developers.get(dID).developerNextAvailableHour;
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
 				
@@ -126,9 +124,9 @@ public class StaticAssignment extends AbstractProblem {
 				double estimatedEmissionTime=0;
 				int sourceDevId = 0;
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
-					if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
-						estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
-								(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
+					//if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
+					estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
+							(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
 					if(estimatedEmissionTime<emissionTime){
 						emissionTime=estimatedEmissionTime;
 						sourceDevId=dev.getKey();

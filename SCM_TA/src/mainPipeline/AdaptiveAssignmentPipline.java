@@ -95,7 +95,7 @@ public class AdaptiveAssignmentPipline {
 		datasetName=FeatureInitializationV1.datasetName;
 		//initialize return array
 		totals.put("TCT_static", 0.0);
-		totals.put("TCT_Adaptive", 0.0);
+		totals.put("TCT_adaptive", 0.0);
 		totals.put("TID", 0.0);
 		
 		//start the pipeline
@@ -117,7 +117,7 @@ public class AdaptiveAssignmentPipline {
 		Environment_s1.insantiateObjects(featureIni.getTCR().get(listOfConfig.get("TCR"))); 
 
 		
-		//pull in the developer  profile
+		//pull in the developer profile
 		GATaskAssignment.devInitialization(datasetName, featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
 		
 		//cut off the low experienced developers---need to fill ready for attachment list
@@ -173,11 +173,13 @@ public class AdaptiveAssignmentPipline {
 				Environment_s1.addToSequenceOfStates(state);
 				
 				//call the assignment algorithm
+
 				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals.get("TCT_static"), totals.get("TCT_adaptive"), totals.get("TID"));
+
 				
 				//make the update onto devNetwork
-				Environment_s1.nodeDeletion();
 				Environment_s1.nodeAttachment();
+				Environment_s1.nodeDeletion();
 				
 				//developers need to be shuffled
 				GA_Problem_Parameter.setDevelopersIDForRandom();

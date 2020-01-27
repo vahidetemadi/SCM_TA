@@ -30,6 +30,7 @@ public class Environment_s1 extends Environment {
 	public static HashMap<Integer, State> listOfState=new HashMap<Integer, State>();
 	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	static int busFactor=2;
+	static ArrayList<Integer> addedRecently=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(int lambda){
 		devNetwork=new DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge>(DefaultEdge.class);
@@ -147,18 +148,17 @@ public class Environment_s1 extends Environment {
 		totalChanged=0;
 		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
 			p=random.nextDouble();
-			if(p<TCR_ratio && numOfNodes>0){
-				deletedNodes.add(node.getKey());
-				numOfNodes--;
+			if(addedRecently.contains(node.getKey()))
+				continue;
+			if(p<TCR_ratio && devNetwork.vertexSet().size()>=GA_Problem_Parameter.devListIdSize){
+				devNetwork.removeVertex(getVertex(node.getKey()));
+				GA_Problem_Parameter.developers.remove(node.getKey());
+				GA_Problem_Parameter.devListId.remove(node.getKey());
 				totalChanged++;
 			}
 		}
-		
-		for(Integer i:deletedNodes){
-			devNetwork.removeVertex(getVertex(i));
-			GA_Problem_Parameter.developers.remove(i);
-		}
 	}
+	
 	
 	/**
 	 * Attaches the nodes from a developer pool
@@ -168,18 +168,20 @@ public class Environment_s1 extends Environment {
 	public static void nodeAttachment(){
 		//add the node with the ratio of "1-r"
 		shouldBeDeleted.clear();
+		addedRecently.clear();
 		double p;
 		for(Integer i:readyForAttachment){
 			p=random.nextDouble();
 			if(p<TCR_ratio && numOfNodes>0){
 				shouldBeDeleted.add(i);
-				int size=devNetwork.vertexSet().size();
+				//check weather developer i exists
 				if(GA_Problem_Parameter.getDev(i)!=null){
 					Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
 					devNetwork.addVertex(developer);
 					GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
+					GA_Problem_Parameter.devListId.add(i);
+					addedRecently.add(i);
 					totalChanged++;
-					numOfNodes--;
 				}
 			}
 		}	
@@ -267,7 +269,7 @@ public class Environment_s1 extends Environment {
 		System.out.println("secondary dev list size: "+Devs.size());
 		//cut off the low experienced developers---add ready for attachment developers
 		
-		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers,Devs,50);
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs,75);
 	}
 
 	public static double getTCR_ratio(){
