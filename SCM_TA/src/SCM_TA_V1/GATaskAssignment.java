@@ -123,73 +123,75 @@ public class GATaskAssignment {
 	@SuppressWarnings("unchecked")
 	public static void devInitialization(String datasetName, int portion) throws IOException,NoSuchElementException, URISyntaxException, CloneNotSupportedException{
 		//initialize developers
-				System.out.println("enter the developrs file");
-				Developer developer = null;
-				System.out.println(System.getProperty("user.dir"));
-				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+datasetName+"Developer.txt"));
-				System.out.println("enter the devlopers wage file");
-				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+datasetName+"DeveloperWithWage.txt"));
-				int i=0;
-				int j=0;
-				while(sc.hasNextLine() && scan.hasNextLine()){
-					if(i==0){
-						String[] items=sc.nextLine().split("\t",-1);
-						scan.nextLine();
-							for(int k=0;k<items.length;k++){
-								if(j!=0){
-								Zone zone=new Zone(j, items[k]);
-								project.zones.put(j, zone);
-								columns.put(j,zone);
-								}
-								j++;
-							}
+		developers.clear();
+		System.out.println("enter the developrs file");
+		Developer developer = null;
+		System.out.println(System.getProperty("user.dir"));
+		Scanner sc=new Scanner(System.in);
+		sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+datasetName+"Developer.txt"));
+		System.out.println("enter the devlopers wage file");
+		Scanner scan=new Scanner(System.in);
+		scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+datasetName+"DeveloperWithWage.txt"));
+		int i=0;
+		int j=0;
+		while(sc.hasNextLine() && scan.hasNextLine()){
+			if(i==0){
+				String[] items=sc.nextLine().split("\t",-1);
+				scan.nextLine();
+					for(int k=0;k<items.length;k++){
+						if(j!=0){
+						Zone zone=new Zone(j, items[k]);
+						project.zones.put(j, zone);
+						columns.put(j,zone);
+						}
+						j++;
+					}
+			}
+			else{
+				String[] items=sc.nextLine().split("\t|\\ ",-1);
+				String[] wage_items=scan.nextLine().split("\t|\\ ",-1);
+				double sumOfPro=0.0;
+				for(int k=0;k<items.length;k++){
+					sumOfPro+=Double.parseDouble(items[k]);
+				}
+				for(int k=0;k<items.length;k++){
+					if(j!=0){
+						//developer.DZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
+						//System.out.println(columns.get(j));
+						developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
+						developer.DZone_Coefficient_static.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
+						developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
+						developer.hourlyWage=Double.parseDouble(wage_items[wage_items.length-1]);
+						//System.out.println(Double.parseDouble(wage_items[k]));
 					}
 					else{
-						String[] items=sc.nextLine().split("\t|\\ ",-1);
-						String[] wage_items=scan.nextLine().split("\t|\\ ",-1);
-						double sumOfPro=0.0;
-						for(int k=0;k<items.length;k++){
-							sumOfPro+=Double.parseDouble(items[k]);
-						}
-						for(int k=0;k<items.length;k++){
-							if(j!=0){
-								//developer.DZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
-								//System.out.println(columns.get(j));
-								developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
-								developer.DZone_Coefficient_static.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
-								developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
-								developer.hourlyWage=Double.parseDouble(wage_items[wage_items.length-1]);
-								//System.out.println(Double.parseDouble(wage_items[k]));
-							}
-							else{
-								developer=new Developer(0);
-								developer.setID(i);
-							}
-							j++;
-						}
-					developers.put(developer.getID(), developer);
+						developer=new Developer(0);
+						developer.setID(i);
 					}
-					i++;
-					j=0;
+					j++;
 				}
-				/*assign GA_Problem_Parameter DevList*/
-				for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
-					GA_Problem_Parameter.DevList.add(dev.getKey());
-				}
-				GA_Problem_Parameter.developers_all=(HashMap<Integer, Developer>) developers.clone();
-				GA_Problem_Parameter.developers=developers;
-				for(Developer d:GA_Problem_Parameter.developers.values()){
-					for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
-						if(entry.getValue()==0)
-							d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
-							d.DZone_Coefficient_static.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
-					}
-				}
-				//cut randomly portion of developers
-				GA_Problem_Parameter.cutDevs(portion);
+			developers.put(developer.getID(), developer);
+			}
+			i++;
+			j=0;
+		}
+		/*assign GA_Problem_Parameter DevList*/
+		for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
+			GA_Problem_Parameter.DevList.add(dev.getKey());
+		}
 		
+		GA_Problem_Parameter.developers_all=(HashMap<Integer, Developer>) developers.clone();
+		GA_Problem_Parameter.developers=developers;
+		for(Developer d:GA_Problem_Parameter.developers.values()){
+			for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
+				if(entry.getValue()==0)
+					d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
+					d.DZone_Coefficient_static.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
+			}
+		}
+		//cut randomly portion of developers
+		GA_Problem_Parameter.cutDevs(portion);
+
 	}
 	
 	// initialize the bugs objects for task assignment
@@ -263,9 +265,9 @@ public class GATaskAssignment {
 	public static void initializeGAParameter(HashMap<Integer,Bug> bugList){
 		//initialize GA parameters
 		GA_Problem_Parameter.Num_of_variables=bugList.size();
-		
 		int b_index=0;
 		GA_Problem_Parameter.bugs=new Bug[bugList.size()];
+		
 		for(Entry<Integer, Bug> b2:bugList.entrySet()){
 			GA_Problem_Parameter.bugs[b_index]=b2.getValue();
 			b_index++;
@@ -277,6 +279,7 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.upperDevId=developers.size()+1;
 		GA_Problem_Parameter.Num_of_functions_Multi=2;
 		GA_Problem_Parameter.Num_of_variables=0;
+		
 		for(Entry<Integer, Bug>  b:bugs.entrySet()){
 			for(Map.Entry<Zone, Double>  zone:b.getValue().BZone_Coefficient.entrySet()){
 				GA_Problem_Parameter.Num_of_variables++;

@@ -155,9 +155,9 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 				int sourceDevId = 0;
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
 					//check weather the devs are linked together-- essential for data flow
-					//if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
-					estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
-								(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
+					if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
+						estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
+									(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
 					if(estimatedEmissionTime<emissionTime){
 						emissionTime=estimatedEmissionTime;
 						sourceDevId=dev.getKey();
@@ -166,7 +166,7 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 				//compute the extra cost for information diffusion==> used to compute the cost posed due to
 				//the information diffusion 
 				totalSimToUnAssignedST=fitnessCalc.getSimBug(candidate.getValue(), b, zone_bug.getKey());
-				totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
+				//totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
 				
 			}
 			//totalDiffusedKnowledge+=(totalSimToAssignedST-totalSimToUnAssignedST);

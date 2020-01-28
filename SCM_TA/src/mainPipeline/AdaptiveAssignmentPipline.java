@@ -116,7 +116,7 @@ public class AdaptiveAssignmentPipline {
 		//instantiate the objects required for the environment
 		Environment_s1.insantiateObjects(featureIni.getTCR().get(listOfConfig.get("TCR"))); 
 
-		
+		Environment_s1.readyForAttachment.clear();
 		//pull in the developer profile
 		GATaskAssignment.devInitialization(datasetName, featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
 		
@@ -143,7 +143,7 @@ public class AdaptiveAssignmentPipline {
 		}
 		
 		//set the number of files
-		if(datasetName=="JDT")
+		if(datasetName.equals("JDT"))
 			Environment_s1.numberOfFiles=9;
 		else
 			Environment_s1.numberOfFiles=10;
@@ -177,9 +177,10 @@ public class AdaptiveAssignmentPipline {
 				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals.get("TCT_static"), totals.get("TCT_adaptive"), totals.get("TID"));
 
 				
-				//make the update onto devNetwork
+				//update devNetwork
 				Environment_s1.nodeAttachment();
 				Environment_s1.nodeDeletion();
+				Environment_s1.updateDevNetwork();
 				
 				//developers need to be shuffled
 				GA_Problem_Parameter.setDevelopersIDForRandom();

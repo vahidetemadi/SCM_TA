@@ -124,9 +124,9 @@ public class StaticAssignment extends AbstractProblem {
 				double estimatedEmissionTime=0;
 				int sourceDevId = 0;
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
-					//if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
-					estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
-							(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
+					if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
+						estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
+								(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
 					if(estimatedEmissionTime<emissionTime){
 						emissionTime=estimatedEmissionTime;
 						sourceDevId=dev.getKey();
@@ -136,8 +136,11 @@ public class StaticAssignment extends AbstractProblem {
 				//compute the extra cost for information diffusion==> used to compute the cost posed due to
 				//information diffusion 
 			
-				totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
-				
+				//totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
+				/*
+				 * try { totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime; }
+				 * catch(NullPointerException e) { e.printStackTrace(); }
+				 */
 				
 				
 				

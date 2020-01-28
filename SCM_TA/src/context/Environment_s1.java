@@ -13,6 +13,7 @@ import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import smile.stat.distribution.PoissonDistribution;
 
 import SCM_TA_V1.*;
+import mainPipeline.GA;
 
 public class Environment_s1 extends Environment {
 	public static double deletionRate=0;
@@ -68,25 +69,56 @@ public class Environment_s1 extends Environment {
 	
 	public static void initializeDevNetwork(){	
 		//set devs node and assign weights to the developers
-		int size=GA_Problem_Parameter.developers.entrySet().size();
+		int size=GA_Problem_Parameter.devListId.size();
 		int sumOfWeights=0;
-		for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
-			dev.getValue().weight=size;
-			sumOfWeights+=size;
-			size--;
-			devNetwork.addVertex(dev);
+		for(Map.Entry<Integer, Developer> entry:GA_Problem_Parameter.developers_all.entrySet()){
+			if(GA_Problem_Parameter.devListId.contains(entry.getKey())) {
+				entry.getValue().weight=size;
+				sumOfWeights+=size;
+				size--;
+				devNetwork.addVertex(entry);
+			}
 		}
-		//add the edges
-		Random r=new Random();
-		int numOfEdges=15;
-		ArrayList<Map.Entry<Integer, Developer>> edgeTails=new ArrayList<Map.Entry<Integer,Developer>>();
-		for(int i=0;i<numOfEdges;i++){
-			setRandomEdge(devNetwork, edgeTails, sumOfWeights, r);
-		}
+		/*
+		 * //add the edges Random r=new Random(); int numOfEdges=(size*(size-1))/2;
+		 * ArrayList<Map.Entry<Integer, Developer>> edgeTails=new
+		 * ArrayList<Map.Entry<Integer,Developer>>(); for(int i=0;i<numOfEdges;i++){
+		 * setRandomEdge(devNetwork, edgeTails, sumOfWeights, r); }
+		 */
+
+		//set fully connected graph
+		makeNetworkFullyConnectd(devNetwork);
 		
-		//set the weights to the edges
+		//set the weights of the edges
 		setEdgesWeight();
 		
+	}
+	
+	
+	
+	public static void updateDevNetwork() {
+		makeNetworkFullyConnectd(devNetwork);
+		setEdgesWeight();
+	}
+	
+	/**
+	 * The method crates edges among the nodes in the network
+	 * @param devNetwork
+	 * @param edgeTails
+	 * @param sumOfWeights
+	 * @param r
+	 */
+	
+	public static void makeNetworkFullyConnectd(DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge> devNetwork) {
+		for(Map.Entry<Integer, Developer> nodeS:devNetwork.vertexSet()) {
+			for(Map.Entry<Integer, Developer> nodeE:devNetwork.vertexSet()) {
+				if(nodeS.getKey()!=nodeE.getKey()) {
+					if(!devNetwork.containsEdge(nodeS, nodeE))
+						devNetwork.addEdge(nodeS, nodeE);
+				}	
+			}
+		}
+			
 	}
 	
 	public static void setRandomEdge(DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge> devNetwork, 
@@ -150,7 +182,7 @@ public class Environment_s1 extends Environment {
 			p=random.nextDouble();
 			if(addedRecently.contains(node.getKey()))
 				continue;
-			if(p<TCR_ratio && devNetwork.vertexSet().size()>=GA_Problem_Parameter.devListIdSize){
+			if(p<TCR_ratio && devNetwork.vertexSet().size()>GA_Problem_Parameter.devListIdSize){
 				devNetwork.removeVertex(getVertex(node.getKey()));
 				GA_Problem_Parameter.developers.remove(node.getKey());
 				GA_Problem_Parameter.devListId.remove(node.getKey());
@@ -178,9 +210,10 @@ public class Environment_s1 extends Environment {
 				if(GA_Problem_Parameter.getDev(i)!=null){
 					Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
 					devNetwork.addVertex(developer);
-					GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
+					//GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
 					GA_Problem_Parameter.devListId.add(i);
 					addedRecently.add(i);
+					shouldBeDeleted.add(i);
 					totalChanged++;
 				}
 			}
