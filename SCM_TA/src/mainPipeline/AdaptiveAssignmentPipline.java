@@ -246,6 +246,13 @@ public class AdaptiveAssignmentPipline {
 		}*/
 		
 		//environment_s1.addToSequenceOfStates(selectedState.getKey());
+		try {
+			selectedState.getKey();
+		}
+		catch (NullPointerException e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		}
 		return selectedState.getKey();
 	}
 

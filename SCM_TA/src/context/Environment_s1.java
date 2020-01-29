@@ -45,6 +45,10 @@ public class Environment_s1 extends Environment {
 	}
 	//prepare the input data set for training
 	public static void generaetListOfObservation(){
+		//clear former sequence
+		listOfObservation.clear();
+		
+		//create new observation
 		Observation o1=new Observation(0);
 		Observation o2=new Observation(2);
 		listOfObservation.put(0, o1);
@@ -57,6 +61,9 @@ public class Environment_s1 extends Environment {
 	
 	
 	public static void generaetListOfState(){
+		//clear list of states
+		listOfState.clear();
+		
 		//introduce the states
 		final State steady_state=new State("steady",0);
 		steady_state.setAction("diffusion");
@@ -355,6 +362,10 @@ public class Environment_s1 extends Environment {
 	}
 	
 	public static void initializeParameters(){
+		//clear sequences
+		stateSequence.clear();
+		observationSequence.clear();
+		
 		Environment_s1.addToSequenceOfStates(listOfState.get(0));
 		Environment_s1.addToSequenceOfObservation(Environment_s1.getObservation());	
 	}
