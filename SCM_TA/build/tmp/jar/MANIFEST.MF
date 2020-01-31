@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Class-Path: combinatoricslib-2.0.jar commons-csv-1.6.jar commons-math3
+ -3.6.1-javadoc.jar commons-math3-3.6.1.jar eo-yaml-2.0.1-jar-with-dep
+ endencies.jar guava.jar jackson-core-2.2.3.jar javax.json-api-1.1.4.j
+ ar jgrapht-ext-1.1.0-uber.jar jgraphx.jar MOEAFramework-2.13.jar open
+ csv-4.6.jar SCM_TA-Self-Aaptive-0.1.0.jar slf4j-api-1.7.25.jar smile-
+ core-1.5.0.jar smile-math-1.0.2.jar smile-math-1.5.2.jar
+Main-Class: main.java.mainPipeline.Driver
+

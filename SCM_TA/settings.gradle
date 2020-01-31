@@ -1,0 +1,2 @@
+include ":MOEAFramework-2.13"
+project(":MOEAFramework-2.13").projectDir=file("../MOEAFramework-2.13")

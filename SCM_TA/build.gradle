@@ -1,0 +1,17 @@
+apply plugin: 'java'
+
+dependencies {
+	//compile project(":MOEAFramework-2.13")
+	compile fileTree(dir: "lib", include :"*.jar")
+}
+
+jar{
+	baseName='SCM_TA-Self-Aaptive'
+	version='0.1.0'
+	manifest{
+		attributes(
+			'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
+			'Main-Class': 'main.java.mainPipeline.Driver'
+		)
+	}
+}
