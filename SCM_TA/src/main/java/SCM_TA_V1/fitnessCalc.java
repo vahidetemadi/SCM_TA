@@ -77,9 +77,11 @@ public class fitnessCalc {
 	 public static double getSimBug(Developer d1,Bug b2, Zone z1){
 		 double DBSim=0.0;
 		 //for (Entry<Zone, Double>  zone:b2.BZone_Coefficient.entrySet())
-		 if(d1.DZone_Coefficient.containsKey(z1))
+		 if(d1.DZone_Coefficient.containsKey(z1)) {
+			 if(b2.BZone_Coefficient.get(z1)<0)
+				 System.out.println(d1.DZone_Coefficient.get(z1));
 			 DBSim+=Math.min(b2.BZone_Coefficient.get(z1),d1.DZone_Coefficient.get(z1));
-	
+		 }
 		 return DBSim;
 	 }
 
@@ -194,7 +196,8 @@ public class fitnessCalc {
 	 }
 
 	 public static double getEstimatedDiffusionTime(Map.Entry<Integer, Developer> sourceDev ,Map.Entry<Integer, Developer> targetDev,double estimatedEffort){
-		 double estimeatedTime=estimatedEffort/Environment_s1.getDevNetwork().getEdgeWeight(Environment_s1.getDevNetwork().getEdge(sourceDev,targetDev));
+		 double estimeatedTime=0.0;
+		 estimeatedTime=estimatedEffort/Environment_s1.getDevNetwork().getEdgeWeight(Environment_s1.getDevNetwork().getEdge(sourceDev,targetDev));
 		 return estimatedEffort;
 	 }
  

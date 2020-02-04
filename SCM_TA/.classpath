@@ -15,8 +15,6 @@
 	<classpathentry kind="lib" path="lib/commons-csv-1.6.jar"/>
 	<classpathentry kind="lib" path="lib/opencsv-4.6.jar"/>
 	<classpathentry kind="lib" path="C:/Users/DistLab3/git/SCM_TA-Master-SelfAdaptive/SCM_TA/SCM_TA/lib/javax.json-api-1.1.4.jar"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
 	<classpathentry kind="lib" path="lib/MOEAFramework-2.13.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

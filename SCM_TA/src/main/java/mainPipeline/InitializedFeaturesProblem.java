@@ -13,22 +13,21 @@ import main.java.featureTuning.FeatureSetV1;
  * @author DistLab3
  *
  */
-public class InitializedFeaturesProbelm extends AbstractProblem {
+public class InitializedFeaturesProblem extends AbstractProblem {
 
 	AdaptiveAssignmentPipline adaptive=null;
 	FeatureSetV1 featureSetV1=null;
 	HashMap<String, Double> totals=new HashMap<String, Double>();
 	@SuppressWarnings("static-access")
-	public InitializedFeaturesProbelm(int numberOfVariables, int numberOfObjectives) {
+	public InitializedFeaturesProblem(int numberOfVariables, int numberOfObjectives) {
 		super(numberOfVariables, numberOfObjectives);
 		// TODO Auto-generated constructor stub
 		adaptive=AdaptiveAssignmentPipline.getInstance();
 		featureSetV1=FeatureSetV1.getInstance();
 	}
 
-	// MODIFY  
+	// MODIFY get a solution and compute its objective and  
 	// EFFECT the cost associated to a solution is computed
-	@SuppressWarnings("static-access")
 	@Override
 	public void evaluate(Solution solution) {
 		// TODO Auto-generated method stub
@@ -36,7 +35,7 @@ public class InitializedFeaturesProbelm extends AbstractProblem {
 			adaptive.run(solution, totals);
 			solution.setObjective(0, totals.get("TCT_static"));
 			solution.setAttribute("TCT_adaptive", totals.get("TCT_adaptive"));
-			solution.setAttribute("TID", totals.get("TID"));
+			solution.setAttribute("TID_adaptive", totals.get("TID_adaptive"));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

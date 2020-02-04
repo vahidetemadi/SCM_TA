@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import org.moeaframework.algorithm.single.AggregateObjectiveComparator;
 import org.moeaframework.algorithm.single.GeneticAlgorithm;
@@ -27,11 +29,13 @@ import com.opencsv.CSVWriter;
 import main.java.featureTuning.FeatureInitialization;
 import main.java.featureTuning.FeatureInitializationV1;
 
+
 public class Driver {
 	static Population finalPopulation;
 	public static void main(String[] args) throws IOException {
 		finalPopulation= runSeed(); 		/* call the run for single seed */
-		writeResutls(finalPopulation); 		/* write down the results to the csv file */
+		writeResutls(finalPopulation, FeatureInitializationV1.datasetName); 		/* write down the results to the csv file */
+		sendResultsToServer(finalPopulation);				/* send the results to the central server */
 	}
 	
 	
@@ -46,7 +50,7 @@ public class Driver {
 		FeatureInitializationV1.datasetName=sc.next();
 		
 		//Run GA for InitializedfFeatureProblem
-		InitializedFeaturesProbelm problem=new InitializedFeaturesProbelm(5, 1);
+		InitializedFeaturesProblem problem=new InitializedFeaturesProblem(5, 1);
 
         Selection selection = new TournamentSelection(2, 
         								new ParetoDominanceComparator());
@@ -61,7 +65,7 @@ public class Driver {
         GeneticAlgorithm GA=new GeneticAlgorithm(problem, comparator, initialization, selection, variation);
         
         //run GA single objective
-        while (GA.getNumberOfEvaluations() < 10000) {
+        while (GA.getNumberOfEvaluations() < 100) {
             GA.step();
         }
         
@@ -82,19 +86,21 @@ public class Driver {
 	 * all the experiment runs output to a unique location
 	 * @throws IOException 
 	 */
-	public static void writeResutls(Population p) throws IOException {
-		File file=new File("\\192.168.1.1"+File.separator+"home"+ File.separator+"node1"+File.separator+ "self-adaptive"
-							+File.separator+ FeatureInitializationV1.datasetName);
+	public static void writeResutls(Population p, String datasetName) throws IOException {
+		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+File.separator+ datasetName+".csv");
+		file.getParentFile().mkdir(); 				/* make missed dirs*/
+		
 		PrintWriter printWriter=new PrintWriter(file);
 		CSVWriter csvWriter=new CSVWriter(printWriter);
 		String[] csvFileOutputHeader= {"solution","totalCostStatic", "totalCostID", "totalIDID"};
-		csvWriter.writeNext(csvFileOutputHeader); //write the header of the csv file
+		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
 		Solution tempSolution;
 		
 		for(int i=0; i<p.size(); i++) {
 			tempSolution=p.get(i);
-			csvWriter.writeNext(new String[] {EncodingUtils.getInt(tempSolution).toString() ,Double.toString(tempSolution.getObjective(0)),
-												tempSolution.getAttribute("TCT_adaptive").toString(), tempSolution.getAttribute("TID").toString()});
+			csvWriter.writeNext(new String[] {Arrays.toString(EncodingUtils.getInt(tempSolution)) ,Double.toString(tempSolution.getObjective(0)),
+												tempSolution.getAttribute("TCT_adaptive").toString(), tempSolution.getAttribute("TID_adaptive").toString()});
 		}
 		
 		//close the writers
@@ -103,5 +109,13 @@ public class Driver {
 		
 		
 	}
+	/**
+	 * Sending the results to the server over the network--- a service over in the server update the results set  
+	 * @param p
+	 */
+	public static void sendResultsToServer(Population p) {
 
+		
+		
+	}
 }

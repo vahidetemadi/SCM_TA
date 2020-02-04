@@ -72,7 +72,7 @@ public class AdaptiveAssignmentPipline {
 	 * 
 	 * EFFECT the overall cost is computed and is returned as the fitness of input solution 
 	 */	
-	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException{
+	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//set the num of devs-- all dev set will be pruned by the number comes from solution
 		listOfConfig.put("numOfDevs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
 		System.out.println("% of devs should be ignored-----"+featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
@@ -97,7 +97,7 @@ public class AdaptiveAssignmentPipline {
 		//initialize return array
 		totals.put("TCT_static", 0.0);
 		totals.put("TCT_adaptive", 0.0);
-		totals.put("TID", 0.0);
+		totals.put("TID_adaptive", 0.0);
 		
 		//start the pipeline
 		start(totals);
@@ -105,7 +105,7 @@ public class AdaptiveAssignmentPipline {
 		return totals;
 	}
 	
-	public void start(HashMap<String, Double> totals) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException{
+	public void start(HashMap<String, Double> totals) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//get the trained Markov model with the predefined model
 		training_instance.initialize_params(featureIni.getTm().get(listOfConfig.get("TM")), featureIni.getTm().get(listOfConfig.get("EM")));
 		HMM=training_instance.getHMM();
@@ -119,7 +119,7 @@ public class AdaptiveAssignmentPipline {
 
 		Environment_s1.readyForAttachment.clear();
 		//pull in the developer profile
-		GATaskAssignment.devInitialization(datasetName, featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
+		test.devInitialization(datasetName, featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
 		
 		//cut off the low experienced developers---need to fill ready for attachment list
 		//starting with half of the developers
@@ -175,7 +175,7 @@ public class AdaptiveAssignmentPipline {
 				
 				//call the assignment algorithm
 
-				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals.get("TCT_static"), totals.get("TCT_adaptive"), totals.get("TID"));
+				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals);
 
 				
 				//update devNetwork

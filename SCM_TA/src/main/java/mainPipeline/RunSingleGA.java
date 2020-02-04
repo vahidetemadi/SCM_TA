@@ -20,7 +20,7 @@ public class RunSingleGA {
 
     public void runSingleGA() {
     	
-        Problem problem = new InitializedFeaturesProbelm(5, 1);
+        Problem problem = new InitializedFeaturesProblem(5, 1);
 
         Selection selection = new TournamentSelection(2, 
                 new ParetoDominanceComparator());

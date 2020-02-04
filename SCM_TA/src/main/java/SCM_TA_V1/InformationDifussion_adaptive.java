@@ -143,6 +143,8 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 				//the newer approach for knowledge diffusion
 				double emissionTime=10000000;
 				double estimatedEmissionTime=0;
+				
+				//following to compute emission time
 				int sourceDevId = 0;
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
 					//check weather the devs are linked together-- essential for data flow
@@ -155,6 +157,8 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 					}
 				}
 				//compute the extra cost for information diffusion==> used to compute the cost posed due to
+				
+				
 				//the information diffusion 
 				totalSimToUnAssignedST=fitnessCalc.getSimBug(candidate.getValue(), b, zone_bug.getKey());
 				//totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
@@ -170,11 +174,11 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 		}
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
-		totalDiffusedKnowledge=(-1*totalDiffusedKnowledge);
 		//solution.setObjective(0, totalTime);
 		//solution.setObjective(1, totalCost);
-		solution.setObjective(0, totalDiffusedKnowledge);
+		solution.setObjective(0, -totalDiffusedKnowledge);
 		solution.setAttribute("cost", totalCost);
+		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);
 		solution.setAttribute("time", totalTime);
 	}
 

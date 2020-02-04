@@ -1,11 +1,16 @@
 package main.java.SCM_TA_V1;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -35,6 +40,8 @@ import org.moeaframework.problem.AbstractProblem;
 
 import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
+
+import main.java.mainPipeline.GA;
 
 
 
@@ -116,24 +123,29 @@ public class GATaskAssignment {
 		cr.txtToCSV();
 	}
 	
-	// initialize the developer objects  
-	@SuppressWarnings("unchecked")
-	public static void devInitialization(String datasetName, int portion) throws IOException,NoSuchElementException, URISyntaxException, CloneNotSupportedException{
+	// initialize the developer objects
+	public void devInitialization(String datasetName, int portion) throws IOException,NoSuchElementException, URISyntaxException, CloneNotSupportedException{
 		//initialize developers
 		developers.clear();
 		System.out.println("enter the developrs file");
 		Developer developer = null;
 		System.out.println(System.getProperty("user.dir"));
 		Scanner sc=new Scanner(System.in);
-		sc=new Scanner(new File(System.getProperty("user.dir")+"//src//main//resources//bug-data//bug-data//"+datasetName+"Developer.txt"));
+		InputStream is=Thread.currentThread().getContextClassLoader().getResourceAsStream("main/resources/bug-data/bug-data/"+datasetName+"DeveloperWithWage.txt");
+		InputStream is_copy=Thread.currentThread().getContextClassLoader().getResourceAsStream("main/resources/bug-data/bug-data/"+datasetName+"DeveloperWithWage.txt");
+		//String uri=Thread.currentThread().getContextClassLoader().getResource("bug-data/bug-data/"+datasetName+"DeveloperWithWage.txt").getFile();
+		//InputStream is = Thread.currentThread().getContextClassLoader().getResourceAsStream("bug-data/bug-data/"+datasetName+"DeveloperWithWage.txt");
+		//System.out.println(is.toString());
+		
+		sc=new Scanner(is);
 		System.out.println("enter the devlopers wage file");
-		Scanner scan=new Scanner(System.in);
-		scan=new Scanner(new File(System.getProperty("user.dir")+"//src//main//resources//bug-data//bug-data//"+datasetName+"DeveloperWithWage.txt"));
+		Scanner scan=new Scanner(is_copy);
 		int i=0;
 		int j=0;
 		while(sc.hasNextLine() && scan.hasNextLine()){
 			if(i==0){
 				String[] items=sc.nextLine().split("\t",-1);
+				System.out.println(items);
 				scan.nextLine();
 					for(int k=0;k<items.length;k++){
 						if(j!=0){
@@ -145,8 +157,9 @@ public class GATaskAssignment {
 					}
 			}
 			else{
-				String[] items=sc.nextLine().split("\t|\\ ",-1);
-				String[] wage_items=scan.nextLine().split("\t|\\ ",-1);
+				String[] items=sc.nextLine().split("\t|\\s+",-1);
+				String[] wage_items=scan.nextLine().split("\t|\\s+",-1);
+				System.out.println(items);
 				double sumOfPro=0.0;
 				for(int k=0;k<items.length;k++){
 					sumOfPro+=Double.parseDouble(items[k]);
@@ -188,6 +201,10 @@ public class GATaskAssignment {
 		}
 		//cut randomly portion of developers
 		GA_Problem_Parameter.cutDevs(portion);
+		sc.close();
+		scan.close();
+		is.close();
+		is_copy.close();
 
 	}
 	
@@ -203,9 +220,10 @@ public class GATaskAssignment {
 		//sc=new Scanner(System.in);
 		//sc=new Scanner("/bug-data/JDT/efforts");
 		//System.out.println(sc.nextLine());
+		String uri=Thread.currentThread().getContextClassLoader().getResource("main/resources/bug-data/"+datasetName+"/efforts").getFile();
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//main//resources//bug-data//"+datasetName+"//efforts").listFiles()){
+		for(File fileEntry:new File(uri).listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
@@ -284,7 +302,7 @@ public class GATaskAssignment {
 		}
 		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
-		GA_Problem_Parameter.population=500;
+		GA_Problem_Parameter.population=10;
 	}
 	
 	public void initializeProblems() {
@@ -308,7 +326,8 @@ public class GATaskAssignment {
 		for(Bug b:bugList.values()){
 			b.DB.clear();
 		}
-		for(File fileEntry:new File(System.getProperty("user.dir")+"//src//main//resources//bug-data//"+datasetName+"//dependencies").listFiles()){
+		String uri=Thread.currentThread().getContextClassLoader().getResource("main/resources/bug-data/"+datasetName+"/dependencies").getFile();
+		for(File fileEntry:new File(uri).listFiles()){
 			sc1=new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			while(sc1.hasNextLine()){
@@ -371,12 +390,12 @@ public class GATaskAssignment {
 	}
 	
 	//find solution to assign tasks to the developers
-	public void Assigning(String action, int runNum, int fileNum, String datasetName, Double TCT_static, Double TCT_adaptive, Double TID) throws IOException{
+	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals) throws IOException{
 		//static part
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		
-		while(GA_static.getNumberOfEvaluations()<1000) {
+		while(GA_static.getNumberOfEvaluations()<100) {
 			GA_static.step();
 		}
 		
@@ -422,149 +441,145 @@ public class GATaskAssignment {
 		 */
 		
 		//add to total cost ove time and total information diffusion
-		TCT_static+=staticSolution.getObjective(0);
+		totals.put("TCT_static", totals.get("TCT_static")+ staticSolution.getObjective(0));
 		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");
 		
 /************************************************starting the self-adaptive part***************************/
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		
-		try(PrintWriter pw=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.yml"),true)))
-		{
-			switch(action){
-				case "cost":
-					while(GA_normal.getNumberOfEvaluations()<1000) {
-						GA_normal.step();
-					}
-					
-					result=GA_normal.getResult();
-					
-				/***those that has been commented in favor of better GA implementation*****
-				 * 
-					Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
-				**/
-					System.out.println("finished cost-based assignment");
-					
-					//cost based///
-					////
-					Solution NormalSolution=null;
-					for(Solution s:result)
-						NormalSolution=s;
-					c=0;
-					
-					
-					
-					while(GA_Problem_Parameter.tso.hasNext()){
-						Bug b=GA_Problem_Parameter.tso.next();
-						TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-						while(tso_Zone.hasNext()){
-							Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(NormalSolution.getVariable(c))));
-							updateDevProfile(b, tso_Zone.next(), d);
-							c++;
-						}
-					}
-					
-					//report the cost
-					/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
-							"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
-							+"\n	the total cost:" + NormalSolution.getObjective(0));*/
-					
-					//write down the results in yaml format
-					
-					YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder()
-							.add("state name", "Dynamic")
-							.add("ID", NormalSolution.getAttribute("diffusedKnowledge").toString())
-							.add("Cost",Double.toString(NormalSolution.getObjective(0)))
-							.build();
-					
-					//add to total cost ove time and total information diffusion
-					TCT_adaptive+=NormalSolution.getObjective(0);
-					TID+=(Double)NormalSolution.getAttribute("diffusedKnowledge");
-					
-					System.out.println(yaml_Dynamic.toString());
-					
-					//log in a file
-					pw.write(yaml_Dynamic.toString());
-					pw.append("\n");
-					pw.append("\n");
-					pw.append("\n");
-					pw.close();
-					
-					PrintWriter pw2=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
-					StringBuilder sb=new StringBuilder();
-					sb.append(fileNum +", Dynamic, Cost, "+ Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.getAttribute("diffusedKnowledge").toString());
-					sb.append('\n');
-					pw2.write(sb.toString());
-					pw2.close();
-					
-					
-					
-					break;
+		//try(PrintWriter pw=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.yml"),true)))
+		//{
+		switch(action){
+			case "cost":
+				while(GA_normal.getNumberOfEvaluations()<100) {
+					GA_normal.step();
+				}
 				
-				case "diffusion":
-					while(GA_ID.getNumberOfEvaluations()<1000) {
-						GA_ID.step();
+				result=GA_normal.getResult();
+				
+			/***those that has been commented in favor of better GA implementation*****
+			 * 
+				Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
+				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+				.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
+			**/
+				System.out.println("finished cost-based assignment");
+				
+				//cost based///
+				////
+				Solution normalSolution=null;
+				for(Solution s:result)
+					normalSolution=s;
+				c=0;
+				
+				
+				
+				while(GA_Problem_Parameter.tso.hasNext()){
+					Bug b=GA_Problem_Parameter.tso.next();
+					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+					while(tso_Zone.hasNext()){
+						Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(normalSolution.getVariable(c))));
+						updateDevProfile(b, tso_Zone.next(), d);
+						c++;
 					}
-					
-					result=GA_ID.getResult();
+				}
+				
+				//report the cost
+				/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
+						"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
+						+"\n	the total cost:" + NormalSolution.getObjective(0));*/
+				
+				//write down the results in yaml format
+				
+				YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder()
+						.add("state name", "Dynamic")
+						.add("ID", normalSolution.getAttribute("diffusedKnowledge").toString())
+						.add("Cost",Double.toString(normalSolution.getObjective(0)))
+						.build();
+				
+				//add to total cost ove time and total information diffusion
+				totals.put("TCT_adaptive", totals.get("TCT_adaptive")+ normalSolution.getObjective(0));
+				totals.put("TID_adaptive", totals.get("TID_adaptive")+ (Double)normalSolution.getAttribute("diffusedKnowledge"));
+				
+				System.out.println(yaml_Dynamic.toString());
+				
+			/*
+			 * //log in a file pw.write(yaml_Dynamic.toString()); pw.append("\n");
+			 * pw.append("\n"); pw.append("\n"); pw.close();
+			 * 
+			 * PrintWriter pw2=new PrintWriter(new FileOutputStream(new
+			 * File(System.getProperty("user.dir")+"//results//"+datasetName+
+			 * "_result_adaptive.csv"),true)); StringBuilder sb=new StringBuilder();
+			 * sb.append(fileNum +", Dynamic, Cost, "+
+			 * Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.
+			 * getAttribute("diffusedKnowledge").toString()); sb.append('\n');
+			 * pw2.write(sb.toString()); pw2.close();
+			 */
+				
+				
+				
+				break;
+			
+			case "diffusion":
+				while(GA_ID.getNumberOfEvaluations()<100) {
+					GA_ID.step();
+				}
+				
+				result=GA_ID.getResult();
 				/***those that has been commented in favor of better GA implementation*****
 					Population result_ID=new Executor().withProblemClass(InformationDifussion_adaptive.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 				 ***/
-					System.out.println("finished diffusion-based assignment");
-					//Performing the update
-					Solution IDSolution=null;
-					for(Solution s:result)
-						IDSolution=s;
-					c=0;
-					
-					while(GA_Problem_Parameter.tso.hasNext()){
-						Bug b=GA_Problem_Parameter.tso.next();
-						TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-						while(tso_Zone.hasNext()){
-							Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(c))));
-							updateDevProfile(b, tso_Zone.next(), d);
-							c++;
-						}
+				System.out.println("finished diffusion-based assignment");
+				//Performing the update
+				Solution IDSolution=null;
+				for(Solution s:result)
+					IDSolution=s;
+				c=0;
+				
+				while(GA_Problem_Parameter.tso.hasNext()){
+					Bug b=GA_Problem_Parameter.tso.next();
+					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+					while(tso_Zone.hasNext()){
+						Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(c))));
+						updateDevProfile(b, tso_Zone.next(), d);
+						c++;
 					}
-					//report the cost---logging the cost
-					/*System.out.println("knowlwdge and cost of diffusion-based approach (state Steady)"+
-							"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
-							+"\n"+
-							"	the total cost:"+ IDSolution.getAttribute("cost"));*/
-					
-					YamlMapping yaml_Steady=Yaml.createYamlMappingBuilder()
-							.add("state name", "Steady")
-							.add("ID", Double.toString(-1*IDSolution.getObjective(0)))
-							.add("Cost", IDSolution.getAttribute("cost").toString())
-							.build();
-					
-					//add to total cost over time and total information diffusion
-					TID+=(-1)*IDSolution.getObjective(0);
-					TCT_adaptive+=(Double) IDSolution.getAttribute("cost");
-					System.out.println(yaml_Steady.toString());
-					
-					//log in YAML format
-					pw.write(yaml_Steady.toString());
-					pw.append("\n");
-					pw.append("\n");
-					pw.append("\n");
-					pw.close();
-					
-					//write down to CSV file
-					PrintWriter pw3=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.csv"),true));
-					StringBuilder sb2=new StringBuilder();
-					sb2.append(fileNum +", Steady, Diffusion, "+IDSolution.getAttribute("cost").toString()+","+Double.toString(-1*IDSolution.getObjective(0)));
-					sb2.append('\n');
-					pw3.write(sb2.toString());
-					pw3.close();
-					pw3.close();
-					break;	
-			}
+				}
+				//report the cost---logging the cost
+				/*System.out.println("knowlwdge and cost of diffusion-based approach (state Steady)"+
+						"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
+						+"\n"+
+						"	the total cost:"+ IDSolution.getAttribute("cost"));*/
+				
+				YamlMapping yaml_Steady=Yaml.createYamlMappingBuilder()
+						.add("state name", "Steady")
+						.add("ID", Double.toString(-1*IDSolution.getObjective(0)))
+						.add("Cost", IDSolution.getAttribute("cost").toString())
+						.build();
+				
+				//add to total cost over time and total information diffusion
+				totals.put("TID_adaptive", totals.get("TID_adaptive")+ (Double)IDSolution.getAttribute("diffusedKnowledge"));
+				totals.put("TCT_adaptive", totals.get("TCT_adaptive")+ (Double)IDSolution.getAttribute("cost"));
+				
+			/*
+			 * //log in YAML format pw.write(yaml_Steady.toString()); pw.append("\n");
+			 * pw.append("\n"); pw.append("\n"); pw.close();
+			 * 
+			 * //write down to CSV file PrintWriter pw3=new PrintWriter(new
+			 * FileOutputStream(new
+			 * File(System.getProperty("user.dir")+"//results//"+datasetName+
+			 * "_result_adaptive.csv"),true)); StringBuilder sb2=new StringBuilder();
+			 * sb2.append(fileNum
+			 * +", Steady, Diffusion, "+IDSolution.getAttribute("cost").toString()+","+
+			 * Double.toString(-1*IDSolution.getObjective(0))); sb2.append('\n');
+			 * pw3.write(sb2.toString()); pw3.close(); pw3.close();
+			 */
+				break;	
 		}
+		//}
 	    
 	}
 	
