@@ -72,7 +72,7 @@ public class AdaptiveAssignmentPipline {
 	 * 
 	 * EFFECT the overall cost is computed and is returned as the fitness of input solution 
 	 */	
-	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
+	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//set the num of devs-- all dev set will be pruned by the number comes from solution
 		listOfConfig.put("numOfDevs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
 		System.out.println("% of devs should be ignored-----"+featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
@@ -99,13 +99,19 @@ public class AdaptiveAssignmentPipline {
 		totals.put("TCT_adaptive", 0.0);
 		totals.put("TID_adaptive", 0.0);
 		
+
+		tredOverTim.put("CoT_static", new ArrayList<Double>());
+		tredOverTim.put("IDoT_static", new ArrayList<Double>());
+		tredOverTim.put("CoT_adaptive", new ArrayList<Double>());
+		tredOverTim.put("IDoT_adaptive", new ArrayList<Double>());
+		
 		//start the pipeline
-		start(totals);
+		start(totals, tredOverTim);
 		
 		return totals;
 	}
 	
-	public void start(HashMap<String, Double> totals) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
+	public void start(HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//get the trained Markov model with the predefined model
 		training_instance.initialize_params(featureIni.getTm().get(listOfConfig.get("TM")), featureIni.getTm().get(listOfConfig.get("EM")));
 		HMM=training_instance.getHMM();
@@ -175,7 +181,7 @@ public class AdaptiveAssignmentPipline {
 				
 				//call the assignment algorithm
 
-				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals);
+				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals, tredOverTim);
 
 				
 				//update devNetwork

@@ -314,7 +314,7 @@ public class GA_Problem_Parameter {
 			for(Zone zone:b.Zone_DEP){
 				zoneAssignee.add(new Triplet<Bug, Zone, Integer>(b, zone, GA_Problem_Parameter.devListId.get(listOfSolutionsID[variableIndex])));
 				variableIndex++;
-			};
+			}
 		}
 	}
 	

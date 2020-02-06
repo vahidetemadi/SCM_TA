@@ -2,6 +2,7 @@ package main.java.mainPipeline;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 import java.util.stream.IntStream;
@@ -93,14 +94,17 @@ public class Driver {
 		
 		PrintWriter printWriter=new PrintWriter(file);
 		CSVWriter csvWriter=new CSVWriter(printWriter);
-		String[] csvFileOutputHeader= {"solution","totalCostStatic", "totalCostID", "totalIDID"};
+		String[] csvFileOutputHeader= {"solution","totalCostStatic", "totalCostID", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_adaptive"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
 		Solution tempSolution;
 		
 		for(int i=0; i<p.size(); i++) {
 			tempSolution=p.get(i);
 			csvWriter.writeNext(new String[] {Arrays.toString(EncodingUtils.getInt(tempSolution)) ,Double.toString(tempSolution.getObjective(0)),
-												tempSolution.getAttribute("TCT_adaptive").toString(), tempSolution.getAttribute("TID_adaptive").toString()});
+												tempSolution.getAttribute("TCT_adaptive").toString(), tempSolution.getAttribute("TID_adaptive").toString(),
+												Arrays.toString(((ArrayList<Double>)tempSolution.getAttribute("CoT_static")).toArray()),
+												Arrays.toString(((ArrayList<Double>)tempSolution.getAttribute("CoT_adaptive")).toArray()),
+												Arrays.toString(((ArrayList<Double>)tempSolution.getAttribute("IDoT_adaptive")).toArray())});
 		}
 		
 		//close the writers

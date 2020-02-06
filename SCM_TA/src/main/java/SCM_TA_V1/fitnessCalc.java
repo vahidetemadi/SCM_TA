@@ -1,5 +1,6 @@
 package main.java.SCM_TA_V1;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -73,18 +74,31 @@ public class fitnessCalc {
 	 }
  
  
- 
+	 public static double getID(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
+		 
+		 double ID=0.0;
+		 for(Developer developer:developers) {
+			 if(developer.getID()!=candidate.getID())
+				 ID+=getSimBug(developer, b, z);
+			 else
+				 ID+=(1/getSimBug(candidate, b, z));
+		 }
+		 return ID;
+	 }
+	 
 	 public static double getSimBug(Developer d1,Bug b2, Zone z1){
 		 double DBSim=0.0;
 		 //for (Entry<Zone, Double>  zone:b2.BZone_Coefficient.entrySet())
 		 if(d1.DZone_Coefficient.containsKey(z1)) {
-			 if(b2.BZone_Coefficient.get(z1)<0)
-				 System.out.println(d1.DZone_Coefficient.get(z1));
 			 DBSim+=Math.min(b2.BZone_Coefficient.get(z1),d1.DZone_Coefficient.get(z1));
 		 }
 		 return DBSim;
 	 }
-
+	 
+	 public static double getDissim(ArrayList<Developer> developers, Bug b, Zone z) {
+		 
+		 return 0.0;
+	 }
  
  
 	 public static void setBugEndTime(Bug bug){
@@ -156,7 +170,6 @@ public class fitnessCalc {
 						IDFlow[i][j]=0;
 					}
 				}
-				
 			}
 			
 		return 0; //(dev_bugZone_sim/bugZone.size())+(dev_not_assigned_sim/devs.size());
@@ -174,6 +187,7 @@ public class fitnessCalc {
 		return 0;
 		 
 	 }
+	 
 	 public static double getNotAssignedTaskCost(){
 		 return 0;
 	 }

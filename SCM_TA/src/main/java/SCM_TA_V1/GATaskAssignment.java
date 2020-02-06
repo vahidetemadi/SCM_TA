@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -390,7 +391,7 @@ public class GATaskAssignment {
 	}
 	
 	//find solution to assign tasks to the developers
-	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals) throws IOException{
+	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim) throws IOException{
 		//static part
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
@@ -407,7 +408,7 @@ public class GATaskAssignment {
 		.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 		.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
 		 **/
-		System.out.println("finished cost-based assignment");
+		System.out.println("finished static-based assignment");
 		
 		//cost based///
 		////
@@ -442,6 +443,7 @@ public class GATaskAssignment {
 		
 		//add to total cost ove time and total information diffusion
 		totals.put("TCT_static", totals.get("TCT_static")+ staticSolution.getObjective(0));
+		tredOverTim.get("CoT_static").add(totals.get("TCT_static"));
 		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");
 		
 /************************************************starting the self-adaptive part***************************/
@@ -501,6 +503,10 @@ public class GATaskAssignment {
 				//add to total cost ove time and total information diffusion
 				totals.put("TCT_adaptive", totals.get("TCT_adaptive")+ normalSolution.getObjective(0));
 				totals.put("TID_adaptive", totals.get("TID_adaptive")+ (Double)normalSolution.getAttribute("diffusedKnowledge"));
+				
+				//add to trend line
+				tredOverTim.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
+				tredOverTim.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
 				
 				System.out.println(yaml_Dynamic.toString());
 				
@@ -563,6 +569,10 @@ public class GATaskAssignment {
 				//add to total cost over time and total information diffusion
 				totals.put("TID_adaptive", totals.get("TID_adaptive")+ (Double)IDSolution.getAttribute("diffusedKnowledge"));
 				totals.put("TCT_adaptive", totals.get("TCT_adaptive")+ (Double)IDSolution.getAttribute("cost"));
+				
+				//add to trend line
+				tredOverTim.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
+				tredOverTim.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
 				
 			/*
 			 * //log in YAML format pw.write(yaml_Steady.toString()); pw.append("\n");

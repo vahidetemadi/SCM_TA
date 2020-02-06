@@ -23,6 +23,7 @@ public class NormalAssignment extends AbstractProblem {
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
+	ArrayList<Developer> developerTeam=new ArrayList<Developer>();
 	public NormalAssignment(){
 		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_objectives);
 	}
@@ -80,14 +81,25 @@ public class NormalAssignment extends AbstractProblem {
 		double totalExecutionTime=0.0;
 		double totalDiffusedKnowledge=0.0;
 		int index=0;
+		int index_fillDevTeam=0;
 		GA_Problem_Parameter.tso=tso;
 		while(tso.hasNext()){
-			double totalSimToUnAssignedST=0;
+			double totalDiffusedOfDevTeam=0;
 			Bug b=tso.next();
 			//set Bug startTime
 			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			b.startTime_evaluate=x;
-			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);		
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone_takeDevTeam=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			
+			//fill dev list team 
+			developerTeam.clear();
+			
+			while(tso_Zone_takeDevTeam.hasNext()) {
+				tso_Zone_takeDevTeam.next();
+				developerTeam.add(developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)))));
+				index_fillDevTeam++;
+			}
 			Map.Entry<Integer, Developer> candidate=null;
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
@@ -128,7 +140,7 @@ public class NormalAssignment extends AbstractProblem {
 						sourceDevId=dev.getKey();
 					}
 				}
-				totalSimToUnAssignedST=fitnessCalc.getSimBug(candidate.getValue(), b, zone_bug.getKey());
+				totalDiffusedOfDevTeam=fitnessCalc.getID(developerTeam ,candidate.getValue(), b, zone_bug.getKey());
 				//compute the extra cost for information diffusion==> used to compute the cost posed due to
 				//information diffusion 
 			
@@ -142,7 +154,7 @@ public class NormalAssignment extends AbstractProblem {
 				
 			}
 			
-			totalDiffusedKnowledge+=totalSimToUnAssignedST;
+			totalDiffusedKnowledge+=totalDiffusedOfDevTeam;
 			
 			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
