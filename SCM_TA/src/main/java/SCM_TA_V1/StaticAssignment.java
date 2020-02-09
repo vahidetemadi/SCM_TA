@@ -26,7 +26,7 @@ public class StaticAssignment extends AbstractProblem {
 	ArrayList<Developer> developerTeam=new ArrayList<Developer>();
 	
 	public StaticAssignment(){
-		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_objectives);
+		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Single);
 	}
 	
 	
@@ -38,6 +38,7 @@ public class StaticAssignment extends AbstractProblem {
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
+		genes.clear();
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
@@ -50,9 +51,12 @@ public class StaticAssignment extends AbstractProblem {
 	
 	@Override
 	public Solution newSolution(){
-		init();
+		if(GA_Problem_Parameter.flag==1){
+			init();
+			GA_Problem_Parameter.flag=0;
+		}
 		//changed NUM of variables for the solution
-		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
+		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Single);
 		int j=0;
 		for(Zone z:genes){
 			//int randDevId=GA_Problem_Parameter.getRandomDevId();
@@ -83,7 +87,7 @@ public class StaticAssignment extends AbstractProblem {
 		double totalDiffusedKnowledge=0.0;
 		int index=0;
 		int index_fillDevTeam=0;
-		GA_Problem_Parameter.tso=tso;
+		GA_Problem_Parameter.tso_static=tso;
 		while(tso.hasNext()){
 			double totalDiffusedOfDevTeam=0;;
 			Bug b=tso.next();
@@ -112,12 +116,15 @@ public class StaticAssignment extends AbstractProblem {
 				}*/
 				int dID=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
 				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(dID), "static");
+				
 				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
 					if(developer.getKey()== dID)
 						candidate=developer;
 				}
+				
 				totalExecutionTime+=compeletionTime;
 				totalDevCost+=compeletionTime*developers.get(dID).hourlyWage;
+				
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(dID), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
 				developers.get(dID).developerNextAvailableHour=Math.max(developers.get(dID).developerNextAvailableHour,

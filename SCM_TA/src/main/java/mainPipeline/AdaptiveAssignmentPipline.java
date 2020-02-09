@@ -105,6 +105,7 @@ public class AdaptiveAssignmentPipline {
 		tredOverTim.put("CoT_adaptive", new ArrayList<Double>());
 		tredOverTim.put("IDoT_adaptive", new ArrayList<Double>());
 		
+		
 		//start the pipeline
 		start(totals, tredOverTim);
 		
@@ -169,20 +170,17 @@ public class AdaptiveAssignmentPipline {
 				
 				//call the GA initialization--after party call
 				GATaskAssignment.initializeGAParameter(bugList);
-				
-				test.initializeProblems();
 				//generate the models for create the candidates
 				GA_Problem_Parameter.generateModelofBugs();
 				GA_Problem_Parameter.candidateSolutonGeneration();
+				test.initializeProblems();
 				
 				//find most probable state
 				State state=getState(HMM);
 				Environment_s1.addToSequenceOfStates(state);
 				
 				//call the assignment algorithm
-
 				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals, tredOverTim);
-
 				
 				//update devNetwork
 				Environment_s1.nodeAttachment();

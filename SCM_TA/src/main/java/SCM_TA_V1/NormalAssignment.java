@@ -25,7 +25,7 @@ public class NormalAssignment extends AbstractProblem {
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	ArrayList<Developer> developerTeam=new ArrayList<Developer>();
 	public NormalAssignment(){
-		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_objectives);
+		super(GA_Problem_Parameter.setNum_of_Variables(bugs),GA_Problem_Parameter.Num_of_functions_Single);
 	}
 	
 	
@@ -37,6 +37,7 @@ public class NormalAssignment extends AbstractProblem {
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
+		genes.clear();
 		while(tso.hasNext()){
 			Bug b=tso.next();
 			b.setZoneDEP();
@@ -49,9 +50,12 @@ public class NormalAssignment extends AbstractProblem {
 	
 	@Override
 	public Solution newSolution(){
-		init();
+		if(GA_Problem_Parameter.flag==1){
+			init();
+			GA_Problem_Parameter.flag=0;
+		}
 		//changed NUM of variables for the solution
-		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
+		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Single);
 		int j=0;
 		for(Zone z:genes){
 			//int randDevId=GA_Problem_Parameter.getRandomDevId();
@@ -82,7 +86,7 @@ public class NormalAssignment extends AbstractProblem {
 		double totalDiffusedKnowledge=0.0;
 		int index=0;
 		int index_fillDevTeam=0;
-		GA_Problem_Parameter.tso=tso;
+		GA_Problem_Parameter.tso_adaptive=tso;
 		while(tso.hasNext()){
 			double totalDiffusedOfDevTeam=0;
 			Bug b=tso.next();

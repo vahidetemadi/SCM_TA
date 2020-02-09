@@ -99,7 +99,7 @@ public class InformationDifussion_adaptive extends AbstractProblem{
 		double totalDiffusedKnowledge=0.0;
 		int index=0;
 		int index_fillDevTeam=0;
-		GA_Problem_Parameter.tso=tso;
+		GA_Problem_Parameter.tso_adaptive=tso;
 		while(tso.hasNext()){
 			double totalDiffusedOfDevTeam=0;
 			Bug b=tso.next();

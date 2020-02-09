@@ -1,8 +1,9 @@
 package main.java.featureTuning;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class FeatureInitialization {
+public abstract class FeatureInitialization implements Serializable {
 	ArrayList<Integer> devNum=new ArrayList<Integer>();
 	ArrayList<Integer> bugNum=new ArrayList<Integer>();
 	ArrayList<Integer> TCR=new ArrayList<Integer>();

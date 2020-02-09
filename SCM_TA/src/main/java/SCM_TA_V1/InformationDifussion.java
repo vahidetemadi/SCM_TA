@@ -49,7 +49,7 @@ public class InformationDifussion extends AbstractProblem{
 	
 	public void init(){
 		DEP=GA_Problem_Parameter.DEP;
-		tso=GA_Problem_Parameter.tso_ID;
+		tso=GA_Problem_Parameter.tso_static;
 		schedules=new ArrayList<Integer>();
 		varToBug=new HashMap<Integer, Bug>();
 		variables=new ArrayList<ArrayList<Integer>>();

@@ -54,8 +54,8 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 		try {
 			//makeListClear();
 			adaptive.run(solution, totals, tredOverTim);
-			solution.setObjective(0, totals.get("TCT_static"));
-			solution.setAttribute("TCT_adaptive", totals.get("TCT_adaptive"));
+			solution.setObjective(0, totals.get("TCT_adaptive"));
+			solution.setAttribute("TCT_static", totals.get("TCT_static"));
 			solution.setAttribute("TID_adaptive", totals.get("TID_adaptive"));
 			solution.setAttribute("CoT_static", tredOverTim.get("CoT_static"));
 			solution.setAttribute("CoT_adaptive", tredOverTim.get("CoT_adaptive"));

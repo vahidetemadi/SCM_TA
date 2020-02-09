@@ -46,6 +46,7 @@ public class GA_Problem_Parameter {
 	public static int devListIdSize;
 	public static final int startDevId=1;
 	public static final int endDevId=20;
+	public static int flag=0;
 	private static DAGEdge EClass=new DAGEdge();
 	public static double currentTimePeriodStartTime=0;
 	public static ArrayList<Integer> DevList=new ArrayList<Integer>();
@@ -57,7 +58,7 @@ public class GA_Problem_Parameter {
 	//generate DAG for arrival Bugs
 	public static DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_competenceMulti2;
-	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_ID;
+	//public static TopologicalOrderIterator<Bug,DefaultEdge> tso_ID;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_NormalAssignment;
 	public static TopologicalOrderIterator<Bug,DefaultEdge> tso_IDAssignment;
 	public static ArrayList<Bug> tasks=new ArrayList<Bug>();
@@ -66,8 +67,8 @@ public class GA_Problem_Parameter {
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG;
 	public static DefaultDirectedGraph<Bug, DefaultEdge> DDG_1;
 	public static HashMap<String, Double> priorities=new HashMap<String, Double>();
-	public static TopologicalOrderIterator<Bug, DefaultEdge> tso;
-	
+	public static TopologicalOrderIterator<Bug, DefaultEdge> tso_static;
+	public static TopologicalOrderIterator<Bug, DefaultEdge> tso_adaptive;
 	public static TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
 	public static ArrayList<HashMap<Integer,Bug>> listOfSubBugs=new ArrayList<HashMap<Integer,Bug>>();	
 	
@@ -300,7 +301,7 @@ public class GA_Problem_Parameter {
 			for(Zone z:b.Zone_DEP.vertexSet()){
 				z.zoneStartTime_evaluate=0.0;
 				z.zoneEndTime_evaluate=0.0;
-			}	
+			}
 		}
 		for(Entry<Integer, Developer> d:developers.entrySet()){
 			d.getValue().developerNextAvailableHour=0.0;
@@ -353,7 +354,8 @@ public class GA_Problem_Parameter {
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso_competenceMulti2=GA_Problem_Parameter.getTopologicalSorted(DEP);
-		tso_ID=GA_Problem_Parameter.getTopologicalSorted(DEP);
+		tso_static=GA_Problem_Parameter.getTopologicalSorted(DEP);
+		tso_adaptive=GA_Problem_Parameter.getTopologicalSorted(DEP);
 		tso_NormalAssignment=GA_Problem_Parameter.getTopologicalSorted(DEP);
 		tso_IDAssignment=GA_Problem_Parameter.getTopologicalSorted(DEP);
 	}
@@ -480,8 +482,12 @@ public class GA_Problem_Parameter {
 	/**set arrival task**/
 	public static void setArrivalTasks(){
 		GA_Problem_Parameter.tasks.clear();
-		while(tso_ID.hasNext()){
-			Bug b=tso_ID.next();
+		while(tso_static.hasNext()){
+			Bug b=tso_static.next();
+			GA_Problem_Parameter.tasks.add(b);
+		}
+		while(tso_adaptive.hasNext()){
+			Bug b=tso_adaptive.next();
 			GA_Problem_Parameter.tasks.add(b);
 		}
 	}

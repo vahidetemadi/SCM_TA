@@ -4,9 +4,10 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Scanner;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.logging.*;
+import java.util.stream.Collectors;
 
 import org.moeaframework.algorithm.single.AggregateObjectiveComparator;
 import org.moeaframework.algorithm.single.GeneticAlgorithm;
@@ -19,10 +20,10 @@ import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variation;
 import org.moeaframework.core.comparator.ParetoDominanceComparator;
 import org.moeaframework.core.operator.GAVariation;
+import org.moeaframework.core.operator.OnePointCrossover;
 import org.moeaframework.core.operator.RandomInitialization;
 import org.moeaframework.core.operator.TournamentSelection;
 import org.moeaframework.core.operator.real.PM;
-import org.moeaframework.core.operator.real.SBX;
 import org.moeaframework.core.variable.EncodingUtils;
 
 import com.opencsv.CSVWriter;
@@ -57,16 +58,16 @@ public class Driver {
         								new ParetoDominanceComparator());
 
         Variation variation = new GAVariation(
-                new SBX(15.0, 1.0),
-                new PM(20.0, 0.5));
+                new OnePointCrossover(0.9),
+                new PM(0.05, 0.5));
 
-        Initialization initialization = new RandomInitialization(problem, 10);
+        Initialization initialization = new RandomInitialization(problem, 30);
 		AggregateObjectiveComparator comparator=new LinearDominanceComparator();
         
         GeneticAlgorithm GA=new GeneticAlgorithm(problem, comparator, initialization, selection, variation);
         
         //run GA single objective
-        while (GA.getNumberOfEvaluations() < 100) {
+        while (GA.getNumberOfEvaluations() < 300) {
             GA.step();
         }
         
@@ -77,7 +78,6 @@ public class Driver {
             System.out.println(Arrays.toString(EncodingUtils.getReal(solution)) +
                     " => " + solution.getObjective(0));
         }
-		
         return p;
 	}
 	
@@ -94,18 +94,31 @@ public class Driver {
 		
 		PrintWriter printWriter=new PrintWriter(file);
 		CSVWriter csvWriter=new CSVWriter(printWriter);
-		String[] csvFileOutputHeader= {"solution","totalCostStatic", "totalCostID", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_adaptive"};
+		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_adaptive"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
 		Solution tempSolution;
 		
 		for(int i=0; i<p.size(); i++) {
 			tempSolution=p.get(i);
-			csvWriter.writeNext(new String[] {Arrays.toString(EncodingUtils.getInt(tempSolution)) ,Double.toString(tempSolution.getObjective(0)),
-												tempSolution.getAttribute("TCT_adaptive").toString(), tempSolution.getAttribute("TID_adaptive").toString(),
-												Arrays.toString(((ArrayList<Double>)tempSolution.getAttribute("CoT_static")).toArray()),
-												Arrays.toString(((ArrayList<Double>)tempSolution.getAttribute("CoT_adaptive")).toArray()),
-												Arrays.toString(((ArrayList<Double>)tempSolution.getAttribute("IDoT_adaptive")).toArray())});
+			csvWriter.writeNext(new String[] {Arrays.toString(EncodingUtils.getInt(tempSolution)),  String.format("%.2f", tempSolution.getObjective(0)),
+												String.format("%.2f", tempSolution.getAttribute("TCT_static")), String.format("%.2f", tempSolution.getAttribute("TID_adaptive")),
+												((ArrayList<Double>)tempSolution.getAttribute("CoT_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("CoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("IDoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString()
+												});
+			
+			//decoding the solution
+			System.out.println("TCR");
+			System.out.println(FeatureInitializationV1.getInstance().getTCR().get((EncodingUtils.getInt(tempSolution))[2]));
+			System.out.println("EM");
+			System.out.println(Arrays.deepToString(FeatureInitializationV1.getInstance().getEm().get((EncodingUtils.getInt(tempSolution))[3])));
+			System.out.println("TM");
+			System.out.println(Arrays.deepToString(FeatureInitializationV1.getInstance().getTm().get((EncodingUtils.getInt(tempSolution))[4])));
+			
 		}
+		
+		//logging the end of running
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(Level.INFO, "Just finished the sample run");
 		
 		//close the writers
 		csvWriter.close();

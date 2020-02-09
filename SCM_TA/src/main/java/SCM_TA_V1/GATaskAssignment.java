@@ -195,9 +195,10 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.developers=developers;
 		for(Developer d:GA_Problem_Parameter.developers.values()){
 			for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
-				if(entry.getValue()==0)
+				if(entry.getValue()==0) {
 					d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
-					d.DZone_Coefficient_static.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
+					d.DZone_Coefficient_static.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient_static));
+				}
 			}
 		}
 		//cut randomly portion of developers
@@ -280,7 +281,6 @@ public class GATaskAssignment {
 	
 	public static void initializeGAParameter(HashMap<Integer,Bug> bugList){
 		//initialize GA parameters
-		GA_Problem_Parameter.Num_of_variables=bugList.size();
 		int b_index=0;
 		GA_Problem_Parameter.bugs=new Bug[bugList.size()];
 		
@@ -393,8 +393,11 @@ public class GATaskAssignment {
 	//find solution to assign tasks to the developers
 	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim) throws IOException{
 		//static part
+		int c=0;
+		
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
+		GA_Problem_Parameter.flag=1;
 		
 		while(GA_static.getNumberOfEvaluations()<100) {
 			GA_static.step();
@@ -407,7 +410,7 @@ public class GATaskAssignment {
 		Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
 		.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 		.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
-		 **/
+		**/
 		System.out.println("finished static-based assignment");
 		
 		//cost based///
@@ -415,41 +418,42 @@ public class GATaskAssignment {
 		Solution staticSolution=null;
 		for(Solution s:result)
 			staticSolution=s;
-		int c=0;
+		c=0;
 		
-		while(GA_Problem_Parameter.tso.hasNext()){
-			Bug b=GA_Problem_Parameter.tso.next();
+		while(GA_Problem_Parameter.tso_static.hasNext()){
+			Bug b=GA_Problem_Parameter.tso_static.next();
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
 				Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(c))));
-				updateDevProfile(b, tso_Zone.next(), d);
+				updateDevProfile_static(b, tso_Zone.next(), d);
 				c++;
 			}
 		}
 		
 		//report the cost
 		/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
-				"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
-				+"\n	the total cost:" + NormalSolution.getObjective(0));*/
+			"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
+			+"\n	the total cost:" + NormalSolution.getObjective(0));*/
 		
 		//write down the results in yaml format
 		
 		/*
-		 * YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder() .add("state name",
-		 * "Dynamic") .add("ID",
-		 * staticSolution.getAttribute("diffusedKnowledge").toString())
-		 * .add("Cost",Double.toString(staticSolution.getObjective(0))) .build();
-		 */
+		* YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder() .add("state name",
+		* "Dynamic") .add("ID",
+		* staticSolution.getAttribute("diffusedKnowledge").toString())
+		* .add("Cost",Double.toString(staticSolution.getObjective(0))) .build();
+		*/
 		
 		//add to total cost ove time and total information diffusion
 		totals.put("TCT_static", totals.get("TCT_static")+ staticSolution.getObjective(0));
 		tredOverTim.get("CoT_static").add(totals.get("TCT_static"));
 		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");
+		//}	
 		
 /************************************************starting the self-adaptive part***************************/
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
-		
+		GA_Problem_Parameter.flag=1;
 		//try(PrintWriter pw=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.yml"),true)))
 		//{
 		switch(action){
@@ -477,12 +481,12 @@ public class GATaskAssignment {
 				
 				
 				
-				while(GA_Problem_Parameter.tso.hasNext()){
-					Bug b=GA_Problem_Parameter.tso.next();
+				while(GA_Problem_Parameter.tso_adaptive.hasNext()){
+					Bug b=GA_Problem_Parameter.tso_adaptive.next();
 					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 					while(tso_Zone.hasNext()){
 						Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(normalSolution.getVariable(c))));
-						updateDevProfile(b, tso_Zone.next(), d);
+						updateDevProfile_adaptive(b, tso_Zone.next(), d);
 						c++;
 					}
 				}
@@ -520,10 +524,7 @@ public class GATaskAssignment {
 			 * sb.append(fileNum +", Dynamic, Cost, "+
 			 * Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.
 			 * getAttribute("diffusedKnowledge").toString()); sb.append('\n');
-			 * pw2.write(sb.toString()); pw2.close();
-			 */
-				
-				
+			 * pw2.write(sb.toString()); pw2.close();*/
 				
 				break;
 			
@@ -545,12 +546,12 @@ public class GATaskAssignment {
 					IDSolution=s;
 				c=0;
 				
-				while(GA_Problem_Parameter.tso.hasNext()){
-					Bug b=GA_Problem_Parameter.tso.next();
+				while(GA_Problem_Parameter.tso_adaptive.hasNext()){
+					Bug b=GA_Problem_Parameter.tso_adaptive.next();
 					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 					while(tso_Zone.hasNext()){
 						Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(c))));
-						updateDevProfile(b, tso_Zone.next(), d);
+						updateDevProfile_adaptive(b, tso_Zone.next(), d);
 						c++;
 					}
 				}
@@ -589,7 +590,6 @@ public class GATaskAssignment {
 			 */
 				break;	
 		}
-		//}
 	    
 	}
 	
@@ -698,8 +698,12 @@ public class GATaskAssignment {
 	}
 	
 	//update the profile of developers
-	public static void updateDevProfile(Bug b,Zone z, Developer d){
+	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
 		d.getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
+	}
+	
+	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
+		d.getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
 	}
 
 }
