@@ -1,0 +1,9 @@
+\begin{tabular}{lllll}
+\toprule
+{} & \multicolumn{2}{c}{Static} & \multicolumn{2}{c}{Self-Adaptive} \\
+{} &          JDT &     Platform &           JDT &     Platform \\
+\midrule
+\textbf{Worst} &  3.07836e+08 &  1.24123e+11 &   3.06904e+08 &  1.55946e+11 \\
+\textbf{Best } &  2.59806e+08 &  7.65667e+10 &   2.59539e+08 &  7.60157e+10 \\
+\bottomrule
+\end{tabular}

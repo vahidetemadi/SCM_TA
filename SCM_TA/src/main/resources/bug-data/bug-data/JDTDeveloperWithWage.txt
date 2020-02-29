@@ -1,4 +1,4 @@
-Dev#	jdt	jface	core	swt	ui	debug	ltk	text	jdi	search	compare	other hourlywage
+Dev#	jdt	jface	core	swt	ui	debug	ltk	text	jdi	search	compare	other	hourlywage
 1	2	2	2	1	1	0	1.5	2	0	0	4.75	2.25  90
 2	1.5	3.5	1.5	2.75	2.5	0	0.75	0	0	2.75	0.25	3     100
 3	1.5	2.5	2	2.25	2.25	1.5	0	0	0.75	0	0	2.25  97.5

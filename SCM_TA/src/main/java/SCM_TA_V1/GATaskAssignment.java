@@ -446,7 +446,9 @@ public class GATaskAssignment {
 		
 		//add to total cost ove time and total information diffusion
 		totals.put("TCT_static", totals.get("TCT_static")+ staticSolution.getObjective(0));
+		totals.put("TID_static", totals.get("TID_static")+ (Double)staticSolution.getAttribute("diffusedKnowledge"));
 		tredOverTim.get("CoT_static").add(totals.get("TCT_static"));
+		tredOverTim.get("IDoT_static").add(totals.get("TID_static"));
 		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");
 		//}	
 		
@@ -511,6 +513,7 @@ public class GATaskAssignment {
 				//add to trend line
 				tredOverTim.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
 				tredOverTim.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
+				tredOverTim.get("SoT").add(0.0);
 				
 				System.out.println(yaml_Dynamic.toString());
 				
@@ -574,7 +577,7 @@ public class GATaskAssignment {
 				//add to trend line
 				tredOverTim.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
 				tredOverTim.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
-				
+				tredOverTim.get("SoT").add(1.0);
 			/*
 			 * //log in YAML format pw.write(yaml_Steady.toString()); pw.append("\n");
 			 * pw.append("\n"); pw.append("\n"); pw.close();

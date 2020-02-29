@@ -97,6 +97,7 @@ public class AdaptiveAssignmentPipline {
 		//initialize return array
 		totals.put("TCT_static", 0.0);
 		totals.put("TCT_adaptive", 0.0);
+		totals.put("TID_static", 0.0);
 		totals.put("TID_adaptive", 0.0);
 		
 
@@ -104,6 +105,8 @@ public class AdaptiveAssignmentPipline {
 		tredOverTim.put("IDoT_static", new ArrayList<Double>());
 		tredOverTim.put("CoT_adaptive", new ArrayList<Double>());
 		tredOverTim.put("IDoT_adaptive", new ArrayList<Double>());
+		tredOverTim.put("IDoT_static", new ArrayList<Double>());
+		tredOverTim.put("SoT", new ArrayList<Double>());
 		
 		
 		//start the pipeline

@@ -190,9 +190,11 @@ public class Environment_s1 extends Environment {
 		totalChanged=0;
 		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
 			p=random.nextDouble();
+			
+			//ignore those who added recently
 			if(addedRecently.contains(node.getKey()))
 				continue;
-			if(p<TCR_ratio && devNetwork.vertexSet().size()>GA_Problem_Parameter.devListIdSize){
+			if(p<TCR_ratio && devNetwork.vertexSet().size() > GA_Problem_Parameter.devListIdSize){
 				devNetwork.removeVertex(getVertex(node.getKey()));
 				GA_Problem_Parameter.developers.remove(node.getKey());
 				GA_Problem_Parameter.devListId.remove(node.getKey());
@@ -208,14 +210,14 @@ public class Environment_s1 extends Environment {
 	 * EFFECT: a new developer network with updated nodes
  	 */
 	public static void nodeAttachment(){
-		//add the node with the ratio of "1-r"
-		shouldBeDeleted.clear();
+		shouldBeDeleted.clear(); //it's needed to then update ready for attachment list
 		addedRecently.clear();
 		double p;
 		for(Integer i:readyForAttachment){
 			p=random.nextDouble();
 			if(p<TCR_ratio && numOfNodes>0){
 				shouldBeDeleted.add(i);
+				
 				//check weather developer i exists
 				if(GA_Problem_Parameter.getDev(i)!=null){
 					Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
@@ -227,7 +229,7 @@ public class Environment_s1 extends Environment {
 					totalChanged++;
 				}
 			}
-		}	
+		}
 		//remove nodes from readyForAttachment after added to the devNetwork
 		for(Integer i:shouldBeDeleted){
 			readyForAttachment.remove(i);

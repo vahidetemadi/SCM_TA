@@ -36,16 +36,6 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 		 */
 	}
 
-	/**
-	 * Methos just clear the Arraylist of trends
-	 */
-	private void makeListClear() {
-		tredOverTim.get("CoT_static").clear();
-		tredOverTim.get("IDoT_static").clear();
-		tredOverTim.get("CoT_adaptive").clear();
-		tredOverTim.get("IDoT_adaptive").clear();
-	}
-	
 	// MODIFY get a solution and compute its objective and  
 	// EFFECT the cost associated to a solution is computed
 	@Override
@@ -56,10 +46,13 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 			adaptive.run(solution, totals, tredOverTim);
 			solution.setObjective(0, totals.get("TCT_adaptive"));
 			solution.setAttribute("TCT_static", totals.get("TCT_static"));
+			solution.setAttribute("TID_static", totals.get("TID_static"));
 			solution.setAttribute("TID_adaptive", totals.get("TID_adaptive"));
 			solution.setAttribute("CoT_static", tredOverTim.get("CoT_static"));
 			solution.setAttribute("CoT_adaptive", tredOverTim.get("CoT_adaptive"));
+			solution.setAttribute("IDoT_static", tredOverTim.get("IDoT_static"));
 			solution.setAttribute("IDoT_adaptive", tredOverTim.get("IDoT_adaptive"));
+			solution.setAttribute("SoT", tredOverTim.get("SoT"));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

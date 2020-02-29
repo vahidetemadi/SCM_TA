@@ -94,17 +94,20 @@ public class Driver {
 		
 		PrintWriter printWriter=new PrintWriter(file);
 		CSVWriter csvWriter=new CSVWriter(printWriter);
-		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_adaptive"};
+		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive", "SoT"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
 		Solution tempSolution;
 		
 		for(int i=0; i<p.size(); i++) {
 			tempSolution=p.get(i);
 			csvWriter.writeNext(new String[] {Arrays.toString(EncodingUtils.getInt(tempSolution)),  String.format("%.2f", tempSolution.getObjective(0)),
-												String.format("%.2f", tempSolution.getAttribute("TCT_static")), String.format("%.2f", tempSolution.getAttribute("TID_adaptive")),
+												String.format("%.2f", tempSolution.getAttribute("TCT_static")), String.format("%.2f", tempSolution.getAttribute("TID_static")),
+												String.format("%.2f", tempSolution.getAttribute("TID_adaptive")),
 												((ArrayList<Double>)tempSolution.getAttribute("CoT_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("CoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("IDoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString()
+												((ArrayList<Double>)tempSolution.getAttribute("IDoT_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("IDoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("SoT")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString()
 												});
 			
 			//decoding the solution
