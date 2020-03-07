@@ -72,7 +72,8 @@ public class AdaptiveAssignmentPipline {
 	 * 
 	 * EFFECT the overall cost is computed and is returned as the fitness of input solution 
 	 */	
-	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
+	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim,
+			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//set the num of devs-- all dev set will be pruned by the number comes from solution
 		listOfConfig.put("numOfDevs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
 		System.out.println("% of devs should be ignored-----"+featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
@@ -110,12 +111,13 @@ public class AdaptiveAssignmentPipline {
 		
 		
 		//start the pipeline
-		start(totals, tredOverTim);
+		start(totals, tredOverTim, devsProfileOverTime);
 		
 		return totals;
 	}
 	
-	public void start(HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
+	public void start(HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim, 
+			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//get the trained Markov model with the predefined model
 		training_instance.initialize_params(featureIni.getTm().get(listOfConfig.get("TM")), featureIni.getTm().get(listOfConfig.get("EM")));
 		HMM=training_instance.getHMM();
@@ -166,6 +168,8 @@ public class AdaptiveAssignmentPipline {
 			//call for run
 			GA_Problem_Parameter.listOfSubBugs.clear();
 			GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
+			if(i==Environment_s1.numberOfFiles/2)
+				devsProfileOverTime.put(0, GA_Problem_Parameter.developers_all);
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
 				//set bug dependencies
@@ -208,6 +212,9 @@ public class AdaptiveAssignmentPipline {
 				roundNum++;
 			}
 		}	
+		
+		//add after assginment profile
+		devsProfileOverTime.put(1, GA_Problem_Parameter.developers_all);
 	}
 	
 	public State getState(HMM<Observation> HMM){

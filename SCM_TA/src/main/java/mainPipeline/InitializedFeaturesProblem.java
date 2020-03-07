@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 import org.moeaframework.core.Solution;
 import org.moeaframework.problem.AbstractProblem;
-
+import main.java.SCM_TA_V1.Developer;
 import main.java.featureTuning.FeatureSetV1;
 
 
@@ -19,7 +19,8 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 	AdaptiveAssignmentPipline adaptive=null;
 	FeatureSetV1 featureSetV1=null;
 	HashMap<String, Double> totals=new HashMap<String, Double>();
-	HashMap<String, ArrayList<Double>> tredOverTim=new HashMap<String, ArrayList<Double>>(); 
+	HashMap<String, ArrayList<Double>> tredOverTim=new HashMap<String, ArrayList<Double>>();
+	HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime=new HashMap<Integer, HashMap<Integer,Developer>>();
 	@SuppressWarnings("static-access")
 	public InitializedFeaturesProblem(int numberOfVariables, int numberOfObjectives) {
 		super(numberOfVariables, numberOfObjectives);
@@ -43,7 +44,7 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 		// TODO Auto-generated method stub
 		try {
 			//makeListClear();
-			adaptive.run(solution, totals, tredOverTim);
+			adaptive.run(solution, totals, tredOverTim, devsProfileOverTime);
 			solution.setObjective(0, totals.get("TCT_adaptive"));
 			solution.setAttribute("TCT_static", totals.get("TCT_static"));
 			solution.setAttribute("TID_static", totals.get("TID_static"));
@@ -53,6 +54,8 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 			solution.setAttribute("IDoT_static", tredOverTim.get("IDoT_static"));
 			solution.setAttribute("IDoT_adaptive", tredOverTim.get("IDoT_adaptive"));
 			solution.setAttribute("SoT", tredOverTim.get("SoT"));
+			solution.setAttribute("devsProfile0", devsProfileOverTime.get(0));
+			solution.setAttribute("devsProfile1", devsProfileOverTime.get(1));
 		}
 		catch (Exception e) {
 			e.printStackTrace();

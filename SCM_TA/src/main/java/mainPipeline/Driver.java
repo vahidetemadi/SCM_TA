@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.*;
 import java.util.stream.Collectors;
@@ -28,6 +30,9 @@ import org.moeaframework.core.variable.EncodingUtils;
 
 import com.opencsv.CSVWriter;
 
+import main.java.SCM_TA_V1.Developer;
+import main.java.SCM_TA_V1.GA_Problem_Parameter;
+import main.java.SCM_TA_V1.Zone;
 import main.java.featureTuning.FeatureInitialization;
 import main.java.featureTuning.FeatureInitializationV1;
 
@@ -61,7 +66,7 @@ public class Driver {
                 new OnePointCrossover(0.9),
                 new PM(0.05, 0.5));
 
-        Initialization initialization = new RandomInitialization(problem, 30);
+        Initialization initialization = new RandomInitialization(problem, 5);
 		AggregateObjectiveComparator comparator=new LinearDominanceComparator();
         
         GeneticAlgorithm GA=new GeneticAlgorithm(problem, comparator, initialization, selection, variation);
@@ -90,8 +95,11 @@ public class Driver {
 	public static void writeResutls(Population p, String datasetName) throws IOException {
 		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
 				+File.separator+ datasetName+".csv");
+		File file_developersProfile_static, file_developersProfile_adaptive;
+		PrintWriter pw_devProfile_static, pw_devProfile_adaptive;
+		HashMap<Integer, Developer> devList;
+	
 		file.getParentFile().mkdir(); 				/* make missed dirs*/
-		
 		PrintWriter printWriter=new PrintWriter(file);
 		CSVWriter csvWriter=new CSVWriter(printWriter);
 		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive", "SoT"};
@@ -110,6 +118,70 @@ public class Driver {
 												((ArrayList<Double>)tempSolution.getAttribute("SoT")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString()
 												});
 			
+			//deserialize dev lists
+			int devCount=0;
+			for(int j=0; j<GA_Problem_Parameter.numberOfTimesMakingProfileComparison; j++) {
+				devCount++;
+				
+				file_developersProfile_static=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+						+File.separator+ "devProfiles"+ File.separator + i+"_static_"+j+".txt");
+				file_developersProfile_adaptive=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+						+File.separator+ "devProfiles"+ File.separator + i+"_adaptive_"+j+".txt");
+				file_developersProfile_static.getParentFile().mkdir();
+				file_developersProfile_adaptive.getParentFile().mkdir();
+				pw_devProfile_static=new PrintWriter(file_developersProfile_static);
+				pw_devProfile_adaptive=new PrintWriter(file_developersProfile_adaptive);
+				
+
+				devList=(HashMap<Integer, Developer>)tempSolution.getAttribute("devsProfile"+j);
+				
+				int size=devList.entrySet().size();
+				
+				//create the header for the files
+				pw_devProfile_static.append("Dev#");
+				pw_devProfile_adaptive.append("Dev#");
+				for(Map.Entry<Zone, Double> entry:devList.get(1).getDZone_Coefficient().entrySet()) {
+					pw_devProfile_static.append("\t"+entry.getKey().zName);
+					pw_devProfile_adaptive.append("\t"+entry.getKey().zName);
+				}
+				
+				//add new line
+				pw_devProfile_static.append("\n");
+				pw_devProfile_adaptive.append("\n");
+				
+				//write the devs' profile
+				String line_static="", line_adaptive="";
+				for(Map.Entry<Integer, Developer> dev:devList.entrySet()) {
+					line_static+=dev.getKey()+"\t";
+					line_adaptive+=dev.getKey()+"\t";
+					for(Map.Entry<Zone, Double> zoneItem:dev.getValue().getDZone_Coefficient_static().entrySet()) {
+						String tt=dev.getValue().getDZone_Coefficient_static().get(zoneItem.getKey()).toString();
+						line_static+=dev.getValue().getDZone_Coefficient_static().get(zoneItem.getKey())+"\t";
+						line_adaptive+=dev.getValue().getDZone_Coefficient().get(zoneItem.getKey())+"\t";
+					}
+					
+					//trim to remove the unwanted tab and then add new line
+					line_static.trim();
+					line_adaptive.trim();
+					if(devCount<GA_Problem_Parameter.developers_all.size()) {
+						line_adaptive+="\n";
+						line_static+="\n";
+					}
+					
+					//add the line to the printwriter
+					pw_devProfile_static.append(line_static);
+					pw_devProfile_adaptive.append(line_adaptive);
+				}
+				
+				//close the opened printwriters
+				pw_devProfile_adaptive.close();
+				pw_devProfile_static.close();
+				
+			}
+			
+			
+			
+			
 			//decoding the solution
 			System.out.println("TCR");
 			System.out.println(FeatureInitializationV1.getInstance().getTCR().get((EncodingUtils.getInt(tempSolution))[2]));
@@ -123,11 +195,10 @@ public class Driver {
 		//logging the end of running
 		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(Level.INFO, "Just finished the sample run");
 		
+		
 		//close the writers
 		csvWriter.close();
 		printWriter.close();
-		
-		
 	}
 	/**
 	 * Sending the results to the server over the network--- a service over in the server update the results set  

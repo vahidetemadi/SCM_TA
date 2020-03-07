@@ -71,7 +71,7 @@ public class GA_Problem_Parameter {
 	public static TopologicalOrderIterator<Bug, DefaultEdge> tso_adaptive;
 	public static TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
 	public static ArrayList<HashMap<Integer,Bug>> listOfSubBugs=new ArrayList<HashMap<Integer,Bug>>();	
-	
+	public static int numberOfTimesMakingProfileComparison=2;
 	
 	//Parameter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();

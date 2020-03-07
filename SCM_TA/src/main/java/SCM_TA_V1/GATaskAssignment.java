@@ -148,7 +148,7 @@ public class GATaskAssignment {
 				String[] items=sc.nextLine().split("\t",-1);
 				System.out.println(items);
 				scan.nextLine();
-					for(int k=0;k<items.length;k++){
+					for(int k=0;k<items.length-1;k++){
 						if(j!=0){
 						Zone zone=new Zone(j, items[k]);
 						project.zones.put(j, zone);
@@ -165,7 +165,7 @@ public class GATaskAssignment {
 				for(int k=0;k<items.length;k++){
 					sumOfPro+=Double.parseDouble(items[k]);
 				}
-				for(int k=0;k<items.length;k++){
+				for(int k=0;k<items.length-1;k++){
 					if(j!=0){
 						//developer.DZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
 						//System.out.println(columns.get(j));
@@ -702,11 +702,13 @@ public class GATaskAssignment {
 	
 	//update the profile of developers
 	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
-		d.getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
+		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z)+ b.BZone_Coefficient.get(z));
+		GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z)+ b.BZone_Coefficient.get(z));
 	}
 	
 	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
-		d.getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
+		d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z)+ b.BZone_Coefficient.get(z));
+		GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z)+ b.BZone_Coefficient.get(z));
 	}
 
 }
