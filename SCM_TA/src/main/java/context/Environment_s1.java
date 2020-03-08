@@ -27,6 +27,7 @@ public class Environment_s1 extends Environment {
 	public static ArrayList<Integer> readyForAttachment=new ArrayList<Integer>();
 	static Random random;
 	static int numOfNodes;
+	public static int numOfShouldBeDeleted=0;
 	public static int numberOfFiles=0;
 	public static ArrayList<State> stateSequence=new ArrayList<State>();
 	public static ArrayList<Observation> observationSequence=new ArrayList<Observation>();
@@ -194,11 +195,12 @@ public class Environment_s1 extends Environment {
 			//ignore those who added recently
 			if(addedRecently.contains(node.getKey()))
 				continue;
-			if(p<TCR_ratio && devNetwork.vertexSet().size() > GA_Problem_Parameter.devListIdSize){
+			if(p<TCR_ratio && devNetwork.vertexSet().size() > GA_Problem_Parameter.devListIdSize && numOfShouldBeDeleted>0){
 				devNetwork.removeVertex(getVertex(node.getKey()));
 				GA_Problem_Parameter.developers.remove(node.getKey());
 				GA_Problem_Parameter.devListId.remove(node.getKey());
 				totalChanged++;
+				numOfShouldBeDeleted--;
 			}
 		}
 	}
@@ -212,11 +214,12 @@ public class Environment_s1 extends Environment {
 	public static void nodeAttachment(){
 		shouldBeDeleted.clear(); //it's needed to then update ready for attachment list
 		addedRecently.clear();
+		numOfShouldBeDeleted=0;
 		double p;
 		for(Integer i:readyForAttachment){
 			p=random.nextDouble();
 			if(p<TCR_ratio && numOfNodes>0){
-				shouldBeDeleted.add(i);
+				numOfNodes--;	/* decrease num of nodes should be deleted*/
 				
 				//check weather developer i exists
 				if(GA_Problem_Parameter.getDev(i)!=null){
@@ -226,7 +229,7 @@ public class Environment_s1 extends Environment {
 					GA_Problem_Parameter.devListId.add(i);
 					addedRecently.add(i);
 					shouldBeDeleted.add(i);
-					totalChanged++;
+					numOfShouldBeDeleted++;
 				}
 			}
 		}
@@ -376,7 +379,7 @@ public class Environment_s1 extends Environment {
 	}
 
 	public static void reinitializeParameters(){
-		TCR_ratio=ThreadLocalRandom.current().nextDouble(0.6,0.8);
+		TCR_ratio=ThreadLocalRandom.current().nextDouble(0.48,0.6);
 		numOfNodes=getNearestK(TCR_ratio);
 	}
 	
