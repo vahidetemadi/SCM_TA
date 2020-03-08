@@ -424,7 +424,7 @@ public class GATaskAssignment {
 			Bug b=GA_Problem_Parameter.tso_static.next();
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
-				Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(c))));
+				Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(c))));
 				updateDevProfile_static(b, tso_Zone.next(), d);
 				c++;
 			}
@@ -487,7 +487,7 @@ public class GATaskAssignment {
 					Bug b=GA_Problem_Parameter.tso_adaptive.next();
 					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 					while(tso_Zone.hasNext()){
-						Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(normalSolution.getVariable(c))));
+						Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(normalSolution.getVariable(c))));
 						updateDevProfile_adaptive(b, tso_Zone.next(), d);
 						c++;
 					}
@@ -553,7 +553,7 @@ public class GATaskAssignment {
 					Bug b=GA_Problem_Parameter.tso_adaptive.next();
 					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 					while(tso_Zone.hasNext()){
-						Developer d=developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(c))));
+						Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(c))));
 						updateDevProfile_adaptive(b, tso_Zone.next(), d);
 						c++;
 					}

@@ -48,7 +48,7 @@ public class FeatureInitializationV1 extends FeatureInitialization{
 		// TODO Auto-generated method stub
 		//we are going to use the probability function of turn over computation
 		for(int i=0;i<30;i++)
-			TCR.add(ThreadLocalRandom.current().nextInt(1, 2));
+			TCR.add(ThreadLocalRandom.current().nextInt(0, 1));
 	}
 
 	@Override

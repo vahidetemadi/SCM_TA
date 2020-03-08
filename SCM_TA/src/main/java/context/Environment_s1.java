@@ -376,7 +376,7 @@ public class Environment_s1 extends Environment {
 	}
 
 	public static void reinitializeParameters(){
-		TCR_ratio=ThreadLocalRandom.current().nextDouble(0.0,0.2);
+		TCR_ratio=ThreadLocalRandom.current().nextDouble(0.6,0.8);
 		numOfNodes=getNearestK(TCR_ratio);
 	}
 	
@@ -389,9 +389,13 @@ public class Environment_s1 extends Environment {
 		int k=0;
 		double diff=0.0;
 		for(int i=0; i<getDevNetwork().vertexSet().size();i++) {
-			if(Math.abs((1-TCR.cdf(k)))>diff)
+			if(diff==0.0)
+				diff=Math.abs(TCR.p(i)-tcr);
+			
+			if(Math.abs(TCR.p(i)-tcr)<diff) {
 				k=i;
-				diff=(Math.abs((1-TCR.cdf(k))));
+				diff=Math.abs(TCR.p(i)-diff);
+			}
 		}
 		return k;
 	}

@@ -169,7 +169,7 @@ public class AdaptiveAssignmentPipline {
 			GA_Problem_Parameter.listOfSubBugs.clear();
 			GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
 			if(i==Environment_s1.numberOfFiles/2)
-				devsProfileOverTime.put(0, GA_Problem_Parameter.developers_all);
+				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
 				//set bug dependencies

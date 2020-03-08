@@ -60,10 +60,10 @@ public class Developer implements Cloneable{
 	}
 	
 	public HashMap< Zone, Double> getDZone_Coefficient(){
-		return DZone_Coefficient;
+		return this.DZone_Coefficient;
 	}
 	public HashMap< Zone, Double> getDZone_Coefficient_static(){
-		return DZone_Coefficient_static;
+		return this.DZone_Coefficient_static;
 	}
 	
 	public HashMap< Zone, Double> getDZone_Wage(){

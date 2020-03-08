@@ -150,12 +150,13 @@ public class Driver {
 				pw_devProfile_adaptive.append("\n");
 				
 				//write the devs' profile
-				String line_static="", line_adaptive="";
+				String line_static, line_adaptive;
 				for(Map.Entry<Integer, Developer> dev:devList.entrySet()) {
+					line_static="";
+					line_adaptive="";
 					line_static+=dev.getKey()+"\t";
 					line_adaptive+=dev.getKey()+"\t";
 					for(Map.Entry<Zone, Double> zoneItem:dev.getValue().getDZone_Coefficient_static().entrySet()) {
-						String tt=dev.getValue().getDZone_Coefficient_static().get(zoneItem.getKey()).toString();
 						line_static+=dev.getValue().getDZone_Coefficient_static().get(zoneItem.getKey())+"\t";
 						line_adaptive+=dev.getValue().getDZone_Coefficient().get(zoneItem.getKey())+"\t";
 					}
