@@ -379,7 +379,7 @@ public class Environment_s1 extends Environment {
 	}
 
 	public static void reinitializeParameters(){
-		TCR_ratio=ThreadLocalRandom.current().nextDouble(0.48,0.6);
+		TCR_ratio=ThreadLocalRandom.current().nextDouble(0.4,0.55);
 		numOfNodes=getNearestK(TCR_ratio);
 	}
 	

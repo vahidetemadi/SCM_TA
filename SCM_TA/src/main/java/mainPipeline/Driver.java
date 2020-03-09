@@ -66,13 +66,13 @@ public class Driver {
                 new OnePointCrossover(0.9),
                 new PM(0.05, 0.5));
 
-        Initialization initialization = new RandomInitialization(problem, 5);
+        Initialization initialization = new RandomInitialization(problem, 10);
 		AggregateObjectiveComparator comparator=new LinearDominanceComparator();
         
         GeneticAlgorithm GA=new GeneticAlgorithm(problem, comparator, initialization, selection, variation);
         
         //run GA single objective
-        while (GA.getNumberOfEvaluations() < 300) {
+        while (GA.getNumberOfEvaluations() < 100) {
             GA.step();
         }
         
@@ -92,6 +92,7 @@ public class Driver {
 	 * all the experiment runs output to a unique location
 	 * @throws IOException 
 	 */
+	@SuppressWarnings("unchecked")
 	public static void writeResutls(Population p, String datasetName) throws IOException {
 		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
 				+File.separator+ datasetName+".csv");

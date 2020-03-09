@@ -19,7 +19,7 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 	AdaptiveAssignmentPipline adaptive=null;
 	FeatureSetV1 featureSetV1=null;
 	HashMap<String, Double> totals=new HashMap<String, Double>();
-	HashMap<String, ArrayList<Double>> tredOverTim=new HashMap<String, ArrayList<Double>>();
+	HashMap<String, ArrayList<Double>> totalsOverTime=new HashMap<String, ArrayList<Double>>();
 	HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime=new HashMap<Integer, HashMap<Integer,Developer>>();
 	@SuppressWarnings("static-access")
 	public InitializedFeaturesProblem(int numberOfVariables, int numberOfObjectives) {
@@ -44,16 +44,16 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 		// TODO Auto-generated method stub
 		try {
 			//makeListClear();
-			adaptive.run(solution, totals, tredOverTim, devsProfileOverTime);
+			adaptive.run(solution, totals, totalsOverTime, devsProfileOverTime);
 			solution.setObjective(0, totals.get("TCT_adaptive"));
 			solution.setAttribute("TCT_static", totals.get("TCT_static"));
 			solution.setAttribute("TID_static", totals.get("TID_static"));
 			solution.setAttribute("TID_adaptive", totals.get("TID_adaptive"));
-			solution.setAttribute("CoT_static", tredOverTim.get("CoT_static"));
-			solution.setAttribute("CoT_adaptive", tredOverTim.get("CoT_adaptive"));
-			solution.setAttribute("IDoT_static", tredOverTim.get("IDoT_static"));
-			solution.setAttribute("IDoT_adaptive", tredOverTim.get("IDoT_adaptive"));
-			solution.setAttribute("SoT", tredOverTim.get("SoT"));
+			solution.setAttribute("CoT_static", totalsOverTime.get("CoT_static"));
+			solution.setAttribute("CoT_adaptive", totalsOverTime.get("CoT_adaptive"));
+			solution.setAttribute("IDoT_static", totalsOverTime.get("IDoT_static"));
+			solution.setAttribute("IDoT_adaptive", totalsOverTime.get("IDoT_adaptive"));
+			solution.setAttribute("SoT", totalsOverTime.get("SoT"));
 			solution.setAttribute("devsProfile0", devsProfileOverTime.get(0));
 			solution.setAttribute("devsProfile1", devsProfileOverTime.get(1));
 		}

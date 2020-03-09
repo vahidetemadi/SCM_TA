@@ -72,7 +72,7 @@ public class AdaptiveAssignmentPipline {
 	 * 
 	 * EFFECT the overall cost is computed and is returned as the fitness of input solution 
 	 */	
-	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim,
+	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime,
 			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//set the num of devs-- all dev set will be pruned by the number comes from solution
 		listOfConfig.put("numOfDevs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
@@ -102,21 +102,21 @@ public class AdaptiveAssignmentPipline {
 		totals.put("TID_adaptive", 0.0);
 		
 
-		tredOverTim.put("CoT_static", new ArrayList<Double>());
-		tredOverTim.put("IDoT_static", new ArrayList<Double>());
-		tredOverTim.put("CoT_adaptive", new ArrayList<Double>());
-		tredOverTim.put("IDoT_adaptive", new ArrayList<Double>());
-		tredOverTim.put("IDoT_static", new ArrayList<Double>());
-		tredOverTim.put("SoT", new ArrayList<Double>());
+		totalsOverTime.put("CoT_static", new ArrayList<Double>());
+		totalsOverTime.put("IDoT_static", new ArrayList<Double>());
+		totalsOverTime.put("CoT_adaptive", new ArrayList<Double>());
+		totalsOverTime.put("IDoT_adaptive", new ArrayList<Double>());
+		totalsOverTime.put("IDoT_static", new ArrayList<Double>());
+		totalsOverTime.put("SoT", new ArrayList<Double>());
 		
 		
 		//start the pipeline
-		start(totals, tredOverTim, devsProfileOverTime);
+		start(totals, totalsOverTime, devsProfileOverTime);
 		
 		return totals;
 	}
 	
-	public void start(HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> tredOverTim, 
+	public void start(HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime, 
 			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//get the trained Markov model with the predefined model
 		training_instance.initialize_params(featureIni.getTm().get(listOfConfig.get("TM")), featureIni.getTm().get(listOfConfig.get("EM")));
@@ -187,7 +187,7 @@ public class AdaptiveAssignmentPipline {
 				Environment_s1.addToSequenceOfStates(state);
 				
 				//call the assignment algorithm
-				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals, tredOverTim);
+				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals, totalsOverTime);
 				
 				//update devNetwork
 				Environment_s1.nodeAttachment();
