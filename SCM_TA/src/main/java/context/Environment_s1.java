@@ -195,7 +195,8 @@ public class Environment_s1 extends Environment {
 			//ignore those who added recently
 			if(addedRecently.contains(node.getKey()))
 				continue;
-			if(p<TCR_ratio && devNetwork.vertexSet().size() > GA_Problem_Parameter.devListIdSize && numOfShouldBeDeleted>0){
+			if(p<TCR_ratio && devNetwork.vertexSet().size() > GA_Problem_Parameter.devListIdSize && numOfShouldBeDeleted>0 
+					&& GA_Problem_Parameter.devListIdSize>=GA_Problem_Parameter.earlyDevListSize){
 				devNetwork.removeVertex(getVertex(node.getKey()));
 				GA_Problem_Parameter.developers.remove(node.getKey());
 				GA_Problem_Parameter.devListId.remove(node.getKey());

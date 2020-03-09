@@ -72,6 +72,7 @@ public class GA_Problem_Parameter {
 	public static TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
 	public static ArrayList<HashMap<Integer,Bug>> listOfSubBugs=new ArrayList<HashMap<Integer,Bug>>();	
 	public static int numberOfTimesMakingProfileComparison=2;
+	public static int earlyDevListSize=0;
 	
 	//Parameter for new solution in ID approach
 	//ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
@@ -542,6 +543,7 @@ public class GA_Problem_Parameter {
 	 */
 	public static void pruneDevList(HashMap<Integer, Developer> devs_prune, ArrayList<Ranking<Developer, Double>> devs, int portion ){
 			int _size=devs_prune.size()-(int)(devs_prune.size()*portion)/100;
+			earlyDevListSize=_size;
 			System.out.println(devs_prune.size()+"***devs");
 			int i=1;
 			for(Ranking<Developer, Double> r:devs){
