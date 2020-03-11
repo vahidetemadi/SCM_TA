@@ -139,23 +139,25 @@ public class GATaskAssignment {
 		//System.out.println(is.toString());
 		
 		sc=new Scanner(is);
+		int numof=0;
 		System.out.println("enter the devlopers wage file");
 		Scanner scan=new Scanner(is_copy);
 		int i=0;
 		int j=0;
 		while(sc.hasNextLine() && scan.hasNextLine()){
+			numof++;
 			if(i==0){
 				String[] items=sc.nextLine().split("\t",-1);
 				System.out.println(items);
 				scan.nextLine();
-					for(int k=0;k<items.length-1;k++){
-						if(j!=0){
-						Zone zone=new Zone(j, items[k]);
-						project.zones.put(j, zone);
-						columns.put(j,zone);
-						}
-						j++;
+				for(int k=0;k<items.length-1;k++){
+					if(j!=0){
+					Zone zone=new Zone(j, items[k]);
+					project.zones.put(j, zone);
+					columns.put(j,zone);
 					}
+					j++;
+				}
 			}
 			else{
 				String[] items=sc.nextLine().split("\t|\\s+",-1);
@@ -181,7 +183,7 @@ public class GATaskAssignment {
 					}
 					j++;
 				}
-			developers.put(developer.getID(), developer);
+				developers.put(developer.getID(), developer);
 			}
 			i++;
 			j=0;
@@ -702,13 +704,17 @@ public class GATaskAssignment {
 	
 	//update the profile of developers
 	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
-		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z)+ b.BZone_Coefficient.get(z));
-		GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z)+ b.BZone_Coefficient.get(z));
+		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z)+ b.BZone_Coefficient.get(z));
+		//GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z)+ b.BZone_Coefficient.get(z));
+		
+		d.getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
+		GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
+		
 	}
 	
 	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
-		d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z)+ b.BZone_Coefficient.get(z));
-		GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z)+ b.BZone_Coefficient.get(z));
+		d.getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
+		GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
 	}
 
 }
