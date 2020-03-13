@@ -152,9 +152,9 @@ public class GATaskAssignment {
 				scan.nextLine();
 				for(int k=0;k<items.length-1;k++){
 					if(j!=0){
-					Zone zone=new Zone(j, items[k]);
-					project.zones.put(j, zone);
-					columns.put(j,zone);
+						Zone zone=new Zone(j, items[k]);
+						project.zones.put(j, zone);
+						columns.put(j,zone);
 					}
 					j++;
 				}
@@ -236,7 +236,7 @@ public class GATaskAssignment {
 			while(sc1.hasNextLine() && fileNumber==n){
 				//counter "i" has set to record the name of each zone (the header of each file)
 				if(i==0){
-						String[] items=sc1.nextLine().split("\t|\\ ",-1);
+						String[] items=sc1.nextLine().split("\t",-1);
 							for(int k=0;k<items.length;k++){
 								if(j>2){
 									Zone zone=new Zone(j, items[k]);
@@ -449,6 +449,9 @@ public class GATaskAssignment {
 		//add to total cost ove time and total information diffusion
 		totals.put("TCT_static", totals.get("TCT_static")+ staticSolution.getObjective(0));
 		totals.put("TID_static", totals.get("TID_static")+ (Double)staticSolution.getAttribute("diffusedKnowledge"));
+		
+		if(totals.get("TCT_static")==null || totals.get("TCT_static")==0.0)
+			System.out.println("test");
 		totalsOverTime.get("CoT_static").add(totals.get("TCT_static"));
 		totalsOverTime.get("IDoT_static").add(totals.get("TID_static"));
 		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");

@@ -547,7 +547,7 @@ public class GA_Problem_Parameter {
 			System.out.println(devs_prune.size()+"***devs");
 			int i=1;
 			for(Ranking<Developer, Double> r:devs){
-				if(i<_size){
+				if(i<=_size){
 					devs_prune.remove(r.getEntity().getID());
 					GA_Problem_Parameter.devListId.add(r.getEntity().getID());
 				}

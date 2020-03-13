@@ -157,6 +157,8 @@ public class Environment_s1 extends Environment {
 		for(Integer i:shouldBeDeleted){
 			//the selected node should not be as those in the 
 			dev=getSelectedVertexByFitness(i);
+			if(dev==null)
+				System.out.println(dev);
 			devNetwork.addEdge(dev, getDevNetworkVertex(i));
 			devNetwork.addEdge(getDevNetworkVertex(i), dev);
 		}
@@ -196,7 +198,7 @@ public class Environment_s1 extends Environment {
 			if(addedRecently.contains(node.getKey()))
 				continue;
 			if(p<TCR_ratio && devNetwork.vertexSet().size() > GA_Problem_Parameter.devListIdSize && numOfShouldBeDeleted>0 
-					&& GA_Problem_Parameter.devListIdSize>=GA_Problem_Parameter.earlyDevListSize){
+					&& GA_Problem_Parameter.devListId.size()>GA_Problem_Parameter.earlyDevListSize){
 				devNetwork.removeVertex(getVertex(node.getKey()));
 				GA_Problem_Parameter.developers.remove(node.getKey());
 				GA_Problem_Parameter.devListId.remove(node.getKey());
@@ -281,14 +283,21 @@ public class Environment_s1 extends Environment {
 	public static Map.Entry<Integer, Developer> getSelectedVertexByFitness(Integer selfEdge){
 		
 		Map.Entry<Integer, Developer> selected=null;
-		int totalWight=0;
+		
+		ArrayList<Integer> vertexSet=new ArrayList<>();
+		
 		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
-			int weight=node.getValue().weight;
-			double r=random.nextInt(totalWight+weight);
-			if(r>=totalWight && node.getKey()!=selfEdge)
-				selected=node;
-			totalWight+=weight;
+			if(node.getKey()!=selfEdge)
+				vertexSet.add(node.getKey());
 		}
+		
+		int devID=ThreadLocalRandom.current().nextInt(0,vertexSet.size());
+		
+		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
+			if(node.getKey()==devID)
+				selected=node;
+		}
+		
 		return selected;
 	}
 	

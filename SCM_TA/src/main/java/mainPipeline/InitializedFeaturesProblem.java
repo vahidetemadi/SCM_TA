@@ -1,7 +1,10 @@
 package main.java.mainPipeline;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.NoSuchElementException;
 
 import org.moeaframework.core.Solution;
 import org.moeaframework.problem.AbstractProblem;
@@ -42,9 +45,15 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 	@Override
 	public void evaluate(Solution solution) {
 		// TODO Auto-generated method stub
-		try {
+		//try {
 			//makeListClear();
-			adaptive.run(solution, totals, totalsOverTime, devsProfileOverTime);
+			try {
+				adaptive.run(solution, totals, totalsOverTime, devsProfileOverTime);
+			} catch (NoSuchElementException | ClassNotFoundException | IOException | URISyntaxException
+					| CloneNotSupportedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			solution.setObjective(0, totals.get("TCT_adaptive"));
 			solution.setAttribute("TCT_static", totals.get("TCT_static"));
 			solution.setAttribute("TID_static", totals.get("TID_static"));
@@ -56,10 +65,10 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 			solution.setAttribute("SoT", totalsOverTime.get("SoT"));
 			solution.setAttribute("devsProfile0", devsProfileOverTime.get(0));
 			solution.setAttribute("devsProfile1", devsProfileOverTime.get(1));
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-		}
+		///}
+		//catch (Exception e) {
+			//e.printStackTrace();
+		//}
 	}
 
 	//JsonObject jObject=Json.createObjectBuilder().build();

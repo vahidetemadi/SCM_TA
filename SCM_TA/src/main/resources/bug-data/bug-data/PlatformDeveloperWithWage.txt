@@ -1,4 +1,4 @@
-Dev#	Prof 1	Prof 2	Prof 3	Prof 4	Prof 5	Prof 6	Prof 7	Prof 8	Prof 9	Prof 10	Prof 11	Prof 12 hourlywage
+Dev#	Prof 1	Prof 2	Prof 3	Prof 4	Prof 5	Prof 6	Prof 7	Prof 8	Prof 9	Prof 10	Prof 11	Prof 12	hourlywage
 1	0.75	1	0.5	0.5	0.5	0.5	0.5	0.8	0.8	2	0	1	60
 2	1	0	0.5	0	0.5	0.5	0.5	0.5	0.5	0	0	0.5	70
 3	1.75	0.25	1.25	0.75	1	1	1	2	2	0.25	2	3	100
