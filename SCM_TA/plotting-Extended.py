@@ -38,4 +38,5 @@ for filename in os.listdir(os.path.join(os.getcwd(),'archives',sys.argv[1],sys.a
 		df3.plot(kind='scatter', x='Time',c='red' ,y='Cost', label='RD', title=name[0], marker='s', ax=ax2, s=30)	
 		plt.grid(linestyle='dotted')
 		plt.tight_layout()
+        plt.figure()
 		plt.savefig(os.path.join(os.getcwd(),'archives',sys.argv[1],sys.argv[2],sys.argv[3],name[0]+'_'+name[1]+'_'+name[3]+'.pdf'))

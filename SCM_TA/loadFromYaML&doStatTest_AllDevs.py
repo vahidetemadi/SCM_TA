@@ -11,7 +11,7 @@ import matplotlib
 from sklearn import preprocessing
 import settings
 import a12
-import saveIntoLatex
+import saveIntoLatex_AllDevs
 from  matplotlib.patches import Patch
 import subprocess
 
@@ -202,6 +202,7 @@ class statitisticalTest:
                 dataFrameWinTieLose.loc[algortihmName1, 'Tie']+=1;
                 dataFrameWinTieLose.loc[algortihmName2, 'Tie']+=1;
 
+
     def makeComparison_effectSize(algortihmName1, algortihmName2, rowOfStatTestDataFrame, statTestDataFrame_temp):
         if (    (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ax']==algortihmName1) 
                 and (statTestDataFrame_temp.loc[rowOfStatTestDataFrame]['Ay']==algortihmName2)        
@@ -327,7 +328,7 @@ def fillTableOfSimpleStat(devKey):
                 entryValue = str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].mean(),2))+';'+ str(round(MSFile[settings.index_reverse.get(approach)+'_'+qi].std(),2))
                 if devKey=='CoreDevs' and approach=='RS' and qi=='Spacing':
                     entryValue='-'
-                simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(settings.getListOfFiles(sys.argv[1]).get(MSFile.name)), devKey) ,(qi, approach)]= entryValue
+                simpleStateDataFrame.loc[(sys.argv[1], settings.getListOfFiles_byID(sys.argv[1]).get(settings.getListOfFiles(sys.argv[1]).get(MSFile.name))) ,(qi, approach)]= entryValue
     simpleStateDataFrame.fillna(0, inplace=True)
     print(simpleStateDataFrame)
     simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))  
@@ -343,6 +344,13 @@ def savePdfViaSvg(fig,nameOfFig, pathOfFig, **kwargs):
 #the script starts at this line
 if __name__=="__main__":
     simpleStateDataFrame=pd.DataFrame()
+    #create(if not exist) and save table of results---using a multi-index strucutre
+    if not os.path.exists(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")):
+        #simpleStateDataFrame=getEmptyDataframe_simpleDataFrame_multiIndex()
+        simpleStateDataFrame=saveIntoLatex_AllDevs.create_simpleDataFrame_multiIndex()
+        simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl"))
+
+        
     for keyDev,valueDev in settings.devCategory.items():
         print('/////////---> '+keyDev)
         loadResults=readResults
@@ -418,7 +426,7 @@ if __name__=="__main__":
         
 
         fillTableOfSimpleStat(keyDev)
-        saveIntoLatex.saveAsLatex()
+        saveIntoLatex_AllDevs.saveAsLatex()
         #statTest.saveStatTestIntoFile(statTestDataFrame, value)
 
     for keyNameDev, statTestDF in settings.getStatTestDFs().items():
@@ -445,12 +453,7 @@ if __name__=="__main__":
         print('senario[effectSize]--->'+ keyNameDev)
         plotAndSave_stackedChart(dataFrameWinTieLose, "A12", keyNameDev)
 
-
-    #create(if not exist) and save table of results---using a multi-index strucutre
-    if not os.path.exists(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")):
-        #simpleStateDataFrame=getEmptyDataframe_simpleDataFrame_multiIndex()
-        simpleStateDataFrame=saveIntoLatex.create_simpleDataFrame_multiIndex()
-        simpleStateDataFrame.to_pickle(os.path.join(os.getcwd(),"simpleStateDataFrame.pkl")) 
+ 
 
 
     #plot and save boxplot of datasets per QIs which relatively compare SD and KRRGZ

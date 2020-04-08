@@ -83,10 +83,10 @@ index_reverse={"SD":"NSGAIIITAGLS", "KRRGZ":"KRRGZ", "RS":"RS"}
 
 listOfApproaches=['SD', 'KRRGZ', 'RS']
 
-devCategoryList=["AllDevs", "CoreDevs"]
+devCategoryList=["AllDevs"]
 
-#devCategory={"AllDevs":""}
-devCategory={"AllDevs":"", "CoreDevs":"_CoreDevs"}
+devCategory={"AllDevs":""}
+#devCategory={"AllDevs":"", "CoreDevs":"_CoreDevs"}
 
 
 AllDevs={}
