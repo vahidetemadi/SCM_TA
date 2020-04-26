@@ -3,7 +3,10 @@
  */
 package main.java.mainPipeline;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +29,7 @@ import main.java.context.State;
 import main.java.featureTuning.FeatureInitialization;
 import main.java.featureTuning.FeatureInitializationV1;
 import main.java.featureTuning.FeatureSetV1;
+import main.java.featureTuning.Stubs;
 import smile.sequence.HMM;
 
 public class AdaptiveAssignmentPipline {
@@ -106,8 +110,9 @@ public class AdaptiveAssignmentPipline {
 		totalsOverTime.put("IDoT_static", new ArrayList<Double>());
 		totalsOverTime.put("CoT_adaptive", new ArrayList<Double>());
 		totalsOverTime.put("IDoT_adaptive", new ArrayList<Double>());
-		totalsOverTime.put("IDoT_static", new ArrayList<Double>());
 		totalsOverTime.put("SoT", new ArrayList<Double>());
+		totalsOverTime.put("costPerRound_static", new ArrayList<Double>());
+		totalsOverTime.put("costPerRound_adaptive", new ArrayList<Double>());
 		
 		
 		//start the pipeline
@@ -168,13 +173,13 @@ public class AdaptiveAssignmentPipline {
 			//call for run
 			GA_Problem_Parameter.listOfSubBugs.clear();
 			GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
+			//GATaskAssignment.run(datasetName, i, 5);
 			if(i==Environment_s1.numberOfFiles/2)
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
 				//set bug dependencies
 				GATaskAssignment.setBugDependencies(datasetName, bugList);
-				
 				//call the GA initialization--after party call
 				GATaskAssignment.initializeGAParameter(bugList);
 				//generate the models for create the candidates
@@ -183,16 +188,20 @@ public class AdaptiveAssignmentPipline {
 				test.initializeProblems();
 				
 				//find most probable state
-				State state=getState(HMM);
+				//State state=getState(HMM);
+				State state=getState(Stubs.tempStates.get(roundNum-1));		/** using new version of getting state to test the state**/
 				Environment_s1.addToSequenceOfStates(state);
 				
 				//call the assignment algorithm
 				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals, totalsOverTime);
 				
+				HashMap<Integer, Developer> devs=GA_Problem_Parameter.developers_all;
 				//update devNetwork
-				Environment_s1.nodeAttachment();
-				Environment_s1.nodeDeletion();
-				Environment_s1.updateDevNetwork();
+				//Environment_s1.nodeAttachment();
+				Environment_s1.nodeAttachment(Stubs.tempChurns.get(roundNum-1)); 		/**insert the num of devs by hand**/
+				//Environment_s1.nodeDeletion();
+				Environment_s1.nodeDeletion(Stubs.tempChurns.get(roundNum-1));
+				//Environment_s1.updateDevNetwork();
 				
 				//developers need to be shuffled
 				GA_Problem_Parameter.setDevelopersIDForRandom();
@@ -215,6 +224,19 @@ public class AdaptiveAssignmentPipline {
 		
 		//add after assginment profile
 		devsProfileOverTime.put(1, GA_Problem_Parameter.developers_all);
+		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+File.separator+ "devs_added.txt");
+		file.getParentFile().mkdirs();
+		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
+		pw.append("------------------"+"\n"+"--------------------"+"\n");
+		pw.close();
+		
+		File file2=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+File.separator+ "devs_deleted.txt");
+		file.getParentFile().mkdirs();
+		PrintWriter pw2=new PrintWriter(new FileOutputStream(file2, true));
+		pw2.append("------------------"+"\n"+"--------------------"+"\n");
+		pw2.close();
 	}
 	
 	public State getState(HMM<Observation> HMM){
@@ -270,6 +292,14 @@ public class AdaptiveAssignmentPipline {
 		}
 		return selectedState.getKey();
 	}
-
+	
+	/**
+	 * This method serves as the sutb for state generation
+	 * @param period of type int which is the period the system is currently in
+	 * @return the state relevant to the current system
+	 */
+	public State getState(int period) {
+		return Environment_s1.listOfState.get(period);
+	}
 
 }

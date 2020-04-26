@@ -1,4 +1,5 @@
 package main.java.mainPipeline;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,14 +36,22 @@ import main.java.SCM_TA_V1.GA_Problem_Parameter;
 import main.java.SCM_TA_V1.Zone;
 import main.java.featureTuning.FeatureInitialization;
 import main.java.featureTuning.FeatureInitializationV1;
+import main.java.featureTuning.Stubs;
 
 
 public class Driver {
 	static Population finalPopulation;
 	public static void main(String[] args) throws IOException {
-		finalPopulation= runSeed(); 		/* call the run for single seed */
-		writeResutls(finalPopulation, FeatureInitializationV1.datasetName); 		/* write down the results to the csv file */
-		sendResultsToServer(finalPopulation);				/* send the results to the central server */
+		//get dataset name 
+		System.out.println("Enter the dataset name:");
+		Scanner sc=new Scanner(System.in);
+		FeatureInitializationV1.datasetName=sc.next();
+		
+		for(int i=1; i<=30; i++) {
+			finalPopulation= runSeed(); 		/* call the run for single seed */
+			writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
+			sendResultsToServer(finalPopulation);				/* send the results to the central server */
+		}
 	}
 	
 	
@@ -51,10 +60,9 @@ public class Driver {
 		FeatureInitialization featureInitializatin=FeatureInitializationV1.getInstance();
 		featureInitializatin.initializeAllFeatures();
 		
-		//get dataset name 
-		System.out.println("Enter the dataset name:");
-		Scanner sc=new Scanner(System.in);
-		FeatureInitializationV1.datasetName=sc.next();
+		//fill the temp lists
+		Stubs.createTempStateSequence();
+		Stubs.fillChurnsSequence();
 		
 		//Run GA for InitializedfFeatureProblem
 		InitializedFeaturesProblem problem=new InitializedFeaturesProblem(5, 1);
@@ -93,9 +101,9 @@ public class Driver {
 	 * @throws IOException 
 	 */
 	@SuppressWarnings("unchecked")
-	public static void writeResutls(Population p, String datasetName) throws IOException {
+	public static void writeResutls(Population p, String datasetName, int runNum) throws IOException {
 		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
-				+File.separator+ datasetName+".csv");
+				+File.separator+ datasetName+"_"+runNum+".csv");
 		File file_developersProfile_static, file_developersProfile_adaptive;
 		PrintWriter pw_devProfile_static, pw_devProfile_adaptive;
 		HashMap<Integer, Developer> devList;
@@ -103,7 +111,7 @@ public class Driver {
 		file.getParentFile().mkdir(); 				/* make missed dirs*/
 		PrintWriter printWriter=new PrintWriter(file);
 		CSVWriter csvWriter=new CSVWriter(printWriter);
-		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive", "SoT"};
+		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive", "SoT", "costPerRound_static", "costPerRound_adaptive"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
 		Solution tempSolution;
 		
@@ -116,10 +124,13 @@ public class Driver {
 												((ArrayList<Double>)tempSolution.getAttribute("CoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("IDoT_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("IDoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("SoT")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString()
+												((ArrayList<Double>)tempSolution.getAttribute("SoT")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("costPerRound_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("costPerRound_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString()
 												});
 			
 			//deserialize dev lists
+			//iterate up to 
 			int devCount=0;
 			for(int j=0; j<GA_Problem_Parameter.numberOfTimesMakingProfileComparison; j++) {
 				devCount++;
@@ -136,11 +147,10 @@ public class Driver {
 
 				devList=(HashMap<Integer, Developer>)tempSolution.getAttribute("devsProfile"+j);
 				
-				int size=devList.entrySet().size();
-				
 				//create the header for the files
 				pw_devProfile_static.append("Dev#");
 				pw_devProfile_adaptive.append("Dev#");
+				int size=devList.entrySet().size();
 				for(Map.Entry<Zone, Double> entry:devList.get(1).getDZone_Coefficient().entrySet()) {
 					pw_devProfile_static.append("\t"+entry.getKey().zName);
 					pw_devProfile_adaptive.append("\t"+entry.getKey().zName);
@@ -211,4 +221,6 @@ public class Driver {
 		
 		
 	}
+
+
 }

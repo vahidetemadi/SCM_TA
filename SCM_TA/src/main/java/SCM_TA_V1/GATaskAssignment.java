@@ -1,5 +1,7 @@
 package main.java.SCM_TA_V1;
 
+
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -11,6 +13,7 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,6 +21,7 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.Scanner;
+import java.util.logging.*;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -43,6 +47,7 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 
 import main.java.mainPipeline.GA;
+import main.java.mainPipeline.Driver;
 
 
 
@@ -69,6 +74,8 @@ public class GATaskAssignment {
 	GeneticAlgorithm GA_ID;
 	GeneticAlgorithm GA_static;
 	NondominatedPopulation result;
+	FileHandler file_logger=null;
+	Logger logger=null;
 	
 	private GATaskAssignment() {
 		selection=new TournamentSelection(2, 
@@ -77,6 +84,17 @@ public class GATaskAssignment {
 	                new SBX(15.0, 1.0),
 	                new PM(20.0, 0.5));
 		comparator=new LinearDominanceComparator();
+		try {
+			file_logger=new FileHandler(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"+File.separator+"solutions.txt");
+		} catch (SecurityException | IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		logger.addHandler(file_logger);
+		SimpleFormatter sf=new SimpleFormatter();
+		file_logger.setFormatter(sf);
+		logger.setUseParentHandlers(false);
 	}
 	
 	public static GATaskAssignment getInstance() {
@@ -164,7 +182,7 @@ public class GATaskAssignment {
 				String[] wage_items=scan.nextLine().split("\t|\\s+",-1);
 				System.out.println(items);
 				double sumOfPro=0.0;
-				for(int k=0;k<items.length;k++){
+				for(int k=0;k<items.length-1;k++){
 					sumOfPro+=Double.parseDouble(items[k]);
 				}
 				for(int k=0;k<items.length-1;k++){
@@ -203,12 +221,30 @@ public class GATaskAssignment {
 				}
 			}
 		}
+		
+		//set minimum of value for devs experties
+		for(Developer d:GA_Problem_Parameter.developers.values()){
+			for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
+				//if(entry.getValue()==0) {
+					d.DZone_Coefficient.put(entry.getKey(),0.001);
+					d.DZone_Coefficient_static.put(entry.getKey(),0.001);
+				//}
+			}
+		}
+		
 		//cut randomly portion of developers
 		GA_Problem_Parameter.cutDevs(portion);
 		sc.close();
 		scan.close();
 		is.close();
 		is_copy.close();
+		
+		for(Map.Entry<Integer, Developer> d:GA_Problem_Parameter.developers_all.entrySet()) {
+			System.out.print(d.getKey()+"--->");
+			for(Map.Entry<Zone, Double> zone:d.getValue().DZone_Coefficient.entrySet())
+				System.out.print(zone.getValue()+"	");
+			System.out.println();
+		}
 
 	}
 	
@@ -276,7 +312,7 @@ public class GATaskAssignment {
 		//cut portion of tasks randomly
 		GA_Problem_Parameter.cutTasks(portion, bugs);
 		
-		//prune bug list
+		//split up the bug list to several low batches-- each one will be assigned in a round
 		GA_Problem_Parameter.splitBugList(bugs);
 		
 	}
@@ -305,7 +341,7 @@ public class GATaskAssignment {
 		}
 		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
-		GA_Problem_Parameter.population=10;
+		GA_Problem_Parameter.population=100;
 	}
 	
 	public void initializeProblems() {
@@ -393,7 +429,8 @@ public class GATaskAssignment {
 	}
 	
 	//find solution to assign tasks to the developers
-	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime) throws IOException{
+	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime) throws IOException{		
+		logger.log(Level.INFO, "Round Num: "+fileNum);
 		//static part
 		int c=0;
 		
@@ -401,7 +438,7 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		GA_Problem_Parameter.flag=1;
 		
-		while(GA_static.getNumberOfEvaluations()<100) {
+		while(GA_static.getNumberOfEvaluations()<2500) {
 			GA_static.step();
 		}
 		
@@ -420,6 +457,13 @@ public class GATaskAssignment {
 		Solution staticSolution=null;
 		for(Solution s:result)
 			staticSolution=s;
+		
+		//write as the logs to the file
+		int[] STSolution=new int[staticSolution.getNumberOfVariables()];
+		for(int i=0; i<staticSolution.getNumberOfVariables(); i++) {
+			STSolution[i]=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(i)));
+		}
+		logger.log(Level.INFO, "ST solution ,"+ Arrays.toString(STSolution));
 		c=0;
 		
 		while(GA_Problem_Parameter.tso_static.hasNext()){
@@ -454,6 +498,7 @@ public class GATaskAssignment {
 			System.out.println("test");
 		totalsOverTime.get("CoT_static").add(totals.get("TCT_static"));
 		totalsOverTime.get("IDoT_static").add(totals.get("TID_static"));
+		totalsOverTime.get("costPerRound_static").add(staticSolution.getObjective(0));
 		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");
 		//}	
 		
@@ -465,7 +510,7 @@ public class GATaskAssignment {
 		//{
 		switch(action){
 			case "cost":
-				while(GA_normal.getNumberOfEvaluations()<100) {
+				while(GA_normal.getNumberOfEvaluations()<2500) {
 					GA_normal.step();
 				}
 				
@@ -486,7 +531,12 @@ public class GATaskAssignment {
 					normalSolution=s;
 				c=0;
 				
-				
+				//write as the logs to the file
+				int[] NLSolution=new int[normalSolution.getNumberOfVariables()];
+				for(int i=0; i<normalSolution.getNumberOfVariables(); i++) {
+					STSolution[i]=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(normalSolution.getVariable(i)));
+				}
+				logger.log(Level.INFO, "NL solution ,"+ Arrays.toString(NLSolution));
 				
 				while(GA_Problem_Parameter.tso_adaptive.hasNext()){
 					Bug b=GA_Problem_Parameter.tso_adaptive.next();
@@ -519,6 +569,7 @@ public class GATaskAssignment {
 				totalsOverTime.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
 				totalsOverTime.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
 				totalsOverTime.get("SoT").add(0.0);
+				totalsOverTime.get("costPerRound_adaptive").add(normalSolution.getObjective(0));
 				
 				System.out.println(yaml_Dynamic.toString());
 				
@@ -537,7 +588,7 @@ public class GATaskAssignment {
 				break;
 			
 			case "diffusion":
-				while(GA_ID.getNumberOfEvaluations()<100) {
+				while(GA_ID.getNumberOfEvaluations()<2500) {
 					GA_ID.step();
 				}
 				
@@ -553,6 +604,13 @@ public class GATaskAssignment {
 				for(Solution s:result)
 					IDSolution=s;
 				c=0;
+				
+				//write as the logs to the file
+				int[] IDSolution_array=new int[IDSolution.getNumberOfVariables()];
+				for(int i=0; i<IDSolution.getNumberOfVariables(); i++) {
+					IDSolution_array[i]=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(i)));
+				}
+				logger.log(Level.INFO, "ID solution ,"+ Arrays.toString(IDSolution_array));
 				
 				while(GA_Problem_Parameter.tso_adaptive.hasNext()){
 					Bug b=GA_Problem_Parameter.tso_adaptive.next();
@@ -583,6 +641,7 @@ public class GATaskAssignment {
 				totalsOverTime.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
 				totalsOverTime.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
 				totalsOverTime.get("SoT").add(1.0);
+				totalsOverTime.get("costPerRound_adaptive").add((Double)IDSolution.getAttribute("cost"));
 			/*
 			 * //log in YAML format pw.write(yaml_Steady.toString()); pw.append("\n");
 			 * pw.append("\n"); pw.append("\n"); pw.close();
@@ -707,17 +766,16 @@ public class GATaskAssignment {
 	
 	//update the profile of developers
 	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
-		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z)+ b.BZone_Coefficient.get(z));
-		//GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z)+ b.BZone_Coefficient.get(z));
-		
-		d.getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
-		GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
+		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + b.BZone_Coefficient.get(z)/d.getDZone_Coefficient().size());
+		//d.getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
+		//GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
 		
 	}
 	
 	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
-		d.getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
-		GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
+		d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z)+ b.BZone_Coefficient.get(z)/d.getDZone_Coefficient_static().size());
+		//d.getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
+		//GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient_static().put(z, Math.min(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
 	}
 
 }

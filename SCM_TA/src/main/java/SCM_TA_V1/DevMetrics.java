@@ -11,10 +11,10 @@ public class DevMetrics extends Metrics{
 	}
 	public static Ranking<Developer, Double> computeMetric(Developer d){
 		double pVal=0.0;
-		for(Double pValue:d.DZone_Coefficient.values()){
+		for(Double pValue:d.getDZone_Coefficient_static().values()){
 			pVal+=pValue;
 		}
-		pVal=(pVal/d.DZone_Coefficient.size());
+		pVal=(pVal/d.getDZone_Coefficient_static().size());
 
 		Ranking<Developer, Double> item=new Ranking<Developer, Double>(d, pVal);
 		return item;

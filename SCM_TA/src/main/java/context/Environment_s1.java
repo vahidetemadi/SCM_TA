@@ -1,10 +1,16 @@
 package main.java.context;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.ThreadLocalRandom;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
@@ -36,6 +42,7 @@ public class Environment_s1 extends Environment {
 	static ArrayList<Integer> shouldBeDeleted=new ArrayList<Integer>();
 	static int busFactor=2;
 	static ArrayList<Integer> addedRecently=new ArrayList<Integer>();
+	static ArrayList<Integer> tempState=new ArrayList<Integer>();
 	
 	public static void insantiateObjects(int lambda){
 		devNetwork=new DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge>(DefaultEdge.class);
@@ -197,6 +204,7 @@ public class Environment_s1 extends Environment {
 			//ignore those who added recently
 			if(addedRecently.contains(node.getKey()))
 				continue;
+			
 			if(p<TCR_ratio && devNetwork.vertexSet().size() > GA_Problem_Parameter.devListIdSize && numOfShouldBeDeleted>0 
 					&& GA_Problem_Parameter.devListId.size()>GA_Problem_Parameter.earlyDevListSize){
 				devNetwork.removeVertex(getVertex(node.getKey()));
@@ -208,17 +216,50 @@ public class Environment_s1 extends Environment {
 		}
 	}
 	
+	public static void nodeDeletion(int numOfDevs) throws FileNotFoundException{	
+		//is done with the a rate of "r"
+		
+		//create a file for record devs who are removed
+		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+File.separator+ "devs_deleted.txt");
+		file.getParentFile().mkdirs();
+		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
+		totalChanged=0;
+		//sort devs befor removing
+		ArrayList<Integer> listOfDevs=rankDevsByProfile(GA_Problem_Parameter.devListId);
+		Collections.reverse(listOfDevs);
+		for(Integer devID:listOfDevs){
+			//ignore those who added recently
+			if(addedRecently.contains(devID))
+				continue;
+			
+			if( numOfDevs>0  && GA_Problem_Parameter.devListId.size()>GA_Problem_Parameter.earlyDevListSize){
+				numOfDevs--;
+				pw.append(devID+"\n");
+				devNetwork.removeVertex(getVertex(devID));
+				GA_Problem_Parameter.developers.remove(devID);
+				GA_Problem_Parameter.devListId.remove(devID);
+				totalChanged++;
+			}
+		}
+		pw.close();
+	}
 	
 	/**
 	 * Attaches the nodes from a developer pool
 	 * 
 	 * EFFECT: a new developer network with updated nodes
+	 * @throws FileNotFoundException 
  	 */
-	public static void nodeAttachment(){
+	public static void nodeAttachment() throws FileNotFoundException{
 		shouldBeDeleted.clear(); //it's needed to then update ready for attachment list
 		addedRecently.clear();
 		numOfShouldBeDeleted=0;
 		double p;
+		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+File.separator+ "devs_added.txt");
+		file.getParentFile().mkdirs();
+		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
 		for(Integer i:readyForAttachment){
 			p=random.nextDouble();
 			if(p<TCR_ratio && numOfNodes>0){
@@ -229,6 +270,7 @@ public class Environment_s1 extends Environment {
 					Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
 					devNetwork.addVertex(developer);
 					//GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
+					pw.append(i+"\n");
 					GA_Problem_Parameter.devListId.add(i);
 					addedRecently.add(i);
 					shouldBeDeleted.add(i);
@@ -243,7 +285,46 @@ public class Environment_s1 extends Environment {
 		
 		//establish the links for the newly added nodes
 		setEdges_newNodes(shouldBeDeleted);
+		pw.close();
+	}
+	
+	public static void nodeAttachment(int numberOfDevs) throws FileNotFoundException{
+		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+File.separator+ "devs_added.txt");
+		file.getParentFile().mkdirs();
+		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
 		
+		shouldBeDeleted.clear(); //it's needed to then update ready for attachment list
+		addedRecently.clear();
+		numOfShouldBeDeleted=0;
+		int numOfShouldBeAdded=numberOfDevs;
+		ArrayList<Integer> shuffeledReadyForAttachment=(ArrayList<Integer>) readyForAttachment.clone();
+		Collections.shuffle(shuffeledReadyForAttachment);
+		for(Integer i:shuffeledReadyForAttachment){
+			//check weather developer with the id of i exists
+			if(GA_Problem_Parameter.getDev(i)!=null && numOfShouldBeAdded>0){
+				numOfShouldBeAdded--;
+				System.out.println("The id should be added: "+ i);
+				//numOfNodes--;	/* decrease num of nodes should be deleted*/
+				pw.append(i+"\n");
+				Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
+				devNetwork.addVertex(developer);
+				//GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
+				GA_Problem_Parameter.devListId.add(i);
+				addedRecently.add(i);
+				shouldBeDeleted.add(i);
+				numOfShouldBeDeleted++;
+			}
+		}
+		
+		//remove nodes from readyForAttachment after added to the devNetwork
+		for(Integer i:shouldBeDeleted){
+			readyForAttachment.remove(i);
+		}
+		
+		//establish the links for the newly added nodes
+		setEdges_newNodes(shouldBeDeleted);
+		pw.close();
 	}
 	
 	public static Map.Entry<Integer, Developer> getVertex(Integer i){
@@ -261,6 +342,8 @@ public class Environment_s1 extends Environment {
 		Environment_s1.attachmentRate=1-deletionRate;
 		
 	}
+	
+	
 	
 	/*** after round update method ***/
 	public static void recomputeNodeFitness(){
@@ -291,10 +374,10 @@ public class Environment_s1 extends Environment {
 				vertexSet.add(node.getKey());
 		}
 		
-		int devID=ThreadLocalRandom.current().nextInt(0,vertexSet.size());
+		int devIDIndex=ThreadLocalRandom.current().nextInt(0,vertexSet.size());
 		
 		for(Map.Entry<Integer, Developer> node:devNetwork.vertexSet()){
-			if(node.getKey()==devID)
+			if(node.getKey()==vertexSet.get(devIDIndex))
 				selected=node;
 		}
 		
@@ -327,7 +410,7 @@ public class Environment_s1 extends Environment {
 		System.out.println("secondary dev list size: "+Devs.size());
 		//cut off the low experienced developers---add ready for attachment developers
 		
-		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs,75);
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs,80);
 	}
 
 	public static double getTCR_ratio(){
@@ -411,5 +494,25 @@ public class Environment_s1 extends Environment {
 			}
 		}
 		return k;
+	}
+	
+	public static ArrayList<Integer> rankDevsByProfile(ArrayList<Integer> devList) {
+		HashMap<Integer, Developer> devsToBeSoreted=new HashMap<Integer, Developer>();
+		ArrayList<Ranking<Developer, Double>> DevstoBeDeleted=new ArrayList<Ranking<Developer,Double>>();
+		ArrayList<Integer> sortedDevs=new ArrayList<Integer>();
+		for(Integer i:devList) {
+			devsToBeSoreted.put(i, GA_Problem_Parameter.developers_all.get(i));
+		}
+		
+		for(Developer d:devsToBeSoreted.values()){
+			DevstoBeDeleted.add(DevMetrics.computeMetric(d));
+		}
+		DevMetrics.sortByMetric(DevstoBeDeleted);
+		
+		for(Ranking<Developer, Double> r:DevstoBeDeleted){
+			sortedDevs.add(r.getEntity().getID());
+			System.out.println(r.getMetric());
+		}
+		return sortedDevs;
 	}
 }
