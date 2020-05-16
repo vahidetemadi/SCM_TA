@@ -536,7 +536,7 @@ public class GA_Problem_Parameter {
 	}
 
 	/**
-	 * cut 70 percent of devs--add ids to devListId-- keep them in a list for
+	 * cut portion percent of devs--add ids to devListId-- keep them in a list for
 	 * attachment in future-- set a fixed size of devs ready to be
 	 * assigned--GA_Problem_parameters.developers is divided to 2 different sets
 	 * different set

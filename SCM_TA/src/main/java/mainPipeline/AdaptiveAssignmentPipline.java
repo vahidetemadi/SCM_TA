@@ -4,6 +4,7 @@
 package main.java.mainPipeline;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -22,6 +23,7 @@ import main.java.SCM_TA_V1.Bug;
 import main.java.SCM_TA_V1.Developer;
 import main.java.SCM_TA_V1.GATaskAssignment;
 import main.java.SCM_TA_V1.GA_Problem_Parameter;
+import main.java.SCM_TA_V1.Zone;
 import main.java.context.Environment_s1;
 import main.java.context.Observation;
 import main.java.context.Training;
@@ -178,6 +180,9 @@ public class AdaptiveAssignmentPipline {
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
+				//log devs profile at the point of time
+				logDevProfilePerRound(roundNum);
+				
 				//set bug dependencies
 				GATaskAssignment.setBugDependencies(datasetName, bugList);
 				//call the GA initialization--after party call
@@ -202,6 +207,10 @@ public class AdaptiveAssignmentPipline {
 				//Environment_s1.nodeDeletion();
 				Environment_s1.nodeDeletion(Stubs.tempChurns.get(roundNum-1));
 				//Environment_s1.updateDevNetwork();
+				
+				//update over time dev profile
+				if(roundNum%10==0)
+					Environment_s1.interRoundProfileUpdate();
 				
 				//developers need to be shuffled
 				GA_Problem_Parameter.setDevelopersIDForRandom();
@@ -301,5 +310,71 @@ public class AdaptiveAssignmentPipline {
 	public State getState(int period) {
 		return Environment_s1.listOfState.get(period);
 	}
+	
+	/**
+	 * The methods intends to log developers' status of their profile in the file
+	 * @param roundNum of type int which denotes the current round of assignment
+	 * Effect: developers' profile at a point of time are logged
+	 * @throws FileNotFoundException 
+	 */
+	public static void logDevProfilePerRound(int roundNum) throws FileNotFoundException {
+		//open two different files
+ 		File fileToLogDevs_static=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+File.separator+"devlopers"+File.separator+datasetName+File.separator+roundNum+File.separator+"static.csv");
+ 		File fileToLogDevs_adaptive=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+File.separator+"devlopers"+File.separator+ datasetName+File.separator+roundNum+File.separator+"adaptive.csv");
+
+ 		//creat path if dose not exist
+ 		fileToLogDevs_adaptive.getParentFile().mkdirs();
+ 		fileToLogDevs_static.getParentFile().mkdirs();
+ 		
+ 		PrintWriter pw_devProfile_static=new PrintWriter(fileToLogDevs_static);
+ 		PrintWriter pw_devProfile_adaptive=new PrintWriter(fileToLogDevs_adaptive);
+ 		int devCount=0;
+ 		
+ 		//create the header for the files
+		pw_devProfile_static.append("Dev#");
+		pw_devProfile_adaptive.append("Dev#");
+		for(Map.Entry<Zone, Double> entry:GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(0)).getDZone_Coefficient().entrySet()) {
+			pw_devProfile_static.append(","+entry.getKey().zName);
+			pw_devProfile_adaptive.append(","+entry.getKey().zName);
+		}
+		
+		pw_devProfile_static.append("\n");
+		pw_devProfile_adaptive.append("\n");
+		
+		//write the devs' profile
+		String line_static, line_adaptive;
+		for(Integer devId:GA_Problem_Parameter.devListId) {
+			devCount++;
+			Developer dev=GA_Problem_Parameter.developers_all.get(devId);
+			line_static="";
+			line_adaptive="";
+			line_static+=devId;
+			line_adaptive+=devId;
+			for(Map.Entry<Zone, Double> zoneItem:dev.getDZone_Coefficient_static().entrySet()) {
+				line_static+=","+String.format("%.2f", dev.getDZone_Coefficient_static().get(zoneItem.getKey()));
+				line_adaptive+=","+String.format("%.2f", dev.getDZone_Coefficient().get(zoneItem.getKey()));
+			}
+			
+			//trim to remove the unwanted tab and then add new line
+			line_static.trim();
+			line_adaptive.trim();
+			if(devCount<GA_Problem_Parameter.devListIdSize) {
+				line_adaptive+="\n";
+				line_static+="\n";
+			}
+			
+			//add the line to the printwriter
+			pw_devProfile_static.append(line_static);
+			pw_devProfile_adaptive.append(line_adaptive);
+		}
+		
+		//close the opened printwriters
+		pw_devProfile_adaptive.close();
+		pw_devProfile_static.close();
+		
+	}
+ 		
 
 }

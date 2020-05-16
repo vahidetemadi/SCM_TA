@@ -47,7 +47,7 @@ public class Driver {
 		Scanner sc=new Scanner(System.in);
 		FeatureInitializationV1.datasetName=sc.next();
 		
-		for(int i=1; i<=30; i++) {
+		for(int i=1; i<=1; i++) {
 			finalPopulation= runSeed(); 		/* call the run for single seed */
 			writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
 			sendResultsToServer(finalPopulation);				/* send the results to the central server */

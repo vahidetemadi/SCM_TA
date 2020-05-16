@@ -410,7 +410,7 @@ public class Environment_s1 extends Environment {
 		System.out.println("secondary dev list size: "+Devs.size());
 		//cut off the low experienced developers---add ready for attachment developers
 		
-		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs,80);
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs,50);
 	}
 
 	public static double getTCR_ratio(){
@@ -514,5 +514,19 @@ public class Environment_s1 extends Environment {
 			System.out.println(r.getMetric());
 		}
 		return sortedDevs;
+	}
+
+	public static void interRoundProfileUpdate() {
+		ArrayList<Integer> listOfDevs=rankDevsByProfile(GA_Problem_Parameter.devListId);
+		Collections.reverse(listOfDevs);
+		int count=0;
+		for(int devID:listOfDevs) {
+			if(count>1)
+				return;
+			for(Map.Entry<Zone, Double> zone:GA_Problem_Parameter.developers_all.get(devID).DZone_Coefficient_static.entrySet()) {
+				GA_Problem_Parameter.developers_all.get(devID).getDZone_Coefficient_static().put(zone.getKey(), 0.0001);
+			}
+			count++;
+		}
 	}
 }

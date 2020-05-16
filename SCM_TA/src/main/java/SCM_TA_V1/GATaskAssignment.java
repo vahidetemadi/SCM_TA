@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.*;
 
@@ -76,6 +77,7 @@ public class GATaskAssignment {
 	NondominatedPopulation result;
 	FileHandler file_logger=null;
 	Logger logger=null;
+	static double initalLearningRate=0.05;
 	
 	private GATaskAssignment() {
 		selection=new TournamentSelection(2, 
@@ -341,7 +343,7 @@ public class GATaskAssignment {
 		}
 		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
-		GA_Problem_Parameter.population=100;
+		GA_Problem_Parameter.population=20;
 	}
 	
 	public void initializeProblems() {
@@ -429,6 +431,7 @@ public class GATaskAssignment {
 	}
 	
 	//find solution to assign tasks to the developers
+
 	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime) throws IOException{		
 		logger.log(Level.INFO, "Round Num: "+fileNum);
 		//static part
@@ -438,7 +441,7 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		GA_Problem_Parameter.flag=1;
 		
-		while(GA_static.getNumberOfEvaluations()<2500) {
+		while(GA_static.getNumberOfEvaluations()<200) {
 			GA_static.step();
 		}
 		
@@ -510,7 +513,7 @@ public class GATaskAssignment {
 		//{
 		switch(action){
 			case "cost":
-				while(GA_normal.getNumberOfEvaluations()<2500) {
+				while(GA_normal.getNumberOfEvaluations()<200) {
 					GA_normal.step();
 				}
 				
@@ -588,7 +591,7 @@ public class GATaskAssignment {
 				break;
 			
 			case "diffusion":
-				while(GA_ID.getNumberOfEvaluations()<2500) {
+				while(GA_ID.getNumberOfEvaluations()<200) {
 					GA_ID.step();
 				}
 				
@@ -766,14 +769,37 @@ public class GATaskAssignment {
 	
 	//update the profile of developers
 	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
-		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + b.BZone_Coefficient.get(z)/d.getDZone_Coefficient().size());
+		//updating dev profile using a particular learning rate
+		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z)* initalLearningRate);
+		
+		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + b.BZone_Coefficient.get(z)/d.getDZone_Coefficient().size());
 		//d.getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
 		//GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
 		
 	}
 	
+	/**
+	 * After assignment update of the developer profiles
+	 * @param b of type Bug represents the bug which zone is part of
+	 * @param z of type Zone
+	 * @param d
+	 */
 	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
-		d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z)+ b.BZone_Coefficient.get(z)/d.getDZone_Coefficient_static().size());
+		//former learnig process by dev
+		/*
+		 * double rand=new Random().nextDouble(); if(rand<.5) {
+		 * d.getDZone_Coefficient_static().put(z,
+		 * d.getDZone_Coefficient_static().get(z)+
+		 * b.BZone_Coefficient.get(z)/d.getDZone_Coefficient_static().size()); } else {
+		 * d.getDZone_Coefficient_static().put(z,
+		 * Math.max(d.getDZone_Coefficient_static().get(z),
+		 * b.BZone_Coefficient.get(z))); }
+		 */
+		
+		//using learning rate during developer mentoring
+		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z)* initalLearningRate);
+		
+		
 		//d.getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
 		//GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient_static().put(z, Math.min(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
 	}

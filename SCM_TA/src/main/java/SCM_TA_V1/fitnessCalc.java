@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.apache.commons.math3.stat.inference.GTest;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
@@ -74,26 +75,46 @@ public class fitnessCalc {
 	 }
  
  
-	 public static double getID(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
+	public static double getID(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
 		 
-		 double ID=0.0;
-		 for(Developer developer:developers) {
-			 if(developer.getID()!=candidate.getID())
-				 ID+=getSimBug(developer, b, z);
-			 else
-				 ID+=(1/getSimBug(candidate, b, z));
-		 }
-		 return ID;
+		double ID=0.0;
+		double deltaID=0.0;
+		deltaID=getZoneDiff(candidate, b, z);
+		if(deltaID>0)
+			ID=deltaID*1;
+		return ID;
 	 }
 	 
-	 public static double getSimBug(Developer d1,Bug b2, Zone z1){
-		 double DBSim=0.0;
+	public static double getZoneDiff(Developer d1,Bug b2, Zone z1){
+		 double DBDiff=0.0;
 		 //for (Entry<Zone, Double>  zone:b2.BZone_Coefficient.entrySet())
 		 if(d1.DZone_Coefficient.containsKey(z1)) {
-			 DBSim+=Math.min(b2.BZone_Coefficient.get(z1),d1.DZone_Coefficient.get(z1));
+			 double fromBug=b2.BZone_Coefficient.get(z1);
+			 double fromDev=d1.DZone_Coefficient.get(z1);
+			 DBDiff=fromBug-fromDev;
 		 }
-		 return DBSim;
-	 }
+		 return DBDiff;
+	}
+	 //former definition for ID
+	 
+	/*
+	 * public static double getID(ArrayList<Developer> developers, Developer
+	 * candidate, Bug b, Zone z) {
+	 * 
+	 * double ID=0.0; for(Developer developer:developers) {
+	 * if(developer.getID()!=candidate.getID()) ID+=getSimBug(developer, b, z); else
+	 * ID+=(1/getSimBug(candidate, b, z)); } return ID; }
+	 */
+	 
+	/*
+	 * public static double getSimBug(Developer d1,Bug b2, Zone z1){ double
+	 * DBSim=0.0; //for (Entry<Zone, Double> zone:b2.BZone_Coefficient.entrySet())
+	 * if(d1.DZone_Coefficient.containsKey(z1)) { double
+	 * fromBug=b2.BZone_Coefficient.get(z1); double
+	 * fromDev=d1.DZone_Coefficient.get(z1);
+	 * DBSim+=Math.min(b2.BZone_Coefficient.get(z1),d1.DZone_Coefficient.get(z1)); }
+	 * return DBSim; }
+	 */
 	 
 	 public static double getDissim(ArrayList<Developer> developers, Bug b, Zone z) {
 		 
