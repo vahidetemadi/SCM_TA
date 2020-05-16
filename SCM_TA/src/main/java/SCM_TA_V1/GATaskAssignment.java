@@ -27,6 +27,9 @@ import java.util.logging.*;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 import org.moeaframework.Analyzer.AnalyzerResults;
+import org.moeaframework.Executor;
+import org.moeaframework.Instrumenter;
+import org.moeaframework.algorithm.PeriodicAction.FrequencyType;
 import org.moeaframework.algorithm.single.AggregateObjectiveComparator;
 import org.moeaframework.algorithm.single.GeneticAlgorithm;
 import org.moeaframework.algorithm.single.LinearDominanceComparator;
@@ -48,6 +51,7 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 
 import main.java.mainPipeline.GA;
+import main.java.featureTuning.FeatureInitializationV1;
 import main.java.mainPipeline.Driver;
 
 
@@ -78,6 +82,7 @@ public class GATaskAssignment {
 	FileHandler file_logger=null;
 	Logger logger=null;
 	static double initalLearningRate=0.05;
+	StringBuilder sb=new StringBuilder();
 	
 	private GATaskAssignment() {
 		selection=new TournamentSelection(2, 
@@ -509,157 +514,53 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		GA_Problem_Parameter.flag=1;
-		//try(PrintWriter pw=new PrintWriter(new FileOutputStream(new File(System.getProperty("user.dir")+"//results//"+datasetName+"_result_adaptive.yml"),true)))
-		//{
-		switch(action){
-			case "cost":
-				while(GA_normal.getNumberOfEvaluations()<200) {
-					GA_normal.step();
-				}
-				
-				result=GA_normal.getResult();
-				
-			/***those that has been commented in favor of better GA implementation*****
-			 * 
-				Population result_normal=new Executor().withProblemClass(normal_assignment.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-				.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
-			**/
-				System.out.println("finished cost-based assignment");
-				
-				//cost based///
-				////
-				Solution normalSolution=null;
-				for(Solution s:result)
-					normalSolution=s;
-				c=0;
-				
-				//write as the logs to the file
-				int[] NLSolution=new int[normalSolution.getNumberOfVariables()];
-				for(int i=0; i<normalSolution.getNumberOfVariables(); i++) {
-					STSolution[i]=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(normalSolution.getVariable(i)));
-				}
-				logger.log(Level.INFO, "NL solution ,"+ Arrays.toString(NLSolution));
-				
-				while(GA_Problem_Parameter.tso_adaptive.hasNext()){
-					Bug b=GA_Problem_Parameter.tso_adaptive.next();
-					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-					while(tso_Zone.hasNext()){
-						Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(normalSolution.getVariable(c))));
-						updateDevProfile_adaptive(b, tso_Zone.next(), d);
-						c++;
-					}
-				}
-				
-				//report the cost
-				/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
-						"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
-						+"\n	the total cost:" + NormalSolution.getObjective(0));*/
-				
-				//write down the results in yaml format
-				
-				YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder()
-						.add("state name", "Dynamic")
-						.add("ID", normalSolution.getAttribute("diffusedKnowledge").toString())
-						.add("Cost",Double.toString(normalSolution.getObjective(0)))
-						.build();
-				
-				//add to total cost ove time and total information diffusion
-				totals.put("TCT_adaptive", totals.get("TCT_adaptive")+ normalSolution.getObjective(0));
-				totals.put("TID_adaptive", totals.get("TID_adaptive")+ (Double)normalSolution.getAttribute("diffusedKnowledge"));
-				
-				//add to trend line
-				totalsOverTime.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
-				totalsOverTime.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
-				totalsOverTime.get("SoT").add(0.0);
-				totalsOverTime.get("costPerRound_adaptive").add(normalSolution.getObjective(0));
-				
-				System.out.println(yaml_Dynamic.toString());
-				
-			/*
-			 * //log in a file pw.write(yaml_Dynamic.toString()); pw.append("\n");
-			 * pw.append("\n"); pw.append("\n"); pw.close();
-			 * 
-			 * PrintWriter pw2=new PrintWriter(new FileOutputStream(new
-			 * File(System.getProperty("user.dir")+"//results//"+datasetName+
-			 * "_result_adaptive.csv"),true)); StringBuilder sb=new StringBuilder();
-			 * sb.append(fileNum +", Dynamic, Cost, "+
-			 * Double.toString(NormalSolution.getObjective(0))+","+NormalSolution.
-			 * getAttribute("diffusedKnowledge").toString()); sb.append('\n');
-			 * pw2.write(sb.toString()); pw2.close();*/
-				
-				break;
-			
-			case "diffusion":
-				while(GA_ID.getNumberOfEvaluations()<200) {
-					GA_ID.step();
-				}
-				
-				result=GA_ID.getResult();
-				/***those that has been commented in favor of better GA implementation*****
-					Population result_ID=new Executor().withProblemClass(InformationDifussion_adaptive.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05).run();
-				 ***/
-				System.out.println("finished diffusion-based assignment");
-				//Performing the update
-				Solution IDSolution=null;
-				for(Solution s:result)
-					IDSolution=s;
-				c=0;
-				
-				//write as the logs to the file
-				int[] IDSolution_array=new int[IDSolution.getNumberOfVariables()];
-				for(int i=0; i<IDSolution.getNumberOfVariables(); i++) {
-					IDSolution_array[i]=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(i)));
-				}
-				logger.log(Level.INFO, "ID solution ,"+ Arrays.toString(IDSolution_array));
-				
-				while(GA_Problem_Parameter.tso_adaptive.hasNext()){
-					Bug b=GA_Problem_Parameter.tso_adaptive.next();
-					TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-					while(tso_Zone.hasNext()){
-						Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(IDSolution.getVariable(c))));
-						updateDevProfile_adaptive(b, tso_Zone.next(), d);
-						c++;
-					}
-				}
-				//report the cost---logging the cost
-				/*System.out.println("knowlwdge and cost of diffusion-based approach (state Steady)"+
-						"\n\n	amount of diffused knowledge:" + (-1*IDSolution.getObjective(0))
-						+"\n"+
-						"	the total cost:"+ IDSolution.getAttribute("cost"));*/
-				
-				YamlMapping yaml_Steady=Yaml.createYamlMappingBuilder()
-						.add("state name", "Steady")
-						.add("ID", Double.toString(-1*IDSolution.getObjective(0)))
-						.add("Cost", IDSolution.getAttribute("cost").toString())
-						.build();
-				
-				//add to total cost over time and total information diffusion
-				totals.put("TID_adaptive", totals.get("TID_adaptive")+ (Double)IDSolution.getAttribute("diffusedKnowledge"));
-				totals.put("TCT_adaptive", totals.get("TCT_adaptive")+ (Double)IDSolution.getAttribute("cost"));
-				
-				//add to trend line
-				totalsOverTime.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
-				totalsOverTime.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
-				totalsOverTime.get("SoT").add(1.0);
-				totalsOverTime.get("costPerRound_adaptive").add((Double)IDSolution.getAttribute("cost"));
-			/*
-			 * //log in YAML format pw.write(yaml_Steady.toString()); pw.append("\n");
-			 * pw.append("\n"); pw.append("\n"); pw.close();
-			 * 
-			 * //write down to CSV file PrintWriter pw3=new PrintWriter(new
-			 * FileOutputStream(new
-			 * File(System.getProperty("user.dir")+"//results//"+datasetName+
-			 * "_result_adaptive.csv"),true)); StringBuilder sb2=new StringBuilder();
-			 * sb2.append(fileNum
-			 * +", Steady, Diffusion, "+IDSolution.getAttribute("cost").toString()+","+
-			 * Double.toString(-1*IDSolution.getObjective(0))); sb2.append('\n');
-			 * pw3.write(sb2.toString()); pw3.close(); pw3.close();
-			 */
-				break;	
+		
+		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+FeatureInitializationV1.datasetName+File.separator+"JDTMilestone3.1.1"+".ps";
+		Instrumenter instrumenter_adaptive_multi=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(10).attachAll()
+	    		.withFrequencyType(FrequencyType.EVALUATIONS);
+		NondominatedPopulation NDP_adaptive_multi=new Executor().withProblemClass(InformationDifussion_adaptive_multi.class).withAlgorithm("NSGAII")
+				.withMaxEvaluations(200).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+				.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_adaptive_multi).run();
+		
+		sb.append("ID , Cost");
+		sb.setLength(0);
+		for(Solution s:NDP_adaptive_multi){
+			   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+			   sb.append("\n");
+	    }
+		
+		File file=new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+FeatureInitializationV1.datasetName+File.separator+runNum+".csv");
+		file.getParentFile().mkdirs();	
+		PrintWriter pw=new PrintWriter(file);
+	    pw.write(sb.toString());
+	    pw.close();
+	    
+	    //need to select a solution randomly to use for updating
+	    int size=NDP_adaptive_multi.size();
+	    Solution adaptiveSolution=NDP_adaptive_multi.get(NDP_adaptive_multi.size()/2);
+	    int[] temp=EncodingUtils.getInt(adaptiveSolution);
+	    
+	    c=0;
+	    while(GA_Problem_Parameter.tso_adaptive.hasNext()){
+			Bug b=GA_Problem_Parameter.tso_adaptive.next();
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			while(tso_Zone.hasNext()){
+				Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(adaptiveSolution.getVariable(c))));
+				updateDevProfile_static(b, tso_Zone.next(), d);
+				c++;
+			}
 		}
+		
+	    
+	  //add to total cost over time and total information diffusion
+  		totals.put("TCT_adaptive", totals.get("TCT_adaptive")+ adaptiveSolution.getObjective(1));
+  		totals.put("TID_adaptive", totals.get("TID_adaptive")+ adaptiveSolution.getObjective(0));
+  		
+  		if(totals.get("TCT_adptive")==null || totals.get("TCT_adaptive")==0.0)
+  			System.out.println("test");
+  		totalsOverTime.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
+  		totalsOverTime.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
+  		totalsOverTime.get("costPerRound_adaptive").add(adaptiveSolution.getObjective(1));
 	    
 	}
 	
