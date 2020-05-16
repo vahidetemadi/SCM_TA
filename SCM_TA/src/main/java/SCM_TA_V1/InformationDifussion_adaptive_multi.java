@@ -37,7 +37,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	ArrayList<Developer> developerTeam=new ArrayList<Developer>();
 	public InformationDifussion_adaptive_multi(){
-		super(GA_Problem_Parameter.setNum_of_Variables(bugs), GA_Problem_Parameter.Num_of_objectives);
+		super(GA_Problem_Parameter.setNum_of_Variables(bugs), GA_Problem_Parameter.Num_of_functions_Multi);
 		//this.bugs=bugs;
 		//this.developers= new ArrayList<Developer>(Arrays.asList(developers));
 	}
@@ -191,6 +191,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		//solution.setObjective(0, totalTime);
 		//solution.setObjective(1, totalCost);
 		solution.setObjective(0, -totalDiffusedKnowledge);
+		solution.setObjective(1, totalCost);
 		solution.setAttribute("cost", totalCost);
 		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);
 		solution.setAttribute("time", totalTime);
