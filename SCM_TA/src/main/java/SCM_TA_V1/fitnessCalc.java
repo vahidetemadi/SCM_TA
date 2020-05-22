@@ -82,6 +82,7 @@ public class fitnessCalc {
 		deltaID=getZoneDiff(candidate, b, z);
 		if(deltaID>0)
 			ID=deltaID*1;
+			//ID=deltaID*getFlowRate(developers, candidate, b, z);
 		return ID;
 	 }
 	 
@@ -234,6 +235,18 @@ public class fitnessCalc {
 		 double estimeatedTime=0.0;
 		 estimeatedTime=estimatedEffort/Environment_s1.getDevNetwork().getEdgeWeight(Environment_s1.getDevNetwork().getEdge(sourceDev,targetDev));
 		 return estimatedEffort;
+	 }
+	 
+	 public static double getFlowRate(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
+		 double flowRate=0.0;
+		 for(Developer dev:developers) {
+			 if(dev.getID()!=candidate.getID()) {
+				 if(dev.DZone_Coefficient.get(z)!=0)
+					 flowRate=1;
+			 }
+		 }
+		 
+		 return flowRate;
 	 }
  
  

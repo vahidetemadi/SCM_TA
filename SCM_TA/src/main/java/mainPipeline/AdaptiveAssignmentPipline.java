@@ -376,5 +376,11 @@ public class AdaptiveAssignmentPipline {
 		
 	}
  		
-
+	public static State getState() {
+		//write down developer matrix in a plain file
+		
+		//load data as a 
+		return null;
+																																										
+	}
 }
