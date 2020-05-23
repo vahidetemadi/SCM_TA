@@ -38,13 +38,38 @@ public class fitnessCalc {
 		return tct;
 	}
 	
+	/**
+	 * the method gets all the input for computing the completion time for a particular assignment
+	 * @param bug
+	 * @param zone
+	 * @param developer
+	 * @param team
+	 * @return the completion time required to get the subtask done
+	 */
+	public static double completionTime_extended(Bug bug, Entry<Zone, Double> zone, Developer developer, ArrayList<Developer> team) {
+		double x=bug.BZone_Coefficient.get(zone.getKey());
+		double inCommon=Math.min(bug.BZone_Coefficient.get(zone.getKey()), developer.getDZone_Coefficient().get(zone.getKey()));
+		double tct=0;
+		double bestFit=0.00001;
+		if(inCommon>0.001) { /*in case developer is already familiar with */
+			tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
+		}
+		else {
+			for(Developer dev:team) {
+				if(dev.getID()!=developer.getID()) {
+					bestFit=bestFit!=0.00001?Math.max(bestFit, dev.getDZone_Coefficient().get(zone.getKey())):bestFit;
+				}
+			}
+			tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/bestFit;
+		}
+		
+		return tct;
+	}
 	
 	public static double getDelayTime(Bug bug, Entry<Zone, Double> zone, Developer developer){
 		double delayTime=Math.max(taskDependencyDelayTime(bug, zone, developer), developer.developerNextAvailableHour);
 		return delayTime;
 	}
-	
-	
 	
 	public static double taskDependencyDelayTime(Bug bug, Entry<Zone, Double> zone,
 	Developer developer){
@@ -60,10 +85,7 @@ public class fitnessCalc {
 		return zone.getKey().zoneStartTime_evaluate+ bug.startTime_evaluate;
 	}
 
-
-
-
-	 public static double getSimDev(Developer d1, Developer d2){
+	public static double getSimDev(Developer d1, Developer d2){
 		 double DDSim_intersection=0.0;
 		 double DDSim_union=0.0;
 		 for (Entry<Zone, Double>  zone:d1.DZone_Coefficient.entrySet()){
@@ -73,8 +95,7 @@ public class fitnessCalc {
 			 
 		 return 1/(DDSim_intersection/DDSim_union);
 	 }
- 
- 
+  
 	public static double getID(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
 		 
 		double ID=0.0;
@@ -85,7 +106,19 @@ public class fitnessCalc {
 		return ID;
 	 }
 	 
-	public static double getZoneDiff(Developer d1,Bug b2, Zone z1){
+	public static double getID_scaled(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
+		double totalFlow=0;
+		for(Developer d:developers) {
+			if(d.getID()!=candidate.getID()) {
+				totalFlow+=Math.abs(candidate.getDZone_Coefficient().get(z)-d.getDZone_Coefficient().get(z));
+			}
+		}
+		totalFlow/=developers.size();
+		
+		return totalFlow;
+	}
+	
+	public static double getZoneDiff (Developer d1,Bug b2, Zone z1){
 		 double DBDiff=0.0;
 		 //for (Entry<Zone, Double>  zone:b2.BZone_Coefficient.entrySet())
 		 if(d1.DZone_Coefficient.containsKey(z1)) {
@@ -116,22 +149,19 @@ public class fitnessCalc {
 	 * return DBSim; }
 	 */
 	 
-	 public static double getDissim(ArrayList<Developer> developers, Bug b, Zone z) {
+	public static double getDissim(ArrayList<Developer> developers, Bug b, Zone z) {
 		 
 		 return 0.0;
 	 }
  
- 
-	 public static void setBugEndTime(Bug bug){
+	public static void setBugEndTime(Bug bug){
 		 for(int j=0;j<bug.DB.size();j++){
 				if(bug.endTime>bug.startTime)
 					bug.startTime=bug.DB.get(j).endTime;
 			}
 	 }
 	 
- 
- 
-	 public static double getTZoneSim(HashMap<Zone, Double> bugZone, ArrayList<Developer> devs){
+	public static double getTZoneSim(HashMap<Zone, Double> bugZone, ArrayList<Developer> devs){
 		 HashMap<Zone, Double> devsUnionZone=new HashMap<Zone, Double>();
 		 double tZoneSim=0;
 		 for (Entry<Zone, Double>  devZone:devs.get(0).DZone_Coefficient.entrySet()){
@@ -151,8 +181,7 @@ public class fitnessCalc {
 		
 	 }
  
- 
-	 public static double getDataFlow(Bug bug, ArrayList<Developer> devs){
+	public static double getDataFlow(Bug bug, ArrayList<Developer> devs){
 		 double dev_bugZone_sim=0;
 		 double dev_not_assigned_sim=0;
 		 double dataFlow=0;
@@ -201,7 +230,7 @@ public class fitnessCalc {
 		 
 	 }
 	 
-	 public static double getFlowD2D(Bug b, ArrayList<Developer> devs){
+	public static double getFlowD2D(Bug b, ArrayList<Developer> devs){
 		 // implement (Zi-Zj) and (all zones) 
 		 HashMap<Zone, Double> DevsDiff=new HashMap<Zone, Double>();
 		 
@@ -209,11 +238,11 @@ public class fitnessCalc {
 		 
 	 }
 	 
-	 public static double getNotAssignedTaskCost(){
+	public static double getNotAssignedTaskCost(){
 		 return 0;
 	 }
  
-	 public static double getMaxEndTimes(Bug b, DirectedAcyclicGraph<Bug,DefaultEdge> DEP){
+	public static double getMaxEndTimes(Bug b, DirectedAcyclicGraph<Bug,DefaultEdge> DEP){
 		 double endTime=0;
 		 //Set<Bug> dependents=DEP.getAncestors(b);
 		 ArrayList<Bug> dependents=b.DB;
@@ -222,7 +251,8 @@ public class fitnessCalc {
 		 }
 		 return endTime;
 	 }
-	 public static double getZoneStartTime(Developer d, ArrayList<Zone> depZones){
+
+	public static double getZoneStartTime(Developer d, ArrayList<Zone> depZones){
 		 double sDate=0;
 		 for(Zone zone:depZones){
 			 sDate=Math.max(sDate, zone.zoneEndTime_evaluate);
@@ -230,13 +260,11 @@ public class fitnessCalc {
 		 return Math.max(sDate, d.developerNextAvailableHour);
 	 }
 
-	 public static double getEstimatedDiffusionTime(Map.Entry<Integer, Developer> sourceDev ,Map.Entry<Integer, Developer> targetDev,double estimatedEffort){
+	public static double getEstimatedDiffusionTime(Map.Entry<Integer, Developer> sourceDev ,Map.Entry<Integer, Developer> targetDev,double estimatedEffort){
 		 double estimeatedTime=0.0;
 		 estimeatedTime=estimatedEffort/Environment_s1.getDevNetwork().getEdgeWeight(Environment_s1.getDevNetwork().getEdge(sourceDev,targetDev));
 		 return estimatedEffort;
 	 }
- 
- 
 }
 
 

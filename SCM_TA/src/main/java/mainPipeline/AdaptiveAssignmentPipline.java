@@ -311,6 +311,10 @@ public class AdaptiveAssignmentPipline {
 		return Environment_s1.listOfState.get(period);
 	}
 	
+	public State getState(int period, String typeOf) {
+		return null;
+	}
+	
 	/**
 	 * The methods intends to log developers' status of their profile in the file
 	 * @param roundNum of type int which denotes the current round of assignment

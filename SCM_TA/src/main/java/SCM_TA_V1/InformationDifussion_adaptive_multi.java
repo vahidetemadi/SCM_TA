@@ -130,8 +130,8 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 						candidate=developer;
 				}
 				int dID=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
-				
-				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(devId), "adaptive");
+				//changed to include alpha time in case developer does not have the right knowledge
+				compeletionTime=fitnessCalc.completionTime_extended(b, zone_bug, developers.get(devId), developerTeam);
 				totalExecutionTime+=compeletionTime;
 				totalDevCost+=compeletionTime*developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(zoneAssignee.get(index).getThird()), zone.DZ);
@@ -172,8 +172,8 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				//compute the extra cost for information diffusion==> used to compute the cost posed due to
 				
 				
-				//the information diffusion 
-				totalDiffusedOfDevTeam=fitnessCalc.getID(developerTeam ,candidate.getValue(), b, zone_bug.getKey());
+				//the information diffusion--the updated version which include internal and exteranl 
+				totalDiffusedOfDevTeam=fitnessCalc.getID_scaled(developerTeam ,candidate.getValue(), b, zone_bug.getKey());
 				
 				//totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
 				
@@ -188,9 +188,9 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		}
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
-		//solution.setObjective(0, totalTime);
-		//solution.setObjective(1, totalCost);
-		solution.setObjective(0, -totalDiffusedKnowledge);
+		
+		//just scaled the amount of knowledge diffused
+		solution.setObjective(0, -totalDiffusedKnowledge/solution.getNumberOfVariables());
 		solution.setObjective(1, totalCost);
 		solution.setAttribute("cost", totalCost);
 		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);
