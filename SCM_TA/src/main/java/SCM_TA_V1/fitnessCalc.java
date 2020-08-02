@@ -134,7 +134,6 @@ public class fitnessCalc {
 					maxInFlow = d.getDZone_Coefficient().get(z);
 			}
 		}
-		
 		flowInfo = Math.min(diff, maxInFlow);
 		return flowInfo;
 	}

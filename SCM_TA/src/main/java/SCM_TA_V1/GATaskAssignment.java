@@ -355,7 +355,7 @@ public class GATaskAssignment {
 		}
 		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
-		GA_Problem_Parameter.population=100;
+		GA_Problem_Parameter.population=150;
 	}
 	
 	public void initializeProblems() {
