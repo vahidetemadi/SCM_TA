@@ -33,8 +33,6 @@ public class fitnessCalc {
 				tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
 				break;
 		}
-
-	
 		return tct;
 	}
 	
@@ -47,20 +45,27 @@ public class fitnessCalc {
 	 * @return the completion time required to get the subtask done
 	 */
 	public static double completionTime_extended(Bug bug, Entry<Zone, Double> zone, Developer developer, ArrayList<Developer> team) {
-		double x=bug.BZone_Coefficient.get(zone.getKey());
-		double inCommon=Math.min(bug.BZone_Coefficient.get(zone.getKey()), developer.getDZone_Coefficient().get(zone.getKey()));
+		double x = bug.BZone_Coefficient.get(zone.getKey());
+		double inCommon = Math.min(bug.BZone_Coefficient.get(zone.getKey()), developer.getDZone_Coefficient().get(zone.getKey()));
 		double tct=0;
 		double bestFit=0.00001;
 		if(inCommon>0.001) { /*in case developer is already familiar with */
-			tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
+			tct = (bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
 		}
 		else {
-			for(Developer dev:team) {
-				if(dev.getID()!=developer.getID()) {
-					bestFit=bestFit!=0.00001?Math.max(bestFit, dev.getDZone_Coefficient().get(zone.getKey())):bestFit;
+			for (Developer dev:team) {
+				if (dev.getID()!=developer.getID()) {
+					bestFit = bestFit != 0.00001 ? Math.max(bestFit, dev.getDZone_Coefficient().get(zone.getKey())) : bestFit;
 				}
 			}
-			tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/bestFit;
+			
+			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / bestFit;
+			//if (bestFit > 0.0001) {
+			//	tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.2;
+			//}
+			//else {
+			//	tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.5;
+			//}
 		}
 		
 		return tct;
@@ -100,7 +105,7 @@ public class fitnessCalc {
 		 
 		double ID=0.0;
 		double deltaID=0.0;
-		deltaID=getZoneDiff(candidate, b, z);
+		deltaID=getZoneDiff(candidate, b, z, "static");
 		if(deltaID>0)
 			ID=deltaID*1;
 		return ID;
@@ -109,23 +114,68 @@ public class fitnessCalc {
 	public static double getID_scaled(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
 		double totalFlow=0;
 		for(Developer d:developers) {
-			if(d.getID()!=candidate.getID()) {
-				totalFlow+=Math.abs(candidate.getDZone_Coefficient().get(z)-d.getDZone_Coefficient().get(z));
+			if(d.getID() != candidate.getID()) {
+				totalFlow += Math.abs(candidate.getDZone_Coefficient().get(z) - d.getDZone_Coefficient().get(z));
 			}
 		}
-		totalFlow/=developers.size();
+		totalFlow /= developers.size();
 		
 		return totalFlow;
 	}
 	
-	public static double getZoneDiff (Developer d1,Bug b2, Zone z1){
-		 double DBDiff=0.0;
+	public static double getID_scaled_adaptive(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
+		double flowInfo=0;
+		double diff = Math.abs(getZoneDiff(candidate, b, z, "adaptive"));
+		double maxInFlow = 0 ;
+		
+		for(Developer d:developers) {
+			if(d.getID() != candidate.getID()) {
+				if (d.getDZone_Coefficient().get(z) > maxInFlow)
+					maxInFlow = d.getDZone_Coefficient().get(z);
+			}
+		}
+		
+		flowInfo = Math.min(diff, maxInFlow);
+		return flowInfo;
+	}
+	
+	public static double getID_scaled_static(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
+		double flowInfo=0;
+		double diff = Math.abs(getZoneDiff(candidate, b, z, "static"));
+		double maxInFlow = 0 ;
+		
+		for(Developer d:developers) {
+			if(d.getID() != candidate.getID()) {
+				if (d.getDZone_Coefficient_static().get(z) > maxInFlow)
+					maxInFlow = d.getDZone_Coefficient_static().get(z);
+			}
+		}
+		
+		flowInfo = Math.min(diff, maxInFlow);
+		return flowInfo;
+	}
+	
+	public static double getZoneDiff (Developer d1,Bug b2, Zone z1, String approach){
+		 double DBDiff = 0.0;
 		 //for (Entry<Zone, Double>  zone:b2.BZone_Coefficient.entrySet())
-		 if(d1.DZone_Coefficient.containsKey(z1)) {
-			 double fromBug=b2.BZone_Coefficient.get(z1);
-			 double fromDev=d1.DZone_Coefficient.get(z1);
-			 DBDiff=fromBug-fromDev;
-		 }
+		 switch (approach) {
+			case "static":
+				if(d1.DZone_Coefficient.containsKey(z1)) {
+					 double fromBug = b2.BZone_Coefficient.get(z1);
+					 double fromDev = d1.DZone_Coefficient_static.get(z1);
+					 DBDiff = fromBug - fromDev;
+				 }
+				break;
+			case "adaptive":
+				if(d1.DZone_Coefficient.containsKey(z1)) {
+					 double fromBug = b2.BZone_Coefficient.get(z1);
+					 double fromDev = d1.DZone_Coefficient.get(z1);
+					 DBDiff = fromBug-fromDev;
+				 }
+				break;
+			default:
+				break;
+		}
 		 return DBDiff;
 	}
 	 //former definition for ID
@@ -265,6 +315,7 @@ public class fitnessCalc {
 		 estimeatedTime=estimatedEffort/Environment_s1.getDevNetwork().getEdgeWeight(Environment_s1.getDevNetwork().getEdge(sourceDev,targetDev));
 		 return estimatedEffort;
 	 }
+
 }
 
 

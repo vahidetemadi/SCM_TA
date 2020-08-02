@@ -3,11 +3,13 @@ package main.java.mainPipeline;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.*;
 import java.util.stream.Collectors;
@@ -36,17 +38,20 @@ import main.java.SCM_TA_V1.GA_Problem_Parameter;
 import main.java.SCM_TA_V1.Zone;
 import main.java.featureTuning.FeatureInitialization;
 import main.java.featureTuning.FeatureInitializationV1;
+import main.java.featureTuning.FeatureSetV1;
 import main.java.featureTuning.Stubs;
 
 
 public class Driver {
 	static Population finalPopulation;
+	static HashMap<String, Object> allMaps = new HashMap<String, Object>();
 	public static void main(String[] args) throws IOException {
 		//get dataset name 
 		System.out.println("Enter the dataset name:");
 		Scanner sc=new Scanner(System.in);
 		FeatureInitializationV1.datasetName=sc.next();
 		
+		//runMultiObjective();
 		for(int i=1; i<=1; i++) {
 			finalPopulation= runSeed(); 		/* call the run for single seed */
 			writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
@@ -74,13 +79,13 @@ public class Driver {
                 new OnePointCrossover(0.9),
                 new PM(0.05, 0.5));
 
-        Initialization initialization = new RandomInitialization(problem, 10);
+        Initialization initialization = new RandomInitialization(problem, 1);
 		AggregateObjectiveComparator comparator=new LinearDominanceComparator();
         
         GeneticAlgorithm GA=new GeneticAlgorithm(problem, comparator, initialization, selection, variation);
         
         //run GA single objective
-        while (GA.getNumberOfEvaluations() < 100) {
+        while (GA.getNumberOfEvaluations() < 2) {
             GA.step();
         }
         
@@ -93,6 +98,42 @@ public class Driver {
         }
         return p;
 	}
+	
+	/*
+	public static HashMap<String, Object> runMultiObjective(){
+		
+		AdaptiveAssignmentPipline adaptive=AdaptiveAssignmentPipline.getInstance();
+		HashMap<String, Double> totals=new HashMap<String, Double>();
+		HashMap<String, ArrayList<Double>> totalsOverTime=new HashMap<String, ArrayList<Double>>();
+		HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime=new HashMap<Integer, HashMap<Integer,Developer>>();
+		
+		try {
+			adaptive.run(totals, totalsOverTime, devsProfileOverTime);
+		} catch (NoSuchElementException | ClassNotFoundException | IOException | URISyntaxException
+				| CloneNotSupportedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//add the maps to the main map list
+		allMaps.put("TCT_adaptive", totals.get("TCT_adaptive"));
+		allMaps.put("TCT_static", totals.get("TCT_static"));
+		allMaps.put("TID_static", totals.get("TID_static"));
+		allMaps.put("TID_adaptive", totals.get("TID_adaptive"));
+		allMaps.put("CoT_static", totalsOverTime.get("CoT_static"));
+		allMaps.put("CoT_adaptive", totalsOverTime.get("CoT_adaptive"));
+		allMaps.put("IDoT_static", totalsOverTime.get("IDoT_static"));
+		allMaps.put("IDoT_adaptive", totalsOverTime.get("IDoT_adaptive"));
+		allMaps.put("SoT", totalsOverTime.get("SoT"));
+		allMaps.put("devsProfile0", devsProfileOverTime.get(0));
+		allMaps.put("devsProfile1", devsProfileOverTime.get(1));
+		allMaps.put("costPerRound_static", totalsOverTime.get("costPerRound_static"));
+		allMaps.put("costPerRound_adaptive", totalsOverTime.get("costPerRound_adaptive"));
+		allMaps.put("EoT_adaptive", totalsOverTime.get("EoT_adaptive"));
+		
+		return null;
+	}
+	*/
+	
 	
 	
 	/**
@@ -111,7 +152,8 @@ public class Driver {
 		file.getParentFile().mkdir(); 				/* make missed dirs*/
 		PrintWriter printWriter=new PrintWriter(file);
 		CSVWriter csvWriter=new CSVWriter(printWriter);
-		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive", "SoT", "costPerRound_static", "costPerRound_adaptive"};
+		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive", "SoT"
+					, "costPerRound_static", "idPerRound_static", "idPerRound_adaptive", "costPerRound_adaptive", "EoT_static", "EoT_adaptive, ExoTperRound_adaptive"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
 		Solution tempSolution;
 		
@@ -122,11 +164,16 @@ public class Driver {
 												String.format("%.2f", tempSolution.getAttribute("TID_adaptive")),
 												((ArrayList<Double>)tempSolution.getAttribute("CoT_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("CoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("IDoT_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("IDoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("IDoT_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("IDoT_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("SoT")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("costPerRound_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("costPerRound_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString()
+												((ArrayList<Double>)tempSolution.getAttribute("costPerRound_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("idPerRound_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("idPerRound_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("EoT_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("EoT_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("ExoTperRound_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString()
 												});
 			
 			//deserialize dev lists

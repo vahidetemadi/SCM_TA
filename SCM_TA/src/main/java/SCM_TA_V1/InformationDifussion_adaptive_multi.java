@@ -5,6 +5,7 @@ import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -94,6 +95,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		double totalStartTime=0.0;
 		double totalEndTime=0.0;
 		double totalExecutionTime=0.0;
+		double totalBugsZonesInfo = 0.0;
 		
 		//including the amount of knowledge would be diffused
 		double totalDiffusedKnowledge=0.0;
@@ -173,21 +175,26 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				
 				
 				//the information diffusion--the updated version which include internal and exteranl 
-				totalDiffusedOfDevTeam=fitnessCalc.getID_scaled(developerTeam ,candidate.getValue(), b, zone_bug.getKey());
-				
-				//totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
-				
+				//totalDiffusedOfDevTeam = fitnessCalc.getID_scaled_adaptive(developerTeam, candidate.getValue(), b, zone_bug.getKey());
+				totalDiffusedKnowledge += fitnessCalc.getID_scaled_adaptive(developerTeam, candidate.getValue(), b, zone_bug.getKey());
 			}
 			//totalDiffusedKnowledge+=(totalSimToAssignedST-totalSimToUnAssignedST);
-			totalDiffusedKnowledge+=totalDiffusedOfDevTeam;
-			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
-			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
-			totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
-			if(totalDelayTime>0)
-				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
+			//totalDiffusedKnowledge += totalDiffusedOfDevTeam;
+			for (Double d : b.BZone_Coefficient.values()) {
+				totalBugsZonesInfo += d;;
+			}
+			totalStartTime = Math.min(totalStartTime, b.startTime_evaluate);
+			totalEndTime = Math.max(totalEndTime, b.endTime_evaluate);
+			totalDelayTime += b.endTime_evaluate-(2.5*totalExecutionTime + totalExecutionTime);
+			if(totalDelayTime > 0)
+				totalDelayCost += totalDelayTime * GA_Problem_Parameter.priorities.get(b.priority);
 		}
-		totalTime=totalEndTime-totalStartTime;
-		totalCost=totalDevCost+totalDelayCost;
+		if (totalBugsZonesInfo == 0) {
+			System.out.println();
+		}
+		totalDiffusedKnowledge /= totalBugsZonesInfo;
+		totalTime = totalEndTime-totalStartTime;
+		totalCost = totalDevCost+totalDelayCost;
 		
 		//just scaled the amount of knowledge diffused
 		solution.setObjective(0, -totalDiffusedKnowledge/solution.getNumberOfVariables());

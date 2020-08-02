@@ -3,6 +3,8 @@
  */
 package main.java.mainPipeline;
 
+import static org.hamcrest.CoreMatchers.nullValue;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -10,12 +12,16 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Random;
 
+import org.apache.commons.collections.functors.TruePredicate;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
 
@@ -41,7 +47,13 @@ public class AdaptiveAssignmentPipline {
 	static Random random=new Random();
 	static HMM<Observation> HMM=null;
 	static String datasetName=null;
-	private static AdaptiveAssignmentPipline adaptivePipeline=null;
+	static HashMap<Action, Double> LAProbes = new HashMap<Action, Double>(){
+		{
+			put(Action.COST, 0.5);
+			put(Action.DIFFUSION, 0.5);
+		}
+	};
+ 	private static AdaptiveAssignmentPipline adaptivePipeline=null;
 	GATaskAssignment test;
 	
 	static FeatureInitialization featureIni=FeatureInitializationV1.getInstance();
@@ -59,14 +71,11 @@ public class AdaptiveAssignmentPipline {
 		test=GATaskAssignment.getInstance();
 	}
 
-	
 	public static AdaptiveAssignmentPipline getInstance() {
-
 		if(adaptivePipeline==null)
 			adaptivePipeline=new AdaptiveAssignmentPipline();
 		return adaptivePipeline;
 	}
-	
 	
 	/*
 	 * Gets invoked to run a new pipeline of task assignment in an adaptive way
@@ -107,7 +116,6 @@ public class AdaptiveAssignmentPipline {
 		totals.put("TID_static", 0.0);
 		totals.put("TID_adaptive", 0.0);
 		
-
 		totalsOverTime.put("CoT_static", new ArrayList<Double>());
 		totalsOverTime.put("IDoT_static", new ArrayList<Double>());
 		totalsOverTime.put("CoT_adaptive", new ArrayList<Double>());
@@ -115,13 +123,18 @@ public class AdaptiveAssignmentPipline {
 		totalsOverTime.put("SoT", new ArrayList<Double>());
 		totalsOverTime.put("costPerRound_static", new ArrayList<Double>());
 		totalsOverTime.put("costPerRound_adaptive", new ArrayList<Double>());
-		
+		totalsOverTime.put("idPerRound_static", new ArrayList<Double>());
+		totalsOverTime.put("idPerRound_adaptive", new ArrayList<Double>());
+		totalsOverTime.put("EoT_static", new ArrayList<Double>());
+		totalsOverTime.put("EoT_adaptive", new ArrayList<Double>());
+		totalsOverTime.put("ExoTperRound_adaptive", new ArrayList<Double>());
 		
 		//start the pipeline
 		start(totals, totalsOverTime, devsProfileOverTime);
 		
 		return totals;
 	}
+
 	
 	public void start(HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime, 
 			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
@@ -312,7 +325,11 @@ public class AdaptiveAssignmentPipline {
 	}
 	
 	public State getState(int period, String typeOf) {
+		//create and fill list of max value for develpers
+		ArrayList<Double> maxOfProfile=new ArrayList<Double>();
+		//double x=Collections.max(GA_Problem_Parameter.developers_all.values());
 		return null;
+		
 	}
 	
 	/**
@@ -377,8 +394,143 @@ public class AdaptiveAssignmentPipline {
 		//close the opened printwriters
 		pw_devProfile_adaptive.close();
 		pw_devProfile_static.close();
+	}
+	
+	public static int[] getFeedback(int roundNum, HashMap<String, ArrayList<Double>> totalsOverTime) {
+		int[] input = new int[] {0, 0};
 		
+		List<Double> list0f = totalsOverTime.get("EoT_adaptive");
+		//measure the entropy change
+		double E1 = totalsOverTime.get("EoT_adaptive").get(roundNum - 2);
+		double E2 = totalsOverTime.get("EoT_adaptive").get(roundNum - 1);
+		double diffEntropy = E2 - E1;
+		//measure number of exclusive change
+		List<Double> list0f2 = totalsOverTime.get("ExoTperRound_adaptive");
+		double dev1 = totalsOverTime.get("ExoTperRound_adaptive").get(roundNum -2);
+		double dev2 = totalsOverTime.get("ExoTperRound_adaptive").get(roundNum - 1);
+		int diffExclusive = (int) (dev2 - dev1);
+		//set inputs
+		if (diffEntropy > 0) 
+			input[0] = 1;
+		else if (diffEntropy < 0)
+			input[0] = -1;
+		else 
+			input[0] = 0;
+		
+		if (diffExclusive > 0)
+			input[1] = 1;
+		else if (diffExclusive < 0)
+			input[1] = -1;
+		else 
+			input[1] = 0;
+
+		return input;
 	}
  		
+	
+	public static Boolean getResponse(int[] feedbackArray) {
+		String feedback = "";
+		for (int i:feedbackArray) {
+			feedback +=i;
+		}
+		switch (feedback) {
+			case "-11":
+				return false;
+			case "-10":
+				return true;
+			case "-1-1":
+				return true;
+			case "11":
+				return false;
+			case "10":
+				return false;
+			case "01":
+				return true;
+			case "0-1":
+				return true;
+			case "00":
+				return false;
+			default:
+				return false;
+		}
+	}
+	
+	
+	/*
+	 * the implementation of the function which maps the internal states to the action
+	 */
+	public static Action getAction() {
+		double r = random.nextDouble();
+		
+		if (r < LAProbes.get(Action.COST)) {
+			return Action.COST;
+		}
+		else 
+			return Action.DIFFUSION;
+	}
+	
+	/*
+	 * update the probability function
+	 */
+	public static void updateProbs(Boolean response, Action action) {
+		double theta = 0.01;
+		//int response = (currentCost > formerCost) ? 0 : 1;
+		//set reward-- the function is P(n+1) = 1- theta()...
+		if (response) {
+			//do reward
+			LAProbes.put(action, LAProbes.get(action) + theta * (1 - LAProbes.get(action)));
+			LAProbes.put(action.getOpposite(), (1 - LAProbes.get(action.getOpposite())));
+		}
+		else {
+			// apply penalty
+			LAProbes.put(action, LAProbes.get(action) * (1 - theta));
+			LAProbes.put(action.getOpposite(), (theta / (1 - Action.values().length)) + LAProbes.get(action.getOpposite()) * (1 - theta));
+		}
+	}
 
+	public static double getMinCost(List<FinalSolution<Solution, Double, Double>> ParetoFront_normalized) {
+		double minCost = 1;
+		for (FinalSolution<Solution, Double, Double> f:ParetoFront_normalized) {
+			if (f.getCost() < minCost)
+				minCost = f.getCost();
+		}
+		return minCost;
+	}
+	
+	public static FinalSolution<Solution, Double, Double> getMinCost_solution(List<FinalSolution<Solution, Double, Double>> ParetoFront_normalized) {
+		double minCost = 1;
+		if (ParetoFront_normalized == null)
+			System.out.println();
+		FinalSolution<Solution, Double, Double> s = null;
+		for (FinalSolution<Solution, Double, Double> f:ParetoFront_normalized) {
+			if (f.getCost() < minCost) {
+				minCost = f.getCost();
+				s = f;
+			}
+		}
+		return s;
+	}
+	
+	public static double getMaxDiffusion(List<FinalSolution<Solution, Double, Double>> ParetoFront_normalized) {
+		double maxD = 0;
+		if (ParetoFront_normalized == null)
+			System.out.println();
+		for (FinalSolution<Solution, Double, Double> f:ParetoFront_normalized) {
+			if (f.getCost() > maxD)
+				maxD = f.getDiffusion();
+		}
+		return maxD;
+	}
+	
+	public static FinalSolution<Solution, Double, Double> getMaxDiffusion_solution(List<FinalSolution<Solution, Double, Double>> ParetoFront_normalized) {
+		double maxD = 0;
+		FinalSolution<Solution, Double, Double> s = null;
+		for (FinalSolution<Solution, Double, Double> f:ParetoFront_normalized) {
+			if (f.getCost() > maxD) {
+				maxD = f.getDiffusion();
+				s = f;
+			}
+		}
+		return s;
+	}
 }

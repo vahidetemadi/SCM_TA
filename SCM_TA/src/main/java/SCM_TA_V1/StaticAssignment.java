@@ -85,9 +85,11 @@ public class StaticAssignment extends AbstractProblem {
 		double totalEndTime=0.0;
 		double totalExecutionTime=0.0;
 		double totalDiffusedKnowledge=0.0;
+		double totalBugsZonesInfo = 0.0;
 		int index=0;
 		int index_fillDevTeam=0;
 		GA_Problem_Parameter.tso_static=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
+		
 		while(tso.hasNext()){
 			double totalDiffusedOfDevTeam=0;;
 			Bug b=tso.next();
@@ -132,9 +134,7 @@ public class StaticAssignment extends AbstractProblem {
 				double x1=developers.get(dID).developerNextAvailableHour;
 				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
-				
-				
-				
+
 				
 				double emissionTime=10000000;
 				double estimatedEmissionTime=0;
@@ -148,32 +148,22 @@ public class StaticAssignment extends AbstractProblem {
 						sourceDevId=dev.getKey();
 					}
 				}
-				totalDiffusedOfDevTeam=fitnessCalc.getID(developerTeam ,candidate.getValue(), b, zone_bug.getKey());
-				//compute the extra cost for information diffusion==> used to compute the cost posed due to
-				//information diffusion 
-			
-				//totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime;
-				/*
-				 * try { totalCost+=developers.get(sourceDevId).hourlyWage*emissionTime; }
-				 * catch(NullPointerException e) { e.printStackTrace(); }
-				 */
-				
-				
-				
-				
-				
-				
+				totalDiffusedKnowledge += fitnessCalc.getID_scaled_static(developerTeam, candidate.getValue(), b, zone_bug.getKey());
+				//totalBugsZonesInfo += b.BZone_Coefficient.get(zone_bug.getKey());
 			}
 			
-			totalDiffusedKnowledge+=totalDiffusedOfDevTeam;
-			
-			totalStartTime=Math.min(totalStartTime, b.startTime_evaluate);
-			totalEndTime=Math.max(totalEndTime, b.endTime_evaluate);
-			totalDelayTime+=b.endTime_evaluate-(2.5*totalExecutionTime+totalExecutionTime);
+			//totalDiffusedKnowledge += totalDiffusedOfDevTeam;
+			for (Double d : b.BZone_Coefficient.values()) {
+				totalBugsZonesInfo += d;;
+			}
+			totalStartTime = Math.min(totalStartTime, b.startTime_evaluate);
+			totalEndTime = Math.max(totalEndTime, b.endTime_evaluate);
+			totalDelayTime += b.endTime_evaluate-(2.5 * totalExecutionTime + totalExecutionTime);
 			if(totalDelayTime>0)
-				totalDelayCost+=totalDelayTime*GA_Problem_Parameter.priorities.get(b.priority);
+				totalDelayCost += totalDelayTime * GA_Problem_Parameter.priorities.get(b.priority);
 			
 		}
+		totalDiffusedKnowledge /= totalBugsZonesInfo;
 		totalTime=totalEndTime-totalStartTime;
 		totalCost=totalDevCost+totalDelayCost;
 		

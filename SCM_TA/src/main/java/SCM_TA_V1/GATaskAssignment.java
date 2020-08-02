@@ -14,8 +14,10 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
@@ -23,6 +25,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.*;
+import java.util.stream.Collectors;
 
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -51,8 +54,12 @@ import com.amihaiemil.eoyaml.Yaml;
 import com.amihaiemil.eoyaml.YamlMapping;
 
 import main.java.mainPipeline.GA;
+import main.java.context.Environment_s1;
 import main.java.featureTuning.FeatureInitializationV1;
+import main.java.mainPipeline.Action;
+import main.java.mainPipeline.AdaptiveAssignmentPipline;
 import main.java.mainPipeline.Driver;
+import main.java.mainPipeline.FinalSolution;
 
 
 
@@ -348,7 +355,7 @@ public class GATaskAssignment {
 		}
 		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
-		GA_Problem_Parameter.population=20;
+		GA_Problem_Parameter.population=100;
 	}
 	
 	public void initializeProblems() {
@@ -438,6 +445,7 @@ public class GATaskAssignment {
 	//find solution to assign tasks to the developers
 
 	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime) throws IOException{		
+		roundnum = fileNum;
 		logger.log(Level.INFO, "Round Num: "+fileNum);
 		//static part
 		int c=0;
@@ -507,6 +515,8 @@ public class GATaskAssignment {
 		totalsOverTime.get("CoT_static").add(totals.get("TCT_static"));
 		totalsOverTime.get("IDoT_static").add(totals.get("TID_static"));
 		totalsOverTime.get("costPerRound_static").add(staticSolution.getObjective(0));
+		totalsOverTime.get("idPerRound_static").add((Double)staticSolution.getAttribute("diffusedKnowledge"));
+		totalsOverTime.get("EoT_static").add(Environment_s1.getEntropy_static());
 		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");
 		//}	
 		
@@ -535,9 +545,48 @@ public class GATaskAssignment {
 	    pw.write(sb.toString());
 	    pw.close();
 	    
-	    //need to select a solution randomly to use for updating
-	    int size=NDP_adaptive_multi.size();
-	    Solution adaptiveSolution=NDP_adaptive_multi.get(NDP_adaptive_multi.size()/2);
+	    //select solution with the help of LA
+	    double maxCost = 0;
+	    double maxD = 0;
+	    List<FinalSolution<Solution, Double, Double>> ParetoFront = new ArrayList<FinalSolution<Solution,Double,Double>>();
+	    
+	    for (Solution s:NDP_adaptive_multi) {
+	    	if (s.getObjective(1) > maxCost)
+	    		maxCost = s.getObjective(1);
+	    	if (s.getObjective(0) > maxD)
+	    		maxD = s.getObjective(0);
+	    	ParetoFront.add(new FinalSolution<Solution, Double, Double>(s, s.getObjective(1), s.getObjective(0)));
+	    }
+	    
+	    final double ratioCost	= 1.0 / maxCost;
+	    final double rationD = maxD != 0.0 ? 1.0 / maxD: 0.0;
+	    
+	    double temp3 =ParetoFront.get(0).getCost();
+	    
+	    @SuppressWarnings("unchecked")
+	    List<FinalSolution<Solution, Double, Double>> ParetoFront_normalized = ParetoFront.stream().map(
+	    		x -> {	x.setSolution(x.getSolution());
+	    				x.setCost(x.getCost() * ratioCost);
+	    				x.setDiffusion(x.getDiffusion() * rationD);
+	    				return x;
+	    		 }).collect(Collectors.toList());
+	    Action action2 = roundnum > 2 ?
+	    	action2 = AdaptiveAssignmentPipline.getInstance().getAction()
+	    	: Action.COST;
+	    
+	    
+	    Solution adaptiveSolution = null;
+	    if (ParetoFront_normalized.size() < 2) {
+	    	System.out.println();
+	    }
+	    switch (action2) {
+	    	case COST:
+	    		adaptiveSolution = AdaptiveAssignmentPipline.getInstance().getMinCost_solution(ParetoFront_normalized).getSolution();
+	    		break;
+	    	case DIFFUSION:
+	    		adaptiveSolution = AdaptiveAssignmentPipline.getInstance().getMaxDiffusion_solution(ParetoFront_normalized).getSolution();
+	    		break;
+	    }
 	    int[] temp=EncodingUtils.getInt(adaptiveSolution);
 	    
 	    c=0;
@@ -551,17 +600,29 @@ public class GATaskAssignment {
 			}
 		}
 		
-	    
-	  //add to total cost over time and total information diffusion
-  		totals.put("TCT_adaptive", totals.get("TCT_adaptive")+ adaptiveSolution.getObjective(1));
-  		totals.put("TID_adaptive", totals.get("TID_adaptive")+ adaptiveSolution.getObjective(0));
+	    //add to total cost over time and total information diffusion
+  		totals.put("TCT_adaptive", totals.get("TCT_adaptive") + adaptiveSolution.getObjective(1));
+  		totals.put("TID_adaptive", totals.get("TID_adaptive") + adaptiveSolution.getObjective(0));
   		
   		if(totals.get("TCT_adptive")==null || totals.get("TCT_adaptive")==0.0)
   			System.out.println("test");
   		totalsOverTime.get("CoT_adaptive").add(totals.get("TCT_adaptive"));
   		totalsOverTime.get("IDoT_adaptive").add(totals.get("TID_adaptive"));
   		totalsOverTime.get("costPerRound_adaptive").add(adaptiveSolution.getObjective(1));
+  		totalsOverTime.get("idPerRound_adaptive").add(adaptiveSolution.getObjective(0));
+  		totalsOverTime.get("EoT_adaptive").add(Environment_s1.getEntropy().get("Entropy"));
+  		totalsOverTime.get("ExoTperRound_adaptive").add(Environment_s1.getEntropy().get("Ex"));
+  		
+  		//get the response from environment and call the update function
+  		int[] feedback = roundnum > 2 ?
+  				AdaptiveAssignmentPipline.getInstance().getFeedback(roundnum, totalsOverTime)
+  				: new int[]{0, 0};
+    	Boolean response = roundnum > 2 ? 
+    			AdaptiveAssignmentPipline.getInstance().getResponse(feedback):
+    			true;
 	    
+	    //call the update function
+	    AdaptiveAssignmentPipline.getInstance().updateProbs(response, action2);
 	}
 	
 	//write the results for testing

@@ -67,6 +67,11 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 			solution.setAttribute("devsProfile1", devsProfileOverTime.get(1));
 			solution.setAttribute("costPerRound_static", totalsOverTime.get("costPerRound_static"));
 			solution.setAttribute("costPerRound_adaptive", totalsOverTime.get("costPerRound_adaptive"));
+			solution.setAttribute("idPerRound_static", totalsOverTime.get("idPerRound_static"));
+			solution.setAttribute("idPerRound_adaptive", totalsOverTime.get("idPerRound_adaptive"));
+			solution.setAttribute("EoT_adaptive", totalsOverTime.get("EoT_adaptive"));
+			solution.setAttribute("EoT_static", totalsOverTime.get("EoT_static"));
+			solution.setAttribute("ExoTperRound_adaptive", totalsOverTime.get("ExoTperRound_adaptive"));
 		///}
 		//catch (Exception e) {
 			//e.printStackTrace();

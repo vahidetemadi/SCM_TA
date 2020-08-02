@@ -15,6 +15,7 @@ import java.util.concurrent.ThreadLocalRandom;
 
 import org.jgrapht.graph.DefaultDirectedWeightedGraph;
 import org.jgrapht.graph.DefaultEdge;
+import org.omg.PortableInterceptor.INACTIVE;
 
 import main.java.SCM_TA_V1.DevMetrics;
 import main.java.SCM_TA_V1.Developer;
@@ -43,7 +44,11 @@ public class Environment_s1 extends Environment {
 	static int busFactor=2;
 	static ArrayList<Integer> addedRecently=new ArrayList<Integer>();
 	static ArrayList<Integer> tempState=new ArrayList<Integer>();
-	
+	static HashMap<Integer, Double> exclusives = new HashMap<Integer, Double>();
+	static HashMap<Integer, Double>  probs= new HashMap<Integer, Double>();
+	static HashMap<Integer, Double>  entropies= new HashMap<Integer, Double>();
+	static HashMap<String, Double>  entropiesAndexclusivies = new HashMap<String, Double>();
+
 	public static void insantiateObjects(int lambda){
 		devNetwork=new DefaultDirectedWeightedGraph<Map.Entry<Integer, Developer>, DefaultEdge>(DefaultEdge.class);
 		random=new Random();
@@ -520,13 +525,152 @@ public class Environment_s1 extends Environment {
 		ArrayList<Integer> listOfDevs=rankDevsByProfile(GA_Problem_Parameter.devListId);
 		Collections.reverse(listOfDevs);
 		int count=0;
-		for(int devID:listOfDevs) {
-			if(count>1)
+		for (int devID:listOfDevs) {
+			if (count > 1)
 				return;
 			for(Map.Entry<Zone, Double> zone:GA_Problem_Parameter.developers_all.get(devID).DZone_Coefficient_static.entrySet()) {
 				GA_Problem_Parameter.developers_all.get(devID).getDZone_Coefficient_static().put(zone.getKey(), 0.0001);
 			}
 			count++;
 		}
+	}
+
+	public static HashMap<String, Double> getEntropy() {
+		double numOfEX = 0;
+		//clean map
+		entropiesAndexclusivies.clear();
+	
+		//check devs knowledge
+		for (Integer i : GA_Problem_Parameter.devListId) {
+			System.out.println("Dev ID: " + i);
+			for (Double d : GA_Problem_Parameter.developers_all.get(i).getDZone_Coefficient().values()) {
+				System.out.print(d + ", ");
+			}
+			System.out.println();
+		}
+		
+		exclusives.clear();
+		probs.clear();
+		entropies.clear();
+		
+		double entropy = 0.0;
+		Developer d = null;
+		double knoweldgeSummation = 0;
+		//set the max value for all the zones
+		for(Integer devId : GA_Problem_Parameter.devListId) {
+			d = GA_Problem_Parameter.developers_all.get(devId);
+			for (Map.Entry<Zone, Double> devZone : d.getDZone_Coefficient().entrySet()) {
+				if (exclusives.get(devId) == null)
+					exclusives.put(devId, getSubtraction(d, devZone.getKey()));
+				else
+					exclusives.put(devId, exclusives.get(devId) + getSubtraction(d, devZone.getKey()));
+			}
+		}
+		
+		//compute the probs
+		knoweldgeSummation = exclusives.values().stream().mapToDouble(ex -> Double.parseDouble(ex.toString())).sum();
+		for (Map.Entry<Integer, Double> eKnowledge : exclusives.entrySet()) {
+			probs.put(eKnowledge.getKey(), eKnowledge.getValue() / knoweldgeSummation);
+		}
+		
+		double sum = probs.values().stream().mapToDouble(x -> Double.parseDouble(x.toString())).sum();
+		
+		//compute the num of dev exclusive
+		for (Double ex : exclusives.values()) {
+			if (ex > 0) {
+				numOfEX += 1;
+			}
+		}
+		entropiesAndexclusivies.put("Ex", numOfEX);		/* compute the ex number of*/
+		entropiesAndexclusivies.put("Entropy", computeEntropy());		/* compute the entropy*/
+		
+		return entropiesAndexclusivies;
+	}
+	
+	public static double getSubtraction(Developer d, Zone z) {
+		double max = 0;
+		
+		for (Integer devId : GA_Problem_Parameter.devListId) {
+			if (devId != d.getID()) {
+				if (GA_Problem_Parameter.developers_all.get(devId).getDZone_Coefficient().get(z) > max) {
+					max = GA_Problem_Parameter.developers_all.get(devId).getDZone_Coefficient().get(z);
+				}	
+			}
+		}
+		
+		double subtraction = d.getDZone_Coefficient().get(z) - max;
+		if (subtraction > 0)
+			return subtraction;
+		else
+			return 0.0;
+	}
+	
+	public static double getEntropy_static() {
+			
+			//check devs knowledge
+			for (Integer i : GA_Problem_Parameter.devListId) {
+				System.out.println("Dev ID: " + i);
+				for (Double d : GA_Problem_Parameter.developers_all.get(i).getDZone_Coefficient().values()) {
+					System.out.print(d + ", ");
+				}
+				System.out.println();
+			}
+			
+			exclusives.clear();
+			probs.clear();
+			entropies.clear();
+			
+			double entropy = 0.0;
+			Developer d = null;
+			double knoweldgeSummation = 0;
+			//set the max value for all the zones
+			for(Integer devId : GA_Problem_Parameter.devListId) {
+				d = GA_Problem_Parameter.developers_all.get(devId);
+				for (Map.Entry<Zone, Double> devZone : d.getDZone_Coefficient_static().entrySet()) {
+					if (exclusives.get(devId) == null)
+						exclusives.put(devId, getSubtraction(d, devZone.getKey()));
+					else
+						exclusives.put(devId, exclusives.get(devId) + getSubtraction(d, devZone.getKey()));
+				}
+			}
+			
+			//compute the probs
+			knoweldgeSummation = exclusives.values().stream().mapToDouble(ex -> Double.parseDouble(ex.toString())).sum();
+			for (Map.Entry<Integer, Double> eKnowledge : exclusives.entrySet()) {
+				probs.put(eKnowledge.getKey(), eKnowledge.getValue() / knoweldgeSummation);
+			}
+			
+			double sum = probs.values().stream().mapToDouble(x -> Double.parseDouble(x.toString())).sum();
+			//compute the entropy
+			entropy = computeEntropy();
+			
+			return entropy;
+		}
+	
+	public static double getSubtraction_static(Developer d, Zone z) {
+		double max = 0;
+		
+		for (Integer devId : GA_Problem_Parameter.devListId) {
+			if (devId != d.getID()) {
+				if (GA_Problem_Parameter.developers_all.get(devId).getDZone_Coefficient_static().get(z) > max) {
+					max = GA_Problem_Parameter.developers_all.get(devId).getDZone_Coefficient_static().get(z);
+				}	
+			}
+		}
+		
+		double subtraction = d.getDZone_Coefficient_static().get(z) - max;
+		if (subtraction > 0)
+			return subtraction;
+		else
+			return 0.0;
+	}
+	
+	public static double computeEntropy() {
+		double entropy = 0.0;
+		for (Double prob : probs.values()) {
+			if (prob != 0.0)
+				entropy -=  prob * (Math.log(prob) / Math.log(2));
+		}
+		return entropy;
 	}
 }
