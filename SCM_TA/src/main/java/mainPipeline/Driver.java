@@ -46,6 +46,7 @@ public class Driver {
 	static Population finalPopulation;
 	static HashMap<String, Object> allMaps = new HashMap<String, Object>();
 	public static void main(String[] args) throws IOException {
+		System.out.println(Integer.parseInt(args[0]));
 		//get dataset name 
 		System.out.println("Enter the dataset name:");
 		Scanner sc=new Scanner(System.in);

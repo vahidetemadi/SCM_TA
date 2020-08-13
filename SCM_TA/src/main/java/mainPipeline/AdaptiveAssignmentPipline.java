@@ -397,6 +397,7 @@ public class AdaptiveAssignmentPipline {
 	}
 	
 	public static int[] getFeedback(int roundNum, HashMap<String, ArrayList<Double>> totalsOverTime) {
+		//the first element: Entropy, the second one: Exclusive knowledge
 		int[] input = new int[] {0, 0};
 		
 		List<Double> list0f = totalsOverTime.get("EoT_adaptive");
@@ -471,6 +472,8 @@ public class AdaptiveAssignmentPipline {
 	
 	/*
 	 * update the probability function
+	 * @ response the boolean value denotes the response from environment
+	 * @ action is the action which resulted in this particular response
 	 */
 	public static void updateProbs(Boolean response, Action action) {
 		double theta = 0.01;
@@ -479,6 +482,7 @@ public class AdaptiveAssignmentPipline {
 		if (response) {
 			//do reward
 			LAProbes.put(action, LAProbes.get(action) + theta * (1 - LAProbes.get(action)));
+			//LAProbes.put(action, LAProbes.get(action) + theta * LAProbes.get(action));
 			LAProbes.put(action.getOpposite(), (1 - LAProbes.get(action.getOpposite())));
 		}
 		else {
