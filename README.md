@@ -5,11 +5,10 @@ a machine and following the these steps:
 You could try to run the code from the terminal (CMD in windows) or using an IDE.
 The program takes two arguments, windows size and devloper churn rate, which must be provided when running the program (please refer to 
  to https://www.cs.colostate.edu/helpdocs/cmd.pdf to see how the arguments could be introduced)
-
-* Compile the provided code in src package (please using the **javac** command to compile the files, the next updates of the program
+** Compile the provided code in src package (please using the *javac* command to compile the files, the next updates of the program
 will include a build file using gradle to make this process easy)
 
-* Run the GATaskAssignment.class which contains the main method together with introducing the input arguments
+** Run the GATaskAssignment.class which contains the main method together with introducing the input arguments
 
 2. The final results are provided in separate folders including all type of outpus. These raw results are then go through several steps 
 to be ready for publishing as the results. Several python scripts are used to analyze the results
