@@ -193,10 +193,11 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 			System.out.println();
 		}
 		totalDiffusedKnowledge /= totalBugsZonesInfo;
-		totalTime = totalEndTime-totalStartTime;
-		totalCost = totalDevCost+totalDelayCost;
+		totalTime = totalEndTime - totalStartTime;
+		totalCost = totalDevCost + totalDelayCost;
 		
 		//just scaled the amount of knowledge diffused
+		double sample = -totalDiffusedKnowledge/solution.getNumberOfVariables();
 		solution.setObjective(0, -totalDiffusedKnowledge/solution.getNumberOfVariables());
 		solution.setObjective(1, totalCost);
 		solution.setAttribute("cost", totalCost);

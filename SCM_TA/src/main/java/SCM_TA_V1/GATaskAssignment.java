@@ -1,28 +1,19 @@
 package main.java.SCM_TA_V1;
 
-
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Queue;
-import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.*;
 import java.util.stream.Collectors;
@@ -50,15 +41,10 @@ import org.moeaframework.core.operator.real.SBX;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 
-import com.amihaiemil.eoyaml.Yaml;
-import com.amihaiemil.eoyaml.YamlMapping;
-
-import main.java.mainPipeline.GA;
 import main.java.context.Environment_s1;
 import main.java.featureTuning.FeatureInitializationV1;
 import main.java.mainPipeline.Action;
 import main.java.mainPipeline.AdaptiveAssignmentPipline;
-import main.java.mainPipeline.Driver;
 import main.java.mainPipeline.FinalSolution;
 
 
@@ -355,7 +341,7 @@ public class GATaskAssignment {
 		}
 		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
-		GA_Problem_Parameter.population=150;
+		GA_Problem_Parameter.population=200;
 	}
 	
 	public void initializeProblems() {
@@ -525,12 +511,20 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		GA_Problem_Parameter.flag=1;
 		
-		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+FeatureInitializationV1.datasetName+File.separator+"JDTMilestone3.1.1"+".ps";
+		String path= null;
+		switch (FeatureInitializationV1.datasetName) {
+			case "JDT":
+				path = System.getProperty("user.dir")+File.separator+"PS"+File.separator+FeatureInitializationV1.datasetName+File.separator+"JDTMilestone3.1.1"+".ps";
+				break;
+			case "Platform":
+				path = System.getProperty("user.dir")+File.separator+"PS"+File.separator+FeatureInitializationV1.datasetName+File.separator+"PlatformMilestone3.1"+".ps";
+				break;	
+		}
 		Instrumenter instrumenter_adaptive_multi=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(10).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		NondominatedPopulation NDP_adaptive_multi=new Executor().withProblemClass(InformationDifussion_adaptive_multi.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(200).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-				.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_adaptive_multi).run();
+				.withMaxEvaluations(50000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+				.withProperty("1x.rate", 0.6).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_adaptive_multi).run();
 		
 		sb.append("ID , Cost");
 		sb.setLength(0);
@@ -558,10 +552,13 @@ public class GATaskAssignment {
 	    	ParetoFront.add(new FinalSolution<Solution, Double, Double>(s, s.getObjective(1), s.getObjective(0)));
 	    }
 	    
+	    for (FinalSolution<Solution,Double,Double> f: ParetoFront) {
+	    	System.out.println(f.getCost());
+	    }
+	    
+	    
 	    final double ratioCost	= 1.0 / maxCost;
 	    final double rationD = maxD != 0.0 ? 1.0 / maxD: 0.0;
-	    
-	    double temp3 =ParetoFront.get(0).getCost();
 	    
 	    @SuppressWarnings("unchecked")
 	    List<FinalSolution<Solution, Double, Double>> ParetoFront_normalized = ParetoFront.stream().map(
@@ -579,12 +576,27 @@ public class GATaskAssignment {
 	    if (ParetoFront_normalized.size() < 2) {
 	    	System.out.println();
 	    }
+	    int nums = 0;
 	    switch (action2) {
 	    	case COST:
-	    		adaptiveSolution = AdaptiveAssignmentPipline.getInstance().getMinCost_solution(ParetoFront_normalized).getSolution();
+	    		try {
+	    			adaptiveSolution = AdaptiveAssignmentPipline.getInstance().getMinCost_solution(ParetoFront_normalized).getSolution();
+	    		}
+	    		catch (Exception e) {
+	    			nums = NDP_adaptive_multi.size();
+	    			System.out.println("The nums is (cost):" + nums);
+	    			System.out.println("The nums is (cost_main):" + ParetoFront_normalized.size());
+				}
 	    		break;
 	    	case DIFFUSION:
-	    		adaptiveSolution = AdaptiveAssignmentPipline.getInstance().getMaxDiffusion_solution(ParetoFront_normalized).getSolution();
+	    		try {
+	    			adaptiveSolution = AdaptiveAssignmentPipline.getInstance().getMaxDiffusion_solution(ParetoFront_normalized).getSolution();
+	    		}
+	    		catch (Exception e) {
+	    			nums = NDP_adaptive_multi.size();
+	    			System.out.println("The nums is (diffusion):" + nums);
+	    			System.out.println("The nums is (diffusion_main):" + ParetoFront_normalized.size());
+				}
 	    		break;
 	    }
 	    int[] temp=EncodingUtils.getInt(adaptiveSolution);
@@ -759,7 +771,7 @@ public class GATaskAssignment {
 		 */
 		
 		//using learning rate during developer mentoring
-		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z)* initalLearningRate);
+		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z) * initalLearningRate);
 		
 		
 		//d.getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));

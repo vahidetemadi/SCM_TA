@@ -10,13 +10,12 @@ public class DevMetrics extends Metrics{
 		Collections.sort(Devs, new Sorting());
 	}
 	public static Ranking<Developer, Double> computeMetric(Developer d){
-		double pVal=0.0;
+		double pVal = 0.0;
 		for(Double pValue:d.getDZone_Coefficient_static().values()){
-			pVal+=pValue;
+			pVal += pValue;
 		}
-		pVal=(pVal/d.getDZone_Coefficient_static().size());
-
-		Ranking<Developer, Double> item=new Ranking<Developer, Double>(d, pVal);
+		pVal = (pVal / d.getDZone_Coefficient_static().size());
+		Ranking<Developer, Double> item = new Ranking<Developer, Double>(d, pVal);
 		return item;
 	}
 }

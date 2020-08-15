@@ -10,6 +10,8 @@ public abstract class FeatureInitialization implements Serializable {
  	ArrayList<double[][]> em=new ArrayList<double[][]>();
  	ArrayList<double[][]> tm=new ArrayList<double[][]>();
  	public static String datasetName;
+ 	public static int windowSize;
+ 	public static int churnRate;
  	
  	public ArrayList<Integer> getDevNum() {
 		return this.devNum;

@@ -46,7 +46,8 @@ public class Driver {
 	static Population finalPopulation;
 	static HashMap<String, Object> allMaps = new HashMap<String, Object>();
 	public static void main(String[] args) throws IOException {
-		System.out.println(Integer.parseInt(args[0]));
+		FeatureInitializationV1.windowSize = Integer.parseInt(args[0]);
+		FeatureInitializationV1.churnRate = Integer.parseInt(args[1]);
 		//get dataset name 
 		System.out.println("Enter the dataset name:");
 		Scanner sc=new Scanner(System.in);
@@ -153,8 +154,9 @@ public class Driver {
 		file.getParentFile().mkdir(); 				/* make missed dirs*/
 		PrintWriter printWriter=new PrintWriter(file);
 		CSVWriter csvWriter=new CSVWriter(printWriter);
-		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive", "SoT"
-					, "costPerRound_static", "idPerRound_static", "idPerRound_adaptive", "costPerRound_adaptive", "EoT_static", "EoT_adaptive, ExoTperRound_adaptive"};
+		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive",
+					"SoT", "costPerRound_static", "idPerRound_static", "idPerRound_adaptive", "costPerRound_adaptive", "EoT_static", "EoT_adaptive, ExoTperRound_adaptive",
+					"actionProbVector"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
 		Solution tempSolution;
 		
@@ -174,7 +176,8 @@ public class Driver {
 												((ArrayList<Double>)tempSolution.getAttribute("idPerRound_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("EoT_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("EoT_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("ExoTperRound_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString()
+												((ArrayList<Double>)tempSolution.getAttribute("ExoTperRound_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("actionProbVector")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString()
 												});
 			
 			//deserialize dev lists

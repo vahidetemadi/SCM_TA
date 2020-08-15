@@ -72,6 +72,7 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 			solution.setAttribute("EoT_adaptive", totalsOverTime.get("EoT_adaptive"));
 			solution.setAttribute("EoT_static", totalsOverTime.get("EoT_static"));
 			solution.setAttribute("ExoTperRound_adaptive", totalsOverTime.get("ExoTperRound_adaptive"));
+			solution.setAttribute("actionProbVector", totalsOverTime.get("actionProbVector"));
 		///}
 		//catch (Exception e) {
 			//e.printStackTrace();

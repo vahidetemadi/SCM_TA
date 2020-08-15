@@ -128,7 +128,7 @@ public class AdaptiveAssignmentPipline {
 		totalsOverTime.put("EoT_static", new ArrayList<Double>());
 		totalsOverTime.put("EoT_adaptive", new ArrayList<Double>());
 		totalsOverTime.put("ExoTperRound_adaptive", new ArrayList<Double>());
-		
+		totalsOverTime.put("actionProbVector", new ArrayList<Double>());
 		//start the pipeline
 		start(totals, totalsOverTime, devsProfileOverTime);
 		
@@ -216,10 +216,18 @@ public class AdaptiveAssignmentPipline {
 				HashMap<Integer, Developer> devs=GA_Problem_Parameter.developers_all;
 				//update devNetwork
 				//Environment_s1.nodeAttachment();
-				Environment_s1.nodeAttachment(Stubs.tempChurns.get(roundNum-1)); 		/**insert the num of devs by hand**/
+				//Environment_s1.nodeAttachment(Stubs.tempChurns.get(roundNum-1)); 		/**insert the num of devs by hand**/
 				//Environment_s1.nodeDeletion();
-				Environment_s1.nodeDeletion(Stubs.tempChurns.get(roundNum-1));
+				//Environment_s1.nodeDeletion(Stubs.tempChurns.get(roundNum-1));
 				//Environment_s1.updateDevNetwork();
+				
+			
+				if (roundNum / FeatureInitializationV1.windowSize == 0) {
+					Environment_s1.nodeAttachment(FeatureInitializationV1.churnRate); 		/**insert the num of devs by hand**/
+					//Environment_s1.nodeDeletion();
+					Environment_s1.nodeDeletion(FeatureInitializationV1.churnRate);
+					//Environment_s1.updateDevNetwork();
+				}
 				
 				//update over time dev profile
 				if(roundNum%10==0)
@@ -259,6 +267,8 @@ public class AdaptiveAssignmentPipline {
 		PrintWriter pw2=new PrintWriter(new FileOutputStream(file2, true));
 		pw2.append("------------------"+"\n"+"--------------------"+"\n");
 		pw2.close();
+		ArrayList<Double> laProbs = new ArrayList<Double>(LAProbes.values()); 
+		totalsOverTime.put("actionProbVector", laProbs );
 	}
 	
 	public State getState(HMM<Observation> HMM){
@@ -428,6 +438,48 @@ public class AdaptiveAssignmentPipline {
 		return input;
 	}
  		
+	public static int[] getFeedback(int roundNum, HashMap<String, ArrayList<Double>> totalsOverTime, int windowSize) {
+		//the first element: Entropy, the second one: Exclusive knowledge
+		int[] input = new int[] {0, 0};
+		
+		List<Double> list0f = totalsOverTime.get("EoT_adaptive");
+		//measure the entropy change
+		double E1 = 0.0;
+		if (totalsOverTime.get("EoT_adaptive").size() > windowSize) {
+			E1 = totalsOverTime.get("EoT_adaptive").get(totalsOverTime.get("EoT_adaptive").size() - windowSize);
+		}
+		else
+			E1 = totalsOverTime.get("EoT_adaptive").get(0);
+		
+		double E2 = totalsOverTime.get("EoT_adaptive").get(totalsOverTime.get("EoT_adaptive").size() - 1);
+		double diffEntropy = E2 - E1;
+		//measure number of exclusive change
+		List<Double> list0f2 = totalsOverTime.get("ExoTperRound_adaptive");
+		double dev1 = 0.0;
+		if (totalsOverTime.get("ExoTperRound_adaptive").size() > windowSize) {
+			E1 = totalsOverTime.get("ExoTperRound_adaptive").get(totalsOverTime.get("ExoTperRound_adaptive").size() - windowSize);
+		}
+		else
+			E1 = totalsOverTime.get("ExoTperRound_adaptive").get(0);
+		double dev2 = totalsOverTime.get("ExoTperRound_adaptive").get(totalsOverTime.get("EoT_adaptive").size() - 1);
+		int diffExclusive = (int) (dev2 - dev1);
+		//set inputs
+		if (diffEntropy > 0) 
+			input[0] = 1;
+		else if (diffEntropy < 0)
+			input[0] = -1;
+		else 
+			input[0] = 0;
+		
+		if (diffExclusive > 0)
+			input[1] = 1;
+		else if (diffExclusive < 0)
+			input[1] = -1;
+		else 
+			input[1] = 0;
+
+		return input;
+	}
 	
 	public static Boolean getResponse(int[] feedbackArray) {
 		String feedback = "";

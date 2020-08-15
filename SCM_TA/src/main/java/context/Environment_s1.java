@@ -228,8 +228,9 @@ public class Environment_s1 extends Environment {
 				+File.separator+ "devs_deleted.txt");
 		file.getParentFile().mkdirs();
 		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
+		//report total changed
 		totalChanged=0;
-		//sort devs befor removing
+		//sort devs prior to removing
 		ArrayList<Integer> listOfDevs=rankDevsByProfile(GA_Problem_Parameter.devListId);
 		Collections.reverse(listOfDevs);
 		for(Integer devID:listOfDevs){
@@ -504,6 +505,7 @@ public class Environment_s1 extends Environment {
 		HashMap<Integer, Developer> devsToBeSoreted=new HashMap<Integer, Developer>();
 		ArrayList<Ranking<Developer, Double>> DevstoBeDeleted=new ArrayList<Ranking<Developer,Double>>();
 		ArrayList<Integer> sortedDevs=new ArrayList<Integer>();
+		
 		for(Integer i:devList) {
 			devsToBeSoreted.put(i, GA_Problem_Parameter.developers_all.get(i));
 		}
@@ -511,6 +513,7 @@ public class Environment_s1 extends Environment {
 		for(Developer d:devsToBeSoreted.values()){
 			DevstoBeDeleted.add(DevMetrics.computeMetric(d));
 		}
+		
 		DevMetrics.sortByMetric(DevstoBeDeleted);
 		
 		for(Ranking<Developer, Double> r:DevstoBeDeleted){
