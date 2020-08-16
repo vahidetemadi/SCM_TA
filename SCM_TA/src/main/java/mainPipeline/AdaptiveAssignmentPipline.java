@@ -184,15 +184,18 @@ public class AdaptiveAssignmentPipline {
 		//set the initial observation and 
 		int roundNum=1;
 		
-		for(int i=1; i<=Environment_s1.numberOfFiles;i++){
+		for(int i = 1; i <= Environment_s1.numberOfFiles; i++){
 			//call for run
 			GA_Problem_Parameter.listOfSubBugs.clear();
-			GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
+			//GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
+			GATaskAssignment.run(datasetName, i, 0);
 			//GATaskAssignment.run(datasetName, i, 5);
 			if(i==Environment_s1.numberOfFiles/2)
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
+				if (bugList.size() == 0)
+					continue;
 				//log devs profile at the point of time
 				logDevProfilePerRound(roundNum);
 				

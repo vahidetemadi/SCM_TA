@@ -44,8 +44,8 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 	}
 	
 	public void init(){
-		DEP=GA_Problem_Parameter.DEP;
-		tso=GA_Problem_Parameter.tso_IDAssignment;
+		DEP = GA_Problem_Parameter.DEP;
+		tso = GA_Problem_Parameter.tso_IDAssignment;
 		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
@@ -59,6 +59,9 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				genes.add(tso_zones.next());
 			}
 		}
+		
+		if (genes.size() == 0)
+			System.out.println();
 	}
 	
 	@Override
