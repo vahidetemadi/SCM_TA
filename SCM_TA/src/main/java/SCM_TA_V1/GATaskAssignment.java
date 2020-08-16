@@ -533,7 +533,8 @@ public class GATaskAssignment {
 			   sb.append("\n");
 	    }
 		
-		File file=new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+FeatureInitializationV1.datasetName+File.separator+runNum+".csv");
+		File file=new File(System.getProperty("user.dir") + File.separator + "paretoFronts" + File.separator + FeatureInitializationV1.datasetName 
+				+ File.separator+ roundnum + File.separator + runNum+".csv");
 		file.getParentFile().mkdirs();	
 		PrintWriter pw=new PrintWriter(file);
 	    pw.write(sb.toString());
@@ -626,6 +627,10 @@ public class GATaskAssignment {
   		totalsOverTime.get("EoT_adaptive").add(Environment_s1.getEntropy().get("Entropy"));
   		totalsOverTime.get("ExoTperRound_adaptive").add(Environment_s1.getEntropy().get("Ex"));
   		
+  		FeatureInitializationV1.actionProbOverRound = FeatureInitializationV1.actionProbOverRound.equals("") ? "" 
+  				: FeatureInitializationV1.actionProbOverRound + "\n";
+  		FeatureInitializationV1.actionProbOverRound += AdaptiveAssignmentPipline.LAProbes.values().toString()
+  				.replace("[", "").replace("]", "");
   		//get the response from environment and call the update function
   		int[] feedback = roundnum > 2 ?
   				AdaptiveAssignmentPipline.getInstance().getFeedback(roundnum, totalsOverTime)

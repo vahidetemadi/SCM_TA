@@ -47,7 +47,7 @@ public class AdaptiveAssignmentPipline {
 	static Random random=new Random();
 	static HMM<Observation> HMM=null;
 	static String datasetName=null;
-	static HashMap<Action, Double> LAProbes = new HashMap<Action, Double>(){
+	public static HashMap<Action, Double> LAProbes = new HashMap<Action, Double>(){
 		{
 			put(Action.COST, 0.5);
 			put(Action.DIFFUSION, 0.5);
@@ -538,7 +538,8 @@ public class AdaptiveAssignmentPipline {
 			//do reward
 			LAProbes.put(action, LAProbes.get(action) + theta * (1 - LAProbes.get(action)));
 			//LAProbes.put(action, LAProbes.get(action) + theta * LAProbes.get(action));
-			LAProbes.put(action.getOpposite(), (1 - LAProbes.get(action.getOpposite())));
+			//LAProbes.put(action.getOpposite(), (1 - LAProbes.get(action.getOpposite())));
+			LAProbes.put(action.getOpposite(), 1 - LAProbes.get(action));
 		}
 		else {
 			// apply penalty

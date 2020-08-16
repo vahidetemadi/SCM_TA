@@ -125,10 +125,10 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 			Map.Entry<Integer, Developer> candidate=null;
 			
 			while(tso_Zone.hasNext()){
-				Zone zone=tso_Zone.next();
-				double compeletionTime=0.0;
-				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
-				int devId=zoneAssignee.get(index).getThird();
+				Zone zone = tso_Zone.next();
+				double compeletionTime = 0.0;
+				Entry<Zone, Double> zone_bug = new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
+				int devId = zoneAssignee.get(index).getThird();
 				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
 					if(developer.getKey()==devId)
 						candidate=developer;
@@ -204,8 +204,8 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		totalCost = totalDevCost + totalDelayCost;
 		
 		//just scaled the amount of knowledge diffused
-		double sample = -totalDiffusedKnowledge/solution.getNumberOfVariables();
-		solution.setObjective(0, -totalDiffusedKnowledge/solution.getNumberOfVariables());
+		double sample = -totalDiffusedKnowledge / solution.getNumberOfVariables();
+		solution.setObjective(0, -totalDiffusedKnowledge / solution.getNumberOfVariables());
 		solution.setObjective(1, totalCost);
 		solution.setAttribute("cost", totalCost);
 		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);

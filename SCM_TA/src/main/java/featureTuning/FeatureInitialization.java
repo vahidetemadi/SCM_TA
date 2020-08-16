@@ -12,6 +12,7 @@ public abstract class FeatureInitialization implements Serializable {
  	public static String datasetName;
  	public static int windowSize;
  	public static int churnRate;
+ 	public static String actionProbOverRound = "";
  	
  	public ArrayList<Integer> getDevNum() {
 		return this.devNum;
