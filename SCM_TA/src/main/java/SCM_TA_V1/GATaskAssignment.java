@@ -554,6 +554,7 @@ public class GATaskAssignment {
 	    
 	    for (FinalSolution<Solution,Double,Double> f: ParetoFront) {
 	    	System.out.println(f.getCost());
+	    	System.out.println("the actual id: "+ f.getDiffusion());
 	    }
 	    
 	    

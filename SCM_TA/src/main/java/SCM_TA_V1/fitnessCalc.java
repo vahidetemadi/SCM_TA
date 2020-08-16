@@ -68,7 +68,7 @@ public class fitnessCalc {
 			//}
 		}
 		
-		return tct;
+		return tct == 0.0 ? 1 : tct;
 	}
 	
 	public static double getDelayTime(Bug bug, Entry<Zone, Double> zone, Developer developer){

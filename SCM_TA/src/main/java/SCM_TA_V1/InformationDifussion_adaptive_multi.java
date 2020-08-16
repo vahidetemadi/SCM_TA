@@ -86,25 +86,24 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		GA_Problem_Parameter.assignZoneDev(zoneAssignee, Arrays.asList(GA_Problem_Parameter.bugs) , solution);
 		//evaluate and examine for all the candidate schedules and then, pick the minimum one 
 		
-		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
-		double totalTime=0.0;
-		double totalCost=0.0;
-		double totalDevCost=0.0;
-		double totalDelayTime=0.0;
-		double totalDelayCost=0.0;
-		double totalStartTime=0.0;
-		double totalEndTime=0.0;
-		double totalExecutionTime=0.0;
+		TopologicalOrderIterator<Bug, DefaultEdge> tso = new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
+		double totalTime = 0.0;
+		double totalCost = 0.0;
+		double totalDevCost = 0.0;
+		double totalDelayTime = 0.0;
+		double totalDelayCost = 0.0;
+		double totalStartTime = 0.0;
+		double totalEndTime = 0.0;
+		double totalExecutionTime = 0.0;
 		double totalBugsZonesInfo = 0.0;
-		
 		//including the amount of knowledge would be diffused
-		double totalDiffusedKnowledge=0.0;
+		double totalDiffusedKnowledge = 0.0;
 		int index=0;
 		int index_fillDevTeam=0;
 		GA_Problem_Parameter.tso_adaptive=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 		while(tso.hasNext()){
-			double totalDiffusedOfDevTeam=0;
-			Bug b=tso.next();
+			double totalDiffusedOfDevTeam = 0;
+			Bug b = tso.next();
 			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			b.startTime_evaluate=x;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
@@ -133,14 +132,14 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				}
 				int dID=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
 				//changed to include alpha time in case developer does not have the right knowledge
-				compeletionTime=fitnessCalc.completionTime_extended(b, zone_bug, developers.get(devId), developerTeam);
-				totalExecutionTime+=compeletionTime;
-				totalDevCost+=compeletionTime*developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
+				compeletionTime = fitnessCalc.completionTime_extended(b, zone_bug, developers.get(devId), developerTeam);
+				totalExecutionTime += compeletionTime;
+				totalDevCost += compeletionTime * developers.get(zoneAssignee.get(index).getThird()).hourlyWage;
 				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(zoneAssignee.get(index).getThird()), zone.DZ);
 				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
 				developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour=Math.max(developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
-				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
+				b.endTime_evaluate = Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
 				
 				//former approach for measuring diffusion!!!
@@ -156,8 +155,8 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				
 				
 				//the newer approach for knowledge diffusion
-				double emissionTime=10000000;
-				double estimatedEmissionTime=0;
+				double emissionTime = 10000000;
+				double estimatedEmissionTime = 0;
 				
 				//following to compute emission time
 				int sourceDevId = 0;
@@ -167,8 +166,8 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 						estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
 									(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
 					if(estimatedEmissionTime<emissionTime){
-						emissionTime=estimatedEmissionTime;
-						sourceDevId=dev.getKey();
+						emissionTime = estimatedEmissionTime;
+						sourceDevId = dev.getKey();
 					}
 				}
 				//compute the extra cost for information diffusion==> used to compute the cost posed due to
@@ -181,7 +180,10 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 			//totalDiffusedKnowledge+=(totalSimToAssignedST-totalSimToUnAssignedST);
 			//totalDiffusedKnowledge += totalDiffusedOfDevTeam;
 			for (Double d : b.BZone_Coefficient.values()) {
-				totalBugsZonesInfo += d;;
+				totalBugsZonesInfo += d;
+			}
+			if (totalBugsZonesInfo == 0.0) {
+				System.out.println();
 			}
 			totalStartTime = Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime = Math.max(totalEndTime, b.endTime_evaluate);
@@ -189,9 +191,11 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 			if(totalDelayTime > 0)
 				totalDelayCost += totalDelayTime * GA_Problem_Parameter.priorities.get(b.priority);
 		}
-		if (totalBugsZonesInfo == 0) {
+		
+		if (totalBugsZonesInfo == 0.0) {
 			System.out.println();
 		}
+		
 		totalDiffusedKnowledge /= totalBugsZonesInfo;
 		totalTime = totalEndTime - totalStartTime;
 		totalCost = totalDevCost + totalDelayCost;
