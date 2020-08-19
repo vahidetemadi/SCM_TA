@@ -89,13 +89,13 @@ public class StaticAssignment extends AbstractProblem {
 		int index=0;
 		int index_fillDevTeam=0;
 		GA_Problem_Parameter.tso_static=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
+		int numOfBugs = DEP_evaluation.vertexSet().size();
 		
 		while(tso.hasNext()){
 			double totalDiffusedOfDevTeam=0;;
-			Bug b=tso.next();
+			Bug b = tso.next();
 			//set Bug startTime
-			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
-			b.startTime_evaluate=x;
+			b.startTime_evaluate = fitnessCalc.getMaxEndTimes(b, DEP_evaluation);;
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone_takeDevTeam=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			
@@ -109,34 +109,32 @@ public class StaticAssignment extends AbstractProblem {
 			}
 			Map.Entry<Integer, Developer> candidate=null;
 			while(tso_Zone.hasNext()){
-				Zone zone=tso_Zone.next();
-				double compeletionTime=0.0;
-				Entry<Zone, Double> zone_bug=new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
+				Zone zone = tso_Zone.next();
+				double compeletionTime = 0.0;
+				Entry<Zone, Double> zone_bug = new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
 				/*if(EncodingUtils.getInt(solution.getVariable(index))==0){
 					int[] g=EncodingUtils.getInt(solution);
 					System.out.println(g);
 				}*/
-				int dID=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
-				compeletionTime=fitnessCalc.compeletionTime(b,zone_bug, developers.get(dID), "static");
+				int dID = GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
+				compeletionTime = fitnessCalc.completionTime_extended_static(b, zone_bug, developers.get(dID), developerTeam);
 				
 				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
-					if(developer.getKey()== dID)
-						candidate=developer;
+					if(developer.getKey() == dID)
+						candidate = developer;
 				}
 				
-				totalExecutionTime+=compeletionTime;
-				totalDevCost+=compeletionTime*developers.get(dID).hourlyWage;
+				totalExecutionTime += compeletionTime;
+				totalDevCost += compeletionTime * developers.get(dID).hourlyWage;
 				
-				zone.zoneStartTime_evaluate=b.startTime_evaluate+fitnessCalc.getZoneStartTime(developers.get(dID), zone.DZ);
-				zone.zoneEndTime_evaluate=zone.zoneStartTime_evaluate+compeletionTime;
-				developers.get(dID).developerNextAvailableHour=Math.max(developers.get(dID).developerNextAvailableHour,
+				zone.zoneStartTime_evaluate = b.startTime_evaluate + fitnessCalc.getZoneStartTime(developers.get(dID), zone.DZ);
+				zone.zoneEndTime_evaluate = zone.zoneStartTime_evaluate+compeletionTime;
+				developers.get(dID).developerNextAvailableHour = Math.max(developers.get(dID).developerNextAvailableHour,
 						zone.zoneEndTime_evaluate);
-				double x1=developers.get(dID).developerNextAvailableHour;
-				b.endTime_evaluate=Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
+				b.endTime_evaluate = Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 				index++;
-
 				
-				double emissionTime=10000000;
+				double emissionTime = 10000000;
 				double estimatedEmissionTime=0;
 				int sourceDevId = 0;
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
@@ -158,19 +156,19 @@ public class StaticAssignment extends AbstractProblem {
 			}
 			totalStartTime = Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime = Math.max(totalEndTime, b.endTime_evaluate);
-			totalDelayTime += b.endTime_evaluate-(2.5 * totalExecutionTime + totalExecutionTime);
-			if(totalDelayTime>0)
+			totalDelayTime += b.endTime_evaluate - (2.5 * totalExecutionTime + totalExecutionTime);
+			if(totalDelayTime > 0)
 				totalDelayCost += totalDelayTime * GA_Problem_Parameter.priorities.get(b.priority);
 			
 		}
 		totalDiffusedKnowledge /= totalBugsZonesInfo;
-		totalTime=totalEndTime-totalStartTime;
-		totalCost=totalDevCost+totalDelayCost;
+		totalTime = totalEndTime - totalStartTime;
+		totalCost = totalDevCost + totalDelayCost;
 		
 		//solution.setObjective(0, totalTime);
 		solution.setObjective(0, totalCost);
 		solution.setAttribute("time", totalTime);
-		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);
+		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge / numOfBugs);
 	}
 		
 	

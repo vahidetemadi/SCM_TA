@@ -159,7 +159,7 @@ public class Driver {
 		CSVWriter csvWriter=new CSVWriter(printWriter);
 		//CSVWriter csvWriter_probOverTime=new CSVWriter(printWriter_probOverTime);
 		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive",
-					"SoT", "costPerRound_static", "idPerRound_static", "idPerRound_adaptive", "costPerRound_adaptive", "EoT_static", "EoT_adaptive, ExoTperRound_adaptive",
+					"SoT", "costPerRound_static" , "costPerRound_adaptive", "idPerRound_static", "idPerRound_adaptive", "EoT_static", "EoT_adaptive", "ExoTperRound_adaptive",
 					"actionProbVector"};
 		//String[] csvFileOutputHeader_probOverTime= {"cost","diffusion"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
@@ -168,8 +168,10 @@ public class Driver {
 		
 		for(int i=0; i<p.size(); i++) {
 			tempSolution=p.get(i);
-			csvWriter.writeNext(new String[] {Arrays.toString(EncodingUtils.getInt(tempSolution)),  String.format("%.2f", tempSolution.getObjective(0)),
-												String.format("%.2f", tempSolution.getAttribute("TCT_static")), String.format("%.2f", tempSolution.getAttribute("TID_static")),
+			csvWriter.writeNext(new String[] {Arrays.toString(EncodingUtils.getInt(tempSolution)),
+												String.format("%.2f", tempSolution.getObjective(0)),
+												String.format("%.2f", tempSolution.getAttribute("TCT_static")),
+												String.format("%.2f", tempSolution.getAttribute("TID_static")),
 												String.format("%.2f", tempSolution.getAttribute("TID_adaptive")),
 												((ArrayList<Double>)tempSolution.getAttribute("CoT_static")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("CoT_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),

@@ -484,30 +484,34 @@ public class AdaptiveAssignmentPipline {
 		return input;
 	}
 	
-	public static Boolean getResponse(int[] feedbackArray) {
+	public static Feedback getResponse(int[] feedbackArray) {
 		String feedback = "";
 		for (int i:feedbackArray) {
-			feedback +=i;
+			feedback += i;
 		}
+		// 0 stands for the feedback as penalty and 1 means reward -- both are applied on 
+		// the information diffusion
 		switch (feedback) {
-			case "-11":
-				return false;
+			case "-11":			/* no update!*/
+				return Feedback.INACTION;
 			case "-10":
-				return true;
+				return Feedback.REWARD;
 			case "-1-1":
-				return true;
-			case "11":
-				return false;
+				return Feedback.REWARD;
+			case "11":			/* no update!*/
+				return Feedback.PENALTY;
 			case "10":
-				return false;
+				return Feedback.REWARD;
+			case "1-1":			/*no update!*/
+				return Feedback.INACTION;	
 			case "01":
-				return true;
+				return Feedback.PENALTY;
 			case "0-1":
-				return true;
-			case "00":
-				return false;
+				return Feedback.REWARD;
+			case "00":			/* no update!*/
+				return Feedback.INACTION;
 			default:
-				return false;
+				return Feedback.INACTION;
 		}
 	}
 	
@@ -530,7 +534,7 @@ public class AdaptiveAssignmentPipline {
 	 * @ response the boolean value denotes the response from environment
 	 * @ action is the action which resulted in this particular response
 	 */
-	public static void updateProbs(Boolean response, Action action) {
+	public static void updateProbs_V1(Boolean response, Action action) {
 		double theta = 0.01;
 		//int response = (currentCost > formerCost) ? 0 : 1;
 		//set reward-- the function is P(n+1) = 1- theta()...
@@ -545,6 +549,26 @@ public class AdaptiveAssignmentPipline {
 			// apply penalty
 			LAProbes.put(action, LAProbes.get(action) * (1 - theta));
 			LAProbes.put(action.getOpposite(), (theta / (1 - Action.values().length)) + LAProbes.get(action.getOpposite()) * (1 - theta));
+		}
+	}
+	
+	public static void updateProbs(Feedback response, Action action) {
+		double theta = 0.01;
+		double newR = Action.values().length - 1;
+		//int response = (currentCost > formerCost) ? 0 : 1;
+		//set reward-- the function is P(n+1) = 1- theta()...
+		if (response == Feedback.REWARD) {
+			//do reward
+			LAProbes.put(action, LAProbes.get(action) + theta * LAProbes.get(action.getOpposite()));
+			//LAProbes.put(action, LAProbes.get(action) + theta * LAProbes.get(action));
+			//LAProbes.put(action.getOpposite(), (1 - LAProbes.get(action.getOpposite())));
+			LAProbes.put(action.getOpposite(), LAProbes.get(action.getOpposite()) - (theta * LAProbes.get(action.getOpposite())));
+		}
+		else if (response == Feedback.PENALTY){
+			// apply penalty
+			LAProbes.put(action, LAProbes.get(action) - ((theta * LAProbes.get(action.getOpposite())) + (theta / newR)));
+			LAProbes.put(action.getOpposite(), LAProbes.get(action.getOpposite()) + ((theta * LAProbes.get(action.getOpposite())) 
+					+ (theta / newR)));
 		}
 	}
 

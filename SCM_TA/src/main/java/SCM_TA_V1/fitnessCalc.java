@@ -27,10 +27,10 @@ public class fitnessCalc {
 		//compute the total time for each zone 
 		switch(approach) {
 			case "static":
-				tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient_static().get(zone.getKey())));
+				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / ((developer.getDZone_Coefficient_static().get(zone.getKey())));
 				break;
 			case "adaptive":
-				tct=(bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
+				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
 				break;
 		}
 		return tct;
@@ -49,23 +49,50 @@ public class fitnessCalc {
 		double inCommon = Math.min(bug.BZone_Coefficient.get(zone.getKey()), developer.getDZone_Coefficient().get(zone.getKey()));
 		double tct=0;
 		double bestFit=0.00001;
-		if(inCommon>0.001) { /*in case developer is already familiar with */
-			tct = (bug.getTotalEstimatedEffort()*bug.BZone_Coefficient.get(zone.getKey()))/((developer.getDZone_Coefficient().get(zone.getKey())));
+		if(inCommon > 0.001) { /*in case developer is already familiar with */
+			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / ((developer.getDZone_Coefficient().get(zone.getKey())));
 		}
 		else {
-			for (Developer dev:team) {
-				if (dev.getID()!=developer.getID()) {
+			for (Developer dev : team) {
+				if (dev.getID() != developer.getID()) {
 					bestFit = bestFit != 0.00001 ? Math.max(bestFit, dev.getDZone_Coefficient().get(zone.getKey())) : bestFit;
 				}
 			}
 			
-			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / bestFit;
-			//if (bestFit > 0.0001) {
-			//	tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.2;
-			//}
-			//else {
-			//	tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.5;
-			//}
+			//tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / bestFit;
+			if (bestFit > 0.0001) {
+				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.2;
+			}
+			else {
+				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.8;
+			}
+		}
+		
+		return tct == 0.0 ? 1 : tct;
+	}
+	
+	public static double completionTime_extended_static(Bug bug, Entry<Zone, Double> zone, Developer developer, ArrayList<Developer> team) {
+		double x = bug.BZone_Coefficient.get(zone.getKey());
+		double inCommon = Math.min(bug.BZone_Coefficient.get(zone.getKey()), developer.getDZone_Coefficient_static().get(zone.getKey()));
+		double tct=0;
+		double bestFit=0.00001;
+		if(inCommon > 0.001) { /*in case developer is already familiar with */
+			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / ((developer.getDZone_Coefficient_static().get(zone.getKey())));
+		}
+		else {
+			for (Developer dev : team) {
+				if (dev.getID() != developer.getID()) {
+					bestFit = bestFit != 0.00001 ? Math.max(bestFit, dev.getDZone_Coefficient_static().get(zone.getKey())) : bestFit;
+				}
+			}
+			
+			//tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / bestFit;
+			if (bestFit > 0.0001) {
+				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.2;
+			}
+			else {
+				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.8;
+			}
 		}
 		
 		return tct == 0.0 ? 1 : tct;

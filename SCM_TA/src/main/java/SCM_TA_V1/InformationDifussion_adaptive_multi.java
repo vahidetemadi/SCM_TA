@@ -37,6 +37,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 	DefaultDirectedGraph<Bug, DefaultEdge> DEP_scheduling;
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
 	ArrayList<Developer> developerTeam=new ArrayList<Developer>();
+	
 	public InformationDifussion_adaptive_multi(){
 		super(GA_Problem_Parameter.setNum_of_Variables(bugs), GA_Problem_Parameter.Num_of_functions_Multi);
 		//this.bugs=bugs;
@@ -103,12 +104,12 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		double totalDiffusedKnowledge = 0.0;
 		int index=0;
 		int index_fillDevTeam=0;
-		GA_Problem_Parameter.tso_adaptive=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
+		GA_Problem_Parameter.tso_adaptive = new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
+		int numOfBugs = DEP_evaluation.vertexSet().size();
 		while(tso.hasNext()){
 			double totalDiffusedOfDevTeam = 0;
 			Bug b = tso.next();
-			double x=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
-			b.startTime_evaluate=x;
+			b.startTime_evaluate = fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone_takeDevTeam=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			
@@ -129,11 +130,10 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				double compeletionTime = 0.0;
 				Entry<Zone, Double> zone_bug = new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
 				int devId = zoneAssignee.get(index).getThird();
-				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
-					if(developer.getKey()==devId)
-						candidate=developer;
+				for(Map.Entry<Integer, Developer> developer : developers.entrySet()){
+					if(developer.getKey() == devId)
+						candidate = developer;
 				}
-				int dID=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
 				//changed to include alpha time in case developer does not have the right knowledge
 				compeletionTime = fitnessCalc.completionTime_extended(b, zone_bug, developers.get(devId), developerTeam);
 				totalExecutionTime += compeletionTime;
@@ -204,8 +204,8 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		totalCost = totalDevCost + totalDelayCost;
 		
 		//just scaled the amount of knowledge diffused
-		double sample = -totalDiffusedKnowledge / solution.getNumberOfVariables();
-		solution.setObjective(0, -totalDiffusedKnowledge / solution.getNumberOfVariables());
+		//solution.setObjective(0, -totalDiffusedKnowledge / solution.getNumberOfVariables());
+		solution.setObjective(0, -totalDiffusedKnowledge / numOfBugs);
 		solution.setObjective(1, totalCost);
 		solution.setAttribute("cost", totalCost);
 		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);

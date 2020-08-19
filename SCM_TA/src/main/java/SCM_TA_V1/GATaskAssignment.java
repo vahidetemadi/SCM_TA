@@ -45,6 +45,7 @@ import main.java.context.Environment_s1;
 import main.java.featureTuning.FeatureInitializationV1;
 import main.java.mainPipeline.Action;
 import main.java.mainPipeline.AdaptiveAssignmentPipline;
+import main.java.mainPipeline.Feedback;
 import main.java.mainPipeline.FinalSolution;
 
 
@@ -341,7 +342,7 @@ public class GATaskAssignment {
 		}
 		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
-		GA_Problem_Parameter.population=200;
+		GA_Problem_Parameter.population=100;
 	}
 	
 	public void initializeProblems() {
@@ -440,11 +441,11 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		GA_Problem_Parameter.flag=1;
 		
-		while(GA_static.getNumberOfEvaluations()<200) {
+		while(GA_static.getNumberOfEvaluations() < 5000) {
 			GA_static.step();
 		}
 		
-		result=GA_static.getResult();
+		result = GA_static.getResult();
 		
 		/***those that has been commented in favor of better GA implementation*****
 		* 
@@ -523,7 +524,7 @@ public class GATaskAssignment {
 		Instrumenter instrumenter_adaptive_multi=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(10).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		NondominatedPopulation NDP_adaptive_multi=new Executor().withProblemClass(InformationDifussion_adaptive_multi.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(50000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+				.withMaxEvaluations(5000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 				.withProperty("1x.rate", 0.6).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_adaptive_multi).run();
 		
 		sb.append("ID , Cost");
@@ -635,9 +636,9 @@ public class GATaskAssignment {
   		int[] feedback = roundnum > 2 ?
   				AdaptiveAssignmentPipline.getInstance().getFeedback(roundnum, totalsOverTime)
   				: new int[]{0, 0};
-    	Boolean response = roundnum > 2 ? 
+    	Feedback response = roundnum > 2 ? 
     			AdaptiveAssignmentPipline.getInstance().getResponse(feedback):
-    			true;
+    			Feedback.INACTION;
 	    
 	    //call the update function
 	    AdaptiveAssignmentPipline.getInstance().updateProbs(response, action2);
