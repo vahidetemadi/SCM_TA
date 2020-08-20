@@ -4,6 +4,7 @@
 package main.java.mainPipeline;
 
 import static org.hamcrest.CoreMatchers.nullValue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -190,7 +191,7 @@ public class AdaptiveAssignmentPipline {
 			//GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
 			GATaskAssignment.run(datasetName, i, 0);
 			//GATaskAssignment.run(datasetName, i, 5);
-			if(i==Environment_s1.numberOfFiles/2)
+			if(i == Environment_s1.numberOfFiles / 2)
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
@@ -227,8 +228,9 @@ public class AdaptiveAssignmentPipline {
 			
 				if (roundNum / FeatureInitializationV1.windowSize == 0) {
 					Environment_s1.nodeAttachment(FeatureInitializationV1.churnRate); 		/**insert the num of devs by hand**/
-					//Environment_s1.nodeDeletion();
-					Environment_s1.nodeDeletion(FeatureInitializationV1.churnRate);
+					
+					//true as the second argument indicates random deletion
+					Environment_s1.nodeDeletion(FeatureInitializationV1.churnRate, true);
 					//Environment_s1.updateDevNetwork();
 				}
 				
@@ -583,8 +585,6 @@ public class AdaptiveAssignmentPipline {
 	
 	public static FinalSolution<Solution, Double, Double> getMinCost_solution(List<FinalSolution<Solution, Double, Double>> ParetoFront_normalized) {
 		double minCost = 1;
-		if (ParetoFront_normalized == null)
-			System.out.println();
 		FinalSolution<Solution, Double, Double> s = null;
 		for (FinalSolution<Solution, Double, Double> f:ParetoFront_normalized) {
 			if (f.getCost() < minCost) {
@@ -597,8 +597,7 @@ public class AdaptiveAssignmentPipline {
 	
 	public static double getMaxDiffusion(List<FinalSolution<Solution, Double, Double>> ParetoFront_normalized) {
 		double maxD = 0;
-		if (ParetoFront_normalized == null)
-			System.out.println();
+		assertFalse("The normalized paretofront is empty!", ParetoFront_normalized == null);
 		for (FinalSolution<Solution, Double, Double> f:ParetoFront_normalized) {
 			if (f.getCost() > maxD)
 				maxD = f.getDiffusion();

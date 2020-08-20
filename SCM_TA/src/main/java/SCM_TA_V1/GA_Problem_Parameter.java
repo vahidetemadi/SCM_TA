@@ -622,20 +622,21 @@ public class GA_Problem_Parameter {
 	}
 
 	/**
-	 * The method provides sublists of bugs intended to get assingned in a batch
+	 * The method provides sublists of bugs intended to get assigned in a batch
 	 * manner
 	 * 
 	 * @param bugList holds the list
 	 */
 	public static void splitBugList(HashMap<Integer, Bug> bugList) {
 		int i = 0;
+		int numOfBugs = 20;
 		HashMap<Integer, Bug> b = null;
 		for (Map.Entry<Integer, Bug> bug : bugList.entrySet()) {
 			if (i == 0) {
 				b = new HashMap<Integer, Bug>();
 				listOfSubBugs.add(b);
 				i++;
-			} else if (i > 0 && i < 11) {
+			} else if (i > 0 && i <= numOfBugs) {		
 				b.put(bug.getKey(), bug.getValue());
 				i++;
 			} else

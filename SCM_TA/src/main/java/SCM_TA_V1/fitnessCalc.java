@@ -11,6 +11,8 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
 import main.java.context.Environment_s1;
+import main.java.mainPipeline.Approach;
+import main.java.mainPipeline.Response;
 
 public class fitnessCalc {
 
@@ -50,7 +52,8 @@ public class fitnessCalc {
 		double tct=0;
 		double bestFit=0.00001;
 		if(inCommon > 0.001) { /*in case developer is already familiar with */
-			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / ((developer.getDZone_Coefficient().get(zone.getKey())));
+			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+					/ ((developer.getDZone_Coefficient().get(zone.getKey())));
 		}
 		else {
 			for (Developer dev : team) {
@@ -61,10 +64,12 @@ public class fitnessCalc {
 			
 			//tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / bestFit;
 			if (bestFit > 0.0001) {
-				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.2;
+				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * 1.2;
 			}
 			else {
-				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.8;
+				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * 1.8;
 			}
 		}
 		
@@ -77,7 +82,8 @@ public class fitnessCalc {
 		double tct=0;
 		double bestFit=0.00001;
 		if(inCommon > 0.001) { /*in case developer is already familiar with */
-			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / ((developer.getDZone_Coefficient_static().get(zone.getKey())));
+			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+					/ ((developer.getDZone_Coefficient_static().get(zone.getKey())));
 		}
 		else {
 			for (Developer dev : team) {
@@ -88,10 +94,12 @@ public class fitnessCalc {
 			
 			//tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / bestFit;
 			if (bestFit > 0.0001) {
-				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.2;
+				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+						/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * 1.2;
 			}
 			else {
-				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) * 1.8;
+				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+						/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * 1.8;
 			}
 		}
 		
@@ -128,19 +136,18 @@ public class fitnessCalc {
 		 return 1/(DDSim_intersection/DDSim_union);
 	 }
   
-	public static double getID(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
-		 
-		double ID=0.0;
-		double deltaID=0.0;
-		deltaID=getZoneDiff(candidate, b, z, "static");
-		if(deltaID>0)
-			ID=deltaID*1;
+	public static double getID(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z, Approach approach) {
+		double ID = 0.0;
+		double deltaID = 0.0;
+		deltaID = getZoneDiff(candidate, b, z, approach);
+		if(deltaID > 0)
+			ID = deltaID * 1;
 		return ID;
 	 }
 	 
 	public static double getID_scaled(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
 		double totalFlow=0;
-		for(Developer d:developers) {
+		for(Developer d : developers) {
 			if(d.getID() != candidate.getID()) {
 				totalFlow += Math.abs(candidate.getDZone_Coefficient().get(z) - d.getDZone_Coefficient().get(z));
 			}
@@ -151,11 +158,11 @@ public class fitnessCalc {
 	}
 	
 	public static double getID_scaled_adaptive(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
-		double flowInfo=0;
-		double diff = Math.abs(getZoneDiff(candidate, b, z, "adaptive"));
+		double flowInfo = 0;
+		double diff = Math.abs(getZoneDiff(candidate, b, z, Approach.ADAPTIVE));
 		double maxInFlow = 0 ;
 		
-		for(Developer d:developers) {
+		for(Developer d : developers) {
 			if(d.getID() != candidate.getID()) {
 				if (d.getDZone_Coefficient().get(z) > maxInFlow)
 					maxInFlow = d.getDZone_Coefficient().get(z);
@@ -167,7 +174,7 @@ public class fitnessCalc {
 	
 	public static double getID_scaled_static(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
 		double flowInfo=0;
-		double diff = Math.abs(getZoneDiff(candidate, b, z, "static"));
+		double diff = Math.abs(getZoneDiff(candidate, b, z, Approach.STATIC));
 		double maxInFlow = 0 ;
 		
 		for(Developer d:developers) {
@@ -181,22 +188,22 @@ public class fitnessCalc {
 		return flowInfo;
 	}
 	
-	public static double getZoneDiff (Developer d1,Bug b2, Zone z1, String approach){
+	public static double getZoneDiff(Developer d1, Bug b2, Zone z1, Approach approach){
 		 double DBDiff = 0.0;
 		 //for (Entry<Zone, Double>  zone:b2.BZone_Coefficient.entrySet())
 		 switch (approach) {
-			case "static":
-				if(d1.DZone_Coefficient.containsKey(z1)) {
+			case STATIC:
+				if(d1.DZone_Coefficient_static.containsKey(z1)) {
 					 double fromBug = b2.BZone_Coefficient.get(z1);
 					 double fromDev = d1.DZone_Coefficient_static.get(z1);
 					 DBDiff = fromBug - fromDev;
 				 }
 				break;
-			case "adaptive":
+			case ADAPTIVE:
 				if(d1.DZone_Coefficient.containsKey(z1)) {
 					 double fromBug = b2.BZone_Coefficient.get(z1);
 					 double fromDev = d1.DZone_Coefficient.get(z1);
-					 DBDiff = fromBug-fromDev;
+					 DBDiff = fromBug - fromDev;
 				 }
 				break;
 			default:

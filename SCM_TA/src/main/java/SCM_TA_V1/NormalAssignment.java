@@ -14,6 +14,7 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 
 import main.java.context.Environment_s1;
+import main.java.mainPipeline.Approach;
 
 public class NormalAssignment extends AbstractProblem {
 	
@@ -144,7 +145,7 @@ public class NormalAssignment extends AbstractProblem {
 						sourceDevId=dev.getKey();
 					}
 				}
-				totalDiffusedOfDevTeam=fitnessCalc.getID(developerTeam ,candidate.getValue(), b, zone_bug.getKey());
+				totalDiffusedOfDevTeam=fitnessCalc.getID(developerTeam ,candidate.getValue(), b, zone_bug.getKey(), Approach.STATIC);
 				//compute the extra cost for information diffusion==> used to compute the cost posed due to
 				//information diffusion 
 			

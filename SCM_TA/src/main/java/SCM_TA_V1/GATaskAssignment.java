@@ -1,5 +1,7 @@
 package main.java.SCM_TA_V1;
 
+import static org.junit.Assert.assertNotNull;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -45,6 +47,7 @@ import main.java.context.Environment_s1;
 import main.java.featureTuning.FeatureInitializationV1;
 import main.java.mainPipeline.Action;
 import main.java.mainPipeline.AdaptiveAssignmentPipline;
+import main.java.mainPipeline.Approach;
 import main.java.mainPipeline.Feedback;
 import main.java.mainPipeline.FinalSolution;
 
@@ -75,36 +78,34 @@ public class GATaskAssignment {
 	NondominatedPopulation result;
 	FileHandler file_logger=null;
 	Logger logger=null;
-	static double initalLearningRate=0.05;
+	static double initalLearningRate=0.10;
 	StringBuilder sb=new StringBuilder();
 	
 	private GATaskAssignment() {
 		selection=new TournamentSelection(2, 
 				new ParetoDominanceComparator()); 
-		variation = new GAVariation(
-	                new SBX(15.0, 1.0),
-	                new PM(20.0, 0.5));
-		comparator=new LinearDominanceComparator();
+		variation = new GAVariation(new SBX(15.0, 1.0), new PM(20.0, 0.5));
+		comparator = new LinearDominanceComparator();
 		try {
-			file_logger=new FileHandler(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"+File.separator+"solutions.txt");
+			file_logger = new FileHandler(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"+File.separator+"solutions.txt");
 		} catch (SecurityException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		logger=Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
+		logger = Logger.getLogger(Logger.GLOBAL_LOGGER_NAME);
 		logger.addHandler(file_logger);
-		SimpleFormatter sf=new SimpleFormatter();
+		SimpleFormatter sf = new SimpleFormatter();
 		file_logger.setFormatter(sf);
 		logger.setUseParentHandlers(false);
 	}
 	
 	public static GATaskAssignment getInstance() {
-		if(instance==null)
-			instance=new GATaskAssignment();
+		if(instance == null)
+			instance = new GATaskAssignment();
 		return instance;
 	}
 	
-	public static void run( String datasetName, int fileNumber, int portion) throws NoSuchElementException, IOException, URISyntaxException{	
+	public static void run(String datasetName, int fileNumber, int portion) throws NoSuchElementException, IOException, URISyntaxException{	
 		
 		/*int numOfFiles=0;
 			if(dataset_name=="Platform")
@@ -118,7 +119,7 @@ public class GATaskAssignment {
 	
 	public static void runExperiment(int fileNumber,String datasetName, int portion) throws NoSuchElementException, IOException, URISyntaxException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=1;runNum<=1;runNum++){
+		for(int runNum = 1; runNum <= 1; runNum++){
 			//developers.clear();
 			bugs.clear();
 			starting(fileNumber, runNum, datasetName, portion);
@@ -354,7 +355,7 @@ public class GATaskAssignment {
 		inintialization_static=new RandomInitialization(static_assignment, GA_Problem_Parameter.population);
 		GA_normal=new GeneticAlgorithm(normal_assginment, comparator, inintialization_normal, selection, variation);
 		GA_ID=new GeneticAlgorithm(ID_assignment, comparator, inintialization_ID, selection, variation);
-		GA_static=new GeneticAlgorithm(static_assignment, comparator, inintialization_static, selection, variation);
+		GA_static = new GeneticAlgorithm(static_assignment, comparator, inintialization_static, selection, variation);
 	}
 	
 	public static void setBugDependencies(String datasetName, HashMap<Integer,Bug> bugList) throws FileNotFoundException{
@@ -435,11 +436,11 @@ public class GATaskAssignment {
 		roundnum = fileNum;
 		logger.log(Level.INFO, "Round Num: "+fileNum);
 		//static part
-		int c=0;
+		int c = 0;
 		
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
-		GA_Problem_Parameter.flag=1;
+		GA_Problem_Parameter.flag = 1;
 		
 		while(GA_static.getNumberOfEvaluations() < 5000) {
 			GA_static.step();
@@ -458,16 +459,16 @@ public class GATaskAssignment {
 		//cost based///
 		////
 		Solution staticSolution=null;
-		for(Solution s:result)
-			staticSolution=s;
+		for(Solution s : result)
+			staticSolution = s;
 		
 		//write as the logs to the file
-		int[] STSolution=new int[staticSolution.getNumberOfVariables()];
-		for(int i=0; i<staticSolution.getNumberOfVariables(); i++) {
-			STSolution[i]=GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(i)));
+		int[] STSolution = new int[staticSolution.getNumberOfVariables()];
+		for(int i = 0; i < staticSolution.getNumberOfVariables(); i++) {
+			STSolution[i] = GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(i)));
 		}
-		logger.log(Level.INFO, "ST solution ,"+ Arrays.toString(STSolution));
-		c=0;
+		logger.log(Level.INFO, "ST solution ," + Arrays.toString(STSolution));
+		c = 0;
 		
 		while(GA_Problem_Parameter.tso_static.hasNext()){
 			Bug b=GA_Problem_Parameter.tso_static.next();
@@ -497,7 +498,7 @@ public class GATaskAssignment {
 		totals.put("TCT_static", totals.get("TCT_static")+ staticSolution.getObjective(0));
 		totals.put("TID_static", totals.get("TID_static")+ (Double)staticSolution.getAttribute("diffusedKnowledge"));
 		
-		if(totals.get("TCT_static")==null || totals.get("TCT_static")==0.0)
+		if(totals.get("TCT_static") == null || totals.get("TCT_static") == 0.0)
 			System.out.println("test");
 		totalsOverTime.get("CoT_static").add(totals.get("TCT_static"));
 		totalsOverTime.get("IDoT_static").add(totals.get("TID_static"));
@@ -510,32 +511,36 @@ public class GATaskAssignment {
 /************************************************starting the self-adaptive part***************************/
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
-		GA_Problem_Parameter.flag=1;
+		GA_Problem_Parameter.flag = 1;
 		
 		String path= null;
 		switch (FeatureInitializationV1.datasetName) {
 			case "JDT":
-				path = System.getProperty("user.dir")+File.separator+"PS"+File.separator+FeatureInitializationV1.datasetName+File.separator+"JDTMilestone3.1.1"+".ps";
+				path = System.getProperty("user.dir") + File.separator + "PS" + File.separator + FeatureInitializationV1.datasetName 
+				+ File.separator+"JDTMilestone3.1.1" + ".ps";
 				break;
 			case "Platform":
-				path = System.getProperty("user.dir")+File.separator+"PS"+File.separator+FeatureInitializationV1.datasetName+File.separator+"PlatformMilestone3.1"+".ps";
+				path = System.getProperty("user.dir") + File.separator + "PS" + File.separator + FeatureInitializationV1.datasetName 
+				+ File.separator + "PlatformMilestone3.0" + ".ps";
 				break;	
 		}
 		Instrumenter instrumenter_adaptive_multi=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(10).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		NondominatedPopulation NDP_adaptive_multi=new Executor().withProblemClass(InformationDifussion_adaptive_multi.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(5000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-				.withProperty("1x.rate", 0.6).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_adaptive_multi).run();
+				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+				.withProperty("1x.rate", 0.5).withProperty("um.rate", 0.1).withInstrumenter(instrumenter_adaptive_multi).run();
+		
 		
 		sb.append("ID , Cost");
 		sb.setLength(0);
 		for(Solution s:NDP_adaptive_multi){
-			   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
-			   sb.append("\n");
+			int temp = s.getNumberOfVariables();
+			sb.append(s.getObjective(0) + "," + s.getObjective(1));
+			sb.append("\n");
 	    }
 		
 		File file=new File(System.getProperty("user.dir") + File.separator + "paretoFronts" + File.separator + FeatureInitializationV1.datasetName 
-				+ File.separator+ roundnum + File.separator + runNum+".csv");
+				+ File.separator + roundnum + File.separator + runNum + ".csv");
 		file.getParentFile().mkdirs();	
 		PrintWriter pw=new PrintWriter(file);
 	    pw.write(sb.toString());
@@ -576,9 +581,6 @@ public class GATaskAssignment {
 	    
 	    
 	    Solution adaptiveSolution = null;
-	    if (ParetoFront_normalized.size() < 2) {
-	    	System.out.println();
-	    }
 	    int nums = 0;
 	    switch (action2) {
 	    	case COST:
@@ -602,7 +604,7 @@ public class GATaskAssignment {
 				}
 	    		break;
 	    }
-	    int[] temp=EncodingUtils.getInt(adaptiveSolution);
+	    assertNotNull(EncodingUtils.getInt(adaptiveSolution));
 	    
 	    c=0;
 	    while(GA_Problem_Parameter.tso_adaptive.hasNext()){
@@ -610,7 +612,7 @@ public class GATaskAssignment {
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
 				Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(adaptiveSolution.getVariable(c))));
-				updateDevProfile_static(b, tso_Zone.next(), d);
+				updateDevProfile_adaptive(b, tso_Zone.next(), d);
 				c++;
 			}
 		}
@@ -751,11 +753,7 @@ public class GATaskAssignment {
 	//update the profile of developers
 	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
 		//updating dev profile using a particular learning rate
-		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z)* initalLearningRate);
-		
-		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + b.BZone_Coefficient.get(z)/d.getDZone_Coefficient().size());
-		//d.getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
-		//GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient().put(z, Math.max(d.getDZone_Coefficient().get(z), b.BZone_Coefficient.get(z)));
+		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z, Approach.ADAPTIVE) * initalLearningRate);
 		
 	}
 	
@@ -766,23 +764,8 @@ public class GATaskAssignment {
 	 * @param d
 	 */
 	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
-		//former learnig process by dev
-		/*
-		 * double rand=new Random().nextDouble(); if(rand<.5) {
-		 * d.getDZone_Coefficient_static().put(z,
-		 * d.getDZone_Coefficient_static().get(z)+
-		 * b.BZone_Coefficient.get(z)/d.getDZone_Coefficient_static().size()); } else {
-		 * d.getDZone_Coefficient_static().put(z,
-		 * Math.max(d.getDZone_Coefficient_static().get(z),
-		 * b.BZone_Coefficient.get(z))); }
-		 */
 		
-		//using learning rate during developer mentoring
-		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z) * initalLearningRate);
-		
-		
-		//d.getDZone_Coefficient_static().put(z, Math.max(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
-		//GA_Problem_Parameter.developers_all.get(d.getID()).getDZone_Coefficient_static().put(z, Math.min(d.getDZone_Coefficient_static().get(z), b.BZone_Coefficient.get(z)));
+		d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z, Approach.STATIC) * initalLearningRate);
 	}
 
 }

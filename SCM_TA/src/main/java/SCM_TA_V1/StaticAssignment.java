@@ -2,6 +2,7 @@ package main.java.SCM_TA_V1;
 
 import java.util.AbstractMap;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,7 +73,9 @@ public class StaticAssignment extends AbstractProblem {
 		@SuppressWarnings("unchecked")
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		//reset all the associate time for the bugs and their zones
-		GA_Problem_Parameter.resetParameters(DEP_evaluation,solution, developers);
+		GA_Problem_Parameter.resetParameters(DEP_evaluation, solution, developers);
+		zoneAssignee.clear();
+		GA_Problem_Parameter.assignZoneDev(zoneAssignee, Arrays.asList(GA_Problem_Parameter.bugs) , solution);
 		//assign associate Dev to zone
 		//GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
 		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
@@ -116,7 +119,8 @@ public class StaticAssignment extends AbstractProblem {
 					int[] g=EncodingUtils.getInt(solution);
 					System.out.println(g);
 				}*/
-				int dID = GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
+				//int dID = GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)));
+				int dID = zoneAssignee.get(index).getThird();
 				compeletionTime = fitnessCalc.completionTime_extended_static(b, zone_bug, developers.get(dID), developerTeam);
 				
 				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){

@@ -220,27 +220,32 @@ public class Environment_s1 extends Environment {
 		}
 	}
 	
-	public static void nodeDeletion(int numOfDevs) throws FileNotFoundException{	
+	public static void nodeDeletion(int numOfDevs, Boolean random) throws FileNotFoundException{	
 		//is done with the a rate of "r"
 		
 		//create a file for record devs who are removed
-		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
-				+File.separator+ "devs_deleted.txt");
+		File file = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
+				+ File.separator + "devs_deleted.txt");
 		file.getParentFile().mkdirs();
-		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
+		PrintWriter pw = new PrintWriter(new FileOutputStream(file, true));
 		//report total changed
-		totalChanged=0;
+		totalChanged = 0;
 		//sort devs prior to removing
-		ArrayList<Integer> listOfDevs=rankDevsByProfile(GA_Problem_Parameter.devListId);
+		ArrayList<Integer> listOfDevs = rankDevsByProfile(GA_Problem_Parameter.devListId);
 		Collections.reverse(listOfDevs);
+		
+		//shuffle in case random flag is true
+		if (random) 
+			Collections.shuffle(listOfDevs);
+		
 		for(Integer devID:listOfDevs){
 			//ignore those who added recently
 			if(addedRecently.contains(devID))
 				continue;
 			
-			if( numOfDevs>0  && GA_Problem_Parameter.devListId.size()>GA_Problem_Parameter.earlyDevListSize){
+			if( numOfDevs > 0  && GA_Problem_Parameter.devListId.size() > GA_Problem_Parameter.earlyDevListSize){
 				numOfDevs--;
-				pw.append(devID+"\n");
+				pw.append(devID + "\n");
 				devNetwork.removeVertex(getVertex(devID));
 				GA_Problem_Parameter.developers.remove(devID);
 				GA_Problem_Parameter.devListId.remove(devID);
