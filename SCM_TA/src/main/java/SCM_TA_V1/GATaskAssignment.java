@@ -84,7 +84,7 @@ public class GATaskAssignment {
 	private GATaskAssignment() {
 		selection=new TournamentSelection(2, 
 				new ParetoDominanceComparator()); 
-		variation = new GAVariation(new SBX(15.0, 1.0), new PM(20.0, 0.5));
+		variation = new GAVariation(new SBX(50, 1), new PM(10.0, 0.5));
 		comparator = new LinearDominanceComparator();
 		try {
 			file_logger = new FileHandler(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"+File.separator+"solutions.txt");
@@ -461,7 +461,7 @@ public class GATaskAssignment {
 		Solution staticSolution=null;
 		for(Solution s : result)
 			staticSolution = s;
-		
+		int temp2 = staticSolution.getNumberOfVariables();
 		//write as the logs to the file
 		int[] STSolution = new int[staticSolution.getNumberOfVariables()];
 		for(int i = 0; i < staticSolution.getNumberOfVariables(); i++) {

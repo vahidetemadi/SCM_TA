@@ -193,7 +193,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 			//assertFalse("No subbugs!", totalBugsZonesInfo == 0.0);
 			totalStartTime = Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime = Math.max(totalEndTime, b.endTime_evaluate);
-			totalDelayTime += b.endTime_evaluate-(2.5*totalExecutionTime + totalExecutionTime);
+			totalDelayTime += b.endTime_evaluate - (2.5 * totalExecutionTime + totalExecutionTime);
 			if(totalDelayTime > 0)
 				totalDelayCost += totalDelayTime * GA_Problem_Parameter.priorities.get(b.priority);
 		}

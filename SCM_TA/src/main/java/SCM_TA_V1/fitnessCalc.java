@@ -69,18 +69,19 @@ public class fitnessCalc {
 			}
 			else {
 				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * 1.8;
+						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * 3.8;
 			}
 		}
 		
-		return tct == 0.0 ? 1 : tct;
+		//return tct == 0.0 ? 1 : tct;
+		return tct;
 	}
 	
 	public static double completionTime_extended_static(Bug bug, Entry<Zone, Double> zone, Developer developer, ArrayList<Developer> team) {
 		double x = bug.BZone_Coefficient.get(zone.getKey());
 		double inCommon = Math.min(bug.BZone_Coefficient.get(zone.getKey()), developer.getDZone_Coefficient_static().get(zone.getKey()));
-		double tct=0;
-		double bestFit=0.00001;
+		double tct = 0;
+		double bestFit = 0.00001;
 		if(inCommon > 0.001) { /*in case developer is already familiar with */
 			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
 					/ ((developer.getDZone_Coefficient_static().get(zone.getKey())));
@@ -99,11 +100,12 @@ public class fitnessCalc {
 			}
 			else {
 				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-						/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * 1.8;
+						/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * 3.8;
 			}
 		}
 		
-		return tct == 0.0 ? 1 : tct;
+		//return tct == 0.0 ? 1 : tct;
+		return tct;
 	}
 	
 	public static double getDelayTime(Bug bug, Entry<Zone, Double> zone, Developer developer){
