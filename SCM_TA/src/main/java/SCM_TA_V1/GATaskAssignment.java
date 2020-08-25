@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Queue;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.logging.*;
 import java.util.stream.Collectors;
@@ -80,7 +81,7 @@ public class GATaskAssignment {
 	Logger logger=null;
 	static double initalLearningRate=0.10;
 	StringBuilder sb=new StringBuilder();
-	
+	static Random random = new Random();
 	private GATaskAssignment() {
 		selection=new TournamentSelection(2, 
 				new ParetoDominanceComparator()); 
@@ -287,7 +288,8 @@ public class GATaskAssignment {
 						String[] items=sc1.nextLine().split("\t",-1);
 						for(int k=0;k<items.length;k++){
 							if(j>2 && Double.parseDouble(items[k])!=0){
-								bug.BZone_Coefficient.put(project.zones.get(j-2),Double.parseDouble(items[k]));
+								//bug.BZone_Coefficient.put(project.zones.get(j-2), Double.parseDouble(items[k]));
+								bug.BZone_Coefficient.put(project.zones.get(j-2), random.nextDouble());
 							}
 							else if(j==0){
 								bug=new Bug();
