@@ -209,7 +209,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		solution.setObjective(0, -totalDiffusedKnowledge / numOfBugs);
 		solution.setObjective(1, totalCost);
 		solution.setAttribute("cost", totalCost);
-		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);
+		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge / numOfBugs);
 		solution.setAttribute("time", totalTime);
 	}
 

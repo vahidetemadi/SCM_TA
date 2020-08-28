@@ -71,27 +71,27 @@ public class StaticAssignment extends AbstractProblem {
 	@Override 	
 	public void evaluate(Solution solution){
 		@SuppressWarnings("unchecked")
-		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation=(DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
+		DirectedAcyclicGraph<Bug, DefaultEdge> DEP_evaluation = (DirectedAcyclicGraph<Bug, DefaultEdge>) DEP.clone();
 		//reset all the associate time for the bugs and their zones
 		GA_Problem_Parameter.resetParameters(DEP_evaluation, solution, developers);
 		zoneAssignee.clear();
 		GA_Problem_Parameter.assignZoneDev(zoneAssignee, Arrays.asList(GA_Problem_Parameter.bugs) , solution);
 		//assign associate Dev to zone
 		//GA_Problem_Parameter.assignZoneDev(zoneAssignee,GA_Problem_Parameter.tasks, solution );
-		TopologicalOrderIterator<Bug, DefaultEdge> tso=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
-		double totalTime=0.0;
-		double totalCost=0.0;
-		double totalDevCost=0.0;
-		double totalDelayTime=0.0;
-		double totalDelayCost=0.0;
-		double totalStartTime=0.0;
-		double totalEndTime=0.0;
-		double totalExecutionTime=0.0;
-		double totalDiffusedKnowledge=0.0;
+		TopologicalOrderIterator<Bug, DefaultEdge> tso = new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
+		double totalTime = 0.0;
+		double totalCost = 0.0;
+		double totalDevCost = 0.0;
+		double totalDelayTime = 0.0;
+		double totalDelayCost = 0.0;
+		double totalStartTime = 0.0;
+		double totalEndTime = 0.0;
+		double totalExecutionTime = 0.0;
+		double totalDiffusedKnowledge = 0.0;
 		double totalBugsZonesInfo = 0.0;
-		int index=0;
-		int index_fillDevTeam=0;
-		GA_Problem_Parameter.tso_static=new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
+		int index = 0;
+		int index_fillDevTeam = 0;
+		GA_Problem_Parameter.tso_static = new TopologicalOrderIterator<Bug, DefaultEdge>(DEP_evaluation);
 		int numOfBugs = DEP_evaluation.vertexSet().size();
 		
 		while(tso.hasNext()){
@@ -107,9 +107,10 @@ public class StaticAssignment extends AbstractProblem {
 			
 			while(tso_Zone_takeDevTeam.hasNext()) {
 				tso_Zone_takeDevTeam.next();
-				developerTeam.add(developers.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(solution.getVariable(index)))));
+				developerTeam.add(developers.get(zoneAssignee.get(index_fillDevTeam).getThird()));
 				index_fillDevTeam++;
 			}
+			
 			Map.Entry<Integer, Developer> candidate=null;
 			while(tso_Zone.hasNext()){
 				Zone zone = tso_Zone.next();
@@ -132,10 +133,21 @@ public class StaticAssignment extends AbstractProblem {
 				totalDevCost += compeletionTime * developers.get(dID).hourlyWage;
 				
 				zone.zoneStartTime_evaluate = b.startTime_evaluate + fitnessCalc.getZoneStartTime(developers.get(dID), zone.DZ);
-				zone.zoneEndTime_evaluate = zone.zoneStartTime_evaluate+compeletionTime;
-				developers.get(dID).developerNextAvailableHour = Math.max(developers.get(dID).developerNextAvailableHour,
-						zone.zoneEndTime_evaluate);
+				/*
+				 * zone.zoneEndTime_evaluate = zone.zoneStartTime_evaluate+compeletionTime;
+				 * developers.get(dID).developerNextAvailableHour =
+				 * Math.max(developers.get(dID).developerNextAvailableHour,
+				 * zone.zoneEndTime_evaluate); b.endTime_evaluate = Math.max(b.endTime_evaluate,
+				 * zone.zoneEndTime_evaluate);
+				 */
+				
+				zone.zoneStartTime_evaluate = b.startTime_evaluate 
+						+ fitnessCalc.getZoneStartTime(developers.get(zoneAssignee.get(index).getThird()), zone.DZ);
+				zone.zoneEndTime_evaluate = zone.zoneStartTime_evaluate + compeletionTime;
+				developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour 
+						= Math.max(developers.get(zoneAssignee.get(index).getThird()).developerNextAvailableHour, zone.zoneEndTime_evaluate);
 				b.endTime_evaluate = Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
+				
 				index++;
 				
 				double emissionTime = 10000000;

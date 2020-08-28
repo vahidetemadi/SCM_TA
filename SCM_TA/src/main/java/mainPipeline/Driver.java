@@ -150,13 +150,13 @@ public class Driver {
 		File file_actionProbOverTime = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
 				+ File.separator + datasetName+"_probOverTime" + ".csv");
 		File file_developersProfile_static, file_developersProfile_adaptive;
-		PrintWriter pw_devProfile_static, pw_devProfile_adaptive, pw_actinProbOverTime;
+		PrintWriter pw_devProfile_static, pw_devProfile_adaptive;
 		HashMap<Integer, Developer> devList;
 	
 		file.getParentFile().mkdir(); 				/* make missed dirs*/
 		PrintWriter printWriter=new PrintWriter(file);
 		PrintWriter printWriter_probOverTime=new PrintWriter(file_actionProbOverTime);
-		CSVWriter csvWriter=new CSVWriter(printWriter);
+		CSVWriter csvWriter = new CSVWriter(printWriter);
 		//CSVWriter csvWriter_probOverTime=new CSVWriter(printWriter_probOverTime);
 		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive",
 					"SoT", "costPerRound_static" , "costPerRound_adaptive", "idPerRound_static", "idPerRound_adaptive", "EoT_static", "EoT_adaptive", "ExoTperRound_adaptive",
@@ -187,10 +187,6 @@ public class Driver {
 												((ArrayList<Double>)tempSolution.getAttribute("ExoTperRound_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("actionProbVector")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString()
 												});
-			
-			//log probs of actions over time
-			printWriter_probOverTime.write(FeatureInitializationV1.actionProbOverRound);
-			
 			//log devs status over time
 			int devCount=0;
 			for(int j=0; j<GA_Problem_Parameter.numberOfTimesMakingProfileComparison; j++) {
@@ -264,6 +260,9 @@ public class Driver {
 			System.out.println(Arrays.deepToString(FeatureInitializationV1.getInstance().getTm().get((EncodingUtils.getInt(tempSolution))[4])));
 			
 		}
+		
+		//log probs of actions over time
+		printWriter_probOverTime.write(FeatureInitializationV1.actionProbOverRound);
 		
 		//logging the end of running
 		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(Level.INFO, "Just finished the sample run");

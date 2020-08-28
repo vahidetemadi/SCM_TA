@@ -79,12 +79,11 @@ public class GATaskAssignment {
 	NondominatedPopulation result;
 	FileHandler file_logger=null;
 	Logger logger=null;
-	static double initalLearningRate=0.10;
-	StringBuilder sb=new StringBuilder();
+	static double initalLearningRate = 0.10;
+	StringBuilder sb = new StringBuilder();
 	static Random random = new Random();
 	private GATaskAssignment() {
-		selection=new TournamentSelection(2, 
-				new ParetoDominanceComparator()); 
+		selection = new TournamentSelection(new ParetoDominanceComparator()); 
 		variation = new GAVariation(new SBX(50, 1), new PM(10.0, 0.5));
 		comparator = new LinearDominanceComparator();
 		try {
@@ -354,7 +353,7 @@ public class GATaskAssignment {
 		static_assignment=new StaticAssignment();
 		inintialization_normal = new RandomInitialization(normal_assginment, GA_Problem_Parameter.population);
 		inintialization_ID=new RandomInitialization(ID_assignment, GA_Problem_Parameter.population);
-		inintialization_static=new RandomInitialization(static_assignment, GA_Problem_Parameter.population);
+		inintialization_static = new RandomInitialization(static_assignment, GA_Problem_Parameter.population);
 		GA_normal=new GeneticAlgorithm(normal_assginment, comparator, inintialization_normal, selection, variation);
 		GA_ID=new GeneticAlgorithm(ID_assignment, comparator, inintialization_ID, selection, variation);
 		GA_static = new GeneticAlgorithm(static_assignment, comparator, inintialization_static, selection, variation);
@@ -437,14 +436,14 @@ public class GATaskAssignment {
 	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime) throws IOException{		
 		roundnum = fileNum;
 		logger.log(Level.INFO, "Round Num: "+fileNum);
-		//static part
-		int c = 0;
+		int c;
 		
+		/************************************************starting the static part***************************/
 		GA_Problem_Parameter.setArrivalTasks();
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		GA_Problem_Parameter.flag = 1;
 		
-		while(GA_static.getNumberOfEvaluations() < 5000) {
+		while(GA_static.getNumberOfEvaluations() < 10000) {
 			GA_static.step();
 		}
 		
@@ -460,41 +459,28 @@ public class GATaskAssignment {
 		
 		//cost based///
 		////
-		Solution staticSolution=null;
+		Solution staticSolution = null;
 		for(Solution s : result)
 			staticSolution = s;
-		int temp2 = staticSolution.getNumberOfVariables();
+		
 		//write as the logs to the file
 		int[] STSolution = new int[staticSolution.getNumberOfVariables()];
 		for(int i = 0; i < staticSolution.getNumberOfVariables(); i++) {
 			STSolution[i] = GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(i)));
 		}
 		logger.log(Level.INFO, "ST solution ," + Arrays.toString(STSolution));
+		
 		c = 0;
 		
 		while(GA_Problem_Parameter.tso_static.hasNext()){
 			Bug b=GA_Problem_Parameter.tso_static.next();
-			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone = new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
-				Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(c))));
+				Developer d = GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(staticSolution.getVariable(c))));
 				updateDevProfile_static(b, tso_Zone.next(), d);
 				c++;
 			}
 		}
-		
-		//report the cost
-		/*System.out.println("knowlwdge and cost of cost-based approach (state Dynamic)"+
-			"\n\n	amount of diffused knowledge:"+ NormalSolution.getAttribute("diffusedKnowledge")
-			+"\n	the total cost:" + NormalSolution.getObjective(0));*/
-		
-		//write down the results in yaml format
-		
-		/*
-		* YamlMapping yaml_Dynamic=Yaml.createYamlMappingBuilder() .add("state name",
-		* "Dynamic") .add("ID",
-		* staticSolution.getAttribute("diffusedKnowledge").toString())
-		* .add("Cost",Double.toString(staticSolution.getObjective(0))) .build();
-		*/
 		
 		//add to total cost ove time and total information diffusion
 		totals.put("TCT_static", totals.get("TCT_static")+ staticSolution.getObjective(0));
