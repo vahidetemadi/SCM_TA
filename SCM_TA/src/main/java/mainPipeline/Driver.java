@@ -1,15 +1,13 @@
 package main.java.mainPipeline;
 
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.logging.*;
 import java.util.stream.Collectors;
@@ -33,6 +31,13 @@ import org.moeaframework.core.variable.EncodingUtils;
 
 import com.opencsv.CSVWriter;
 
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.DefaultParser;
+import org.apache.commons.cli.HelpFormatter;
+
 import main.java.SCM_TA_V1.Developer;
 import main.java.SCM_TA_V1.GA_Problem_Parameter;
 import main.java.SCM_TA_V1.Zone;
@@ -45,9 +50,24 @@ import main.java.featureTuning.Stubs;
 public class Driver {
 	static Population finalPopulation;
 	static HashMap<String, Object> allMaps = new HashMap<String, Object>();
+	static Options options;
 	public static void main(String[] args) throws IOException {
-		FeatureInitializationV1.windowSize = Integer.parseInt(args[0]);
-		FeatureInitializationV1.churnRate = Integer.parseInt(args[1]);
+		options = new Options();
+		setOptions(options);
+		// automatically generate the help statement
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp( "SATA", options );
+		//creats commandline parsers
+		CommandLineParser parser = new DefaultParser();
+		CommandLine cmd = null;
+		try {
+			 cmd = parser.parse(options, args);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		//getting options value
+		getOptionsValue(cmd);
 		//get dataset name 
 		System.out.println("Enter the dataset name:");
 		Scanner sc=new Scanner(System.in);
@@ -72,7 +92,7 @@ public class Driver {
 		Stubs.fillChurnsSequence();
 		
 		//Run GA for InitializedfFeatureProblem
-		InitializedFeaturesProblem problem=new InitializedFeaturesProblem(5, 1);
+		InitializedFeaturesProblem problem = new InitializedFeaturesProblem(5, 1);
 
         Selection selection = new TournamentSelection(2, 
         								new ParetoDominanceComparator());
@@ -87,7 +107,7 @@ public class Driver {
         GeneticAlgorithm GA=new GeneticAlgorithm(problem, comparator, initialization, selection, variation);
         
         //run GA single objective
-        while (GA.getNumberOfEvaluations() < 2) {
+        while (GA.getNumberOfEvaluations() < 1) {
             GA.step();
         }
         
@@ -145,6 +165,8 @@ public class Driver {
 	 */
 	@SuppressWarnings("unchecked")
 	public static void writeResutls(Population p, String datasetName, int runNum) throws IOException {
+		int numOf = countLines(FeatureInitializationV1.actionProbOverRound);
+		
 		File file = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
 				+ File.separator + datasetName+"_" + runNum + ".csv");
 		File file_actionProbOverTime = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
@@ -166,8 +188,8 @@ public class Driver {
 		//csvWriter_probOverTime.writeNext(csvFileOutputHeader_probOverTime);		//write the header of the csv file to store prob over time
 		Solution tempSolution;
 		
-		for(int i=0; i<p.size(); i++) {
-			tempSolution=p.get(i);
+		for(int i=0; i< p.size(); i++) {
+			tempSolution = p.get(i);
 			csvWriter.writeNext(new String[] {Arrays.toString(EncodingUtils.getInt(tempSolution)),
 												String.format("%.2f", tempSolution.getObjective(0)),
 												String.format("%.2f", tempSolution.getAttribute("TCT_static")),
@@ -189,7 +211,7 @@ public class Driver {
 												});
 			//log devs status over time
 			int devCount=0;
-			for(int j=0; j<GA_Problem_Parameter.numberOfTimesMakingProfileComparison; j++) {
+			for(int j = 0; j < GA_Problem_Parameter.numberOfTimesMakingProfileComparison; j++) {
 				devCount++;
 				
 				file_developersProfile_static = new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
@@ -198,11 +220,11 @@ public class Driver {
 						+File.separator+ "devProfiles"+ File.separator + i+"_adaptive_"+j+".txt");
 				file_developersProfile_static.getParentFile().mkdir();
 				file_developersProfile_adaptive.getParentFile().mkdir();
-				pw_devProfile_static=new PrintWriter(file_developersProfile_static);
-				pw_devProfile_adaptive=new PrintWriter(file_developersProfile_adaptive);
+				pw_devProfile_static = new PrintWriter(file_developersProfile_static);
+				pw_devProfile_adaptive = new PrintWriter(file_developersProfile_adaptive);
 				
 
-				devList=(HashMap<Integer, Developer>)tempSolution.getAttribute("devsProfile"+j);
+				devList = (HashMap<Integer, Developer>)tempSolution.getAttribute("devsProfile"+j);
 				
 				//create the header for the files
 				pw_devProfile_static.append("Dev#");
@@ -283,5 +305,27 @@ public class Driver {
 		
 	}
 
-
+	private static int countLines(String str){
+	   String[] lines = str.split("\r\n|\r|\n");
+	   return  lines.length;
+	}
+	
+	private static void setOptions(Options option) {
+		options.addOption("ds","developer-size", true, "The number of developers who will leave team at some point of times");
+		options.addOption("ws", "window-size", true, "The window size used to get feedback");
+		options.addOption("p", "population", true, "The population number set for GA-based algo");
+		options.addOption("cr", "crossover-rate", true, "crossover rate");
+		options.addOption("mr","mutaion-rate", true, "mutation rate");
+		options.addOption("nfe","number-of-fitness-evaluation", true, "number of fitness evaluation");
+	}
+	
+	private static void getOptionsValue(CommandLine cmd) {
+		//getting options' value
+		FeatureInitializationV1.windowSize = Integer.parseInt(cmd.getOptionValue("ws"));
+		FeatureInitializationV1.churnRate = Integer.parseInt(cmd.getOptionValue("ds"));
+		GA_Problem_Parameter.population = Integer.parseInt(cmd.getOptionValue("p"));
+		GA_Problem_Parameter.nfe = Integer.parseInt(cmd.getOptionValue("nfe"));
+		GA_Problem_Parameter.um_rate = Double.parseDouble(cmd.getOptionValue("mr"));
+		GA_Problem_Parameter.one_x_rate = Double.parseDouble(cmd.getOptionValue("cr"));
+	}
 }

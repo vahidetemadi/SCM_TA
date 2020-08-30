@@ -29,10 +29,13 @@ public class GA_Problem_Parameter {
 	static int Num_of_Bugs;
 	static int Num_of_Zones;
 	// set GA parameters
-	static int population;
+	public static int population;
+	public static int nfe;
 	static double sbx_rate = 0.0;
+	public static double one_x_rate = 9.0;
 	static double sbx_distribution_index;
 	static double pm_rate = 0.50;
+	public static double um_rate = 0.05;
 	static double pm_distribution_index;
 	static double delayPenaltyCostRate = 0.2;
 	public static int upperDevId;

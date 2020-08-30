@@ -3,7 +3,7 @@
  */
 package main.java.mainPipeline;
 
-import static org.hamcrest.CoreMatchers.nullValue;
+//import static org.hamcrest.CoreMatchers.nullValue;
 import static org.junit.Assert.assertFalse;
 
 import java.io.File;
@@ -57,8 +57,8 @@ public class AdaptiveAssignmentPipline {
  	private static AdaptiveAssignmentPipline adaptivePipeline=null;
 	GATaskAssignment test;
 	
-	static FeatureInitialization featureIni=FeatureInitializationV1.getInstance();
-	static HashMap<String, Integer> listOfConfig=new HashMap<String, Integer>(){
+	static FeatureInitialization featureIni = FeatureInitializationV1.getInstance();
+	static HashMap<String, Integer> listOfConfig = new HashMap<String, Integer>(){
 		{
 			put("numOfDevs", 0);
 			put("numOfBugs",1);
@@ -211,7 +211,7 @@ public class AdaptiveAssignmentPipline {
 				
 				//find most probable state
 				//State state=getState(HMM);
-				State state=getState(Stubs.tempStates.get(roundNum-1));		/** using new version of getting state to test the state**/
+				State state = getState(Stubs.tempStates.get(roundNum-1));		/** using new version of getting state to test the state**/
 				Environment_s1.addToSequenceOfStates(state);
 				
 				//call the assignment algorithm
@@ -240,9 +240,9 @@ public class AdaptiveAssignmentPipline {
 				
 				//developers need to be shuffled
 				GA_Problem_Parameter.setDevelopersIDForRandom();
-				System.out.println("number of developers---devNetwork: "+Environment_s1.devNetwork.vertexSet().size()
-						+"\n*** total changed: "
-						+Environment_s1.totalChanged);
+				System.out.println("number of developers---devNetwork: " + Environment_s1.devNetwork.vertexSet().size()
+						+ "\n*** total changed: "
+						+ Environment_s1.totalChanged);
 				//add to the sequence of observation
 				//the updates behind poisson process
 				//update lambda
@@ -259,18 +259,18 @@ public class AdaptiveAssignmentPipline {
 		
 		//add after assginment profile
 		devsProfileOverTime.put(1, GA_Problem_Parameter.developers_all);
-		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
-				+File.separator+ "devs_added.txt");
+		File file = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator+ "self-adaptive"
+				+ File.separator+ "devs_added.txt");
 		file.getParentFile().mkdirs();
-		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
-		pw.append("------------------"+"\n"+"--------------------"+"\n");
+		PrintWriter pw = new PrintWriter(new FileOutputStream(file, true));
+		pw.append("------------------" + "\n" + "--------------------" + "\n");
 		pw.close();
 		
-		File file2=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
-				+File.separator+ "devs_deleted.txt");
+		File file2 = new File(System.getProperty("user.dir") + File.separator+"results" + File.separator + "self-adaptive"
+				+ File.separator+ "devs_deleted.txt");
 		file.getParentFile().mkdirs();
-		PrintWriter pw2=new PrintWriter(new FileOutputStream(file2, true));
-		pw2.append("------------------"+"\n"+"--------------------"+"\n");
+		PrintWriter pw2 = new PrintWriter(new FileOutputStream(file2, true));
+		pw2.append("------------------" + "\n" + "--------------------" + "\n");
 		pw2.close();
 		ArrayList<Double> laProbs = new ArrayList<Double>(LAProbes.values()); 
 		totalsOverTime.put("actionProbVector", laProbs );

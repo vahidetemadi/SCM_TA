@@ -37,10 +37,12 @@ import org.moeaframework.core.Solution;
 import org.moeaframework.core.Variation;
 import org.moeaframework.core.comparator.ParetoDominanceComparator;
 import org.moeaframework.core.operator.GAVariation;
+import org.moeaframework.core.operator.OnePointCrossover;
 import org.moeaframework.core.operator.RandomInitialization;
 import org.moeaframework.core.operator.TournamentSelection;
 import org.moeaframework.core.operator.real.PM;
 import org.moeaframework.core.operator.real.SBX;
+import org.moeaframework.core.operator.real.UM;
 import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.problem.AbstractProblem;
 
@@ -84,7 +86,8 @@ public class GATaskAssignment {
 	static Random random = new Random();
 	private GATaskAssignment() {
 		selection = new TournamentSelection(new ParetoDominanceComparator()); 
-		variation = new GAVariation(new SBX(50, 1), new PM(10.0, 0.5));
+		variation = new GAVariation(new OnePointCrossover(GA_Problem_Parameter.one_x_rate),
+				new UM(GA_Problem_Parameter.um_rate));
 		comparator = new LinearDominanceComparator();
 		try {
 			file_logger = new FileHandler(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"+File.separator+"solutions.txt");
@@ -287,14 +290,14 @@ public class GATaskAssignment {
 						String[] items=sc1.nextLine().split("\t",-1);
 						for(int k=0;k<items.length;k++){
 							if(j>2 && Double.parseDouble(items[k])!=0){
-								//bug.BZone_Coefficient.put(project.zones.get(j-2), Double.parseDouble(items[k]));
-								bug.BZone_Coefficient.put(project.zones.get(j-2), random.nextDouble());
+								bug.BZone_Coefficient.put(project.zones.get(j-2), Double.parseDouble(items[k]));
+								//bug.BZone_Coefficient.put(project.zones.get(j-2), (random.nextDouble() * 0.5) + 0.5);
 							}
-							else if(j==0){
+							else if(j == 0){
 								bug=new Bug();
 								bug.setID(Integer.parseInt(items[k]));
 							}
-							else if(j==2){
+							else if(j == 2){
 								bug.setTotalEstimatedEffort(Double.parseDouble(items[k]));
 							}
 							j++;
@@ -344,7 +347,6 @@ public class GATaskAssignment {
 		}
 		
 		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
-		GA_Problem_Parameter.population=100;
 	}
 	
 	public void initializeProblems() {
@@ -435,7 +437,7 @@ public class GATaskAssignment {
 
 	public void Assigning(String action, int runNum, int fileNum, String datasetName, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime) throws IOException{		
 		roundnum = fileNum;
-		logger.log(Level.INFO, "Round Num: "+fileNum);
+		logger.log(Level.INFO, "Round Num: " + fileNum);
 		int c;
 		
 		/************************************************starting the static part***************************/
@@ -443,7 +445,7 @@ public class GATaskAssignment {
 		GA_Problem_Parameter.setDevelopersIDForRandom();
 		GA_Problem_Parameter.flag = 1;
 		
-		while(GA_static.getNumberOfEvaluations() < 10000) {
+		while(GA_static.getNumberOfEvaluations() < GA_Problem_Parameter.nfe) {
 			GA_static.step();
 		}
 		
@@ -515,8 +517,8 @@ public class GATaskAssignment {
 		Instrumenter instrumenter_adaptive_multi=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(10).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		NondominatedPopulation NDP_adaptive_multi=new Executor().withProblemClass(InformationDifussion_adaptive_multi.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(10000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-				.withProperty("1x.rate", 0.5).withProperty("um.rate", 0.1).withInstrumenter(instrumenter_adaptive_multi).run();
+				.withMaxEvaluations(GA_Problem_Parameter.nfe).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+				.withProperty("1x.rate", GA_Problem_Parameter.one_x_rate).withProperty("um.rate", GA_Problem_Parameter.um_rate).withInstrumenter(instrumenter_adaptive_multi).run();
 		
 		
 		sb.append("ID , Cost");
@@ -619,7 +621,8 @@ public class GATaskAssignment {
   		totalsOverTime.get("ExoTperRound_adaptive").add(Environment_s1.getEntropy().get("Ex"));
   		
   		FeatureInitializationV1.actionProbOverRound = FeatureInitializationV1.actionProbOverRound.equals("") ? "" 
-  				: FeatureInitializationV1.actionProbOverRound + "\n";
+  				: (FeatureInitializationV1.actionProbOverRound + "\n");
+  		String t = AdaptiveAssignmentPipline.LAProbes.values().toString();
   		FeatureInitializationV1.actionProbOverRound += AdaptiveAssignmentPipline.LAProbes.values().toString()
   				.replace("[", "").replace("]", "");
   		//get the response from environment and call the update function

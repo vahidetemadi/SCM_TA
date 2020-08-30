@@ -16,7 +16,8 @@ public class Bug implements Cloneable{
 	double totalEstimatedEffort;
 	double arrivalTime=0;
 	HashMap<Zone, Double> BZone_Coefficient=new HashMap<Zone,Double>();
-	DirectedAcyclicGraph<Zone, DefaultEdge> Zone_DEP; 
+	DirectedAcyclicGraph<Zone, DefaultEdge> Zone_DEP; 	/* include all the zones of "this" given bug object which
+	 														are linked to one another upon their dependencies*/
 	double startTime=0.0;
 	double startTime_evaluate=0.0;
 	double endTime=0.0;
@@ -102,12 +103,12 @@ public class Bug implements Cloneable{
 		this.totalEstimatedEffort = totalEstimatedEffort;
 	}
 	public void setZoneDEP(){
-		Zone_DEP=new DirectedAcyclicGraph<Zone, DefaultEdge>(DefaultEdge.class);
-		for (Entry<Zone, Double>  zone:BZone_Coefficient.entrySet())
+		Zone_DEP = new DirectedAcyclicGraph<Zone, DefaultEdge>(DefaultEdge.class);
+		for (Entry<Zone, Double>  zone : BZone_Coefficient.entrySet())
 		{
-			if(zone.getKey().DZ.size()>0){
-				for(Zone z:zone.getKey().DZ){
-					if(!Zone_DEP.containsEdge(z,zone.getKey()))
+			if(zone.getKey().DZ.size() > 0){
+				for(Zone z : zone.getKey().DZ){
+					if(!Zone_DEP.containsEdge(z, zone.getKey()))
 						Zone_DEP.addEdge(z, zone.getKey());
 				}
 			}

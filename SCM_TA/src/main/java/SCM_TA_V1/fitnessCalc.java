@@ -69,7 +69,7 @@ public class fitnessCalc {
 			}
 			else {
 				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * 3.8;
+						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * 5.8;
 			}
 		}
 		
@@ -100,7 +100,7 @@ public class fitnessCalc {
 			}
 			else {
 				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-						/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * 3.8;
+						/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * 5.8;
 			}
 		}
 		

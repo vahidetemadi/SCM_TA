@@ -99,8 +99,8 @@ public class StaticAssignment extends AbstractProblem {
 			Bug b = tso.next();
 			//set Bug startTime
 			b.startTime_evaluate = fitnessCalc.getMaxEndTimes(b, DEP_evaluation);;
-			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone_takeDevTeam=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone = new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone_takeDevTeam = new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			
 			//fill dev list team 
 			developerTeam.clear();
@@ -111,11 +111,11 @@ public class StaticAssignment extends AbstractProblem {
 				index_fillDevTeam++;
 			}
 			
-			Map.Entry<Integer, Developer> candidate=null;
+			Map.Entry<Integer, Developer> candidate = null;
 			while(tso_Zone.hasNext()){
 				Zone zone = tso_Zone.next();
 				double compeletionTime = 0.0;
-				Entry<Zone, Double> zone_bug = new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
+				Entry<Zone, Double> zone_bug = new AbstractMap.SimpleEntry<Zone, Double>(zone, b.BZone_Coefficient.get(zone));
 				/*if(EncodingUtils.getInt(solution.getVariable(index))==0){
 					int[] g=EncodingUtils.getInt(solution);
 					System.out.println(g);
@@ -124,7 +124,7 @@ public class StaticAssignment extends AbstractProblem {
 				int dID = zoneAssignee.get(index).getThird();
 				compeletionTime = fitnessCalc.completionTime_extended_static(b, zone_bug, developers.get(dID), developerTeam);
 				
-				for(Map.Entry<Integer, Developer> developer:developers.entrySet()){
+				for(Map.Entry<Integer, Developer> developer : developers.entrySet()){
 					if(developer.getKey() == dID)
 						candidate = developer;
 				}
@@ -156,10 +156,10 @@ public class StaticAssignment extends AbstractProblem {
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
 					if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
 						estimatedEmissionTime = fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
-								(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
+								(b.getTotalEstimatedEffort() * b.BZone_Coefficient.get(zone_bug.getKey())));
 					if(estimatedEmissionTime < emissionTime){
-						emissionTime=estimatedEmissionTime;
-						sourceDevId=dev.getKey();
+						emissionTime = estimatedEmissionTime;
+						sourceDevId = dev.getKey();
 					}
 				}
 				totalDiffusedKnowledge += fitnessCalc.getID_scaled_static(developerTeam, candidate.getValue(), b, zone_bug.getKey());
