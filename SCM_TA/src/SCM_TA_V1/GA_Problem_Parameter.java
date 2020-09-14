@@ -44,6 +44,7 @@ public class GA_Problem_Parameter {
 	static double delayPenaltyCostRate=0.2;
 	public static int upperDevId;
 	public static int lowerDevId=1;
+	public static int numOfEvalNSGAIIGLS = 0;
 	//
 	static Bug[] bugs;
 	static HashMap<Integer,Developer> developers;

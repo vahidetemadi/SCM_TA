@@ -20,7 +20,7 @@ import org.moeaframework.core.variable.EncodingUtils;
 import org.moeaframework.core.variable.RealVariable;
 import org.moeaframework.problem.AbstractProblem;
 
-public class RandomSearch extends AbstractProblem {
+public class KRRGZCompetenceMulti2_original extends AbstractProblem {
 	
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
 	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers;
@@ -28,7 +28,7 @@ public class RandomSearch extends AbstractProblem {
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
-	public RandomSearch(){
+	public KRRGZCompetenceMulti2_original(){
 		super(GA_Problem_Parameter.setNum_of_Variables(GA_Problem_Parameter.bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
 	
@@ -36,7 +36,8 @@ public class RandomSearch extends AbstractProblem {
 	public void init() throws CloneNotSupportedException{
 		bugs=GA_Problem_Parameter.bugs;
 		DEP=GA_Problem_Parameter.DEP;
-		tso=GA_Problem_Parameter.tso_RS;
+		GA_Problem_Parameter g=new GA_Problem_Parameter();
+		tso= GA_Problem_Parameter.tso_competenceMulti2;
 		/*
 		//generate DAG for arrival Bugs
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
@@ -104,8 +105,6 @@ public class RandomSearch extends AbstractProblem {
 			b.startTime_evaluate=fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
 			GA_Problem_Parameter.resetParameters_ZoneAndDevelopers(b,solution,developers);
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
-			int jgjfs=b.Zone_DEP.vertexSet().size();
-			int kkk=tso_Zone.getGraph().vertexSet().size();
 			//iterate by the order provided in y graph
 			while(tso_Zone.hasNext()){
 				Zone zone=tso_Zone.next();
@@ -136,10 +135,8 @@ public class RandomSearch extends AbstractProblem {
 		
 		solution.setObjective(0, totalTime);
 		solution.setObjective(1, totalCost);
-		if(GA_Problem_Parameter.algorithm.getNumberOfEvaluations() % 50000 == 0)
-			System.out.println("RS: " + GA_Problem_Parameter.algorithm.getNumberOfEvaluations());
 	}
-	
+		
 	
 }
 

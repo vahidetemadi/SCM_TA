@@ -16,17 +16,19 @@ public class Bug implements Cloneable, Serializable{
 	double competenceProfile[];
 	int manualDeveloperID;
 	double totalEstimatedEffort;
-	double arrivalTime=0;
-	HashMap<Zone, Double> BZone_Coefficient=new HashMap<Zone,Double>();
+	double arrivalTime = 0;
+	HashMap<Zone, Double> BZone_Coefficient = new HashMap<Zone,Double>();
 	DirectedAcyclicGraph<Zone, DefaultEdge> Zone_DEP; 
 	TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
-	ArrayList<Zone> sortedZoneList=new ArrayList<Zone>();
-	double startTime=0.0;
-	double startTime_evaluate=0.0;
-	double endTime=0.0;
-	double endTime_evaluate=0.0;
-	int algorithmicDeveloperAssignmentID=0;
-	String priority="P2";
+	ArrayList<Zone> sortedZoneList = new ArrayList<Zone>();
+	double startTime = 0.0;
+	double startTime_evaluate = 0.0;
+	double endTime = 0.0;
+	double endTime_evaluate = 0.0;
+	int algorithmicDeveloperAssignmentID = 0;
+	String priority = "P2";
+	int assignee = 0;
+	public int flag_devInCommon = 0;
 	
 	public Object clone()throws CloneNotSupportedException{  
 		return (Bug)super.clone();  

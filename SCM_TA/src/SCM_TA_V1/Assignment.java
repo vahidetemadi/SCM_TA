@@ -1,11 +1,14 @@
 package SCM_TA_V1;
 
-import java.awt.List;
+import static org.junit.Assert.assertNotEquals;
+
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
@@ -14,16 +17,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Queue;
-import java.io.PrintWriter;
 
-import org.apache.commons.math3.filter.KalmanFilter;
 import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.DirectedAcyclicGraph;
+import org.jgrapht.traverse.TopologicalOrderIterator;
+
 import org.moeaframework.Analyzer;
 import org.moeaframework.Analyzer.AnalyzerResults;
 import org.moeaframework.Executor;
@@ -35,47 +40,95 @@ import org.moeaframework.core.Indicator;
 import org.moeaframework.core.NondominatedPopulation;
 import org.moeaframework.core.Solution;
 import org.moeaframework.core.variable.EncodingUtils;
+
 import org.paukov.combinatorics.Factory;
 import org.paukov.combinatorics.Generator;
 import org.paukov.combinatorics.ICombinatoricsVector;
-import org.apache.commons.io.FilenameUtils;
 
+import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.math3.filter.KalmanFilter;
 
 import org.apache.log4j.BasicConfigurator;
+
 import org.jppf.client.JPPFClient;
 import org.jppf.client.concurrent.JPPFExecutorService;
-import org.moeaframework.Executor;
-import org.moeaframework.core.NondominatedPopulation;
 
+import com.opencsv.CSVWriter;
+import com.sun.tools.javac.comp.Enter;
+
+import sun.security.x509.DeltaCRLIndicatorExtension;
+
+import com.dropbox.core.DbxException;
+import com.dropbox.core.DbxRequestConfig;
+import com.dropbox.core.v2.DbxClientV2;
+import com.dropbox.core.v2.files.FileMetadata;
+import com.dropbox.core.v2.files.UploadBuilder;
+import com.dropbox.core.v2.files.UploadErrorException;
+import com.dropbox.core.v2.files.WriteMode;
+import com.dropbox.core.v2.users.FullAccount;
 
 public class Assignment {
 	public static HashMap<Integer,Developer> developers=new HashMap<Integer,Developer>();
 	static HashMap<Integer,Bug> bugs=new HashMap<Integer,Bug>();
 	static Queue<Bug> orderdBugs; 
 	//static Solution solution=null;
-	static HashMap<Integer , Zone> zoneList=new HashMap<Integer, Zone>();
+	static HashMap<Integer, Zone> zoneList=new HashMap<Integer, Zone>();
 	static Project project=new Project();
 	static int roundnum=0;
 	static String fileName;
 	static StringBuilder sb=new StringBuilder();
-	static PrintWriter pw;  
+	static PrintWriter pw;
+	static String[] header = new String[] {};
+	static List<String> listOfPkgNames = new ArrayList<String>();
+	static List<String> newLine = new ArrayList<String>();
+	static List<Zone> sortedByDep_zones = new ArrayList<Zone>();
+	static DbxRequestConfig config = null;
+	static DbxClientV2 client = null;
+	static FullAccount account = null;
 	//DevMetrics devMetric=new DevMetrics();
 	
-	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
-		Scanner sc=new Scanner(System.in);
+	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException, UploadErrorException, DbxException{
+		Scanner sc = new Scanner(System.in);
 		System.out.println("please insert the number of desired schedules:");
-		GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
+		GA_Problem_Parameter.numOfEvaluationLocalSearch = sc.nextInt();
 		System.out.println("Specify the name of your project:");
-		GA_Problem_Parameter.pName=sc.next();
+		GA_Problem_Parameter.pName = sc.next();
 		System.out.println("The file number you want to launch the run from:");
-		GA_Problem_Parameter.fileNum=sc.nextInt();
+		GA_Problem_Parameter.fileNum = sc.nextInt();
 		System.out.println("The run number you want to launch the run from:");
-		GA_Problem_Parameter.runNum=sc.nextInt();
-		String mode="running";
-		if(mode=="running"){
+		GA_Problem_Parameter.runNum = sc.nextInt();
+		
+		System.out.println("Token:");
+		String token = sc.next();
+		
+		
+		/*
+		config = DbxRequestConfig.newBuilder("b1").build();
+		client = new DbxClientV2(config, token);
+		
+		try {
+			 account = client.users().getCurrentAccount();
+		} catch (DbxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		System.out.println(account.getName().getDisplayName());
+		FileMetadata metadata = null;
+		try (InputStream in = new FileInputStream(System.getProperty("user.dir") + File.separator + "src" + File.separator + "temp.txt")) {
+		    //FileMetadata metadata = client.files().uploadBuilder("/pom.xml").uploadAndFinish(in);
+		     metadata = client.files().uploadBuilder("/2019/finalResults/KRRGZ/temp.txt")
+	                //.withMode(WriteMode.ADD)
+	                .uploadAndFinish(in);
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.exit(1);
+		}
+		*/
+		String mode = "running";
+		if(mode == "running"){
 			runExperiment();
 		}
-		else if (mode=="representatoin"){
+		else if (mode == "representatoin"){
 			changeRepresentation();
 		}
 		
@@ -83,7 +136,7 @@ public class Assignment {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNum;runNum++){
+		for(int runNum = GA_Problem_Parameter.runNum; runNum <= GA_Problem_Parameter.runNum; runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -137,85 +190,92 @@ public class Assignment {
 	
 	// initialize the developer objects  
 	public static void devInitialization() throws IOException,NoSuchElementException, URISyntaxException{
+		header = null;
+		listOfPkgNames.add("BugId");
+		listOfPkgNames.add("GT");
 		//initialize developers
-				System.out.println("enter the developrs file");
-				Developer developer = null;
-				 System.out.println(System.getProperty("user.dir"));
-				Scanner sc=new Scanner(System.in);
-				sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+GA_Problem_Parameter.pName+"Developer.txt"));
-				System.out.println("enter the devlopers wage file");
-				Scanner scan=new Scanner(System.in);
-				scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+GA_Problem_Parameter.pName+"DeveloperWithWage.txt"));
-				int i=0;
-				int j=0;
-				while(sc.hasNextLine() && scan.hasNextLine()){
-					if(i==0){
-						String[] items=sc.nextLine().split("\t",-1);
-						scan.nextLine();
-							for(int k=0;k<items.length;k++){
-								if(j!=0){
-								Zone zone=new Zone(j, items[k]);
-								project.zones.put(j, zone);
-								zoneList.put(j,zone);
-								}
-								j++;
-							}
+		System.out.println("enter the developrs file");
+		Developer developer = null;
+		 System.out.println(System.getProperty("user.dir"));
+		Scanner sc=new Scanner(System.in);
+		sc=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+GA_Problem_Parameter.pName+"Developer.txt"));
+		System.out.println("enter the devlopers wage file");
+		Scanner scan=new Scanner(System.in);
+		scan=new Scanner(new File(System.getProperty("user.dir")+"//src//SCM_TA_V1//bug-data//bug-data//"+GA_Problem_Parameter.pName+"DeveloperWithWage.txt"));
+		int i=0;
+		int j=0;
+		while(sc.hasNextLine() && scan.hasNextLine()){
+			if(i==0){
+				String[] items=sc.nextLine().split("\t",-1);
+				scan.nextLine();
+					for(int k=0;k<items.length;k++){
+						if(j!=0){
+						Zone zone=new Zone(j, items[k]);
+						project.zones.put(j, zone);
+						zoneList.put(j,zone);
+						//set the header for final best sort file
+						listOfPkgNames.add(items[k]);
+						}
+						j++;
+					}
+			}
+			else{
+				String[] items=sc.nextLine().split("\t|\\ ",-1);
+				String[] wage_items=scan.nextLine().split("\t|\\ ",-1);
+				double sumOfPro=0.0;
+				for(int k=1;k<items.length;k++){
+					sumOfPro+=Double.parseDouble(items[k]);
+				}
+				double f=sumOfPro;
+				for(int k=0;k<items.length;k++){
+					if(j!=0){
+						//developer.DZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
+						//System.out.println(columns.get(j));
+						developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])));
+						developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
+						developer.hourlyWage=Double.parseDouble(wage_items[wage_items.length-1]);
+						//System.out.println(Double.parseDouble(wage_items[k]));
 					}
 					else{
-						String[] items=sc.nextLine().split("\t|\\ ",-1);
-						String[] wage_items=scan.nextLine().split("\t|\\ ",-1);
-						double sumOfPro=0.0;
-						for(int k=1;k<items.length;k++){
-							sumOfPro+=Double.parseDouble(items[k]);
-						}
-						double f=sumOfPro;
-						for(int k=0;k<items.length;k++){
-							if(j!=0){
-								//developer.DZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
-								//System.out.println(columns.get(j));
-								developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])));
-								developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
-								developer.hourlyWage=Double.parseDouble(wage_items[wage_items.length-1]);
-								//System.out.println(Double.parseDouble(wage_items[k]));
-							}
-							else{
-								developer=new Developer(0);
-								developer.setID(i);
-							}
-							j++;
-						}
-					developers.put(developer.getID(), developer);
+						developer=new Developer(0);
+						developer.setID(i);
 					}
-					i++;
-					j=0;
+					j++;
 				}
-				//prune devs
-				/*assign GA_Problem_Parameter DevList*/
-				for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
-					GA_Problem_Parameter.DevList.add(dev.getKey());
-				}
-				GA_Problem_Parameter.developers=developers;
-				
-				for(Developer d:GA_Problem_Parameter.developers.values()){
-					for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
-						if(entry.getValue()==0)
-							//d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
-							d.DZone_Coefficient.put(entry.getKey(),0.05);
-					}
-				}
-				
+			developers.put(developer.getID(), developer);
+			}
+			i++;
+			j=0;
+		}
+		//prune devs
+		/*assign GA_Problem_Parameter DevList*/
+		for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
+			GA_Problem_Parameter.DevList.add(dev.getKey());
+		}
+		GA_Problem_Parameter.developers=developers;
+		
+		for(Developer d:GA_Problem_Parameter.developers.values()){
+			for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
+				if(entry.getValue()==0)
+					//d.DZone_Coefficient.put(entry.getKey(),getNonZeroMin(d.DZone_Coefficient));
+					d.DZone_Coefficient.put(entry.getKey(),0.05);
+			}
+		}
+		
 
-				ArrayList<Ranking<Developer, Double>> Devs=new ArrayList<Ranking<Developer,Double>>();
-				for(Developer d:developers.values()){
-					Devs.add(DevMetrics.computeMetric(d));
-				}
-				DevMetrics.sortByMetric(Devs);
-				for(Ranking<Developer, Double> r:Devs){
-					System.out.println(r.getEntity()+"---"+r.getMetric());
-				}
+		ArrayList<Ranking<Developer, Double>> Devs=new ArrayList<Ranking<Developer,Double>>();
+		for(Developer d:developers.values()){
+			Devs.add(DevMetrics.computeMetric(d));
+		}
+		DevMetrics.sortByMetric(Devs);
+		for(Ranking<Developer, Double> r:Devs){
+			System.out.println(r.getEntity()+"---"+r.getMetric());
+		}
 
-				//GA_Problem_Parameter.pruneDevList(developers);
-				GA_Problem_Parameter.pruneDevList(developers,Devs,100);
+		//GA_Problem_Parameter.pruneDevList(developers);
+		GA_Problem_Parameter.pruneDevList(developers,Devs,100);
+		//copy list of pkg names to header
+		header = listOfPkgNames.toArray(new String[0]);
 	}
 	
 	// initialize the bugs objects for task assignment  
@@ -239,42 +299,45 @@ public class Assignment {
 			i=0;
 			j=0;
 			if(roundNum==n){
-				fileName=FilenameUtils.removeExtension(fileEntry.getName());
+				fileName = FilenameUtils.removeExtension(fileEntry.getName());
 				System.out.println(fileEntry.getPath());
 			}
-			while(sc1.hasNextLine() && roundNum==n){
+			while(sc1.hasNextLine() && roundNum == n){
 				//counter "i" has set to record the name of each zone (the header of each file)
-				if(i==0){
+				if(i == 0){
 						String[] items=sc1.nextLine().split("\t|\\ ",-1);
-						for(int k=0;k<items.length;k++){
-							if(j>2){
+						for(int k = 0; k < items.length; k++){
+							if(j > 2){
 								/*Zone zone=new Zone(j-2, items[k]);
 								zoneList.put(j-2,zone);*/
 							}
 							j++;
 						}	
-					}
-					else{
-						String[] items=sc1.nextLine().split("\t",-1);
-						for(int k=0;k<items.length;k++){
-							if(j>2 && Double.parseDouble(items[k])!=0){
-								double d=Double.parseDouble(items[k]);
-								bug.BZone_Coefficient.put(project.zones.get(j-2),Double.parseDouble(items[k]));
-							}
-							else if(j==0){
-								bug=new Bug();
-								bug.setID(Integer.parseInt(items[k]));
-							}
-							else if(j==2){
-								bug.setTotalEstimatedEffort(Double.parseDouble(items[k]));
-							}
-							j++;
+				}
+				else{
+					String[] items=sc1.nextLine().split("\t",-1);
+					for(int k = 0; k < items.length; k++){
+						if(j>2 && Double.parseDouble(items[k])!= 0){
+							bug.BZone_Coefficient.put(project.zones.get(j-2),Double.parseDouble(items[k]));
 						}
-					//add bug to bugset
-					bugs.put(bug.getID(), bug);
+						else if(j==0){
+							bug=new Bug();
+							bug.setID(Integer.parseInt(items[k]));
+						}
+						else if(j == 2){
+							bug.setTotalEstimatedEffort(Double.parseDouble(items[k]));
+						}
+						else if (j == 1) {
+							bug.assignee = Integer.parseInt(items[k]);
+							assertNotEquals(0, bug.assignee);
+						}
+						j++;
 					}
-					i++;
-					j=0;
+				//add bug to bugset
+				bugs.put(bug.getID(), bug);
+				}
+				i++;
+				j=0;
 			}
 			n++;
 			
@@ -316,9 +379,6 @@ public class Assignment {
 			i=0;
 			while(sc1.hasNextLine()){
 				if(i>0){
-					int l=6;
-					int m=5;
-
 					String s=sc1.nextLine();
 					columns_bug=s.split(",");
 					//if(columns_bug[l]=="P3")
@@ -400,8 +460,8 @@ public class Assignment {
 			}
 			b.getValue().setTopo();
 		}
-		GA_Problem_Parameter.population=500;
-		GA_Problem_Parameter.evaluation=250000;
+		GA_Problem_Parameter.population = 500;
+		GA_Problem_Parameter.evaluation = 250000;
 		
 	}
 	
@@ -409,21 +469,22 @@ public class Assignment {
 	public static void Assigning(NondominatedPopulation[] results, int runNum, int fileNum) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
 		GA_Problem_Parameter.setArrivalTasks();
 		
-		String path=System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
-	    Instrumenter instrumenter_KRRGZ=new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
+		String path = System.getProperty("user.dir")+File.separator+"PS"+File.separator+GA_Problem_Parameter.pName+File.separator+fileName+".ps";
+	    Instrumenter instrumenter_KRRGZ = new Instrumenter().withProblem("KRRGZCompetenceMulti2").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_NSGAIIITA=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
+	    Instrumenter instrumenter_NSGAIIITA = new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_RS=new Instrumenter().withProblem("RandomSearch").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
+	    Instrumenter instrumenter_RS = new Instrumenter().withProblem("RandomSearch").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 	    
 		    GA_Problem_Parameter.flag=1;
+		    long st_SD = System.nanoTime();
 			NondominatedPopulation NDP_SD=new Executor().withProblemClass(NSGAIIITAGLS.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_NSGAIIITA).run();
-			
-			System.out.println("finished NSGAIITAGLS");
+			long du_SD = System.nanoTime() - st_SD;
+			System.out.println("finished NSGAIITAGLS in: " + du_SD + " nano second");
 	    
 	    	GA_Problem_Parameter.flag=1;
 	    	NondominatedPopulation NDP_RS=new Executor().withProblemClass(RandomSearch.class).withAlgorithm("Random")
@@ -433,13 +494,18 @@ public class Assignment {
 	    	System.out.println("finished RS");
 	    	
 	    	GA_Problem_Parameter.flag=1;
+	    	long st_KRRGZ = System.nanoTime();
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_KRRGZ).run();
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_KRRGZ).run();
+			long du_KRRGZ = System.nanoTime() - st_KRRGZ;
 			
-			System.out.println("finished KRRGZ");
+	    	
+			System.out.println("finished KRRGZ in: " + du_KRRGZ + " nano second");
 			
+			System.out.println("And the diff is: " + (du_KRRGZ - du_SD) + " nano second");
 			
+			System.out.println("The max of evalu is: " + GA_Problem_Parameter.numOfEvalNSGAIIGLS + "\n");
 			
 			
 			
@@ -547,12 +613,54 @@ public class Assignment {
 				ps_ID.close();
 			}
 			analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
-		//}
-		//catch(Exception e){
-			//starting(fileNum, runNum);
-		//}
-		//return results;
-	    
+			
+			//write the final assignment into the file--together with the 
+			//the KRRGZ:
+			HashMap<String, NondominatedPopulation> approaches = new HashMap<String, NondominatedPopulation>();
+			approaches.put("KRRGZ", NDP_KRRGZ);
+			approaches.put("SD", NDP_SD);
+			sortedByDep_zones = getSoertedZoneList();
+			int variable;
+			int solutionNumber;
+			for (Map.Entry<String, NondominatedPopulation> approach : approaches.entrySet()) {
+				solutionNumber = 1;
+				File paretoFront = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
+						+ approach.getKey() + File.separator + fileName + File.separator + "paretoFronts.csv");
+			    paretoFront.getParentFile().mkdirs();
+				PrintWriter pw_paretoFronts=new PrintWriter(paretoFront);
+				CSVWriter csvWriter_paretos = new CSVWriter (pw_paretoFronts);
+				csvWriter_paretos.writeNext(new String[] {"SID", "Time", "Cost"});
+				for (Solution solution : approach.getValue()) {
+					csvWriter_paretos.writeNext(new String[] {Integer.toString(solutionNumber), Double.toString(solution.getObjective(0)), 
+							Double.toString(solution.getObjective(1))});
+					File sortedAsgmt = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
+							+ approach.getKey() + File.separator + fileName + File.separator + runNum + "_" + solutionNumber + ".csv");
+					solutionNumber++;
+				    sortedAsgmt.getParentFile().mkdirs();
+					PrintWriter pw_soretedAsgmt=new PrintWriter(sortedAsgmt);
+					@SuppressWarnings("resource")
+					CSVWriter csvWriter = new CSVWriter(pw_soretedAsgmt);
+					csvWriter.writeNext(header);
+					variable = 0;
+					for (Bug bug : solution.getBestSort()) {
+						newLine.clear();
+						newLine.add(Integer.toString(bug.getID()));
+						newLine.add(Integer.toString(bug.assignee));
+						for (Zone zone : sortedByDep_zones) {
+							if (bug.BZone_Coefficient.get(zone) == null) {
+								newLine.add("0.0");
+							}
+							else {
+								newLine.add(Integer.toString(EncodingUtils.getInt(solution.getVariable(variable))));
+								variable++;
+							}
+						}
+						csvWriter.writeNext(newLine.toArray(new String[0]));
+					}
+					pw_soretedAsgmt.close();
+				}
+				pw_paretoFronts.close();
+			}
 	}
 	
 	//write the results for testing
@@ -740,5 +848,31 @@ public class Assignment {
 			   pw.close();
 			   //accumulator.saveCSV(new File(System.getProperty("user.dir")+"\\paretos\\ParetoFront_SD_"+fileName+".csv"));
 			  }
+	}
+	
+	//set dep among all zones 
+	public static ArrayList<Zone> getSoertedZoneList(){
+		DirectedAcyclicGraph<Zone, DefaultEdge> Zones_DEP = new DirectedAcyclicGraph<Zone, DefaultEdge>(DefaultEdge.class);
+		ArrayList<Zone> sortedByDep_zones = new ArrayList<Zone>();
+		for (Entry<Integer, Zone>  zone : zoneList.entrySet()){
+			Zones_DEP.addVertex(zone.getValue());
+		}
+		
+		for (Entry<Integer, Zone>  zone:zoneList.entrySet()){
+			if (zone.getValue().DZ.size() > 0){
+				for(Zone z:zone.getValue().DZ){
+					if(!Zones_DEP.containsEdge(z, zone.getValue()) && Zones_DEP.containsVertex(z))
+						Zones_DEP.addEdge(z, zone.getValue());
+				}
+			}
+		}
+		
+		TopologicalOrderIterator<Zone, DefaultEdge> tso_zones = new TopologicalOrderIterator<Zone, DefaultEdge>(Zones_DEP);
+		
+		while (tso_zones.hasNext())
+			sortedByDep_zones.add(tso_zones.next());
+		
+		return sortedByDep_zones;
+		
 	}
 }
