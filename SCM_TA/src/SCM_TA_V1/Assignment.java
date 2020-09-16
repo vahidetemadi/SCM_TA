@@ -54,9 +54,6 @@ import org.jppf.client.JPPFClient;
 import org.jppf.client.concurrent.JPPFExecutorService;
 
 import com.opencsv.CSVWriter;
-import com.sun.tools.javac.comp.Enter;
-
-import sun.security.x509.DeltaCRLIndicatorExtension;
 
 import com.dropbox.core.DbxException;
 import com.dropbox.core.DbxRequestConfig;
@@ -548,7 +545,7 @@ public class Assignment {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv"));
+		    pw = new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv"));
 		    pw.write(sb.toString());
 		    pw.close();
 		   
@@ -557,9 +554,9 @@ public class Assignment {
 		    sb.setLength(0);
 		    //create string builder to include the nonDominated for KRRGZ
 		    for(Solution s:NDP_SD){
-				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append(s.getObjective(0) + "," + s.getObjective(1));
 				   sb.append("\n");
-				   if(s.getSchedule()!=null)
+				   if(s.getSchedule()!= null)
 					   System.out.println(s.getSchedule());
 		    }
 		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"SD_"+fileName+"_"+runNum+".csv"));
