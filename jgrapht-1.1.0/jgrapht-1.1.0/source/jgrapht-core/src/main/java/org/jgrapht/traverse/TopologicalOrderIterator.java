@@ -23,6 +23,8 @@ import java.util.*;
 import org.jgrapht.*;
 import org.jgrapht.util.*;
 
+import SCM_TA_V1.Bug;
+
 /**
  * A topological ordering iterator for a directed acyclic graph.
  * 
@@ -58,6 +60,7 @@ public class TopologicalOrderIterator<V, E>
     private Map<V, ModifiableInteger> inDegreeMap;
     private int remainingVertices;
     private V cur;
+    private Bug b;
 
     /**
      * Construct a topological order iterator.
@@ -147,7 +150,12 @@ public class TopologicalOrderIterator<V, E>
 
         // count in-degrees
         this.inDegreeMap = new HashMap<>();
-        for (V v : graph.vertexSet()) {
+        
+        // shuffle vertex list each time to create the permutation, made by Vahid-- no devs in common included
+        List<V> setOfVertices = new ArrayList<V>(graph.vertexSet());
+        Collections.shuffle(setOfVertices);
+        
+        for (V v : setOfVertices) {
             int d = 0;
             for (E e : graph.incomingEdgesOf(v)) {
                 V u = Graphs.getOppositeVertex(graph, e, v);
@@ -166,6 +174,65 @@ public class TopologicalOrderIterator<V, E>
         this.remainingVertices = graph.vertexSet().size();
     }
 
+    
+    public TopologicalOrderIterator(Graph<V, E> graph, Comparator<V> comparator, String type)
+    {
+        super(graph);
+        GraphTests.requireDirected(graph);
+
+        // create queue
+        if (comparator == null) {
+            this.queue = new LinkedList<>();
+        } else {
+            this.queue = new PriorityQueue<>(comparator);
+        }
+
+        // count in-degrees
+        this.inDegreeMap = new HashMap<>();
+        
+        // shuffle vertex list each time to create the permutation, made by Vahid-- no devs in common included
+        /*List<V> setOfVertices = new ArrayList<V>(graph.vertexSet());
+        Collections.shuffle(setOfVertices);*/
+        
+        //shuffle vertex list each time to create the permutation, made by Vahid-- devs in common included
+        List<V> setOfVertices = new ArrayList<V>(graph.vertexSet());
+        List<V> requiredToBeShuffeld = new ArrayList<V>();
+        List<V> noNeedToBeShuffled = new ArrayList<V>();
+        for (V v : setOfVertices) {
+        	b = (Bug) v;
+        	if (b.flag_devInCommon == 1)
+        		requiredToBeShuffeld.add(v);
+        	else 
+        		noNeedToBeShuffled.add(v);
+        }
+        Collections.shuffle(requiredToBeShuffeld);
+        setOfVertices.clear();
+        for (V v : requiredToBeShuffeld)
+			setOfVertices.add(v);
+        
+        for (V v : noNeedToBeShuffled)
+			setOfVertices.add(v);
+        
+        for (V v : setOfVertices) {
+            int d = 0;
+            for (E e : graph.incomingEdgesOf(v)) {
+                V u = Graphs.getOppositeVertex(graph, e, v);
+                if (v.equals(u)) {
+                    throw new IllegalArgumentException(GRAPH_IS_NOT_A_DAG);
+                }
+                d++;
+            }
+            inDegreeMap.put(v, new ModifiableInteger(d));
+            if (d == 0) {
+                queue.offer(v);
+            }
+        }
+
+        // record vertices count
+        this.remainingVertices = graph.vertexSet().size();
+    }
+
+    
     /**
      * {@inheritDoc}
      * 

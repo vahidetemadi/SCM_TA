@@ -37,7 +37,7 @@ import org.moeaframework.core.comparator.DominanceComparator;
 import org.moeaframework.core.comparator.ParetoDominanceComparator;
 import org.moeaframework.core.operator.TournamentSelection;
 
-import com.sun.tracing.ProbeName;
+//import com.sun.tracing.ProbeName;
 
 /**
  * Implementation of NSGA-II, with the ability to attach an optional 

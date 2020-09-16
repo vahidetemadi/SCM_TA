@@ -20,11 +20,14 @@ package org.moeaframework.core;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jmetal.encodings.variable.Int;
 
 import org.apache.commons.lang3.SerializationUtils;
+
+import SCM_TA_V1.Bug;
 
 /**
  * A solution to an optimization problem, storing the decision variables,
@@ -59,6 +62,8 @@ public class Solution implements Serializable {
 	private ArrayList<Integer> schedule;	
 	
 	private ArrayList<ArrayList<Integer>> schedules=new ArrayList<ArrayList<Integer>>();
+	
+	private List<Bug> bestSort = new ArrayList<Bug>();
 	//////******
 
 	/**
@@ -428,5 +433,12 @@ public class Solution implements Serializable {
 	
 	public void setSchedules(ArrayList<ArrayList<Integer>> schedules){
 		this.schedules=schedules;
+	}
+	
+	public void setBestSort (List<Bug> bestSort) {
+		this.bestSort = bestSort;
+	}
+	public List<Bug> getBestSort () {
+		return this.bestSort;
 	}
 }
