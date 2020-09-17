@@ -634,7 +634,7 @@ public class Assignment {
 			for (Map.Entry<String, NondominatedPopulation> approach : approaches.entrySet()) {
 				solutionNumber = 1;
 				File paretoFront = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
-						+ approach.getKey() + File.separator + fileName + File.separator + "paretoFronts.csv");
+						+ approach.getKey() + File.separator + fileName + File.separator + runNum + File.separator + "paretoFronts.csv");
 			    paretoFront.getParentFile().mkdirs();
 				PrintWriter pw_paretoFronts=new PrintWriter(paretoFront);
 				CSVWriter csvWriter_paretos = new CSVWriter (pw_paretoFronts);
@@ -643,7 +643,7 @@ public class Assignment {
 					csvWriter_paretos.writeNext(new String[] {Integer.toString(solutionNumber), Double.toString(solution.getObjective(0)), 
 							Double.toString(solution.getObjective(1))});
 					File sortedAsgmt = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
-							+ approach.getKey() + File.separator + fileName + File.separator + runNum + "_" + solutionNumber + ".csv");
+							+ approach.getKey() + File.separator + fileName + File.separator + runNum + File.separator + solutionNumber + ".csv");
 					solutionNumber++;
 				    sortedAsgmt.getParentFile().mkdirs();
 					PrintWriter pw_soretedAsgmt=new PrintWriter(sortedAsgmt);
