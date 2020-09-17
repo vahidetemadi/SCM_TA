@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.Iterator;
 
 import javax.xml.stream.events.StartDocument;
@@ -28,6 +29,7 @@ public class KRRGZCompetenceMulti2_original extends AbstractProblem {
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();
 	ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee=new ArrayList<Triplet<Bug,Zone,Integer>>();
+	Random r = new Random();
 	public KRRGZCompetenceMulti2_original(){
 		super(GA_Problem_Parameter.setNum_of_Variables(GA_Problem_Parameter.bugs),GA_Problem_Parameter.Num_of_functions_Multi);
 	}
@@ -66,13 +68,13 @@ public class KRRGZCompetenceMulti2_original extends AbstractProblem {
 			GA_Problem_Parameter.flag=0;
 		}
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
-		int min=GA_Problem_Parameter.getMinIdofDeveloper();
-		int max=GA_Problem_Parameter.getMaxIdofDeveloper();
+		int rand=r.nextInt(GA_Problem_Parameter.listOfdevs.length);
+		int var=GA_Problem_Parameter.listOfdevs[rand];
 		int j=0;
 		for(Zone z:genes){
 			//RealVariable r=new RealVariable(GA_Problem_Parameter.getMinIdofDeveloper(), GA_Problem_Parameter.getMaxIdofDeveloper());
 			//r.randomize();
-			solution.setVariable(j,EncodingUtils.newInt(min, max));
+			solution.setVariable(j,EncodingUtils.newInt(var, var));
 			j++;
 		}
 		return solution;

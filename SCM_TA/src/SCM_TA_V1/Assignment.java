@@ -85,15 +85,17 @@ public class Assignment {
 	//DevMetrics devMetric=new DevMetrics();
 	
 	public static void main(String[] args) throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException, UploadErrorException, DbxException{
-		Scanner sc = new Scanner(System.in);
+		Scanner sc=new Scanner(System.in);
 		System.out.println("please insert the number of desired schedules:");
-		GA_Problem_Parameter.numOfEvaluationLocalSearch = sc.nextInt();
+		GA_Problem_Parameter.numOfEvaluationLocalSearch=sc.nextInt();
 		System.out.println("Specify the name of your project:");
-		GA_Problem_Parameter.pName = sc.next();
+		GA_Problem_Parameter.pName=sc.next();
 		System.out.println("The file number you want to launch the run from:");
-		GA_Problem_Parameter.fileNum = sc.nextInt();
+		GA_Problem_Parameter.fileNum=sc.nextInt();
 		System.out.println("The run number you want to launch the run from:");
-		GA_Problem_Parameter.runNum = sc.nextInt();
+		GA_Problem_Parameter.runNum=sc.nextInt();
+		System.out.println("The run number you want to launch the run up to:");
+		GA_Problem_Parameter.runNumUpTo=sc.nextInt();
 		
 		System.out.println("Token:");
 		String token = sc.next();
@@ -133,7 +135,7 @@ public class Assignment {
 	
 	public static void runExperiment() throws NoSuchElementException, IOException, URISyntaxException, NumberFormatException, CloneNotSupportedException{
 		GA_Problem_Parameter.createPriorityTable();
-		for(int runNum = GA_Problem_Parameter.runNum; runNum <= GA_Problem_Parameter.runNum; runNum++){
+		for(int runNum=GA_Problem_Parameter.runNum;runNum<=GA_Problem_Parameter.runNumUpTo;runNum++){
 			double[] costs=new double[2];
 			developers.clear();
 			bugs.clear();
@@ -155,15 +157,14 @@ public class Assignment {
 			//iterate over the under experiment files
 			for(int i=GA_Problem_Parameter.fileNum;i<=GA_Problem_Parameter.fileNum;i++){
 				GA_Problem_Parameter.fileNum=i;
-				if(i==numOfFiles)
-					GA_Problem_Parameter.fileNum=1;
+				/*if(i==numOfFiles)
+					GA_Problem_Parameter.fileNum=1;*/
 				starting(i, runNum);
 			}
 			System.gc();
 		}
 		
 	}
-
 	public static void starting(int fileNum, int runNum) throws IOException, NumberFormatException, NoSuchElementException, CloneNotSupportedException{
 		//set the threshold to initialize the population 
 		GA_Problem_Parameter.thresoldForPopulationGeneration=0;
@@ -273,6 +274,8 @@ public class Assignment {
 		GA_Problem_Parameter.pruneDevList(developers,Devs,100);
 		//copy list of pkg names to header
 		header = listOfPkgNames.toArray(new String[0]);
+		GA_Problem_Parameter.setPrunedDevsId();
+		GA_Problem_Parameter.numOfDevs = GA_Problem_Parameter.listOfdevs.length + 1;
 	}
 	
 	// initialize the bugs objects for task assignment  
@@ -545,7 +548,9 @@ public class Assignment {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
-		    pw = new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv"));
+		    File f_KRRGZ_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv");
+		    f_KRRGZ_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_KRRGZ_pf);
 		    pw.write(sb.toString());
 		    pw.close();
 		   
@@ -559,7 +564,9 @@ public class Assignment {
 				   if(s.getSchedule()!= null)
 					   System.out.println(s.getSchedule());
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"SD_"+fileName+"_"+runNum+".csv"));
+		    File f_SD_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"SD_"+fileName+"_"+runNum+".csv");
+		    f_SD_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_SD_pf);
 		    pw.write(sb.toString());
 		    pw.close();
 		    
@@ -569,7 +576,9 @@ public class Assignment {
 				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
 				   sb.append("\n");
 		    }
-		    pw=new PrintWriter(new File(System.getProperty("user.dir")+File.separator+"paretoFronts"+File.separator+"RS_"+fileName+"_"+runNum+".csv"));
+		    File f_RS_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"RS_"+fileName+"_"+runNum+".csv");
+		    f_RS_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_RS_pf);
 		    pw.write(sb.toString());
 		    pw.close();
 		    
@@ -609,8 +618,11 @@ public class Assignment {
 			finally{
 				ps_ID.close();
 			}
-			analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
-			
+			//analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
+			File f_analyzer=new File(System.getProperty("user.dir")+File.separator+"results_CoreDevs"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults");
+			f_analyzer.getParentFile().mkdirs();
+			analyzer.saveData(f_analyzer,Integer.toString(runNum) , Integer.toString(fileNum));
+
 			//write the final assignment into the file--together with the 
 			//the KRRGZ:
 			HashMap<String, NondominatedPopulation> approaches = new HashMap<String, NondominatedPopulation>();
