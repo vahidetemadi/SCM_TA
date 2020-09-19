@@ -72,13 +72,13 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 			GA_Problem_Parameter.flag=0;
 		}
 		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
-		int rand=r.nextInt(GA_Problem_Parameter.listOfdevs.length);
-		int var=GA_Problem_Parameter.listOfdevs[rand];
+		int min=GA_Problem_Parameter.getMinIdofDeveloper();
+		int max=GA_Problem_Parameter.getMaxIdofDeveloper();
 		int j=0;
 		for(Zone z:genes){
 			//RealVariable r=new RealVariable(GA_Problem_Parameter.getMinIdofDeveloper(), GA_Problem_Parameter.getMaxIdofDeveloper());
 			//r.randomize();
-			solution.setVariable(j,EncodingUtils.newInt(var, var));
+			solution.setVariable(j,EncodingUtils.newInt(min, max));
 			j++;
 		}
 		return solution;
