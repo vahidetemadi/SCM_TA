@@ -460,8 +460,8 @@ public class Assignment {
 			}
 			b.getValue().setTopo();
 		}
-		GA_Problem_Parameter.population = 500;
-		GA_Problem_Parameter.evaluation = 250000;
+		GA_Problem_Parameter.population = 1;
+		GA_Problem_Parameter.evaluation = 1;
 		
 	}
 	
@@ -495,7 +495,7 @@ public class Assignment {
 	    	
 	    	GA_Problem_Parameter.flag=1;
 	    	long st_KRRGZ = System.nanoTime();
-			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
+			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2_original.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_KRRGZ).run();
 			long du_KRRGZ = System.nanoTime() - st_KRRGZ;
