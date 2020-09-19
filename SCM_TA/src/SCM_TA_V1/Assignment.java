@@ -629,6 +629,9 @@ public class Assignment {
 			approaches.put("KRRGZ", NDP_KRRGZ);
 			approaches.put("SD", NDP_SD);
 			sortedByDep_zones = getSoertedZoneList();
+			for (int q = 0; q < sortedByDep_zones.size(); q++) {
+				header[q + 2] = sortedByDep_zones.get(q).zName;
+			}
 			int variable;
 			int solutionNumber;
 			for (Map.Entry<String, NondominatedPopulation> approach : approaches.entrySet()) {
@@ -656,12 +659,13 @@ public class Assignment {
 						newLine.add(Integer.toString(bug.getID()));
 						newLine.add(Integer.toString(bug.assignee));
 						for (Zone zone : sortedByDep_zones) {
-							if (bug.BZone_Coefficient.get(zone) == null) {
-								newLine.add("0.0");
+							if (bug.BZone_Coefficient.get(zone) != null) {
+								newLine.add(Integer.toString(getDevID(solution, bug, zone)));
+								//newLine.add(Integer.toString(EncodingUtils.getInt(solution.getVariable(variable))));
+								variable++;
 							}
 							else {
-								newLine.add(Integer.toString(EncodingUtils.getInt(solution.getVariable(variable))));
-								variable++;
+								newLine.add("0.0");
 							}
 						}
 						csvWriter.writeNext(newLine.toArray(new String[0]));
@@ -670,6 +674,7 @@ public class Assignment {
 				}
 				pw_paretoFronts.close();
 			}
+
 	}
 	
 	//write the results for testing
@@ -883,5 +888,17 @@ public class Assignment {
 		
 		return sortedByDep_zones;
 		
+	}
+	
+	public static Integer getDevID(Solution s, Bug b, Zone z) {
+		int devId = 0;
+		for (Triplet<Bug,Zone,Integer> triplet : s.getAssingess()) {
+			if (triplet.getFirst().getID() == b.getID()) {
+				if (triplet.getSecond() == z) {
+					devId = triplet.getThird();
+				}
+			}
+		}
+		return devId;
 	}
 }

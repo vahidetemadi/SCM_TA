@@ -359,6 +359,7 @@ public class NSGAIIITAGLS extends AbstractProblem{
 		if (numOfEvaluations > GA_Problem_Parameter.numOfEvalNSGAIIGLS) {
 			GA_Problem_Parameter.numOfEvalNSGAIIGLS = numOfEvaluations;
 		}
+		solution.setAssingees(zoneAssignee);
 	}
 		
 	public ArrayList<Integer> generateSchedule(){
