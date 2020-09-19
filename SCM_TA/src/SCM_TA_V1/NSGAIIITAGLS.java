@@ -110,6 +110,27 @@ public class NSGAIIITAGLS extends AbstractProblem{
 		}
 	}
 	
+	
+	@Override
+	public Solution newSolution(){
+		if(GA_Problem_Parameter.flag==1){
+			preInit();
+			GA_Problem_Parameter.flag=0;
+		}
+		Solution solution=new Solution(genes.size(),GA_Problem_Parameter.Num_of_functions_Multi);
+		int min=GA_Problem_Parameter.getMinIdofDeveloper();
+		int max=GA_Problem_Parameter.getMaxIdofDeveloper();
+		int j=0;
+		for(Zone z:genes){
+			//RealVariable r=new RealVariable(GA_Problem_Parameter.getMinIdofDeveloper(), GA_Problem_Parameter.getMaxIdofDeveloper());
+			//r.randomize();
+			solution.setVariable(j,EncodingUtils.newInt(min, max));
+			j++;
+		}
+		return solution;
+	}
+	
+/*	
 	@Override
 	public Solution newSolution(){
 		if(GA_Problem_Parameter.flag==1){
@@ -123,12 +144,14 @@ public class NSGAIIITAGLS extends AbstractProblem{
 		for(Zone z:genes){
 			//RealVariable r=new RealVariable(GA_Problem_Parameter.getMinIdofDeveloper(), GA_Problem_Parameter.getMaxIdofDeveloper());
 			//r.randomize();
+			rand=r.nextInt(GA_Problem_Parameter.listOfdevs.length);
+			var=GA_Problem_Parameter.listOfdevs[rand];
 			solution.setVariable(j,EncodingUtils.newInt(var, var));
 			j++;
 		}
 		return solution;
 	}
-		
+*/		
 	@Override 	
 	public void evaluate(Solution solution){
 		numOfEvaluations = 0;
