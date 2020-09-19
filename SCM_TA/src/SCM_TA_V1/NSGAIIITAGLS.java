@@ -30,6 +30,7 @@ public class NSGAIIITAGLS extends AbstractProblem{
 		DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 		TopologicalOrderIterator<Bug,DefaultEdge> tso;
 		ArrayList<Zone> genes=new ArrayList<Zone>();
+		ArrayList<Integer> GT_assingees = new ArrayList<>();
 		ArrayList<ArrayList<Integer>> schedules=new ArrayList<ArrayList<Integer>>();
 		HashMap<Integer,Bug> varToBug=new HashMap<Integer, Bug>(); //supposed to be used for mapping the item in chromosome to a particular bug
 		/*ArrayList<ArrayList<ArrayList<Integer>>> variables=new ArrayList<ArrayList<ArrayList<Integer>>>();
@@ -100,12 +101,13 @@ public class NSGAIIITAGLS extends AbstractProblem{
 		DEP=GA_Problem_Parameter.getDAGModel(bugs);
 		//topologically sort the graph
 		tso=GA_Problem_Parameter.getTopologicalSorted(DEP);*/
-		while(tso.hasNext()){
-			Bug b=tso.next();
+		for(Bug b : GA_Problem_Parameter.tasks){
+			//Bug b = tso.next();
 			b.setZoneDEP();
 			TopologicalOrderIterator<Zone,DefaultEdge> tso_zones=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_zones.hasNext()){
 				genes.add(tso_zones.next());
+				GT_assingees.add(b.assignee);
 			}
 		}
 	}
@@ -123,7 +125,7 @@ public class NSGAIIITAGLS extends AbstractProblem{
 		for(Zone z:genes){
 			//RealVariable r=new RealVariable(GA_Problem_Parameter.getMinIdofDeveloper(), GA_Problem_Parameter.getMaxIdofDeveloper());
 			//r.randomize();
-			solution.setVariable(j,EncodingUtils.newInt(min, max));
+			solution.setVariable(j,EncodingUtils.newInt(GT_assingees.get(j), GT_assingees.get(j)));
 			j++;
 		}
 		return solution;
@@ -131,6 +133,7 @@ public class NSGAIIITAGLS extends AbstractProblem{
 		
 	@Override 	
 	public void evaluate(Solution solution){
+		int[] theList = EncodingUtils.getInt(solution);
 		numOfEvaluations = 0;
 		long st3=System.nanoTime();
 		HashMap<Integer, int[]> listOfBugAssignee=new HashMap<Integer, int[]>();   /* keep the list of assignees for a given bug*/
@@ -241,16 +244,17 @@ public class NSGAIIITAGLS extends AbstractProblem{
 										for(Zone zone : b.sortedZoneList){
 											test2++;
 											double compeletionTime = 0.0;
+											int dID = zoneAssignee.get(index).getThird();
 											Entry<Zone, Double> zone_bug = new AbstractMap.SimpleEntry<Zone, Double>(zone,b.BZone_Coefficient.get(zone));
-											compeletionTime = fitnessCalc.compeletionTime(b,zone_bug, developers.get(EncodingUtils.getInt(solution.getVariable(index))));
+											compeletionTime = fitnessCalc.compeletionTime(b,zone_bug, developers.get(dID));
 											totalExecutionTime += compeletionTime;
 											//need to be changed????///
-											totalDevCost += compeletionTime * developers.get(EncodingUtils.getInt(solution.getVariable(index))).hourlyWage;
-											zone.zoneStartTime_evaluate = b.startTime_evaluate + fitnessCalc.getZoneStartTime(developers.get(EncodingUtils.getInt(solution.getVariable(index))), zone.DZ);
+											totalDevCost += compeletionTime * developers.get(dID).hourlyWage;
+											zone.zoneStartTime_evaluate = b.startTime_evaluate + fitnessCalc.getZoneStartTime(developers.get(dID), zone.DZ);
 											zone.zoneEndTime_evaluate = zone.zoneStartTime_evaluate + compeletionTime;
 											/*developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour=Math.max(developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour,
 											zone.zoneStartTime_evaluate)+compeletionTime;*/
-											developers.get(EncodingUtils.getInt(solution.getVariable(index))).developerNextAvailableHour = zone.zoneEndTime_evaluate;
+											developers.get(dID).developerNextAvailableHour = zone.zoneEndTime_evaluate;
 											b.endTime_evaluate = Math.max(b.endTime_evaluate, zone.zoneEndTime_evaluate);
 											index++;
 										}
@@ -336,6 +340,7 @@ public class NSGAIIITAGLS extends AbstractProblem{
 		if (numOfEvaluations > GA_Problem_Parameter.numOfEvalNSGAIIGLS) {
 			GA_Problem_Parameter.numOfEvalNSGAIIGLS = numOfEvaluations;
 		}
+		solution.setAssingees(zoneAssignee);
 	}
 		
 	public ArrayList<Integer> generateSchedule(){

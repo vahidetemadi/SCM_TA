@@ -202,6 +202,7 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		}	
 		if(GA_Problem_Parameter.algorithm.getNumberOfEvaluations() % 50000 == 0)
 			System.out.println("KRRGZ: " + GA_Problem_Parameter.algorithm.getNumberOfEvaluations());
+		solution.setAssingees(zoneAssignee);
 	}
 	
 	public int getNumOfDeveloperInCommon_enhanced(int[] b1, int[] b2, int numOfDevs){
@@ -219,7 +220,6 @@ public class KRRGZCompetenceMulti2 extends AbstractProblem {
 		
 		return numOfDevsInCommon;
 	}
-		
 	
 }
 
