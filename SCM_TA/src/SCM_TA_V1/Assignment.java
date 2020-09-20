@@ -460,8 +460,8 @@ public class Assignment {
 			}
 			b.getValue().setTopo();
 		}
-		GA_Problem_Parameter.population = 1;
-		GA_Problem_Parameter.evaluation = 1;
+		GA_Problem_Parameter.population = 500;
+		GA_Problem_Parameter.evaluation = 250000;
 		
 	}
 	
@@ -495,7 +495,7 @@ public class Assignment {
 	    	
 	    	GA_Problem_Parameter.flag=1;
 	    	long st_KRRGZ = System.nanoTime();
-			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2_original.class).withAlgorithm("NSGAII")
+			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_KRRGZ).run();
 			long du_KRRGZ = System.nanoTime() - st_KRRGZ;
@@ -541,12 +541,88 @@ public class Assignment {
 		        
 			}    
 */
-			//start
-			
-			//put removed here
-			
-			
-		    //end
+		    //pareto front of KRRGZ gets saved in csv format
+		    sb.setLength(0);
+		    //create string builder to include the nonDominated for KRRGZ
+		    for(Solution s:NDP_KRRGZ){
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+		    }
+		    File f_KRRGZ_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"KRRGZ_"+fileName+"_"+runNum+".csv");
+		    f_KRRGZ_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_KRRGZ_pf);
+		    pw.write(sb.toString());
+		    pw.close();
+		   
+		    
+		    //pareto front of SD gets saved in csv format
+		    sb.setLength(0);
+		    //create string builder to include the nonDominated for KRRGZ
+		    for(Solution s:NDP_SD){
+				   sb.append(s.getObjective(0) + "," + s.getObjective(1));
+				   sb.append("\n");
+				   if(s.getSchedule()!= null)
+					   System.out.println(s.getSchedule());
+		    }
+		    File f_SD_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"SD_"+fileName+"_"+runNum+".csv");
+		    f_SD_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_SD_pf);
+		    pw.write(sb.toString());
+		    pw.close();
+		    
+		    
+		    //pareto front for RS method   
+		    for(Solution s:NDP_RS){
+				   sb.append(s.getObjective(0)+ ","+s.getObjective(1));
+				   sb.append("\n");
+		    }
+		    File f_RS_pf=new File(System.getProperty("user.dir")+File.separator+"paretoFronts_CoreDevs"+File.separator+"RS_"+fileName+"_"+runNum+".csv");
+		    f_RS_pf.getParentFile().mkdirs();
+		    pw=new PrintWriter(f_RS_pf);
+		    pw.write(sb.toString());
+		    pw.close();
+		    
+		    //write down instrumenters results
+		    updateArchive(instrumenter_KRRGZ, instrumenter_NSGAIIITA,instrumenter_RS, runNum);
+		    
+		    
+		    //write down the analyzer results
+		    Analyzer analyzer=new Analyzer().includeAllMetrics();
+		    try{
+			    analyzer.add("KRRGZ", NDP_KRRGZ);
+			    analyzer.add("NSGAIIITAGLS", NDP_SD);
+		    	analyzer.add("RS", NDP_RS);
+		    }
+		    catch(Exception e){
+		    	starting(fileNum, runNum);
+		    	return;
+		    }
+		   
+		    
+		    //generate the pareto set in favor of archiving	    
+		    /*File targetRefSet=new File(System.getProperty("user.dir")+"//PS//"+GA_Problem_Parameter.pName+fileName+".ps");
+		     *
+		     *
+		     *
+		    analyzer.saveReferenceSet(targetRefSet);*/
+		    File f=new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults_"+fileName+"_"+runNum+"_"+fileNum+".yaml");
+		    f.getParentFile().mkdirs();
+			PrintStream ps_ID=new PrintStream(f);
+			try{
+				analyzer.withProblemClass(NSGAIIITAGLS.class).printAnalysis(ps_ID);
+			}
+			catch(Exception e){
+				starting(fileNum, runNum);
+		    	return;
+			}
+			finally{
+				ps_ID.close();
+			}
+			//analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
+			File f_analyzer=new File(System.getProperty("user.dir")+File.separator+"results_CoreDevs"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults");
+			f_analyzer.getParentFile().mkdirs();
+			analyzer.saveData(f_analyzer,Integer.toString(runNum) , Integer.toString(fileNum));
+
 			//write the final assignment into the file--together with the 
 			//the KRRGZ:
 			HashMap<String, NondominatedPopulation> approaches = new HashMap<String, NondominatedPopulation>();
@@ -598,6 +674,7 @@ public class Assignment {
 				}
 				pw_paretoFronts.close();
 			}
+
 	}
 	
 	//write the results for testing

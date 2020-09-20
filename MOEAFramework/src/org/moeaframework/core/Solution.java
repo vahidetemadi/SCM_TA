@@ -28,6 +28,8 @@ import jmetal.encodings.variable.Int;
 import org.apache.commons.lang3.SerializationUtils;
 
 import SCM_TA_V1.Bug;
+import SCM_TA_V1.Triplet;
+import SCM_TA_V1.Zone;
 
 /**
  * A solution to an optimization problem, storing the decision variables,
@@ -64,6 +66,8 @@ public class Solution implements Serializable {
 	private ArrayList<ArrayList<Integer>> schedules=new ArrayList<ArrayList<Integer>>();
 	
 	private List<Bug> bestSort = new ArrayList<Bug>();
+	
+	private ArrayList<Triplet<Bug, Zone, Integer>> zoneAssignee = new ArrayList<Triplet<Bug,Zone,Integer>>();
 	//////******
 
 	/**
@@ -440,5 +444,12 @@ public class Solution implements Serializable {
 	}
 	public List<Bug> getBestSort () {
 		return this.bestSort;
+	}
+	
+	public void setAssingees(ArrayList<Triplet<Bug, Zone, Integer>> assginment) {
+		this.zoneAssignee = assginment;
+	}
+	public ArrayList<Triplet<Bug, Zone, Integer>> getAssingess(){
+		return this.zoneAssignee;
 	}
 }
