@@ -474,7 +474,7 @@ public class Assignment {
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 	    Instrumenter instrumenter_NSGAIIITA = new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-	    Instrumenter instrumenter_RS = new Instrumenter().withProblem("RandomSearch").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
+	    Instrumenter instrumenter_RS = new Instrumenter().withProblem("KRRGZCompetenceMulti2_original").withReferenceSet(new File(path)).withFrequency(GA_Problem_Parameter.evaluation/5).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		//try{
 	    
@@ -487,10 +487,14 @@ public class Assignment {
 			System.out.println("finished NSGAIITAGLS in: " + du_SD + " nano second");
 	    
 	    	GA_Problem_Parameter.flag=1;
-	    	NondominatedPopulation NDP_RS=new Executor().withProblemClass(RandomSearch.class).withAlgorithm("Random")
-	    			.withProperty("populationSize", GA_Problem_Parameter.population).withMaxEvaluations(GA_Problem_Parameter.evaluation)
-	    			.withInstrumenter(instrumenter_RS).run();	
-
+	    	//NondominatedPopulation NDP_RS=new Executor().withProblemClass(RandomSearch.class).withAlgorithm("Random")
+	    	//		.withProperty("populationSize", GA_Problem_Parameter.population).withMaxEvaluations(GA_Problem_Parameter.evaluation)
+	    	//		.withInstrumenter(instrumenter_RS).run();
+			NondominatedPopulation NDP_RS=new Executor().withProblemClass(KRRGZCompetenceMulti2_original.class).withAlgorithm("NSGAII")
+					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_RS).run();
+	    	
+	    	
 	    	System.out.println("finished RS");
 	    	
 	    	GA_Problem_Parameter.flag=1;
@@ -499,7 +503,7 @@ public class Assignment {
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_KRRGZ).run();
 			long du_KRRGZ = System.nanoTime() - st_KRRGZ;
-			
+			long diff_time = du_KRRGZ - du_SD;
 	    	
 			System.out.println("finished KRRGZ in: " + du_KRRGZ + " nano second");
 			
@@ -618,6 +622,18 @@ public class Assignment {
 			finally{
 				ps_ID.close();
 			}
+			
+			File file_time_diff = new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName
+					+ File.separator + "time_diff" + File.separator + fileName + File.separator +runNum+ File.separator + "time_diff.csv");
+		    file_time_diff.getParentFile().mkdirs();
+			PrintStream ps_time_diff=new PrintStream(file_time_diff);
+			try {
+				ps_time_diff.append(Long.toString(diff_time));
+			}
+			finally {
+				ps_time_diff.close();
+			}
+			
 			//analyzer.saveData(new File(System.getProperty("user.dir")+File.separator+"results"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults"),Integer.toString(runNum) , Integer.toString(fileNum));
 			File f_analyzer=new File(System.getProperty("user.dir")+File.separator+"results_CoreDevs"+File.separator+GA_Problem_Parameter.pName+File.separator+"AnalyzerResults");
 			f_analyzer.getParentFile().mkdirs();
@@ -628,6 +644,7 @@ public class Assignment {
 			HashMap<String, NondominatedPopulation> approaches = new HashMap<String, NondominatedPopulation>();
 			approaches.put("KRRGZ", NDP_KRRGZ);
 			approaches.put("SD", NDP_SD);
+			approaches.put("RS", NDP_RS);
 			sortedByDep_zones = getSoertedZoneList();
 			for (int q = 0; q < sortedByDep_zones.size(); q++) {
 				header[q + 2] = sortedByDep_zones.get(q).zName;
