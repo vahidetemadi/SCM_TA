@@ -492,7 +492,7 @@ public class Assignment {
 	    	//		.withInstrumenter(instrumenter_RS).run();
 			NondominatedPopulation NDP_RS=new Executor().withProblemClass(KRRGZCompetenceMulti2_original.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_RS).run();
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_RS).run();
 	    	
 	    	
 	    	System.out.println("finished RS");
@@ -501,7 +501,7 @@ public class Assignment {
 	    	long st_KRRGZ = System.nanoTime();
 			NondominatedPopulation NDP_KRRGZ=new Executor().withProblemClass(KRRGZCompetenceMulti2.class).withAlgorithm("NSGAII")
 					.withMaxEvaluations(GA_Problem_Parameter.evaluation).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
-					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.01).withInstrumenter(instrumenter_KRRGZ).run();
+					.withProperty("1x.rate", 0.9).withProperty("um.rate", 0.05).withInstrumenter(instrumenter_KRRGZ).run();
 			long du_KRRGZ = System.nanoTime() - st_KRRGZ;
 			long diff_time = du_KRRGZ - du_SD;
 	    	
