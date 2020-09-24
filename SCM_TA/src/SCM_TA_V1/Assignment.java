@@ -460,8 +460,8 @@ public class Assignment {
 			}
 			b.getValue().setTopo();
 		}
-		GA_Problem_Parameter.population = 500;
-		GA_Problem_Parameter.evaluation = 250000;
+		GA_Problem_Parameter.population = 1;
+		GA_Problem_Parameter.evaluation = 1;
 		
 	}
 	
@@ -588,15 +588,18 @@ public class Assignment {
 		    
 		    //write down the analyzer results
 		    Analyzer analyzer=new Analyzer().includeAllMetrics();
-		    try{
-			    analyzer.add("KRRGZ", NDP_KRRGZ);
-			    analyzer.add("NSGAIIITAGLS", NDP_SD);
-		    	analyzer.add("RS", NDP_RS);
-		    }
-		    catch(Exception e){
-		    	starting(fileNum, runNum);
-		    	return;
-		    }
+		    //---start commenting---
+		    
+		    //try{
+			//    analyzer.add("KRRGZ", NDP_KRRGZ);
+			//   analyzer.add("NSGAIIITAGLS", NDP_SD);
+		    //	analyzer.add("RS", NDP_RS);
+		    //}
+		    //catch(Exception e){
+		    //	starting(fileNum, runNum);
+		    //	return;
+		    //}
+		    //----end commenting----
 		   
 		    
 		    //generate the pareto set in favor of archiving	    
@@ -636,7 +639,7 @@ public class Assignment {
 			int solutionNumber;
 			for (Map.Entry<String, NondominatedPopulation> approach : approaches.entrySet()) {
 				solutionNumber = 1;
-				File paretoFront = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
+				File paretoFront = new File(System.getProperty("user.dir") + File.separator + "GT" + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
 						+ approach.getKey() + File.separator + fileName + File.separator + runNum + File.separator + "paretoFronts.csv");
 			    paretoFront.getParentFile().mkdirs();
 				PrintWriter pw_paretoFronts=new PrintWriter(paretoFront);
@@ -645,7 +648,7 @@ public class Assignment {
 				for (Solution solution : approach.getValue()) {
 					csvWriter_paretos.writeNext(new String[] {Integer.toString(solutionNumber), Double.toString(solution.getObjective(0)), 
 							Double.toString(solution.getObjective(1))});
-					File sortedAsgmt = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
+					File sortedAsgmt = new File(System.getProperty("user.dir") + File.separator + "GT" + File.separator + "results" + File.separator + GA_Problem_Parameter.pName + File.separator
 							+ approach.getKey() + File.separator + fileName + File.separator + runNum + File.separator + solutionNumber + ".csv");
 					solutionNumber++;
 				    sortedAsgmt.getParentFile().mkdirs();
