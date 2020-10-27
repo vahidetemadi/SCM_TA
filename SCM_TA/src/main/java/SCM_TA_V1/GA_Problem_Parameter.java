@@ -31,6 +31,7 @@ public class GA_Problem_Parameter {
 	// set GA parameters
 	public static int population;
 	public static int nfe;
+	public static int batch_size;
 	static double sbx_rate = 0.0;
 	public static double one_x_rate = 9.0;
 	static double sbx_distribution_index;
@@ -634,7 +635,7 @@ public class GA_Problem_Parameter {
 	 */
 	public static void splitBugList(HashMap<Integer, Bug> bugList) {
 		int i = 0;
-		int numOfBugs = 40;
+		int numOfBugs = batch_size;
 		HashMap<Integer, Bug> b = null;
 		for (Map.Entry<Integer, Bug> bug : bugList.entrySet()) {
 			if (i == 0) {

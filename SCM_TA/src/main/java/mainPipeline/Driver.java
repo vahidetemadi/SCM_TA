@@ -313,6 +313,7 @@ public class Driver {
 	private static void setOptions(Options option) {
 		options.addOption("ds","developer-size", true, "The number of developers who will leave team at some point of times");
 		options.addOption("ws", "window-size", true, "The window size used to get feedback");
+		options.addOption("bs", "batch-size", true, "Number of bugs included in a round");
 		options.addOption("p", "population", true, "The population number set for GA-based algo");
 		options.addOption("cr", "crossover-rate", true, "crossover rate");
 		options.addOption("mr","mutaion-rate", true, "mutation rate");
@@ -325,6 +326,7 @@ public class Driver {
 		//getting options' value
 		FeatureInitializationV1.windowSize = Integer.parseInt(cmd.getOptionValue("ws"));
 		FeatureInitializationV1.churnRate = Integer.parseInt(cmd.getOptionValue("ds"));
+		GA_Problem_Parameter.batch_size = Integer.parseInt(cmd.getOptionValue("bs"));
 		GA_Problem_Parameter.population = Integer.parseInt(cmd.getOptionValue("p"));
 		GA_Problem_Parameter.nfe = Integer.parseInt(cmd.getOptionValue("nfe"));
 		GA_Problem_Parameter.um_rate = Double.parseDouble(cmd.getOptionValue("mr"));
