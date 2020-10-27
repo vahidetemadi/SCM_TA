@@ -40,6 +40,8 @@ public class GA_Problem_Parameter {
 	static double delayPenaltyCostRate = 0.2;
 	public static int upperDevId;
 	public static int lowerDevId = 1;
+	public static double alpha = 1.2;
+	public static double beta = 3.8; 
 	//
 	static Bug[] bugs;
 	public static HashMap<Integer, Developer> developers = null;
@@ -632,7 +634,7 @@ public class GA_Problem_Parameter {
 	 */
 	public static void splitBugList(HashMap<Integer, Bug> bugList) {
 		int i = 0;
-		int numOfBugs = 20;
+		int numOfBugs = 40;
 		HashMap<Integer, Bug> b = null;
 		for (Map.Entry<Integer, Bug> bug : bugList.entrySet()) {
 			if (i == 0) {

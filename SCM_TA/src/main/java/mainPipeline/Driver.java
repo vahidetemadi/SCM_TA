@@ -317,6 +317,8 @@ public class Driver {
 		options.addOption("cr", "crossover-rate", true, "crossover rate");
 		options.addOption("mr","mutaion-rate", true, "mutation rate");
 		options.addOption("nfe","number-of-fitness-evaluation", true, "number of fitness evaluation");
+		options.addOption("a","alpha", true, "coefficent of interanl knowledge flow");
+		options.addOption("b","beta", true, "coefficent of external knowledge flow");
 	}
 	
 	private static void getOptionsValue(CommandLine cmd) {
@@ -327,5 +329,11 @@ public class Driver {
 		GA_Problem_Parameter.nfe = Integer.parseInt(cmd.getOptionValue("nfe"));
 		GA_Problem_Parameter.um_rate = Double.parseDouble(cmd.getOptionValue("mr"));
 		GA_Problem_Parameter.one_x_rate = Double.parseDouble(cmd.getOptionValue("cr"));
+		if (cmd.hasOption("a")) {
+			GA_Problem_Parameter.alpha = Double.parseDouble(cmd.getOptionValue("a"));
+		}
+		if (cmd.hasOption("b")) {
+			GA_Problem_Parameter.beta = Double.parseDouble(cmd.getOptionValue("b"));
+		}
 	}
 }

@@ -194,7 +194,7 @@ public class AdaptiveAssignmentPipline {
 			if(i == Environment_s1.numberOfFiles / 2)
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
-			for(HashMap<Integer,Bug> bugList:GA_Problem_Parameter.listOfSubBugs){
+			for(HashMap<Integer,Bug> bugList : GA_Problem_Parameter.listOfSubBugs){
 				if (bugList.size() == 0)
 					continue;
 				//log devs profile at the point of time
@@ -587,7 +587,7 @@ public class AdaptiveAssignmentPipline {
 		double minCost = 1;
 		FinalSolution<Solution, Double, Double> s = null;
 		for (FinalSolution<Solution, Double, Double> f:ParetoFront_normalized) {
-			if (f.getCost() < minCost) {
+			if (f.getCost() <= minCost) {
 				minCost = f.getCost();
 				s = f;
 			}
@@ -609,7 +609,7 @@ public class AdaptiveAssignmentPipline {
 		double maxD = 0;
 		FinalSolution<Solution, Double, Double> s = null;
 		for (FinalSolution<Solution, Double, Double> f:ParetoFront_normalized) {
-			if (f.getCost() > maxD) {
+			if (f.getCost() >= maxD) {
 				maxD = f.getDiffusion();
 				s = f;
 			}

@@ -232,7 +232,7 @@ public class Environment_s1 extends Environment {
 		totalChanged = 0;
 		//sort devs prior to removing
 		ArrayList<Integer> listOfDevs = rankDevsByProfile(GA_Problem_Parameter.devListId);
-		Collections.reverse(listOfDevs);
+		//Collections.reverse(listOfDevs);
 		
 		//shuffle in case random flag is true
 		if (random) 

@@ -1,5 +1,6 @@
 package main.java.SCM_TA_V1;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
@@ -288,10 +289,10 @@ public class GATaskAssignment {
 					}
 					else{
 						String[] items=sc1.nextLine().split("\t",-1);
-						for(int k=0;k<items.length;k++){
-							if(j>2 && Double.parseDouble(items[k])!=0){
-								bug.BZone_Coefficient.put(project.zones.get(j-2), Double.parseDouble(items[k]));
-								//bug.BZone_Coefficient.put(project.zones.get(j-2), (random.nextDouble() * 0.5) + 0.5);
+						for(int k = 0; k < items.length; k++){
+							if(j > 2 && Double.parseDouble(items[k])!= 0){
+								bug.BZone_Coefficient.put(project.zones.get(j-2), Double.parseDouble(items[k]));  /*from real data-set*/
+								//bug.BZone_Coefficient.put(project.zones.get(j-2), (random.nextDouble() * 0.5) + 0.5);  /*simulated*/
 							}
 							else if(j == 0){
 								bug=new Bug();
@@ -514,25 +515,26 @@ public class GATaskAssignment {
 				+ File.separator + "PlatformMilestone3.0" + ".ps";
 				break;	
 		}
-		Instrumenter instrumenter_adaptive_multi=new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(10).attachAll()
+		Instrumenter instrumenter_adaptive_multi = new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(10).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
-		NondominatedPopulation NDP_adaptive_multi=new Executor().withProblemClass(InformationDifussion_adaptive_multi.class).withAlgorithm("NSGAII")
+		NondominatedPopulation NDP_adaptive_multi = new Executor().withProblemClass(InformationDifussion_adaptive_multi.class).withAlgorithm("NSGAII")
 				.withMaxEvaluations(GA_Problem_Parameter.nfe).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 				.withProperty("1x.rate", GA_Problem_Parameter.one_x_rate).withProperty("um.rate", GA_Problem_Parameter.um_rate).withInstrumenter(instrumenter_adaptive_multi).run();
 		
-		
+		//assertNotEquals(0, NDP_adaptive_multi.size());
+		int size = NDP_adaptive_multi.size();
 		sb.append("ID , Cost");
 		sb.setLength(0);
-		for(Solution s:NDP_adaptive_multi){
+		for(Solution s : NDP_adaptive_multi){
 			int temp = s.getNumberOfVariables();
 			sb.append(s.getObjective(0) + "," + s.getObjective(1));
 			sb.append("\n");
 	    }
 		
-		File file=new File(System.getProperty("user.dir") + File.separator + "paretoFronts" + File.separator + FeatureInitializationV1.datasetName 
+		File file = new File(System.getProperty("user.dir") + File.separator + "paretoFronts" + File.separator + FeatureInitializationV1.datasetName 
 				+ File.separator + roundnum + File.separator + runNum + ".csv");
 		file.getParentFile().mkdirs();	
-		PrintWriter pw=new PrintWriter(file);
+		PrintWriter pw = new PrintWriter(file);
 	    pw.write(sb.toString());
 	    pw.close();
 	    
@@ -541,7 +543,7 @@ public class GATaskAssignment {
 	    double maxD = 0;
 	    List<FinalSolution<Solution, Double, Double>> ParetoFront = new ArrayList<FinalSolution<Solution,Double,Double>>();
 	    
-	    for (Solution s:NDP_adaptive_multi) {
+	    for (Solution s : NDP_adaptive_multi) {
 	    	if (s.getObjective(1) > maxCost)
 	    		maxCost = s.getObjective(1);
 	    	if (s.getObjective(0) > maxD)
