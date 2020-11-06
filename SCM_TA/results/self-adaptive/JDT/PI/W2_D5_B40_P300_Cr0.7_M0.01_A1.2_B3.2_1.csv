@@ -1,0 +1,2 @@
+"solution","totalCostID","totalCostStatic","totalIDStatic","totalIDID","CoT_static","CoT_adaptive","IDoT_static","IDoT_adaptive","SoT","costPerRound_static","costPerRound_adaptive","idPerRound_static","idPerRound_adaptive","EoT_static","EoT_adaptive","ExoTperRound_adaptive","actionProbVector"
+"[683, 1374, 601, 1160, 205]","1449685665.74","1450306824.71","0.00","-0.00","[1450306824.71]","[1449685665.74]","[0.0000]","[-0.0000]","[]","[1450306824.71]","[1449685665.74]","[0.00]","[-0.00]","[NaN]","[0.9873]","[2.0000]","[0.50, 0.50]"
