@@ -197,7 +197,7 @@ public class AdaptiveAssignmentPipline {
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList : GA_Problem_Parameter.listOfSubBugs){
-				if (bugList.size() == 0)
+				if (bugList.size() < GA_Problem_Parameter.batch_size)
 					continue;
 				//log devs profile at the point of time
 				logDevProfilePerRound(roundNum);
