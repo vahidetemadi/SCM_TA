@@ -266,11 +266,11 @@ public class GATaskAssignment {
 		//sc=new Scanner(System.in);
 		//sc=new Scanner("/bug-data/JDT/efforts");
 		//System.out.println(sc.nextLine());
-		String uri=Thread.currentThread().getContextClassLoader().getResource("main/resources/bug-data/"+datasetName+"/efforts").getFile();
+		String uri = Thread.currentThread().getContextClassLoader().getResource("main/resources/bug-data/" + datasetName + "/efforts").getFile();
 		Scanner sc1=null;
 		int n=1;
-		for(File fileEntry:new File(uri).listFiles()){
-			sc1=new Scanner(new File(fileEntry.toURI()));
+		for(File fileEntry : new File(uri).listFiles()){
+			sc1 = new Scanner(new File(fileEntry.toURI()));
 			i=0;
 			j=0;
 			if(fileNumber==n)

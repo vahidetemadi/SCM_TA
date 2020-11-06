@@ -177,10 +177,12 @@ public class AdaptiveAssignmentPipline {
 		}
 		
 		//set the number of files
-		if(datasetName.equals("JDT"))
-			Environment_s1.numberOfFiles=9;
-		else
-			Environment_s1.numberOfFiles=10;
+		String uri = Thread.currentThread().getContextClassLoader().getResource("main/resources/bug-data/" + datasetName + "/efforts").getFile();
+		Environment_s1.numberOfFiles = new File(uri).list().length;
+		//if(datasetName.equals("JDT"))
+		//	Environment_s1.numberOfFiles = 9;
+		//else
+		//	Environment_s1.numberOfFiles=10;
 		
 		//set the initial observation and 
 		int roundNum=1;
@@ -191,7 +193,7 @@ public class AdaptiveAssignmentPipline {
 			//GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
 			GATaskAssignment.run(datasetName, i, 0);
 			//GATaskAssignment.run(datasetName, i, 5);
-			if(i == Environment_s1.numberOfFiles / 2)
+			if(i == Environment_s1.numberOfFiles / 2 || i == 1)
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
 			for(HashMap<Integer,Bug> bugList : GA_Problem_Parameter.listOfSubBugs){

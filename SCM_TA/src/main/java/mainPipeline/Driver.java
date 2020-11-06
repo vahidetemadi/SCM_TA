@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.logging.*;
@@ -51,6 +52,17 @@ public class Driver {
 	static Population finalPopulation;
 	static HashMap<String, Object> allMaps = new HashMap<String, Object>();
 	static Options options;
+	static Boolean si = false;
+	static Boolean pi = false;
+	static List<Double> crossover = Arrays.asList(0.6, 0.7, 0.8, 0.9);
+	static List<Double> mutation = Arrays.asList(0.01, 0.02, 0.05, 0.1, 0.15);
+	static List<Integer> developersize = Arrays.asList(4, 7, 10, 13);
+	static List<Integer> windowssize = Arrays.asList(4, 5);
+	static List<Integer> population = Arrays.asList(100, 200, 300);
+	static List<Integer> nfe = Arrays.asList(10000, 20000, 50000);
+	static List<Double>  alpha = Arrays.asList(1.2, 1.5, 1.8);
+	static List<Double>  beta = Arrays.asList(3.2, 3.5, 3.8);
+	
 	public static void main(String[] args) throws IOException {
 		options = new Options();
 		setOptions(options);
@@ -67,18 +79,68 @@ public class Driver {
 			e.printStackTrace();
 		}
 		//getting options value
-		getOptionsValue(cmd);
+		si = Boolean.parseBoolean(cmd.getOptionValue("si"));
+		pi = Boolean.parseBoolean(cmd.getOptionValue("pi"));
+		if (si)
+			getOptionsValue(cmd);
 		//get dataset name 
 		System.out.println("Enter the dataset name:");
 		Scanner sc=new Scanner(System.in);
-		FeatureInitializationV1.datasetName=sc.next();
-		
-		//runMultiObjective();
-		for(int i=1; i<=1; i++) {
-			finalPopulation= runSeed(); 		/* call the run for single seed */
-			writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
-			sendResultsToServer(finalPopulation);				/* send the results to the central server */
-		}
+		FeatureInitializationV1.datasetName = sc.next();
+		if (!si) {
+			if (pi) {
+				//runMultiObjective();
+				FeatureInitializationV1.windowSize = Integer.parseInt(cmd.getOptionValue("ws"));
+				FeatureInitializationV1.churnRate = Integer.parseInt(cmd.getOptionValue("ds"));
+				GA_Problem_Parameter.batch_size = Integer.parseInt(cmd.getOptionValue("bs"));
+				GA_Problem_Parameter.nfe = Integer.parseInt(cmd.getOptionValue("nfe"));
+				if (cmd.hasOption("a")) {
+					GA_Problem_Parameter.alpha = Double.parseDouble(cmd.getOptionValue("a"));
+				}
+				if (cmd.hasOption("b")) {
+					GA_Problem_Parameter.beta = Double.parseDouble(cmd.getOptionValue("b"));
+				}
+				for (int p : population) {
+					for (double cr : crossover) {
+						for (double m : mutation) {
+							GA_Problem_Parameter.population = p;
+							GA_Problem_Parameter.um_rate = m;
+							GA_Problem_Parameter.one_x_rate = cr;
+							for(int i = 1; i <= 1; i++) {
+								finalPopulation= runSeed(); 		/* call the run for single seed */
+								writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
+								//sendResultsToServer(finalPopulation);				/* send the results to the central server */
+							}
+						}
+					}
+				}
+			}
+			else {
+				//runMultiObjective();
+				GA_Problem_Parameter.population = Integer.parseInt(cmd.getOptionValue("p"));
+				GA_Problem_Parameter.um_rate = Double.parseDouble(cmd.getOptionValue("mr"));
+				GA_Problem_Parameter.one_x_rate = Double.parseDouble(cmd.getOptionValue("cr"));
+				GA_Problem_Parameter.batch_size = Integer.parseInt(cmd.getOptionValue("bs"));
+				GA_Problem_Parameter.nfe = Integer.parseInt(cmd.getOptionValue("nfe"));
+				if (cmd.hasOption("a")) {
+					GA_Problem_Parameter.alpha = Double.parseDouble(cmd.getOptionValue("a"));
+				}
+				if (cmd.hasOption("b")) {
+					GA_Problem_Parameter.beta = Double.parseDouble(cmd.getOptionValue("b"));
+				}
+				for (int w : windowssize) {
+					for (int d : developersize) {
+						FeatureInitializationV1.windowSize = w;
+						FeatureInitializationV1.churnRate = d;
+						for(int i = 1; i <= 1; i++) {
+							finalPopulation= runSeed(); 		/* call the run for single seed */
+							writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
+							//sendResultsToServer(finalPopulation);				/* send the results to the central server */
+						}
+					}
+				}
+			}
+		}	
 	}
 	
 	
@@ -166,11 +228,20 @@ public class Driver {
 	@SuppressWarnings("unchecked")
 	public static void writeResutls(Population p, String datasetName, int runNum) throws IOException {
 		int numOf = countLines(FeatureInitializationV1.actionProbOverRound);
+		String fileNamePart = "";
+		if (pi)
+		 fileNamePart = String.format("%s%s%s%sW%s_D%s_B%s_P%s_Cr%s_M%s_A%s_B%s", datasetName, File.separator, "PI", File.separator, FeatureInitializationV1.windowSize, FeatureInitializationV1.churnRate,
+				GA_Problem_Parameter.batch_size, GA_Problem_Parameter.population, GA_Problem_Parameter.one_x_rate, GA_Problem_Parameter.um_rate,
+				GA_Problem_Parameter.alpha, GA_Problem_Parameter.beta);
+		else
+			fileNamePart = String.format("%s%s%s%sW%s_D%s_B%s_P%s_Cr%s_M%s_A%s_B%s", datasetName, File.separator, "Context", File.separator, FeatureInitializationV1.windowSize, FeatureInitializationV1.churnRate,
+					GA_Problem_Parameter.batch_size, GA_Problem_Parameter.population, GA_Problem_Parameter.one_x_rate, GA_Problem_Parameter.um_rate,
+					GA_Problem_Parameter.alpha, GA_Problem_Parameter.beta);
 		
 		File file = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
-				+ File.separator + datasetName+"_" + runNum + ".csv");
+				+ File.separator + fileNamePart + "_" + runNum + ".csv");
 		File file_actionProbOverTime = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
-				+ File.separator + datasetName+"_probOverTime" + ".csv");
+				+ File.separator + fileNamePart + "_probOverTime" + ".csv");
 		File file_developersProfile_static, file_developersProfile_adaptive;
 		PrintWriter pw_devProfile_static, pw_devProfile_adaptive;
 		HashMap<Integer, Developer> devList;
@@ -229,7 +300,7 @@ public class Driver {
 				//create the header for the files
 				pw_devProfile_static.append("Dev#");
 				pw_devProfile_adaptive.append("Dev#");
-				int size=devList.entrySet().size();
+				int size = devList.entrySet().size();
 				for(Map.Entry<Zone, Double> entry:devList.get(1).getDZone_Coefficient().entrySet()) {
 					pw_devProfile_static.append("\t"+entry.getKey().zName);
 					pw_devProfile_adaptive.append("\t"+entry.getKey().zName);
@@ -267,6 +338,8 @@ public class Driver {
 				//close the opened printwriters
 				pw_devProfile_adaptive.close();
 				pw_devProfile_static.close();
+				
+				System.out.println("It is done!");
 				
 			}
 			
@@ -311,6 +384,8 @@ public class Driver {
 	}
 	
 	private static void setOptions(Options option) {
+		options.addOption("si","settings included", true, "To weather include or exclude individual settings");
+		options.addOption("pi","parameters included", true, "Weather genetic parameters should be tested or not!");
 		options.addOption("ds","developer-size", true, "The number of developers who will leave team at some point of times");
 		options.addOption("ws", "window-size", true, "The window size used to get feedback");
 		options.addOption("bs", "batch-size", true, "Number of bugs included in a round");
@@ -324,6 +399,7 @@ public class Driver {
 	
 	private static void getOptionsValue(CommandLine cmd) {
 		//getting options' value
+		si = Boolean.parseBoolean(cmd.getOptionValue("si"));
 		FeatureInitializationV1.windowSize = Integer.parseInt(cmd.getOptionValue("ws"));
 		FeatureInitializationV1.churnRate = Integer.parseInt(cmd.getOptionValue("ds"));
 		GA_Problem_Parameter.batch_size = Integer.parseInt(cmd.getOptionValue("bs"));

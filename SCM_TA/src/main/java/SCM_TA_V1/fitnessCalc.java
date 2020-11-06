@@ -175,7 +175,7 @@ public class fitnessCalc {
 	}
 	
 	public static double getID_scaled_static(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
-		double flowInfo=0;
+		double flowInfo = 0;
 		double diff = Math.abs(getZoneDiff(candidate, b, z, Approach.STATIC));
 		double maxInFlow = 0 ;
 		
