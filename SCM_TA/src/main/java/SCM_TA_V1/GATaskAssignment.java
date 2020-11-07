@@ -569,7 +569,7 @@ public class GATaskAssignment {
 	    		 }).collect(Collectors.toList());
 	    Action action2 = roundnum > 2 ?
 	    	action2 = AdaptiveAssignmentPipline.getInstance().getAction()
-	    	: Action.COST;
+	    	: Action.DIFFUSION;
 	    
 	    
 	    Solution adaptiveSolution = null;
