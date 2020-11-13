@@ -122,20 +122,28 @@ public class Driver {
 				GA_Problem_Parameter.one_x_rate = Double.parseDouble(cmd.getOptionValue("cr"));
 				GA_Problem_Parameter.batch_size = Integer.parseInt(cmd.getOptionValue("bs"));
 				GA_Problem_Parameter.nfe = Integer.parseInt(cmd.getOptionValue("nfe"));
+				/*
 				if (cmd.hasOption("a")) {
 					GA_Problem_Parameter.alpha = Double.parseDouble(cmd.getOptionValue("a"));
 				}
 				if (cmd.hasOption("b")) {
 					GA_Problem_Parameter.beta = Double.parseDouble(cmd.getOptionValue("b"));
 				}
+				*/
 				for (int w : windowssize) {
 					for (int d : developersize) {
-						FeatureInitializationV1.windowSize = w;
-						FeatureInitializationV1.churnRate = d;
-						for(int i = 1; i <= 1; i++) {
-							finalPopulation= runSeed(); 		/* call the run for single seed */
-							writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
-							//sendResultsToServer(finalPopulation);				/* send the results to the central server */
+						for (double a : alpha) {
+							for (double b : beta) {
+								FeatureInitializationV1.windowSize = w;
+								FeatureInitializationV1.churnRate = d;
+								GA_Problem_Parameter.alpha = a;
+								GA_Problem_Parameter.alpha = b;
+								for(int i = 1; i <= 1; i++) {
+									finalPopulation= runSeed(); 		/* call the run for single seed */
+									writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
+									//sendResultsToServer(finalPopulation);				/* send the results to the central server */
+								}
+							}
 						}
 					}
 				}
