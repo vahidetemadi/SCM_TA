@@ -58,6 +58,7 @@ public class Driver {
 	static List<Double> mutation = Arrays.asList(0.01, 0.02, 0.05, 0.1, 0.15);
 	static List<Integer> developersize = Arrays.asList(4, 7, 10, 13);
 	static List<Integer> windowssize = Arrays.asList(4, 5);
+	static List<Integer> batchSize = Arrays.asList(20, 30, 40);
 	static List<Integer> population = Arrays.asList(100, 200, 300);
 	static List<Integer> nfe = Arrays.asList(10000, 20000, 50000);
 	static List<Double>  alpha = Arrays.asList(1.2, 1.5, 1.8);
@@ -132,16 +133,19 @@ public class Driver {
 				*/
 				for (int w : windowssize) {
 					for (int d : developersize) {
-						for (double a : alpha) {
-							for (double b : beta) {
-								FeatureInitializationV1.windowSize = w;
-								FeatureInitializationV1.churnRate = d;
-								GA_Problem_Parameter.alpha = a;
-								GA_Problem_Parameter.alpha = b;
-								for(int i = 1; i <= 1; i++) {
-									finalPopulation= runSeed(); 		/* call the run for single seed */
-									writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
-									//sendResultsToServer(finalPopulation);				/* send the results to the central server */
+						for (int batch : batchSize) {
+							for (double a : alpha) {
+								for (double b : beta) {
+									FeatureInitializationV1.windowSize = w;
+									FeatureInitializationV1.churnRate = d;
+									GA_Problem_Parameter.batch_size = batch;
+									GA_Problem_Parameter.alpha = a;
+									GA_Problem_Parameter.alpha = b;
+									for(int i = 1; i <= 1; i++) {
+										finalPopulation= runSeed(); 		/* call the run for single seed */
+										writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
+										//sendResultsToServer(finalPopulation);				/* send the results to the central server */
+									}
 								}
 							}
 						}
@@ -238,11 +242,11 @@ public class Driver {
 		int numOf = countLines(FeatureInitializationV1.actionProbOverRound);
 		String fileNamePart = "";
 		if (pi)
-		 fileNamePart = String.format("%s%s%s%sW%s_D%s_B%s_P%s_Cr%s_M%s_A%s_B%s", datasetName, File.separator, "PI", File.separator, FeatureInitializationV1.windowSize, FeatureInitializationV1.churnRate,
+		 fileNamePart = String.format("%s%s%s%sW%s_D%s_S%s_P%s_Cr%s_M%s_A%s_B%s", datasetName, File.separator, "PI", File.separator, FeatureInitializationV1.windowSize, FeatureInitializationV1.churnRate,
 				GA_Problem_Parameter.batch_size, GA_Problem_Parameter.population, GA_Problem_Parameter.one_x_rate, GA_Problem_Parameter.um_rate,
 				GA_Problem_Parameter.alpha, GA_Problem_Parameter.beta);
 		else
-			fileNamePart = String.format("%s%s%s%sW%s_D%s_B%s_P%s_Cr%s_M%s_A%s_B%s", datasetName, File.separator, "Context", File.separator, FeatureInitializationV1.windowSize, FeatureInitializationV1.churnRate,
+			fileNamePart = String.format("%s%s%s%sW%s_D%s_S%s_P%s_Cr%s_M%s_A%s_B%s", datasetName, File.separator, "Context", File.separator, FeatureInitializationV1.windowSize, FeatureInitializationV1.churnRate,
 					GA_Problem_Parameter.batch_size, GA_Problem_Parameter.population, GA_Problem_Parameter.one_x_rate, GA_Problem_Parameter.um_rate,
 					GA_Problem_Parameter.alpha, GA_Problem_Parameter.beta);
 		
