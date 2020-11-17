@@ -140,7 +140,7 @@ public class Driver {
 									FeatureInitializationV1.churnRate = d;
 									GA_Problem_Parameter.batch_size = batch;
 									GA_Problem_Parameter.alpha = a;
-									GA_Problem_Parameter.alpha = b;
+									GA_Problem_Parameter.beta = b;
 									for(int i = 1; i <= 1; i++) {
 										finalPopulation= runSeed(); 		/* call the run for single seed */
 										writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
