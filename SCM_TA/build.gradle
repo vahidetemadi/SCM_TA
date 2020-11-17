@@ -1,13 +1,33 @@
-apply plugin: 'java'
+//apply plugin: 'java'
+plugins {
+	id 'java'
+	id 'application'
+}
 
+//mainClassName = "main.java.mainPipeline.Driver"
+
+
+application {
+    mainClass = 'main.java.mainPipeline.Driver'
+}
+
+
+sourceSets.main.output.resourcesDir = "bin/main/resources"
 dependencies {
 	//compile project(":MOEAFramework-2.13")
 	compile fileTree(dir: "lib", include :"*.jar")
 }
 
+
+sourceSets {
+	main {
+		java.outputDir = file('bin')
+	}
+}
+
 jar{
-	baseName='SCM_TA-Self-Aaptive'
-	version='0.1.0'
+	baseName='SATA'
+	version='1.0.0'
 	manifest{
 		attributes(
 			'Class-Path': configurations.compile.collect { it.getName() }.join(' '),
@@ -15,4 +35,5 @@ jar{
 		)
 	}
 }
+
 
