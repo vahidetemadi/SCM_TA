@@ -371,6 +371,7 @@ public class Driver {
 		//log probs of actions over time
 		printWriter_probOverTime.write(FeatureInitializationV1.actionProbOverRound);
 		
+		FeatureInitializationV1.actionProbOverRound = "";
 		//logging the end of running
 		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(Level.INFO, "Just finished the sample run");
 		
