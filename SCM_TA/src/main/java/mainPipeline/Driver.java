@@ -56,13 +56,13 @@ public class Driver {
 	static Boolean pi = false;
 	static List<Double> crossover = Arrays.asList(0.6, 0.7, 0.8, 0.9);
 	static List<Double> mutation = Arrays.asList(0.01, 0.02, 0.05, 0.1, 0.15);
-	static List<Integer> developersize = Arrays.asList(4, 7, 10, 13);
-	static List<Integer> windowssize = Arrays.asList(4, 5);
-	static List<Integer> batchSize = Arrays.asList(20, 30, 40);
+	static List<Integer> developersize = Arrays.asList(2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12);
+	static List<Integer> windowssize = Arrays.asList(5);
+	static List<Integer> batchSize = Arrays.asList(30);
 	static List<Integer> population = Arrays.asList(100, 200, 300);
 	static List<Integer> nfe = Arrays.asList(10000, 20000, 50000);
-	static List<Double>  alpha = Arrays.asList(1.2, 1.5, 1.8);
-	static List<Double>  beta = Arrays.asList(3.2, 3.5, 3.8);
+	static List<Double>  alpha = Arrays.asList(1.2);
+	static List<Double>  beta = Arrays.asList(6.2);
 	
 	public static void main(String[] args) throws IOException {
 		options = new Options();

@@ -622,8 +622,12 @@ public class GATaskAssignment {
   		totalsOverTime.get("EoT_adaptive").add(Environment_s1.getEntropy().get("Entropy"));
   		totalsOverTime.get("ExoTperRound_adaptive").add(Environment_s1.getEntropy().get("Ex"));
   		
+
+  		String temppp1 = FeatureInitializationV1.actionProbOverRound;
+  		
   		FeatureInitializationV1.actionProbOverRound = FeatureInitializationV1.actionProbOverRound.equals("") ? "" 
   				: (FeatureInitializationV1.actionProbOverRound + "\n");
+  		String temppp = FeatureInitializationV1.actionProbOverRound;
   		String t = AdaptiveAssignmentPipline.LAProbes.values().toString();
   		FeatureInitializationV1.actionProbOverRound += AdaptiveAssignmentPipline.LAProbes.values().toString()
   				.replace("[", "").replace("]", "");
