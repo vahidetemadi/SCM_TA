@@ -588,7 +588,9 @@ public class Environment_s1 extends Environment {
 				numOfEX += 1;
 			}
 		}
-		entropiesAndexclusivies.put("Ex", numOfEX);		/* compute the ex number of*/
+		/* FIXME: it should be replace with amount of knowledge, which is knowledgeSummation*/ 
+		//entropiesAndexclusivies.put("Ex", numOfEX);		/* compute the ex number of*/
+		entropiesAndexclusivies.put("Ex", knoweldgeSummation);	/* included amount of exclusive knowledge*/
 		entropiesAndexclusivies.put("Entropy", computeEntropy());		/* compute the entropy*/
 		
 		return entropiesAndexclusivies;
