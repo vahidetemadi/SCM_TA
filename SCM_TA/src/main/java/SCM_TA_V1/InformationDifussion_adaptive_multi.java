@@ -168,9 +168,9 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
 					//check weather the devs are linked together-- essential for data flow
 					if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
-						estimatedEmissionTime=fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
+						estimatedEmissionTime = fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
 									(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
-					if(estimatedEmissionTime<emissionTime){
+					if(estimatedEmissionTime < emissionTime){
 						emissionTime = estimatedEmissionTime;
 						sourceDevId = dev.getKey();
 					}
@@ -185,7 +185,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 			//totalDiffusedKnowledge+=(totalSimToAssignedST-totalSimToUnAssignedST);
 			//totalDiffusedKnowledge += totalDiffusedOfDevTeam;
 			for (Double d : b.BZone_Coefficient.values()) {
-				totalBugsZonesInfo += d;
+				totalBugsZonesInfo += 1;
 			}
 			/*
 			 * if (totalBugsZonesInfo == 0.0) { System.out.println(); }
@@ -200,8 +200,10 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		
 		assertFalse("Hey there is a mistake!", totalBugsZonesInfo == 0.0);
 		
+		//part of the knowledge diffusion formulation
 		totalDiffusedKnowledge /= totalBugsZonesInfo;
 		totalTime = totalEndTime - totalStartTime;
+		// FIXME -- the following should be revised to not include delay time --> still not sure about this
 		totalCost = totalDevCost + totalDelayCost;
 		
 		//just scaled the amount of knowledge diffused

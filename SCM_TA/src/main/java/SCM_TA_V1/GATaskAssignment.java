@@ -750,7 +750,10 @@ public class GATaskAssignment {
 	//update the profile of developers
 	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
 		//updating dev profile using a particular learning rate
-		d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z, Approach.ADAPTIVE) * initalLearningRate);
+		double knowledge = d.getDZone_Coefficient().get(z) + 0.1;
+		knowledge = knowledge < 1 ? knowledge : 1;
+		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z, Approach.ADAPTIVE) * initalLearningRate);
+		d.getDZone_Coefficient().put(z, knowledge);
 		
 	}
 	
@@ -761,8 +764,12 @@ public class GATaskAssignment {
 	 * @param d
 	 */
 	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
-		
-		d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z, Approach.STATIC) * initalLearningRate);
+		//d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z, Approach.STATIC) * initalLearningRate);
+		//updating dev profile using a particular learning rate
+		double knowledge = d.getDZone_Coefficient_static().get(z) + 0.1;
+		knowledge = knowledge < 1 ? knowledge : 1;
+		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z, Approach.ADAPTIVE) * initalLearningRate);
+		d.getDZone_Coefficient_static().put(z, knowledge);
 	}
 
 }

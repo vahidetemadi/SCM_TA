@@ -168,7 +168,7 @@ public class StaticAssignment extends AbstractProblem {
 			
 			//totalDiffusedKnowledge += totalDiffusedOfDevTeam;
 			for (Double d : b.BZone_Coefficient.values()) {
-				totalBugsZonesInfo += d;;
+				totalBugsZonesInfo += 1;;
 			}
 			totalStartTime = Math.min(totalStartTime, b.startTime_evaluate);
 			totalEndTime = Math.max(totalEndTime, b.endTime_evaluate);

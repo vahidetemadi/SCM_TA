@@ -160,34 +160,55 @@ public class fitnessCalc {
 	}
 	
 	public static double getID_scaled_adaptive(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
-		double flowInfo = 0;
-		double diff = Math.abs(getZoneDiff(candidate, b, z, Approach.ADAPTIVE));
-		double maxInFlow = 0 ;
+		boolean diff = false;
+		double threshold = 0.05;
+		double Inflow = 0;
+		if (candidate.DZone_Coefficient.containsKey(z)) {
+			if (candidate.DZone_Coefficient.get(z) > threshold)
+				diff = false;
+			else 
+				diff = true;
+		}
+		else {
+			diff = true;
+		}
 		
-		for(Developer d : developers) {
-			if(d.getID() != candidate.getID()) {
-				if (d.getDZone_Coefficient().get(z) > maxInFlow)
-					maxInFlow = d.getDZone_Coefficient().get(z);
+		if (diff) {
+			for(Developer d:developers) {
+				if(d.getID() != candidate.getID()) {
+					if (d.getDZone_Coefficient().get(z) > threshold)
+						 Inflow = 1;
+				}
 			}
 		}
-		flowInfo = Math.min(diff, maxInFlow);
-		return flowInfo;
+		
+		return Inflow;
 	}
 	
 	public static double getID_scaled_static(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
-		double flowInfo = 0;
-		double diff = Math.abs(getZoneDiff(candidate, b, z, Approach.STATIC));
-		double maxInFlow = 0 ;
+		boolean diff = false;
+		double threshold = 0.05;
+		double Inflow = 0;
+		if (candidate.DZone_Coefficient_static.containsKey(z)) {
+			if (candidate.DZone_Coefficient_static.get(z) > threshold)
+				diff = false;
+			else 
+				diff = true;
+		}
+		else {
+			diff = true;
+		}
 		
-		for(Developer d:developers) {
-			if(d.getID() != candidate.getID()) {
-				if (d.getDZone_Coefficient_static().get(z) > maxInFlow)
-					maxInFlow = d.getDZone_Coefficient_static().get(z);
+		if (diff) {
+			for(Developer d:developers) {
+				if(d.getID() != candidate.getID()) {
+					if (d.getDZone_Coefficient_static().get(z) > threshold)
+						 Inflow = 1;
+				}
 			}
 		}
 		
-		flowInfo = Math.min(diff, maxInFlow);
-		return flowInfo;
+		return Inflow;
 	}
 	
 	public static double getZoneDiff(Developer d1, Bug b2, Zone z1, Approach approach){
