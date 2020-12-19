@@ -161,7 +161,7 @@ public class fitnessCalc {
 	
 	public static double getID_scaled_adaptive(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
 		boolean diff = false;
-		double threshold = 0.05;
+		double threshold = 0.20;
 		double Inflow = 0;
 		if (candidate.DZone_Coefficient.containsKey(z)) {
 			if (candidate.DZone_Coefficient.get(z) > threshold)
@@ -187,7 +187,7 @@ public class fitnessCalc {
 	
 	public static double getID_scaled_static(ArrayList<Developer> developers, Developer candidate, Bug b, Zone z) {
 		boolean diff = false;
-		double threshold = 0.05;
+		double threshold = 0.20;
 		double Inflow = 0;
 		if (candidate.DZone_Coefficient_static.containsKey(z)) {
 			if (candidate.DZone_Coefficient_static.get(z) > threshold)

@@ -43,18 +43,18 @@ import smile.sequence.HMM;
 
 public class AdaptiveAssignmentPipline {
 
-	static Training training_instance=new Training();
-	static ArrayList<String> objectiveSet=new ArrayList<String>();
-	static Random random=new Random();
-	static HMM<Observation> HMM=null;
-	static String datasetName=null;
+	static Training training_instance = new Training();
+	static ArrayList<String> objectiveSet = new ArrayList<String>();
+	static Random random = new Random();
+	static HMM<Observation> HMM = null;
+	static String datasetName = null;
 	public static HashMap<Action, Double> LAProbes = new HashMap<Action, Double>(){
 		{
 			put(Action.COST, 0.5);
 			put(Action.DIFFUSION, 0.5);
 		}
 	};
- 	private static AdaptiveAssignmentPipline adaptivePipeline=null;
+ 	private static AdaptiveAssignmentPipline adaptivePipeline = null;
 	GATaskAssignment test;
 	
 	static FeatureInitialization featureIni = FeatureInitializationV1.getInstance();
@@ -130,6 +130,8 @@ public class AdaptiveAssignmentPipline {
 		totalsOverTime.put("EoT_adaptive", new ArrayList<Double>());
 		totalsOverTime.put("ExoTperRound_adaptive", new ArrayList<Double>());
 		totalsOverTime.put("actionProbVector", new ArrayList<Double>());
+		totalsOverTime.put("churnRate", new ArrayList<Double>());
+		totalsOverTime.put("actions", new ArrayList<Double>());
 		//start the pipeline
 		start(totals, totalsOverTime, devsProfileOverTime);
 		
@@ -228,16 +230,21 @@ public class AdaptiveAssignmentPipline {
 				//Environment_s1.updateDevNetwork();
 				
 			
-				if (roundNum / FeatureInitializationV1.windowSize == 0) {
-					Environment_s1.nodeAttachment(FeatureInitializationV1.churnRate); 		/**insert the num of devs by hand**/
+				if (roundNum % FeatureInitializationV1.windowSize == 0 && roundNum > 3) {
+					
+					FeatureInitializationV1.churnRate = FeatureInitializationV1.churnRate + 2;
+					//pass num of developer who will be added
+					Environment_s1.nodeAttachment(FeatureInitializationV1.churnRate);
 					
 					//true as the second argument indicates random deletion
 					Environment_s1.nodeDeletion(FeatureInitializationV1.churnRate, true);
 					//Environment_s1.updateDevNetwork();
 				}
+				//add churn rate over time
+				totalsOverTime.get("churnRate").add((double) FeatureInitializationV1.churnRate);
 				
 				//update over time dev profile
-				if(roundNum%10==0)
+				if(roundNum % 10 == 0)
 					Environment_s1.interRoundProfileUpdate();
 				
 				//developers need to be shuffled
@@ -259,20 +266,20 @@ public class AdaptiveAssignmentPipline {
 			}
 		}	
 		
-		//add after assginment profile
+		//add after assignment profile
 		devsProfileOverTime.put(1, GA_Problem_Parameter.developers_all);
 		File file = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator+ "self-adaptive"
 				+ File.separator+ "devs_added.txt");
 		file.getParentFile().mkdirs();
 		PrintWriter pw = new PrintWriter(new FileOutputStream(file, true));
-		pw.append("------------------" + "\n" + "--------------------" + "\n");
+		pw.append("------------------" + "\n" + roundNum + "\n" + "--------------------" + "\n");
 		pw.close();
 		
 		File file2 = new File(System.getProperty("user.dir") + File.separator+"results" + File.separator + "self-adaptive"
 				+ File.separator+ "devs_deleted.txt");
 		file.getParentFile().mkdirs();
 		PrintWriter pw2 = new PrintWriter(new FileOutputStream(file2, true));
-		pw2.append("------------------" + "\n" + "--------------------" + "\n");
+		pw2.append("------------------" + "\n" + roundNum + "\n" + "--------------------" + "\n");
 		pw2.close();
 		ArrayList<Double> laProbs = new ArrayList<Double>(LAProbes.values()); 
 		totalsOverTime.put("actionProbVector", laProbs );
@@ -523,14 +530,17 @@ public class AdaptiveAssignmentPipline {
 	/*
 	 * the implementation of the function which maps the internal states to the action
 	 */
-	public static Action getAction() {
+	public static Action getAction(HashMap<String, ArrayList<Double>> totalsOverTime) {
 		double r = random.nextDouble();
 		
 		if (r < LAProbes.get(Action.COST)) {
+			totalsOverTime.get("actions").add(1.0);
 			return Action.COST;
 		}
-		else 
+		else {
+			totalsOverTime.get("actions").add(0.0);
 			return Action.DIFFUSION;
+		}
 	}
 	
 	/*

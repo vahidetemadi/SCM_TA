@@ -179,12 +179,15 @@ public class StaticAssignment extends AbstractProblem {
 		}
 		totalDiffusedKnowledge /= totalBugsZonesInfo;
 		totalTime = totalEndTime - totalStartTime;
+		// the following line has been commented
 		totalCost = totalDevCost + totalDelayCost;
+		//totalCost = totalDevCost;
 		
 		//solution.setObjective(0, totalTime);
 		solution.setObjective(0, totalCost);
 		solution.setAttribute("time", totalTime);
-		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge / numOfBugs);
+		//solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge / numOfBugs);
+		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge);
 	}
 		
 	

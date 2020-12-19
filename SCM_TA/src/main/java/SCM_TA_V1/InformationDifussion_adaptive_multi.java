@@ -111,7 +111,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 			Bug b = tso.next();
 			int temp = b.BZone_Coefficient.size();
 			b.startTime_evaluate = fitnessCalc.getMaxEndTimes(b, DEP_evaluation);
-			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
+			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone = new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone_takeDevTeam=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			
 			//fill dev list team 
@@ -123,7 +123,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				index_fillDevTeam++;
 			}
 			
-			GA_Problem_Parameter.tso_Zone=tso_Zone;
+			GA_Problem_Parameter.tso_Zone = tso_Zone;
 			Map.Entry<Integer, Developer> candidate=null;
 			
 			while(tso_Zone.hasNext()){
@@ -185,6 +185,7 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 			//totalDiffusedKnowledge+=(totalSimToAssignedST-totalSimToUnAssignedST);
 			//totalDiffusedKnowledge += totalDiffusedOfDevTeam;
 			for (Double d : b.BZone_Coefficient.values()) {
+				//I have changed following line to simply sum up bug info as a unit per package
 				totalBugsZonesInfo += 1;
 			}
 			/*
@@ -205,10 +206,12 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 		totalTime = totalEndTime - totalStartTime;
 		// FIXME -- the following should be revised to not include delay time --> still not sure about this
 		totalCost = totalDevCost + totalDelayCost;
+		//totalCost = totalDevCost;
 		
 		//just scaled the amount of knowledge diffused
 		//solution.setObjective(0, -totalDiffusedKnowledge / solution.getNumberOfVariables());
-		solution.setObjective(0, -totalDiffusedKnowledge / numOfBugs);
+		//solution.setObjective(0, -totalDiffusedKnowledge / numOfBugs);
+		solution.setObjective(0, -totalDiffusedKnowledge);
 		solution.setObjective(1, totalCost);
 		solution.setAttribute("cost", totalCost);
 		solution.setAttribute("diffusedKnowledge", totalDiffusedKnowledge / numOfBugs);

@@ -28,8 +28,8 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 	public InitializedFeaturesProblem(int numberOfVariables, int numberOfObjectives) {
 		super(numberOfVariables, numberOfObjectives);
 		// TODO Auto-generated constructor stub
-		adaptive=AdaptiveAssignmentPipline.getInstance();
-		featureSetV1=FeatureSetV1.getInstance();
+		adaptive = AdaptiveAssignmentPipline.getInstance();
+		featureSetV1 = FeatureSetV1.getInstance();
 		
 		//add <key, value>s to the trendOverTime list
 		/*
@@ -73,6 +73,8 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 			solution.setAttribute("EoT_static", totalsOverTime.get("EoT_static"));
 			solution.setAttribute("ExoTperRound_adaptive", totalsOverTime.get("ExoTperRound_adaptive"));
 			solution.setAttribute("actionProbVector", totalsOverTime.get("actionProbVector"));
+			solution.setAttribute("churnRate", totalsOverTime.get("churnRate"));
+			solution.setAttribute("actions", totalsOverTime.get("actions"));
 		///}
 		//catch (Exception e) {
 			//e.printStackTrace();
@@ -84,7 +86,7 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 	@Override
 	public Solution newSolution() {
 		// TODO Auto-generated method stub
-		Solution solution=new  Solution(numberOfVariables, numberOfObjectives);
+		Solution solution= new Solution(numberOfVariables, numberOfObjectives);
 		featureSetV1.setFeatureVector(solution);
 		return solution;
 	}

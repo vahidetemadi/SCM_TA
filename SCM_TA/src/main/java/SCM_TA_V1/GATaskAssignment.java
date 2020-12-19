@@ -356,7 +356,8 @@ public class GATaskAssignment {
 		static_assignment=new StaticAssignment();
 		inintialization_normal = new RandomInitialization(normal_assginment, GA_Problem_Parameter.population);
 		inintialization_ID=new RandomInitialization(ID_assignment, GA_Problem_Parameter.population);
-		inintialization_static = new RandomInitialization(static_assignment, GA_Problem_Parameter.population);
+		//inintialization_static = new RandomInitialization(static_assignment, GA_Problem_Parameter.population);
+		inintialization_static = new RandomInitialization(static_assignment, 200);
 		GA_normal=new GeneticAlgorithm(normal_assginment, comparator, inintialization_normal, selection, variation);
 		GA_ID=new GeneticAlgorithm(ID_assignment, comparator, inintialization_ID, selection, variation);
 		GA_static = new GeneticAlgorithm(static_assignment, comparator, inintialization_static, selection, variation);
@@ -518,7 +519,7 @@ public class GATaskAssignment {
 		Instrumenter instrumenter_adaptive_multi = new Instrumenter().withProblem("NSGAIIITAGLS").withReferenceSet(new File(path)).withFrequency(10).attachAll()
 	    		.withFrequencyType(FrequencyType.EVALUATIONS);
 		NondominatedPopulation NDP_adaptive_multi = new Executor().withProblemClass(InformationDifussion_adaptive_multi.class).withAlgorithm("NSGAII")
-				.withMaxEvaluations(GA_Problem_Parameter.nfe).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "1x+um")
+				.withMaxEvaluations(GA_Problem_Parameter.nfe).withProperty("populationSize", GA_Problem_Parameter.population).withProperty("operator", "1x+um")
 				.withProperty("1x.rate", GA_Problem_Parameter.one_x_rate).withProperty("um.rate", GA_Problem_Parameter.um_rate).withInstrumenter(instrumenter_adaptive_multi).run();
 		
 		//assertNotEquals(0, NDP_adaptive_multi.size());
@@ -552,7 +553,7 @@ public class GATaskAssignment {
 	    }
 	    
 	    for (FinalSolution<Solution,Double,Double> f: ParetoFront) {
-	    	System.out.println(f.getCost());
+	    	System.out.println("the actual id:" + f.getCost());
 	    	System.out.println("the actual id: "+ f.getDiffusion());
 	    }
 	    
@@ -567,9 +568,14 @@ public class GATaskAssignment {
 	    				x.setDiffusion(x.getDiffusion() * rationD);
 	    				return x;
 	    		 }).collect(Collectors.toList());
-	    Action action2 = roundnum > 2 ?
-	    	action2 = AdaptiveAssignmentPipline.getInstance().getAction()
-	    	: Action.DIFFUSION;
+	    Action action2 = null;
+	    if (roundnum > 4)
+	    	action2 = AdaptiveAssignmentPipline.getInstance().getAction(totalsOverTime);
+	    else {
+	    	action2 = Action.DIFFUSION;
+	    	totalsOverTime.get("actions").add(0.0);
+	    }
+	    
 	    
 	    
 	    Solution adaptiveSolution = null;
@@ -603,7 +609,7 @@ public class GATaskAssignment {
 			Bug b=GA_Problem_Parameter.tso_adaptive.next();
 			TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone=new TopologicalOrderIterator<Zone, DefaultEdge>(b.Zone_DEP);
 			while(tso_Zone.hasNext()){
-				Developer d=GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(adaptiveSolution.getVariable(c))));
+				Developer d = GA_Problem_Parameter.developers_all.get(GA_Problem_Parameter.devListId.get(EncodingUtils.getInt(adaptiveSolution.getVariable(c))));
 				updateDevProfile_adaptive(b, tso_Zone.next(), d);
 				c++;
 			}
@@ -632,10 +638,10 @@ public class GATaskAssignment {
   		FeatureInitializationV1.actionProbOverRound += AdaptiveAssignmentPipline.LAProbes.values().toString()
   				.replace("[", "").replace("]", "");
   		//get the response from environment and call the update function
-  		int[] feedback = roundnum > 2 ?
+  		int[] feedback = roundnum > 5 ?
   				AdaptiveAssignmentPipline.getInstance().getFeedback(roundnum, totalsOverTime)
   				: new int[]{0, 0};
-    	Feedback response = roundnum > 2 ? 
+    	Feedback response = roundnum > 5 ? 
     			AdaptiveAssignmentPipline.getInstance().getResponse(feedback):
     			Feedback.INACTION;
 	    

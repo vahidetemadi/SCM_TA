@@ -264,23 +264,23 @@ public class Environment_s1 extends Environment {
 	public static void nodeAttachment() throws FileNotFoundException{
 		shouldBeDeleted.clear(); //it's needed to then update ready for attachment list
 		addedRecently.clear();
-		numOfShouldBeDeleted=0;
+		numOfShouldBeDeleted = 0;
 		double p;
-		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
-				+File.separator+ "devs_added.txt");
+		File file = new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
+				+ File.separator + "devs_added.txt");
 		file.getParentFile().mkdirs();
-		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
-		for(Integer i:readyForAttachment){
+		PrintWriter pw = new PrintWriter(new FileOutputStream(file, true));
+		for(Integer i : readyForAttachment){
 			p=random.nextDouble();
 			if(p<TCR_ratio && numOfNodes>0){
 				numOfNodes--;	/* decrease num of nodes should be deleted*/
 				
 				//check weather developer i exists
-				if(GA_Problem_Parameter.getDev(i)!=null){
-					Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
+				if(GA_Problem_Parameter.getDev(i) != null){
+					Map.Entry<Integer, Developer> developer = GA_Problem_Parameter.getDev(i);
 					devNetwork.addVertex(developer);
 					//GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
-					pw.append(i+"\n");
+					pw.append(i + "\n");
 					GA_Problem_Parameter.devListId.add(i);
 					addedRecently.add(i);
 					shouldBeDeleted.add(i);
@@ -299,25 +299,25 @@ public class Environment_s1 extends Environment {
 	}
 	
 	public static void nodeAttachment(int numberOfDevs) throws FileNotFoundException{
-		File file=new File(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"
-				+File.separator+ "devs_added.txt");
+		File file = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator 
+				+ "self-adaptive" + File.separator + "devs_added.txt");
 		file.getParentFile().mkdirs();
-		PrintWriter pw=new PrintWriter(new FileOutputStream(file, true));
+		PrintWriter pw = new PrintWriter(new FileOutputStream(file, true));
 		
 		shouldBeDeleted.clear(); //it's needed to then update ready for attachment list
 		addedRecently.clear();
-		numOfShouldBeDeleted=0;
-		int numOfShouldBeAdded=numberOfDevs;
+		numOfShouldBeDeleted = 0;
+		int numOfShouldBeAdded = numberOfDevs;
 		ArrayList<Integer> shuffeledReadyForAttachment=(ArrayList<Integer>) readyForAttachment.clone();
 		Collections.shuffle(shuffeledReadyForAttachment);
 		for(Integer i:shuffeledReadyForAttachment){
 			//check weather developer with the id of i exists
-			if(GA_Problem_Parameter.getDev(i)!=null && numOfShouldBeAdded>0){
+			if(GA_Problem_Parameter.getDev(i)!= null && numOfShouldBeAdded > 0){
 				numOfShouldBeAdded--;
-				System.out.println("The id should be added: "+ i);
+				System.out.println("The id should be added: " + i);
 				//numOfNodes--;	/* decrease num of nodes should be deleted*/
-				pw.append(i+"\n");
-				Map.Entry<Integer, Developer> developer=GA_Problem_Parameter.getDev(i);
+				pw.append(i + "\n");
+				Map.Entry<Integer, Developer> developer = GA_Problem_Parameter.getDev(i);
 				devNetwork.addVertex(developer);
 				//GA_Problem_Parameter.developers.put(i, GA_Problem_Parameter.developers_all.get(i));
 				GA_Problem_Parameter.devListId.add(i);
