@@ -78,7 +78,13 @@ public class GA_Problem_Parameter {
 	public static ArrayList<HashMap<Integer, Bug>> listOfSubBugs = new ArrayList<HashMap<Integer, Bug>>();
 	public static int numberOfTimesMakingProfileComparison = 2;
 	public static int earlyDevListSize = 7;
-
+	public static HashMap<Zone, Double> knowledgeSoFar = new HashMap<Zone, Double>();
+	public static double totalKnowledge = 0;
+	public static double knowledgeHit_static = 0;
+	public static double knowledgeLoss_static = 0; /* in effect, this is: "1- knowledgeHit" */
+	public static double knowledgeHit_adaptive = 0;
+	public static double knowledgeLoss_adaptive = 0; /* in effect, this is: "1- knowledgeHit" */
+	
 	// Parameter for new solution in ID approach
 	// ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
 	public static int setNum_of_Variables(Bug[] bugs) {

@@ -57,7 +57,7 @@ public class Driver {
 	static List<Double> crossover = Arrays.asList(0.6, 0.7, 0.8, 0.9);
 	static List<Double> mutation = Arrays.asList(0.01, 0.02, 0.05, 0.1, 0.15);
 	//static List<Integer> developersize = Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16, 18);
-	static List<Integer> developersize = Arrays.asList(2);
+	static List<Integer> developersize = Arrays.asList(5);
 	static List<Integer> windowssize = Arrays.asList(3);
 	static List<Integer> batchSize = Arrays.asList(30);
 	static List<Integer> population = Arrays.asList(100, 200, 300);
@@ -266,7 +266,8 @@ public class Driver {
 		//CSVWriter csvWriter_probOverTime=new CSVWriter(printWriter_probOverTime);
 		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive",
 					"SoT", "costPerRound_static" , "costPerRound_adaptive", "idPerRound_static", "idPerRound_adaptive", "EoT_static", "EoT_adaptive", "ExoTperRound_adaptive",
-					"actionProbVector", "churnRate", "actions"};
+					"actionProbVector", "churnRate", "actions", "retainedKnowledge_static", "retainedKnowledge_adaptive", "lostKnowledge_static",
+					"lostKnowledge_adaptive"};
 		//String[] csvFileOutputHeader_probOverTime= {"cost","diffusion"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
 		//csvWriter_probOverTime.writeNext(csvFileOutputHeader_probOverTime);		//write the header of the csv file to store prob over time
@@ -293,7 +294,11 @@ public class Driver {
 												((ArrayList<Double>)tempSolution.getAttribute("ExoTperRound_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("actionProbVector")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("churnRate")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("actions")).stream().map(x -> x == 1.0 ? "Cost" : "Diffuion").collect(Collectors.toList()).toString()
+												((ArrayList<Double>)tempSolution.getAttribute("actions")).stream().map(x -> x == 1.0 ? "Cost" : "Diffuion").collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("retainedKnowledge_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("retainedKnowledge_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("lostKnowledge_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("lostKnowledge_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString()
 												});
 			//log devs status over time
 			int devCount=0;

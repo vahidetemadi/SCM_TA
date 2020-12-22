@@ -227,6 +227,9 @@ public class Environment_s1 extends Environment {
 		File file = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
 				+ File.separator + "devs_deleted.txt");
 		file.getParentFile().mkdirs();
+		/* set num of devs should be deleted*/
+		numOfDevs = (numOfDevs / 100) * GA_Problem_Parameter.devListId.size();
+		
 		PrintWriter pw = new PrintWriter(new FileOutputStream(file, true));
 		//report total changed
 		totalChanged = 0;
@@ -307,12 +310,14 @@ public class Environment_s1 extends Environment {
 		shouldBeDeleted.clear(); //it's needed to then update ready for attachment list
 		addedRecently.clear();
 		numOfShouldBeDeleted = 0;
-		int numOfShouldBeAdded = numberOfDevs;
-		ArrayList<Integer> shuffeledReadyForAttachment=(ArrayList<Integer>) readyForAttachment.clone();
+		
+		//int numOfShouldBeAdded = numberOfDevs;
+		int numOfShouldBeAdded = (numberOfDevs / 100) * GA_Problem_Parameter.devListId.size();
+		ArrayList<Integer> shuffeledReadyForAttachment = (ArrayList<Integer>) readyForAttachment.clone();
 		Collections.shuffle(shuffeledReadyForAttachment);
-		for(Integer i:shuffeledReadyForAttachment){
+		for(Integer i : shuffeledReadyForAttachment){
 			//check weather developer with the id of i exists
-			if(GA_Problem_Parameter.getDev(i)!= null && numOfShouldBeAdded > 0){
+			if(GA_Problem_Parameter.getDev(i) != null && numOfShouldBeAdded > 0){
 				numOfShouldBeAdded--;
 				System.out.println("The id should be added: " + i);
 				//numOfNodes--;	/* decrease num of nodes should be deleted*/

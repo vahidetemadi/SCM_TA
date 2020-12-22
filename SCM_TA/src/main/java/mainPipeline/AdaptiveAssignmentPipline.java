@@ -132,6 +132,10 @@ public class AdaptiveAssignmentPipline {
 		totalsOverTime.put("actionProbVector", new ArrayList<Double>());
 		totalsOverTime.put("churnRate", new ArrayList<Double>());
 		totalsOverTime.put("actions", new ArrayList<Double>());
+		totalsOverTime.put("retainedKnowledge_static", new ArrayList<Double>());
+		totalsOverTime.put("lostKnowledge_static", new ArrayList<Double>());
+		totalsOverTime.put("retainedKnowledge_adaptive", new ArrayList<Double>());
+		totalsOverTime.put("lostKnowledge_adaptive", new ArrayList<Double>());
 		//start the pipeline
 		start(totals, totalsOverTime, devsProfileOverTime);
 		
@@ -187,20 +191,27 @@ public class AdaptiveAssignmentPipline {
 		//	Environment_s1.numberOfFiles=10;
 		
 		//set the initial observation and 
-		int roundNum=1;
+		int roundNum = 1;
 		
-		for(int i = 1; i <= Environment_s1.numberOfFiles; i++){
+		for (int i = 1; i <= Environment_s1.numberOfFiles; i++){
 			//call for run
 			GA_Problem_Parameter.listOfSubBugs.clear();
 			//GATaskAssignment.run(datasetName, i, featureIni.getDevNum().get(listOfConfig.get("numOfBugs")));
 			GATaskAssignment.run(datasetName, i, 0);
 			//GATaskAssignment.run(datasetName, i, 5);
-			if(i == Environment_s1.numberOfFiles / 2 || i == 1)
+			if (i == Environment_s1.numberOfFiles / 2 || i == 1)
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
-			for(HashMap<Integer,Bug> bugList : GA_Problem_Parameter.listOfSubBugs){
+			for (HashMap<Integer,Bug> bugList : GA_Problem_Parameter.listOfSubBugs){
 				if (bugList.size() < GA_Problem_Parameter.batch_size)
 					continue;
+				//increase the vlaue of total knowledge 
+				for (Map.Entry<Integer, Bug> entry : bugList.entrySet()) {
+					for (Zone z : entry.getValue().BZone_Coefficient.keySet()) {
+						GA_Problem_Parameter.knowledgeSoFar.put(z, 1.0);
+					}
+				} 
+				
 				//log devs profile at the point of time
 				logDevProfilePerRound(roundNum);
 				
@@ -222,6 +233,7 @@ public class AdaptiveAssignmentPipline {
 				test.Assigning(state.getActionSet().get(0), 1, roundNum, datasetName, totals, totalsOverTime);
 				
 				HashMap<Integer, Developer> devs=GA_Problem_Parameter.developers_all;
+				
 				//update devNetwork
 				//Environment_s1.nodeAttachment();
 				//Environment_s1.nodeAttachment(Stubs.tempChurns.get(roundNum-1)); 		/**insert the num of devs by hand**/
@@ -231,8 +243,9 @@ public class AdaptiveAssignmentPipline {
 				
 			
 				if (roundNum % FeatureInitializationV1.windowSize == 0 && roundNum > 3) {
+					/* made the following line commented to use a fixed churnrate all over the other rounds*/
+					//FeatureInitializationV1.churnRate = FeatureInitializationV1.churnRate + 1;
 					
-					FeatureInitializationV1.churnRate = FeatureInitializationV1.churnRate + 2;
 					//pass num of developer who will be added
 					Environment_s1.nodeAttachment(FeatureInitializationV1.churnRate);
 					
@@ -262,6 +275,20 @@ public class AdaptiveAssignmentPipline {
 				Environment_s1.addToSequenceOfObservation(Environment_s1.getObservation());
 
 				//j++;
+				
+				// computing the knowledge loss and knowledge hit
+				GA_Problem_Parameter.totalKnowledge = 0;
+				for (Double d : GA_Problem_Parameter.knowledgeSoFar.values()) {
+					GA_Problem_Parameter.totalKnowledge += d;
+				}
+				GA_Problem_Parameter.knowledgeHit_static = knowledgeHit_static();
+				GA_Problem_Parameter.knowledgeLoss_static = 1 - GA_Problem_Parameter.knowledgeHit_static;
+				GA_Problem_Parameter.knowledgeHit_adaptive = knowledgeHit_adaptive();
+				GA_Problem_Parameter.knowledgeLoss_adaptive = 1 - GA_Problem_Parameter.knowledgeHit_adaptive;
+				totalsOverTime.get("retainedKnowledge_static").add(GA_Problem_Parameter.knowledgeHit_static / GA_Problem_Parameter.totalKnowledge);
+				totalsOverTime.get("lostKnowledge_static").add(GA_Problem_Parameter.knowledgeLoss_static / GA_Problem_Parameter.totalKnowledge);
+				totalsOverTime.get("retainedKnowledge_adaptive").add(GA_Problem_Parameter.knowledgeHit_adaptive / GA_Problem_Parameter.totalKnowledge);
+				totalsOverTime.get("retainedKnowledge_adaptive").add(GA_Problem_Parameter.knowledgeLoss_adaptive / GA_Problem_Parameter.totalKnowledge);
 				roundNum++;
 			}
 		}	
@@ -282,7 +309,7 @@ public class AdaptiveAssignmentPipline {
 		pw2.append("------------------" + "\n" + roundNum + "\n" + "--------------------" + "\n");
 		pw2.close();
 		ArrayList<Double> laProbs = new ArrayList<Double>(LAProbes.values()); 
-		totalsOverTime.put("actionProbVector", laProbs );
+		totalsOverTime.put("actionProbVector", laProbs);
 	}
 	
 	public State getState(HMM<Observation> HMM){
@@ -627,5 +654,31 @@ public class AdaptiveAssignmentPipline {
 			}
 		}
 		return s;
+	}
+	
+	public static double knowledgeHit_static() {
+		int knowledgeHit = 0;
+		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
+				for (Integer id : GA_Problem_Parameter.devListId) {
+					if (GA_Problem_Parameter.developers.get(id).getDZone_Coefficient_static().get(entry.getKey()) >= 1.0) {
+						knowledgeHit++;
+						break;
+					}
+				}
+		}
+		return knowledgeHit;
+	}
+	
+	public static double knowledgeHit_adaptive() {
+		int knowledgeHit = 0;
+		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
+				for (Integer id : GA_Problem_Parameter.devListId) {
+					if (GA_Problem_Parameter.developers.get(id).getDZone_Coefficient().get(entry.getKey()) >= 1.0) {
+						knowledgeHit++;
+						break;
+					}
+				}
+		}
+		return knowledgeHit;
 	}
 }

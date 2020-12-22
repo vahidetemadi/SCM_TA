@@ -75,6 +75,10 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 			solution.setAttribute("actionProbVector", totalsOverTime.get("actionProbVector"));
 			solution.setAttribute("churnRate", totalsOverTime.get("churnRate"));
 			solution.setAttribute("actions", totalsOverTime.get("actions"));
+			solution.setAttribute("retainedKnowledge_static", totalsOverTime.get("retainedKnowledge_static"));
+			solution.setAttribute("lostKnowledge_static", totalsOverTime.get("lostKnowledge_static"));
+			solution.setAttribute("retainedKnowledge_adaptive", totalsOverTime.get("retainedKnowledge_adaptive"));
+			solution.setAttribute("lostKnowledge_adaptive", totalsOverTime.get("lostKnowledge_adaptive"));
 		///}
 		//catch (Exception e) {
 			//e.printStackTrace();
