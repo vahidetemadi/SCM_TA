@@ -281,14 +281,14 @@ public class AdaptiveAssignmentPipline {
 				for (Double d : GA_Problem_Parameter.knowledgeSoFar.values()) {
 					GA_Problem_Parameter.totalKnowledge += d;
 				}
-				GA_Problem_Parameter.knowledgeHit_static = knowledgeHit_static();
+				GA_Problem_Parameter.knowledgeHit_static = knowledgeHit_static() / GA_Problem_Parameter.totalKnowledge;
 				GA_Problem_Parameter.knowledgeLoss_static = 1 - GA_Problem_Parameter.knowledgeHit_static;
-				GA_Problem_Parameter.knowledgeHit_adaptive = knowledgeHit_adaptive();
+				GA_Problem_Parameter.knowledgeHit_adaptive = knowledgeHit_adaptive() / GA_Problem_Parameter.totalKnowledge;
 				GA_Problem_Parameter.knowledgeLoss_adaptive = 1 - GA_Problem_Parameter.knowledgeHit_adaptive;
-				totalsOverTime.get("retainedKnowledge_static").add(GA_Problem_Parameter.knowledgeHit_static / GA_Problem_Parameter.totalKnowledge);
-				totalsOverTime.get("lostKnowledge_static").add(GA_Problem_Parameter.knowledgeLoss_static / GA_Problem_Parameter.totalKnowledge);
-				totalsOverTime.get("retainedKnowledge_adaptive").add(GA_Problem_Parameter.knowledgeHit_adaptive / GA_Problem_Parameter.totalKnowledge);
-				totalsOverTime.get("retainedKnowledge_adaptive").add(GA_Problem_Parameter.knowledgeLoss_adaptive / GA_Problem_Parameter.totalKnowledge);
+				totalsOverTime.get("retainedKnowledge_static").add(GA_Problem_Parameter.knowledgeHit_static);
+				totalsOverTime.get("lostKnowledge_static").add(GA_Problem_Parameter.knowledgeLoss_static);
+				totalsOverTime.get("retainedKnowledge_adaptive").add(GA_Problem_Parameter.knowledgeHit_adaptive);
+				totalsOverTime.get("retainedKnowledge_adaptive").add(1- GA_Problem_Parameter.knowledgeLoss_adaptive);
 				roundNum++;
 			}
 		}	
@@ -660,10 +660,11 @@ public class AdaptiveAssignmentPipline {
 		int knowledgeHit = 0;
 		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
 				for (Integer id : GA_Problem_Parameter.devListId) {
-					if (GA_Problem_Parameter.developers.get(id).getDZone_Coefficient_static().get(entry.getKey()) >= 1.0) {
-						knowledgeHit++;
-						break;
-					}
+					if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()) != null)
+						if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()) > 0.2) {
+							knowledgeHit++;
+							break;
+						}
 				}
 		}
 		return knowledgeHit;
@@ -672,12 +673,13 @@ public class AdaptiveAssignmentPipline {
 	public static double knowledgeHit_adaptive() {
 		int knowledgeHit = 0;
 		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
-				for (Integer id : GA_Problem_Parameter.devListId) {
-					if (GA_Problem_Parameter.developers.get(id).getDZone_Coefficient().get(entry.getKey()) >= 1.0) {
+			for (Integer id : GA_Problem_Parameter.devListId) {
+				if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) != null)
+					if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) > 0.2) {
 						knowledgeHit++;
 						break;
 					}
-				}
+			}
 		}
 		return knowledgeHit;
 	}

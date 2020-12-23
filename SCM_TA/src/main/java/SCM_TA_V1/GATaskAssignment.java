@@ -216,9 +216,9 @@ public class GATaskAssignment {
 		for(Map.Entry<Integer, Developer> dev:developers.entrySet()){
 			GA_Problem_Parameter.DevList.add(dev.getKey());
 		}
-		
-		GA_Problem_Parameter.developers_all=(HashMap<Integer, Developer>) developers.clone();
-		GA_Problem_Parameter.developers=developers;
+		/* keep all devs list as developer_all */
+		GA_Problem_Parameter.developers_all = (HashMap<Integer, Developer>) developers.clone();
+		GA_Problem_Parameter.developers = developers;
 		for(Developer d:GA_Problem_Parameter.developers.values()){
 			for(Map.Entry<Zone, Double> entry:d.DZone_Coefficient.entrySet()){
 				if(entry.getValue()==0) {
@@ -246,9 +246,9 @@ public class GATaskAssignment {
 		is_copy.close();
 		
 		for(Map.Entry<Integer, Developer> d:GA_Problem_Parameter.developers_all.entrySet()) {
-			System.out.print(d.getKey()+"--->");
+			System.out.print(d.getKey() + "--->");
 			for(Map.Entry<Zone, Double> zone:d.getValue().DZone_Coefficient.entrySet())
-				System.out.print(zone.getValue()+"	");
+				System.out.print(zone.getValue() + " ");
 			System.out.println();
 		}
 

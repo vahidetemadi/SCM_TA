@@ -19,7 +19,7 @@ import main.java.context.Environment_s1;
 public class StaticAssignment extends AbstractProblem {
 	
 	static Bug[] bugs=GA_Problem_Parameter.bugs;
-	HashMap<Integer,Developer> developers=GA_Problem_Parameter.developers_all;
+	HashMap<Integer,Developer> developers = GA_Problem_Parameter.developers_all;
 	DirectedAcyclicGraph<Bug, DefaultEdge> DEP;
 	TopologicalOrderIterator<Bug,DefaultEdge> tso;
 	ArrayList<Zone> genes=new ArrayList<Zone>();

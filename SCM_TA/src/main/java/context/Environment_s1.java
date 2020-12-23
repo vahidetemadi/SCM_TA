@@ -408,7 +408,7 @@ public class Environment_s1 extends Environment {
 	}
 	
 	public static void rankDevs(){
-		ArrayList<Ranking<Developer, Double>> Devs=new ArrayList<Ranking<Developer,Double>>();
+		ArrayList<Ranking<Developer, Double>> Devs = new ArrayList<Ranking<Developer,Double>>();
 		
 		System.out.println("prelimenary dev list size: "+GA_Problem_Parameter.developers.size());
 		
@@ -425,7 +425,7 @@ public class Environment_s1 extends Environment {
 		System.out.println("secondary dev list size: "+Devs.size());
 		//cut off the low experienced developers---add ready for attachment developers
 		
-		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs,50);
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs, 50);
 	}
 
 	public static double getTCR_ratio(){
