@@ -66,6 +66,7 @@ public class Driver {
 	static List<Double>  beta = Arrays.asList(8.2);
 	
 	public static void main(String[] args) throws IOException {
+		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(Level.INFO, "The expriment is just started!");
 		options = new Options();
 		setOptions(options);
 		// automatically generate the help statement
