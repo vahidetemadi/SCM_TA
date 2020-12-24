@@ -651,7 +651,7 @@ public class GATaskAssignment {
     			Feedback.INACTION;
 	    
 	    //call the update function
-	    AdaptiveAssignmentPipline.getInstance().updateProbs(response, action2);
+	    AdaptiveAssignmentPipline.getInstance().updateProbs_V2(response, action2);
 	}
 	
 	//write the results for testing

@@ -593,6 +593,27 @@ public class AdaptiveAssignmentPipline {
 		}
 	}
 	
+	public static void updateProbs_V2(Feedback response, Action action) {
+		action = Action.COST;
+		double theta = 0.01;
+		double newR = Action.values().length - 1;
+		//int response = (currentCost > formerCost) ? 0 : 1;
+		//set reward-- the function is P(n+1) = 1- theta()...
+		if (response == Feedback.REWARD) {
+			//do reward
+			LAProbes.put(action, LAProbes.get(action) + theta * LAProbes.get(action.getOpposite()));
+			//LAProbes.put(action, LAProbes.get(action) + theta * LAProbes.get(action));
+			//LAProbes.put(action.getOpposite(), (1 - LAProbes.get(action.getOpposite())));
+			LAProbes.put(action.getOpposite(), LAProbes.get(action.getOpposite()) - (theta * LAProbes.get(action.getOpposite())));
+		}
+		else if (response == Feedback.PENALTY){
+			// apply penalty
+			LAProbes.put(action, LAProbes.get(action) - ((theta * LAProbes.get(action.getOpposite())) + (theta / newR)));
+			LAProbes.put(action.getOpposite(), LAProbes.get(action.getOpposite()) + ((theta * LAProbes.get(action.getOpposite())) 
+					+ (theta / newR)));
+		}
+	}
+	
 	public static void updateProbs(Feedback response, Action action) {
 		double theta = 0.01;
 		double newR = Action.values().length - 1;
