@@ -419,13 +419,15 @@ public class Environment_s1 extends Environment {
 		DevMetrics.sortByMetric(Devs);
 		
 		for(Ranking<Developer, Double> r:Devs){
-			System.out.println(r.getEntity()+"---"+r.getMetric());
+			System.out.println(r.getEntity() + "--->" + r.getMetric());
 		}
 		
-		System.out.println("secondary dev list size: "+Devs.size());
-		//cut off the low experienced developers---add ready for attachment developers
+		System.out.println("secondary dev list size: " + Devs.size());
 		
-		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs, 50);
+		//cut off the low experienced developers---add ready for attachment developers
+		System.out.println("secondary dev list size: " + (Devs.size() - 100 * (75 / Devs.size())));
+		GA_Problem_Parameter.pruneDevList(GA_Problem_Parameter.developers, Devs, 75); /* 75% of developers are moved to ready for attachment*/
+		
 	}
 
 	public static double getTCR_ratio(){

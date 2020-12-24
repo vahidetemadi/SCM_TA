@@ -569,14 +569,13 @@ public class GA_Problem_Parameter {
 				devs_prune.remove(r.getEntity().getID());
 				GA_Problem_Parameter.devListId.add(r.getEntity().getID());
 			}
-
 			i++;
 		}
 		for (Map.Entry<Integer, Developer> d : devs_prune.entrySet())
 			Environment_s1.readyForAttachment.add(d.getKey());
 		// set dev fixed size
 		GA_Problem_Parameter.devListIdSize = GA_Problem_Parameter.devListId.size();
-		System.out.println(devs_prune.size() + "///devs--ready for attachment");
+		System.out.println(devs_prune.size() + "///num of devs which are ready for attachment");
 	}
 
 	/**

@@ -91,7 +91,8 @@ public class GATaskAssignment {
 				new UM(GA_Problem_Parameter.um_rate));
 		comparator = new LinearDominanceComparator();
 		try {
-			file_logger = new FileHandler(System.getProperty("user.dir")+File.separator+"results"+ File.separator+ "self-adaptive"+File.separator+"solutions.txt");
+			file_logger = new FileHandler(System.getProperty("user.dir") + File.separator + "results" + File.separator
+					+ "self-adaptive" + File.separator + "solutions.txt");
 		} catch (SecurityException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -324,42 +325,46 @@ public class GATaskAssignment {
 		
 	}
 	
+	/**
+	 * this method is set for initializing the static(final) parameters
+	 * @param bugList the list of bugs introduced for assignment
+	 */
 	public static void initializeGAParameter(HashMap<Integer,Bug> bugList){
 		//initialize GA parameters
 		int b_index=0;
-		GA_Problem_Parameter.bugs=new Bug[bugList.size()];
+		GA_Problem_Parameter.bugs = new Bug[bugList.size()];
 		
-		for(Entry<Integer, Bug> b2:bugList.entrySet()){
-			GA_Problem_Parameter.bugs[b_index]=b2.getValue();
+		for(Entry<Integer, Bug> b2 : bugList.entrySet()){
+			GA_Problem_Parameter.bugs[b_index] = b2.getValue();
 			b_index++;
 		}
 		
 		//GA_Problem_Parameter
-		GA_Problem_Parameter.Num_of_Bugs=bugs.size();
-		GA_Problem_Parameter.Num_of_Active_Developers=developers.size();
-		GA_Problem_Parameter.upperDevId=developers.size()+1;
-		GA_Problem_Parameter.Num_of_functions_Multi=2;
-		GA_Problem_Parameter.Num_of_variables=0;
+		GA_Problem_Parameter.Num_of_Bugs = bugs.size();
+		GA_Problem_Parameter.Num_of_Active_Developers = developers.size();
+		GA_Problem_Parameter.upperDevId = developers.size() + 1;
+		GA_Problem_Parameter.Num_of_functions_Multi = 2;
+		GA_Problem_Parameter.Num_of_variables = 0;
 		
 		for(Entry<Integer, Bug>  b:bugs.entrySet()){
-			for(Map.Entry<Zone, Double>  zone:b.getValue().BZone_Coefficient.entrySet()){
+			for(Map.Entry<Zone, Double>  zone : b.getValue().BZone_Coefficient.entrySet()){
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 		}
 		
-		System.out.println("size of bug list: "+ GA_Problem_Parameter.bugs.length);
+		System.out.println("size of bug list: " + GA_Problem_Parameter.bugs.length);
 	}
 	
 	public void initializeProblems() {
-		normal_assginment=new NormalAssignment();
-		ID_assignment=new InformationDifussion_adaptive();
-		static_assignment=new StaticAssignment();
+		normal_assginment = new NormalAssignment();
+		ID_assignment = new InformationDifussion_adaptive();
+		static_assignment = new StaticAssignment();
 		inintialization_normal = new RandomInitialization(normal_assginment, GA_Problem_Parameter.population);
-		inintialization_ID=new RandomInitialization(ID_assignment, GA_Problem_Parameter.population);
+		inintialization_ID = new RandomInitialization(ID_assignment, GA_Problem_Parameter.population);
 		//inintialization_static = new RandomInitialization(static_assignment, GA_Problem_Parameter.population);
-		inintialization_static = new RandomInitialization(static_assignment, 200);
-		GA_normal=new GeneticAlgorithm(normal_assginment, comparator, inintialization_normal, selection, variation);
-		GA_ID=new GeneticAlgorithm(ID_assignment, comparator, inintialization_ID, selection, variation);
+		inintialization_static = new RandomInitialization(static_assignment, GA_Problem_Parameter.population);
+		GA_normal = new GeneticAlgorithm(normal_assginment, comparator, inintialization_normal, selection, variation);
+		GA_ID = new GeneticAlgorithm(ID_assignment, comparator, inintialization_ID, selection, variation);
 		GA_static = new GeneticAlgorithm(static_assignment, comparator, inintialization_static, selection, variation);
 	}
 	
@@ -756,7 +761,7 @@ public class GATaskAssignment {
 	//update the profile of developers
 	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
 		//updating dev profile using a particular learning rate
-		double knowledge = d.getDZone_Coefficient().get(z) + 0.1;
+		double knowledge = d.getDZone_Coefficient().get(z) + 0.15;
 		knowledge = knowledge < 1 ? knowledge : 1;
 		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z, Approach.ADAPTIVE) * initalLearningRate);
 		d.getDZone_Coefficient().put(z, knowledge);
@@ -772,7 +777,7 @@ public class GATaskAssignment {
 	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
 		//d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z, Approach.STATIC) * initalLearningRate);
 		//updating dev profile using a particular learning rate
-		double knowledge = d.getDZone_Coefficient_static().get(z) + 0.1;
+		double knowledge = d.getDZone_Coefficient_static().get(z) + 0.15;
 		knowledge = knowledge < 1 ? knowledge : 1;
 		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z, Approach.ADAPTIVE) * initalLearningRate);
 		d.getDZone_Coefficient_static().put(z, knowledge);
