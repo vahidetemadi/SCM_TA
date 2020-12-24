@@ -57,13 +57,13 @@ public class Driver {
 	static List<Double> crossover = Arrays.asList(0.6, 0.7, 0.8, 0.9);
 	static List<Double> mutation = Arrays.asList(0.01, 0.02, 0.05, 0.1, 0.15);
 	//static List<Integer> developersize = Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16, 18);
-	static List<Integer> developersize = Arrays.asList(1, 5, 10, 15, 20, 25, 30);
+	static List<Integer> developersize = Arrays.asList(1, 5, 10, 15, 20, 25);
 	static List<Integer> windowssize = Arrays.asList(3);
 	static List<Integer> batchSize = Arrays.asList(30);
 	static List<Integer> population = Arrays.asList(100, 200, 300);
 	static List<Integer> nfe = Arrays.asList(10000, 20000, 50000);
 	static List<Double>  alpha = Arrays.asList(1.2);
-	static List<Double>  beta = Arrays.asList(10.2);
+	static List<Double>  beta = Arrays.asList(5.2);
 	
 	public static void main(String[] args) throws IOException {
 		Logger.getLogger(Logger.GLOBAL_LOGGER_NAME).log(Level.INFO, "The expriment is just started!");

@@ -167,9 +167,9 @@ public class InformationDifussion_adaptive_multi extends AbstractProblem{
 				int sourceDevId = 0;
 				for(Map.Entry<Integer, Developer> dev:GA_Problem_Parameter.developers.entrySet()){
 					//check weather the devs are linked together-- essential for data flow
-					if(Environment_s1.getDevNetwork().containsEdge(dev,candidate))
+					if(Environment_s1.getDevNetwork().containsEdge(dev, candidate))
 						estimatedEmissionTime = fitnessCalc.getEstimatedDiffusionTime(dev,candidate,
-									(b.getTotalEstimatedEffort()*b.BZone_Coefficient.get(zone_bug.getKey())));
+									(b.getTotalEstimatedEffort() * b.BZone_Coefficient.get(zone_bug.getKey())));
 					if(estimatedEmissionTime < emissionTime){
 						emissionTime = estimatedEmissionTime;
 						sourceDevId = dev.getKey();
