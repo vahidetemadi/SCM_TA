@@ -682,7 +682,7 @@ public class AdaptiveAssignmentPipline {
 		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
 				for (Integer id : GA_Problem_Parameter.devListId) {
 					if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()) != null)
-						if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()) > 0.75) {
+						if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()) > 0.95) {
 							knowledgeHit++;
 							break;
 						}
@@ -696,7 +696,7 @@ public class AdaptiveAssignmentPipline {
 		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
 			for (Integer id : GA_Problem_Parameter.devListId) {
 				if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) != null)
-					if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) > 0.75) {
+					if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) > 0.95) {
 						knowledgeHit++;
 						break;
 					}
