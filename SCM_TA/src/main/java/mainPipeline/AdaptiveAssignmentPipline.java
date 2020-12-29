@@ -779,11 +779,13 @@ public class AdaptiveAssignmentPipline {
 			for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
 				switch (approach) {
 					case STATIC:
+						/*
 						Developer d = GA_Problem_Parameter.developers_all.get(id);
 						System.out.println(d.getID());
 						System.out.println(entry.getKey().zName);
 						System.out.println(GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()));
 						System.out.println(roundNum);
+						*/
 						if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()) > 0.5) {
 							dev_prof_num++;
 						}
