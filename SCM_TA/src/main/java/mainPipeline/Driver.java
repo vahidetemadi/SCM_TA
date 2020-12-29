@@ -259,9 +259,9 @@ public class Driver {
 		File file_developersProfile_static, file_developersProfile_adaptive;
 		//FIXME -- define two file object for bus factor over time for zones
 		File file_busFactorZone_static = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
-				+ File.separator + "bus_factor_zones_static_" + FeatureInitializationV1.churnRate + ".csv");
+				+ File.separator + datasetName +"_bus_factor_zones_static_" + FeatureInitializationV1.churnRate + ".csv");
 		File file_busFactorZone_adaptive = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
-				+ File.separator + "bus_factor_zones_adaptive_" + FeatureInitializationV1.churnRate + ".csv");
+				+ File.separator + datasetName +"_bus_factor_zones_adaptive_" + FeatureInitializationV1.churnRate + ".csv");
 		PrintWriter pw_devProfile_static, pw_devProfile_adaptive;
 		//FIXME -- accordingly, defining two printwriter for bus factor
 		PrintWriter pw_BF_static, pw_BF_adaptive;
