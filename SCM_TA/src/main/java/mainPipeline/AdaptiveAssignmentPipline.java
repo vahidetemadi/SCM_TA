@@ -21,6 +21,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Random;
+import java.util.concurrent.ThreadPoolExecutor.AbortPolicy;
+
+import javax.print.attribute.standard.MediaSize.Engineering;
 
 import org.apache.commons.collections.functors.TruePredicate;
 import org.moeaframework.core.Solution;
@@ -89,7 +92,8 @@ public class AdaptiveAssignmentPipline {
 	 * EFFECT the overall cost is computed and is returned as the fitness of input solution 
 	 */	
 	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime,
-			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
+			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime, HashMap<Integer, HashMap<Approach, String>> bus_factor_zones)
+					throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//set the num of devs-- all dev set will be pruned by the number comes from solution
 		listOfConfig.put("numOfDevs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
 		System.out.println("% of devs should be ignored-----"+featureIni.getDevNum().get(listOfConfig.get("numOfDevs")));
@@ -136,15 +140,19 @@ public class AdaptiveAssignmentPipline {
 		totalsOverTime.put("lostKnowledge_static", new ArrayList<Double>());
 		totalsOverTime.put("retainedKnowledge_adaptive", new ArrayList<Double>());
 		totalsOverTime.put("lostKnowledge_adaptive", new ArrayList<Double>());
+		totalsOverTime.put("lostKnowledge_adaptive", new ArrayList<Double>());
+		totalsOverTime.put("busFactor_adaptive", new ArrayList<Double>());
+		totalsOverTime.put("busFactor_static", new ArrayList<Double>());
 		//start the pipeline
-		start(totals, totalsOverTime, devsProfileOverTime);
+		start(totals, totalsOverTime, devsProfileOverTime, bus_factor_zones);
 		
 		return totals;
 	}
 
 	
 	public void start(HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime, 
-			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime) throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
+			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime, HashMap<Integer, HashMap<Approach, String>> bus_factor_zones)
+					throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//get the trained Markov model with the predefined model
 		training_instance.initialize_params(featureIni.getTm().get(listOfConfig.get("TM")), featureIni.getTm().get(listOfConfig.get("EM")));
 		HMM=training_instance.getHMM();
@@ -202,7 +210,7 @@ public class AdaptiveAssignmentPipline {
 			if (i == Environment_s1.numberOfFiles / 2 || i == 1)
 				devsProfileOverTime.put(0, (HashMap<Integer, Developer>) GA_Problem_Parameter.developers_all.clone());
 			//int j=0;
-			for (HashMap<Integer,Bug> bugList : GA_Problem_Parameter.listOfSubBugs){
+			for (HashMap<Integer,Bug> bugList : GA_Problem_Parameter.listOfSubBugs) {
 				if (bugList.size() < GA_Problem_Parameter.batch_size)
 					continue;
 				//increase the vlaue of total knowledge 
@@ -241,7 +249,22 @@ public class AdaptiveAssignmentPipline {
 				//Environment_s1.nodeDeletion(Stubs.tempChurns.get(roundNum-1));
 				//Environment_s1.updateDevNetwork();
 				
-			
+				
+				/* Assessing bus factor for project and the zones*/
+				for (Approach approach : Approach.values()) {
+					totalsOverTime.get("busFactor_" + approach.toString().toLowerCase()).add(compute_bus_factor_project(approach, roundNum));
+				}
+				
+				// reset bus factor
+				reset_bus_factor();
+				// compute bus factor for the zones
+				compute_bus_factor_zones();
+				
+				/* insert the bus factor of zones */
+				insert_bus_factor_zones(roundNum, bus_factor_zones);
+				
+				
+				
 				if (roundNum % FeatureInitializationV1.windowSize == 0 && roundNum > 3) {
 					/* made the following line commented to use a fixed churnrate all over the other rounds*/
 					//FeatureInitializationV1.churnRate = FeatureInitializationV1.churnRate + 1;
@@ -693,15 +716,107 @@ public class AdaptiveAssignmentPipline {
 	
 	public static double knowledgeHit_adaptive() {
 		int knowledgeHit = 0;
+		double temp_dobule = 0;
 		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
 			for (Integer id : GA_Problem_Parameter.devListId) {
-				if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) != null)
+				if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) != null) {
+					temp_dobule = GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey());
 					if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) > 0.95) {
 						knowledgeHit++;
 						break;
 					}
+				}
 			}
 		}
 		return knowledgeHit;
+	}
+
+	public static void compute_bus_factor_zones() {
+		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
+			for (Integer id : GA_Problem_Parameter.devListId) {
+				for (Approach approach : Approach.values()) {
+					switch (approach) {
+						case STATIC:
+							if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()) > 0.95) {
+								entry.getKey().bus_factor.put(approach, entry.getKey().bus_factor.get(approach) + 1);
+							}
+							break;
+						case ADAPTIVE:
+							if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) > 0.95) {
+								entry.getKey().bus_factor.put(approach, entry.getKey().bus_factor.get(approach) + 1);
+							}
+							break;
+						default:
+							break;
+					}
+				}					
+			}
+		}
+	}
+	
+	public static void insert_bus_factor_zones(int roundNum, HashMap<Integer, HashMap<Approach, String>> bus_factor_zones) {
+		String dicOfZones;
+		HashMap<Approach, String> temp_hm_zone_bus = new HashMap<Approach, String>();
+		for (Approach approach : Approach.values()) {
+			dicOfZones = "";
+			for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
+				dicOfZones += entry.getKey().zName + ":" + entry.getKey().bus_factor.get(approach) + ",";
+			}
+			dicOfZones.replaceAll(",$", "");
+			dicOfZones = String.format("{%s}", dicOfZones);
+			temp_hm_zone_bus.put(approach, dicOfZones);
+		}
+		bus_factor_zones.put(roundNum, temp_hm_zone_bus);
+	}
+	
+	public double compute_bus_factor_project(Approach approach, int roundNum) {
+		double bus_factor = 0;
+		double total_zone_num = GA_Problem_Parameter.knowledgeSoFar.size();
+		double dev_prof_num;
+		
+		for (Integer id : GA_Problem_Parameter.devListId) {
+			dev_prof_num = 0;
+			for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
+				switch (approach) {
+					case STATIC:
+						Developer d = GA_Problem_Parameter.developers_all.get(id);
+						System.out.println(d.getID());
+						System.out.println(entry.getKey().zName);
+						System.out.println(GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()));
+						System.out.println(roundNum);
+						if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient_static().get(entry.getKey()) > 0.5) {
+							dev_prof_num++;
+						}
+						break;
+					case ADAPTIVE:
+						if (GA_Problem_Parameter.developers_all.get(id).getDZone_Coefficient().get(entry.getKey()) > 0.5) {
+							dev_prof_num++;
+						}
+						break;
+					default:
+						break;
+				}
+			}
+			if ((dev_prof_num / total_zone_num) > 0.5) {
+				bus_factor++;
+			}
+		}
+		return bus_factor;
+	}
+	
+	public static void reset_bus_factor() {
+		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
+			for (Approach approach : Approach.values()) {
+				switch (approach) {
+					case STATIC:
+							entry.getKey().bus_factor.put(approach, 0);
+						break;
+					case ADAPTIVE:
+							entry.getKey().bus_factor.put(approach, 0);
+					default:
+						break;
+				}
+			}	
+		}
 	}
 }

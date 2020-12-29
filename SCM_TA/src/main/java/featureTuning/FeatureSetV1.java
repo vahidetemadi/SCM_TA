@@ -11,7 +11,7 @@ public class FeatureSetV1 implements FeatureGeneration {
 	
 	FeatureInitialization featureInitialization= FeatureInitializationV1.getInstance();;
 	private static FeatureSetV1 instance=null;
-	public static final HashMap<String, Integer> featureVectorIndex=new HashMap<String, Integer>(){
+	public static final HashMap<String, Integer> featureVectorIndex = new HashMap<String, Integer>(){
 		{
 			put("numOfDevs", 0);
 			put("numOfBugs",1);

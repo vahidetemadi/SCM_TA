@@ -21,9 +21,10 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 
 	AdaptiveAssignmentPipline adaptive=null;
 	FeatureSetV1 featureSetV1=null;
-	HashMap<String, Double> totals=new HashMap<String, Double>();
-	HashMap<String, ArrayList<Double>> totalsOverTime=new HashMap<String, ArrayList<Double>>();
-	HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime=new HashMap<Integer, HashMap<Integer,Developer>>();
+	HashMap<String, Double> totals = new HashMap<String, Double>();
+	HashMap<String, ArrayList<Double>> totalsOverTime = new HashMap<String, ArrayList<Double>>();
+	HashMap<Integer, HashMap<Approach, String>> bus_factor_zones = new HashMap<Integer, HashMap<Approach, String>>();
+	HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime = new HashMap<Integer, HashMap<Integer, Developer>>();
 	@SuppressWarnings("static-access")
 	public InitializedFeaturesProblem(int numberOfVariables, int numberOfObjectives) {
 		super(numberOfVariables, numberOfObjectives);
@@ -48,7 +49,7 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 		//try {
 			//makeListClear();
 			try {
-				adaptive.run(solution, totals, totalsOverTime, devsProfileOverTime);
+				adaptive.run(solution, totals, totalsOverTime, devsProfileOverTime, bus_factor_zones);
 			} catch (NoSuchElementException | ClassNotFoundException | IOException | URISyntaxException
 					| CloneNotSupportedException e) {
 				// TODO Auto-generated catch block
@@ -79,6 +80,9 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 			solution.setAttribute("lostKnowledge_static", totalsOverTime.get("lostKnowledge_static"));
 			solution.setAttribute("retainedKnowledge_adaptive", totalsOverTime.get("retainedKnowledge_adaptive"));
 			solution.setAttribute("lostKnowledge_adaptive", totalsOverTime.get("lostKnowledge_adaptive"));
+			solution.setAttribute("busFactor_static", totalsOverTime.get("busFactor_static"));
+			solution.setAttribute("busFactor_adaptive", totalsOverTime.get("busFactor_adaptive"));
+			solution.setAttribute("busFactor_zones", bus_factor_zones);
 		///}
 		//catch (Exception e) {
 			//e.printStackTrace();

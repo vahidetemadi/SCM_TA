@@ -57,7 +57,7 @@ public class Driver {
 	static List<Double> crossover = Arrays.asList(0.6, 0.7, 0.8, 0.9);
 	static List<Double> mutation = Arrays.asList(0.01, 0.02, 0.05, 0.1, 0.15);
 	//static List<Integer> developersize = Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16, 18);
-	static List<Integer> developersize = Arrays.asList(1, 5, 10, 15, 20, 25);
+	static List<Integer> developersize = Arrays.asList(5);
 	static List<Integer> windowssize = Arrays.asList(3);
 	static List<Integer> batchSize = Arrays.asList(30);
 	static List<Integer> population = Arrays.asList(100, 200, 300);
@@ -257,20 +257,37 @@ public class Driver {
 		File file_actionProbOverTime = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
 				+ File.separator + fileNamePart + "_probOverTime" + ".csv");
 		File file_developersProfile_static, file_developersProfile_adaptive;
+		//FIXME -- define two file object for bus factor over time for zones
+		File file_busFactorZone_static = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
+				+ File.separator + "bus_factor_zones_static_" + FeatureInitializationV1.churnRate + ".csv");
+		File file_busFactorZone_adaptive = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
+				+ File.separator + "bus_factor_zones_adaptive_" + FeatureInitializationV1.churnRate + ".csv");
 		PrintWriter pw_devProfile_static, pw_devProfile_adaptive;
+		//FIXME -- accordingly, defining two printwriter for bus factor
+		PrintWriter pw_BF_static, pw_BF_adaptive;
+		
 		HashMap<Integer, Developer> devList;
 	
 		file.getParentFile().mkdir(); 				/* make missed dirs*/
-		PrintWriter printWriter=new PrintWriter(file);
-		PrintWriter printWriter_probOverTime=new PrintWriter(file_actionProbOverTime);
+		PrintWriter printWriter = new PrintWriter(file);
+		PrintWriter printWriter_probOverTime = new PrintWriter(file_actionProbOverTime);
+		pw_BF_static = new PrintWriter(file_busFactorZone_static);
+		pw_BF_adaptive = new PrintWriter(file_busFactorZone_adaptive);
 		CSVWriter csvWriter = new CSVWriter(printWriter);
+		//csv wiriter for zones' bus factor
+		CSVWriter csvWriter_BF_zone_static = new CSVWriter(pw_BF_static);
+		CSVWriter csvWriter_BF_zone_adaptive = new CSVWriter(pw_BF_adaptive);
 		//CSVWriter csvWriter_probOverTime=new CSVWriter(printWriter_probOverTime);
 		String[] csvFileOutputHeader= {"solution","totalCostID", "totalCostStatic", "totalIDStatic", "totalIDID", "CoT_static", "CoT_adaptive", "IDoT_static", "IDoT_adaptive",
 					"SoT", "costPerRound_static" , "costPerRound_adaptive", "idPerRound_static", "idPerRound_adaptive", "EoT_static", "EoT_adaptive", "ExoTperRound_adaptive",
 					"actionProbVector", "churnRate", "actions", "retainedKnowledge_static", "retainedKnowledge_adaptive", "lostKnowledge_static",
-					"lostKnowledge_adaptive"};
+					"lostKnowledge_adaptive", "busFactor_static", "busFactor_adaptive"};
+		String[] csvWriter_BF_zone_cols = {"roundNum", "BFs"};
+		
 		//String[] csvFileOutputHeader_probOverTime= {"cost","diffusion"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
+		csvWriter_BF_zone_static.writeNext(csvWriter_BF_zone_cols);
+		csvWriter_BF_zone_adaptive.writeNext(csvWriter_BF_zone_cols);
 		//csvWriter_probOverTime.writeNext(csvFileOutputHeader_probOverTime);		//write the header of the csv file to store prob over time
 		Solution tempSolution;
 		
@@ -299,7 +316,9 @@ public class Driver {
 												((ArrayList<Double>)tempSolution.getAttribute("retainedKnowledge_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("retainedKnowledge_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("lostKnowledge_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("lostKnowledge_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString()
+												((ArrayList<Double>)tempSolution.getAttribute("lostKnowledge_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("busFactor_static")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString(),
+												((ArrayList<Double>)tempSolution.getAttribute("busFactor_adaptive")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString()
 												});
 			//log devs status over time
 			int devCount=0;
@@ -364,6 +383,26 @@ public class Driver {
 				
 			}
 			
+			//FIXME 
+			/* iterate over approach to write the bus factor of the zones for each of which*/
+			for (Approach approach : Approach.values()) {
+				//write to predefined csv
+				switch (approach) {
+					case STATIC:
+							for (Map.Entry<Integer, HashMap<Approach, String>> item : ((HashMap<Integer, HashMap<Approach, String>>) tempSolution.getAttribute("busFactor_zones")).entrySet()) {
+								csvWriter_BF_zone_static.writeNext(new String[] {item.getKey().toString(), item.getValue().get(approach)});
+							}
+						break;
+					case ADAPTIVE:
+						for (Map.Entry<Integer, HashMap<Approach, String>> item : ((HashMap<Integer, HashMap<Approach, String>>) tempSolution.getAttribute("busFactor_zones")).entrySet()) {
+							csvWriter_BF_zone_adaptive.writeNext(new String[] {item.getKey().toString(), item.getValue().get(approach)});
+						}
+					break;
+	
+					default:
+						break;
+				}
+			}
 			
 			
 			
@@ -377,6 +416,8 @@ public class Driver {
 			
 		}
 		
+		
+		
 		//log probs of actions over time
 		printWriter_probOverTime.write(FeatureInitializationV1.actionProbOverRound);
 		
@@ -387,6 +428,8 @@ public class Driver {
 		
 		//close the writers
 		csvWriter.close();
+		csvWriter_BF_zone_adaptive.close();
+		csvWriter_BF_zone_static.close();
 		printWriter.close();
 		printWriter_probOverTime.close();
 	}

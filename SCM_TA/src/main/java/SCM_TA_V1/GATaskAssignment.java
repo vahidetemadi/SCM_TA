@@ -192,12 +192,12 @@ public class GATaskAssignment {
 				for(int k=0;k<items.length-1;k++){
 					sumOfPro+=Double.parseDouble(items[k]);
 				}
-				for(int k=0;k<items.length-1;k++){
+				for(int k = 0; k < items.length-1; k++){
 					if(j!=0){
 						//developer.DZone_Coefficient.put(columns.get(j), Double.parseDouble(items[k]));
 						//System.out.println(columns.get(j));
-						developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
-						developer.DZone_Coefficient_static.put(project.zones.get(j), (Double.parseDouble(items[k])/sumOfPro));
+						developer.DZone_Coefficient.put(project.zones.get(j), (Double.parseDouble(items[k]) / sumOfPro));
+						developer.DZone_Coefficient_static.put(project.zones.get(j), (Double.parseDouble(items[k]) / sumOfPro));
 						developer.DZone_Wage.put(project.zones.get(j), Double.parseDouble(wage_items[k])*Double.parseDouble(wage_items[wage_items.length-1]));
 						developer.hourlyWage=Double.parseDouble(wage_items[wage_items.length-1]);
 						//System.out.println(Double.parseDouble(wage_items[k]));
@@ -279,19 +279,19 @@ public class GATaskAssignment {
 			while(sc1.hasNextLine() && fileNumber==n){
 				//counter "i" has set to record the name of each zone (the header of each file)
 				if(i==0){
-						String[] items=sc1.nextLine().split("\t",-1);
-							for(int k=0;k<items.length;k++){
-								if(j>2){
-									Zone zone=new Zone(j, items[k]);
-									columns.put(j,zone);
+						String[] items = sc1.nextLine().split("\t",-1);
+							for(int k = 0; k < items.length; k++){
+								if(j > 2){
+									Zone zone = new Zone(j, items[k]);
+									columns.put(j, zone);
 								}
 								j++;
 							}	
 					}
 					else{
-						String[] items=sc1.nextLine().split("\t",-1);
+						String[] items = sc1.nextLine().split("\t",-1);
 						for(int k = 0; k < items.length; k++){
-							if(j > 2 && Double.parseDouble(items[k])!= 0){
+							if(j > 2 && Double.parseDouble(items[k]) != 0){
 								bug.BZone_Coefficient.put(project.zones.get(j-2), Double.parseDouble(items[k]));  /*from real data-set*/
 								//bug.BZone_Coefficient.put(project.zones.get(j-2), (random.nextDouble() * 0.5) + 0.5);  /*simulated*/
 							}
@@ -761,7 +761,7 @@ public class GATaskAssignment {
 	//update the profile of developers
 	public static void updateDevProfile_adaptive(Bug b,Zone z, Developer d){
 		//updating dev profile using a particular learning rate
-		double knowledge = d.getDZone_Coefficient().get(z) + 0.15;
+		double knowledge = d.getDZone_Coefficient().get(z) + 0.1;
 		knowledge = knowledge < 1 ? knowledge : 1;
 		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z, Approach.ADAPTIVE) * initalLearningRate);
 		d.getDZone_Coefficient().put(z, knowledge);
@@ -777,7 +777,7 @@ public class GATaskAssignment {
 	public static void updateDevProfile_static(Bug b,Zone z, Developer d){
 		//d.getDZone_Coefficient_static().put(z, d.getDZone_Coefficient_static().get(z) + fitnessCalc.getID(null, d, b, z, Approach.STATIC) * initalLearningRate);
 		//updating dev profile using a particular learning rate
-		double knowledge = d.getDZone_Coefficient_static().get(z) + 0.15;
+		double knowledge = d.getDZone_Coefficient_static().get(z) + 0.1;
 		knowledge = knowledge < 1 ? knowledge : 1;
 		//d.getDZone_Coefficient().put(z, d.getDZone_Coefficient().get(z) + fitnessCalc.getID(null, d, b, z, Approach.ADAPTIVE) * initalLearningRate);
 		d.getDZone_Coefficient_static().put(z, knowledge);
