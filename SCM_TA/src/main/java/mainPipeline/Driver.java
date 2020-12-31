@@ -259,9 +259,9 @@ public class Driver {
 		File file_developersProfile_static, file_developersProfile_adaptive;
 		//FIXME -- define two file object for bus factor over time for zones
 		File file_busFactorZone_static = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
-				+ File.separator + datasetName +"_bus_factor_zones_static_" + FeatureInitializationV1.churnRate + ".csv");
+				+ File.separator + datasetName + File.separator + "BusFactor" + File.separator + "static" + File.separator + "zones_BF" + FeatureInitializationV1.churnRate + ".csv");
 		File file_busFactorZone_adaptive = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator + "self-adaptive"
-				+ File.separator + datasetName +"_bus_factor_zones_adaptive_" + FeatureInitializationV1.churnRate + ".csv");
+				+ File.separator + datasetName + File.separator + "BusFactor" + File.separator + "adaptive" + File.separator + "zones_BF" + FeatureInitializationV1.churnRate + ".csv");
 		PrintWriter pw_devProfile_static, pw_devProfile_adaptive;
 		//FIXME -- accordingly, defining two printwriter for bus factor
 		PrintWriter pw_BF_static, pw_BF_adaptive;
@@ -269,6 +269,8 @@ public class Driver {
 		HashMap<Integer, Developer> devList;
 	
 		file.getParentFile().mkdir(); 				/* make missed dirs*/
+		file_busFactorZone_adaptive.getParentFile().mkdir();
+		file_busFactorZone_static.getParentFile().mkdir();
 		PrintWriter printWriter = new PrintWriter(file);
 		PrintWriter printWriter_probOverTime = new PrintWriter(file_actionProbOverTime);
 		pw_BF_static = new PrintWriter(file_busFactorZone_static);
