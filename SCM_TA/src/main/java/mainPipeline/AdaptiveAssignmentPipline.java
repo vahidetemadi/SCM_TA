@@ -200,6 +200,8 @@ public class AdaptiveAssignmentPipline {
 		
 		//set the initial observation and 
 		int roundNum = 1;
+		//clear knoweldgesofar to prevent duplicate zone object reference hasing
+		GA_Problem_Parameter.knowledgeSoFar.clear();
 		
 		for (int i = 1; i <= Environment_s1.numberOfFiles; i++){
 			//call for run
