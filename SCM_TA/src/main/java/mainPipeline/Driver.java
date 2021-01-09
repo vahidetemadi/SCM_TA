@@ -88,7 +88,7 @@ public class Driver {
 			getOptionsValue(cmd);
 		//get dataset name 
 		System.out.println("Enter the dataset name:");
-		Scanner sc=new Scanner(System.in);
+		Scanner sc = new Scanner(System.in);
 		FeatureInitializationV1.datasetName = sc.next();
 		if (!si) {
 			if (pi) {

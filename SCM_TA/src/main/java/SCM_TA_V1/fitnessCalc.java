@@ -11,6 +11,7 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 
 import main.java.context.Environment_s1;
+import main.java.featureTuning.FeatureInitializationV1;
 import main.java.mainPipeline.Approach;
 import main.java.mainPipeline.Response;
 
@@ -47,7 +48,6 @@ public class fitnessCalc {
 	 * @return the completion time required to get the subtask done
 	 */
 	public static double completionTime_extended(Bug bug, Entry<Zone, Double> zone, Developer developer, ArrayList<Developer> team) {
-		double x = bug.BZone_Coefficient.get(zone.getKey());
 		double inCommon = Math.min(bug.BZone_Coefficient.get(zone.getKey()), developer.getDZone_Coefficient().get(zone.getKey()));
 		double tct=0;
 		double bestFit=0.00001;
@@ -74,7 +74,12 @@ public class fitnessCalc {
 		}
 		
 		//return tct == 0.0 ? 1 : tct;
-		return tct;
+		if (FeatureInitializationV1.datasetName == "Platform") {
+			return tct / 100;
+		}
+		else {
+			return tct;
+		}
 	}
 	
 	public static double completionTime_extended_static(Bug bug, Entry<Zone, Double> zone, Developer developer, ArrayList<Developer> team) {
