@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 import org.moeaframework.core.Solution;
@@ -23,7 +24,7 @@ public class InitializedFeaturesProblem extends AbstractProblem {
 	FeatureSetV1 featureSetV1=null;
 	HashMap<String, Double> totals = new HashMap<String, Double>();
 	HashMap<String, ArrayList<Double>> totalsOverTime = new HashMap<String, ArrayList<Double>>();
-	HashMap<Integer, HashMap<Approach, String>> bus_factor_zones = new HashMap<Integer, HashMap<Approach, String>>();
+	HashMap<Integer, HashMap<Approach, List<String>>> bus_factor_zones = new HashMap<Integer, HashMap<Approach, List<String>>>();
 	HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime = new HashMap<Integer, HashMap<Integer, Developer>>();
 	@SuppressWarnings("static-access")
 	public InitializedFeaturesProblem(int numberOfVariables, int numberOfObjectives) {

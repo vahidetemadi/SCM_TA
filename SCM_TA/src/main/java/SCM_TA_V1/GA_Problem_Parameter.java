@@ -2,6 +2,7 @@ package main.java.SCM_TA_V1;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -79,11 +80,13 @@ public class GA_Problem_Parameter {
 	public static int numberOfTimesMakingProfileComparison = 2;
 	public static int earlyDevListSize = 7;
 	public static HashMap<Zone, Double> knowledgeSoFar = new HashMap<Zone, Double>();
+	public static Set<Zone> allZones = new HashSet<Zone>();
 	public static double totalKnowledge = 0;
 	public static double knowledgeHit_static = 0;
 	public static double knowledgeLoss_static = 0; /* in effect, this is: "1- knowledgeHit" */
 	public static double knowledgeHit_adaptive = 0;
 	public static double knowledgeLoss_adaptive = 0; /* in effect, this is: "1- knowledgeHit" */
+	public static List<String> header_bus = null;
 	
 	// Parameter for new solution in ID approach
 	// ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();

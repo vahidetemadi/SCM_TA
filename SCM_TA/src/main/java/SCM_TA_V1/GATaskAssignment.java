@@ -180,6 +180,7 @@ public class GATaskAssignment {
 						Zone zone=new Zone(j, items[k]);
 						project.zones.put(j, zone);
 						columns.put(j,zone);
+						GA_Problem_Parameter.allZones.add(zone);
 					}
 					j++;
 				}

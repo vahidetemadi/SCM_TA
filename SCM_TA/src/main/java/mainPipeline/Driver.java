@@ -34,6 +34,7 @@ import com.opencsv.CSVWriter;
 
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -57,7 +58,7 @@ public class Driver {
 	static List<Double> crossover = Arrays.asList(0.6, 0.7, 0.8, 0.9);
 	static List<Double> mutation = Arrays.asList(0.01, 0.02, 0.05, 0.1, 0.15);
 	//static List<Integer> developersize = Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16, 18);
-	static List<Integer> developersize = Arrays.asList(1, 5, 10, 15, 20, 25);
+	static List<Integer> developersize = Arrays.asList(1);
 	static List<Integer> windowssize = Arrays.asList(3);
 	static List<Integer> batchSize = Arrays.asList(30);
 	static List<Integer> population = Arrays.asList(100, 200, 300);
@@ -284,7 +285,7 @@ public class Driver {
 					"SoT", "costPerRound_static" , "costPerRound_adaptive", "idPerRound_static", "idPerRound_adaptive", "EoT_static", "EoT_adaptive", "ExoTperRound_adaptive",
 					"actionProbVector", "churnRate", "actions", "retainedKnowledge_static", "retainedKnowledge_adaptive", "lostKnowledge_static",
 					"lostKnowledge_adaptive", "busFactor_static", "busFactor_adaptive"};
-		String[] csvWriter_BF_zone_cols = {"roundNum", "BFs"};
+		String[] csvWriter_BF_zone_cols = ArrayUtils.addAll(new String[]{"runNumber"}, GA_Problem_Parameter.header_bus.toArray(new String[0]));
 		
 		//String[] csvFileOutputHeader_probOverTime= {"cost","diffusion"};
 		csvWriter.writeNext(csvFileOutputHeader);		//write the header of the csv file
@@ -391,13 +392,13 @@ public class Driver {
 				//write to predefined csv
 				switch (approach) {
 					case STATIC:
-							for (Map.Entry<Integer, HashMap<Approach, String>> item : ((HashMap<Integer, HashMap<Approach, String>>) tempSolution.getAttribute("busFactor_zones")).entrySet()) {
-								csvWriter_BF_zone_static.writeNext(new String[] {item.getKey().toString(), item.getValue().get(approach)});
-							}
+						for (Map.Entry<Integer, HashMap<Approach, List<String>>> item : ((HashMap<Integer, HashMap<Approach, List<String>>>) tempSolution.getAttribute("busFactor_zones")).entrySet()) {
+							csvWriter_BF_zone_static.writeNext(ArrayUtils.addAll(new String[] {item.getKey().toString()}, item.getValue().get(approach).toArray(new String[0])));
+						}
 						break;
 					case ADAPTIVE:
-						for (Map.Entry<Integer, HashMap<Approach, String>> item : ((HashMap<Integer, HashMap<Approach, String>>) tempSolution.getAttribute("busFactor_zones")).entrySet()) {
-							csvWriter_BF_zone_adaptive.writeNext(new String[] {item.getKey().toString(), item.getValue().get(approach)});
+						for (Map.Entry<Integer, HashMap<Approach, List<String>>> item : ((HashMap<Integer, HashMap<Approach, List<String>>>) tempSolution.getAttribute("busFactor_zones")).entrySet()) {
+							csvWriter_BF_zone_adaptive.writeNext(ArrayUtils.addAll(new String[] {item.getKey().toString()}, item.getValue().get(approach).toArray(new String[0])));
 						}
 					break;
 	

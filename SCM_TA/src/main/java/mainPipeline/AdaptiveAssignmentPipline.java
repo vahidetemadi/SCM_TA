@@ -51,6 +51,7 @@ public class AdaptiveAssignmentPipline {
 	static Random random = new Random();
 	static HMM<Observation> HMM = null;
 	static String datasetName = null;
+	static List<String> headers = new ArrayList<String>();
 	public static HashMap<Action, Double> LAProbes = new HashMap<Action, Double>(){
 		{
 			put(Action.COST, 0.5);
@@ -92,7 +93,7 @@ public class AdaptiveAssignmentPipline {
 	 * EFFECT the overall cost is computed and is returned as the fitness of input solution 
 	 */	
 	public HashMap<String, Double> run(Solution solution, HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime,
-			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime, HashMap<Integer, HashMap<Approach, String>> bus_factor_zones)
+			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime, HashMap<Integer, HashMap<Approach, List<String>>> bus_factor_zones)
 					throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//set the num of devs-- all dev set will be pruned by the number comes from solution
 		listOfConfig.put("numOfDevs", EncodingUtils.getInt(solution.getVariable(FeatureSetV1.featureVectorIndex.get("numOfDevs"))));
@@ -151,7 +152,7 @@ public class AdaptiveAssignmentPipline {
 
 	
 	public void start(HashMap<String, Double> totals, HashMap<String, ArrayList<Double>> totalsOverTime, 
-			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime, HashMap<Integer, HashMap<Approach, String>> bus_factor_zones)
+			HashMap<Integer, HashMap<Integer, Developer>> devsProfileOverTime, HashMap<Integer, HashMap<Approach, List<String>>> bus_factor_zones)
 					throws NoSuchElementException, IOException, URISyntaxException, CloneNotSupportedException, ClassNotFoundException{
 		//get the trained Markov model with the predefined model
 		training_instance.initialize_params(featureIni.getTm().get(listOfConfig.get("TM")), featureIni.getTm().get(listOfConfig.get("EM")));
@@ -756,17 +757,20 @@ public class AdaptiveAssignmentPipline {
 		}
 	}
 	
-	public static void insert_bus_factor_zones(int roundNum, HashMap<Integer, HashMap<Approach, String>> bus_factor_zones) {
-		String dicOfZones;
-		HashMap<Approach, String> temp_hm_zone_bus = new HashMap<Approach, String>();
+	public static void insert_bus_factor_zones(int roundNum, HashMap<Integer, HashMap<Approach, List<String>>> bus_factor_zones) {
+		List<String> BusZones;
+		HashMap<Approach, List<String>> temp_hm_zone_bus = new HashMap<Approach, List<String>>();
 		for (Approach approach : Approach.values()) {
-			dicOfZones = "";
-			for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
-				dicOfZones += entry.getKey().zName + ":" + entry.getKey().bus_factor.get(approach) + ",";
+			BusZones = new ArrayList<String>();
+			headers.clear();
+			for (Zone entry : GA_Problem_Parameter.allZones) {
+				BusZones.add(entry.bus_factor.get(approach).toString());
+				headers.add(entry.zName);
 			}
-			dicOfZones.replaceAll(",$", "");
-			dicOfZones = String.format("{%s}", dicOfZones);
-			temp_hm_zone_bus.put(approach, dicOfZones);
+			if (GA_Problem_Parameter.header_bus == null)
+				GA_Problem_Parameter.header_bus = headers;
+			//dicOfZones = String.format("{%s}", dicOfZones);
+			temp_hm_zone_bus.put(approach, BusZones);
 		}
 		bus_factor_zones.put(roundNum, temp_hm_zone_bus);
 	}
@@ -809,14 +813,14 @@ public class AdaptiveAssignmentPipline {
 	}
 	
 	public static void reset_bus_factor() {
-		for (Map.Entry<Zone, Double> entry : GA_Problem_Parameter.knowledgeSoFar.entrySet()) {
+		for (Zone entry : GA_Problem_Parameter.allZones) {
 			for (Approach approach : Approach.values()) {
 				switch (approach) {
 					case STATIC:
-							entry.getKey().bus_factor.put(approach, 0);
+							entry.bus_factor.put(approach, 0);
 						break;
 					case ADAPTIVE:
-							entry.getKey().bus_factor.put(approach, 0);
+							entry.bus_factor.put(approach, 0);
 					default:
 						break;
 				}
