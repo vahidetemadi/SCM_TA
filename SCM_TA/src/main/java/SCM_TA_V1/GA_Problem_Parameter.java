@@ -86,7 +86,7 @@ public class GA_Problem_Parameter {
 	public static double knowledgeLoss_static = 0; /* in effect, this is: "1- knowledgeHit" */
 	public static double knowledgeHit_adaptive = 0;
 	public static double knowledgeLoss_adaptive = 0; /* in effect, this is: "1- knowledgeHit" */
-	public static List<String> header_bus = null;
+	public static List<String> header_bus = new ArrayList<String>();
 	
 	// Parameter for new solution in ID approach
 	// ArrayList<DefaultEdge> pEdges=new ArrayList<DefaultEdge>();
