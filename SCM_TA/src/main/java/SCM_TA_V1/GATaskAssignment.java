@@ -153,6 +153,7 @@ public class GATaskAssignment {
 	public void devInitialization(String datasetName, int portion) throws IOException,NoSuchElementException, URISyntaxException, CloneNotSupportedException{
 		//initialize developers
 		developers.clear();
+		GA_Problem_Parameter.allZones.clear();
 		System.out.println("enter the developrs file");
 		Developer developer = null;
 		System.out.println(System.getProperty("user.dir"));
@@ -252,6 +253,11 @@ public class GATaskAssignment {
 			for(Map.Entry<Zone, Double> zone:d.getValue().DZone_Coefficient.entrySet())
 				System.out.print(zone.getValue() + " ");
 			System.out.println();
+		}
+		//add header for bus factor-- it will be used to make the header of csv file during recording 	
+		GA_Problem_Parameter.header_bus.clear();
+		for (Zone z_temp : GA_Problem_Parameter.allZones) {
+			GA_Problem_Parameter.header_bus.add(z_temp.zName);
 		}
 
 	}

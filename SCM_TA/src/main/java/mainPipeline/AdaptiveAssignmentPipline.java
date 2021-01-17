@@ -51,7 +51,7 @@ public class AdaptiveAssignmentPipline {
 	static Random random = new Random();
 	static HMM<Observation> HMM = null;
 	static String datasetName = null;
-	static List<String> headers = new ArrayList<String>();
+	//static List<String> headers = new ArrayList<String>();
 	public static HashMap<Action, Double> LAProbes = new HashMap<Action, Double>(){
 		{
 			put(Action.COST, 0.5);
@@ -762,13 +762,13 @@ public class AdaptiveAssignmentPipline {
 		HashMap<Approach, List<String>> temp_hm_zone_bus = new HashMap<Approach, List<String>>();
 		for (Approach approach : Approach.values()) {
 			BusZones = new ArrayList<String>();
-			headers.clear();
+			//headers.clear();
 			for (Zone entry : GA_Problem_Parameter.allZones) {
 				BusZones.add(entry.bus_factor.get(approach).toString());
-				headers.add(entry.zName);
+				//headers.add(entry.zName);
 			}
-			if (GA_Problem_Parameter.header_bus == null)
-				GA_Problem_Parameter.header_bus = headers;
+			//if (GA_Problem_Parameter.header_bus == null)
+			//	GA_Problem_Parameter.header_bus = headers;
 			//dicOfZones = String.format("{%s}", dicOfZones);
 			temp_hm_zone_bus.put(approach, BusZones);
 		}
