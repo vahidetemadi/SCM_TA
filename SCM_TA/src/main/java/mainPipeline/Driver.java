@@ -58,7 +58,7 @@ public class Driver {
 	static List<Double> crossover = Arrays.asList(0.6, 0.7, 0.8, 0.9);
 	static List<Double> mutation = Arrays.asList(0.01, 0.02, 0.05, 0.1, 0.15);
 	//static List<Integer> developersize = Arrays.asList(2, 4, 6, 8, 10, 12, 14, 16, 18);
-	static List<Integer> developersize = Arrays.asList(1, 5, 10, 15, 20, 25);
+	static List<Integer> developersize = Arrays.asList(0, 1, 5, 10, 15, 20, 25);
 	static List<Integer> windowssize = Arrays.asList(3);
 	static List<Integer> batchSize = Arrays.asList(30);
 	static List<Integer> population = Arrays.asList(100, 200, 300);
@@ -110,7 +110,7 @@ public class Driver {
 							GA_Problem_Parameter.population = p;
 							GA_Problem_Parameter.um_rate = m;
 							GA_Problem_Parameter.one_x_rate = cr;
-							for(int i = 1; i <= 1; i++) {
+							for(int i = 1; i <= 30; i++) {
 								finalPopulation= runSeed(); 		/* call the run for single seed */
 								writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
 								//sendResultsToServer(finalPopulation);				/* send the results to the central server */
