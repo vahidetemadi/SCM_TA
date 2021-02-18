@@ -49,11 +49,20 @@ public class fitnessCalc {
 	 */
 	public static double completionTime_extended(Bug bug, Entry<Zone, Double> zone, Developer developer, ArrayList<Developer> team) {
 		double inCommon = Math.min(bug.BZone_Coefficient.get(zone.getKey()), developer.getDZone_Coefficient().get(zone.getKey()));
-		double tct=0;
-		double bestFit=0.00001;
+		double tct = 0;
+		double bestFit = 0.00001;
 		if(inCommon > 0.001) { /*in case developer is already familiar with */
-			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-					/ ((developer.getDZone_Coefficient().get(zone.getKey())));
+			switch(FeatureInitializationV1.datasetName) {
+			case "JDT":
+				tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+				/ ((developer.getDZone_Coefficient().get(zone.getKey())));
+				break;
+			case "Platform":
+				tct = bug.BZone_Coefficient.get(zone.getKey()) 
+				/ ((developer.getDZone_Coefficient().get(zone.getKey())));
+				break;
+				
+			}
 		}
 		else {
 			for (Developer dev : team) {
@@ -64,22 +73,35 @@ public class fitnessCalc {
 			
 			//tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / bestFit;
 			if (bestFit > 0.0001) {
-				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * 1.2;
+				switch(FeatureInitializationV1.datasetName) {
+					case "JDT":
+						tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+								/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * GA_Problem_Parameter.alpha;
+						break;
+						
+					case "Platform":
+						tct = (bug.BZone_Coefficient.get(zone.getKey()) 
+								/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * GA_Problem_Parameter.alpha;
+						break;
+				}
 			}
 			else {
-				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * 5.8;
+				switch(FeatureInitializationV1.datasetName) {
+					case "JDT":
+						tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+						/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * GA_Problem_Parameter.beta;
+						break;
+						
+					case "Platform":
+						tct = (bug.BZone_Coefficient.get(zone.getKey()) 
+								/ ((developer.getDZone_Coefficient().get(zone.getKey())))) * GA_Problem_Parameter.beta;
+						break;
+				}
 			}
 		}
 		
 		//return tct == 0.0 ? 1 : tct;
-		if (FeatureInitializationV1.datasetName == "Platform") {
-			return tct / 100;
-		}
-		else {
-			return tct;
-		}
+		return tct;
 	}
 	
 	public static double completionTime_extended_static(Bug bug, Entry<Zone, Double> zone, Developer developer, ArrayList<Developer> team) {
@@ -88,8 +110,17 @@ public class fitnessCalc {
 		double tct = 0;
 		double bestFit = 0.00001;
 		if(inCommon > 0.001) { /*in case developer is already familiar with */
-			tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+			switch(FeatureInitializationV1.datasetName) {
+				case "JDT":
+					tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
 					/ ((developer.getDZone_Coefficient_static().get(zone.getKey())));
+					break;
+				case "Platform":
+					tct = bug.BZone_Coefficient.get(zone.getKey()) 
+					/ ((developer.getDZone_Coefficient_static().get(zone.getKey())));
+					break;
+			}
+			
 		}
 		else {
 			for (Developer dev : team) {
@@ -100,12 +131,29 @@ public class fitnessCalc {
 			
 			//tct = (bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) / bestFit;
 			if (bestFit > 0.0001) {
-				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-						/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * 1.2;
+				switch(FeatureInitializationV1.datasetName) {
+					case "JDT":
+						tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+								/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * GA_Problem_Parameter.alpha;
+						break;
+					case "Platform":
+						tct = (bug.BZone_Coefficient.get(zone.getKey()) 
+								/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * GA_Problem_Parameter.alpha;
+						break;
+				}
 			}
 			else {
-				tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
-						/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * 5.8;
+				switch(FeatureInitializationV1.datasetName) {
+					case "JDT":
+						tct = ((bug.getTotalEstimatedEffort() * bug.BZone_Coefficient.get(zone.getKey())) 
+								/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * GA_Problem_Parameter.beta;
+						break;
+					case "Platform":
+						tct = (bug.BZone_Coefficient.get(zone.getKey()) 
+								/ ((developer.getDZone_Coefficient_static().get(zone.getKey())))) * GA_Problem_Parameter.beta;
+						break;
+				}
+				
 			}
 		}
 		
@@ -117,7 +165,7 @@ public class fitnessCalc {
 		double delayTime=Math.max(taskDependencyDelayTime(bug, zone, developer), developer.developerNextAvailableHour);
 		return delayTime;
 	}
-	
+
 	public static double taskDependencyDelayTime(Bug bug, Entry<Zone, Double> zone,
 	Developer developer){
 		for(Zone z:zone.getKey().DZ){
