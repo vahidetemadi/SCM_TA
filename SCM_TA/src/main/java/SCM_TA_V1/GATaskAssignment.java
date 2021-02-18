@@ -145,7 +145,7 @@ public class GATaskAssignment {
 		
 	public static void changeRepresentation(String datasetName) throws FileNotFoundException{
 		
-		changeRepresentation cr=new changeRepresentation(datasetName);
+		changeRepresentation cr = new changeRepresentation(datasetName);
 		cr.txtToCSV();
 	}
 	

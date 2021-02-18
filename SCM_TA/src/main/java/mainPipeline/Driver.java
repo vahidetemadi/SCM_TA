@@ -110,7 +110,7 @@ public class Driver {
 							GA_Problem_Parameter.population = p;
 							GA_Problem_Parameter.um_rate = m;
 							GA_Problem_Parameter.one_x_rate = cr;
-							for(int i = 1; i <= 1; i++) {
+							for(int i = 1; i <= 30; i++) {
 								finalPopulation= runSeed(); 		/* call the run for single seed */
 								writeResutls(finalPopulation, FeatureInitializationV1.datasetName, i); 		/* write down the results to the csv file */
 								//sendResultsToServer(finalPopulation);				/* send the results to the central server */

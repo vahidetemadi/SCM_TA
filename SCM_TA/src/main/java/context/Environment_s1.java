@@ -21,6 +21,7 @@ import main.java.SCM_TA_V1.Developer;
 import main.java.SCM_TA_V1.GA_Problem_Parameter;
 import main.java.SCM_TA_V1.Ranking;
 import main.java.SCM_TA_V1.Zone;
+import main.java.featureTuning.FeatureInitializationV1;
 //import org.apache.commons.math3.distribution.*;
 import smile.stat.distribution.PoissonDistribution;
 
@@ -220,7 +221,7 @@ public class Environment_s1 extends Environment {
 		}
 	}
 	
-	public static void nodeDeletion(int numOfDevs, Boolean random) throws FileNotFoundException{	
+	public static int nodeDeletion(int numOfDevs, Boolean random, HashMap<String, ArrayList<Double>> totalsOverTime) throws FileNotFoundException{	
 		//is done with the a rate of "r"
 		
 		//create a file for record devs who are removed
@@ -241,6 +242,7 @@ public class Environment_s1 extends Environment {
 		if (random) 
 			Collections.shuffle(listOfDevs);
 		
+		int count  = 0;
 		for(Integer devID:listOfDevs){
 			//ignore those who added recently
 			if(addedRecently.contains(devID))
@@ -253,9 +255,11 @@ public class Environment_s1 extends Environment {
 				GA_Problem_Parameter.developers.remove(devID);
 				GA_Problem_Parameter.devListId.remove(devID);
 				totalChanged++;
+				count++;
 			}
 		}
 		pw.close();
+		return count;
 	}
 	
 	/**
@@ -301,7 +305,7 @@ public class Environment_s1 extends Environment {
 		pw.close();
 	}
 	
-	public static void nodeAttachment(int numberOfDevs) throws FileNotFoundException{
+	public static int nodeAttachment(int numberOfDevs, HashMap<String, ArrayList<Double>> totalsOverTime) throws FileNotFoundException{
 		File file = new File(System.getProperty("user.dir") + File.separator + "results" + File.separator 
 				+ "self-adaptive" + File.separator + "devs_added.txt");
 		file.getParentFile().mkdirs();
@@ -315,6 +319,8 @@ public class Environment_s1 extends Environment {
 		int numOfShouldBeAdded = (numberOfDevs / 100) * GA_Problem_Parameter.devListId.size();
 		ArrayList<Integer> shuffeledReadyForAttachment = (ArrayList<Integer>) readyForAttachment.clone();
 		Collections.shuffle(shuffeledReadyForAttachment);
+		
+		int count = 0;
 		for(Integer i : shuffeledReadyForAttachment){
 			//check weather developer with the id of i exists
 			if(GA_Problem_Parameter.getDev(i) != null && numOfShouldBeAdded > 0){
@@ -328,7 +334,8 @@ public class Environment_s1 extends Environment {
 				GA_Problem_Parameter.devListId.add(i);
 				addedRecently.add(i);
 				shouldBeDeleted.add(i);
-				numOfShouldBeDeleted++;
+				numOfShouldBeDeleted--;
+				count++;
 			}
 		}
 		
@@ -340,6 +347,7 @@ public class Environment_s1 extends Environment {
 		//establish the links for the newly added nodes
 		setEdges_newNodes(shouldBeDeleted);
 		pw.close();
+		return count;
 	}
 	
 	public static Map.Entry<Integer, Developer> getVertex(Integer i){

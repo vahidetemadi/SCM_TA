@@ -331,7 +331,7 @@ public class Assignment {
 				GA_Problem_Parameter.Num_of_variables++;
 			}
 			}
-		GA_Problem_Parameter.population=500;
+		GA_Problem_Parameter.population = GA_Problem_Parameter.population;
 		
 	}
 	
@@ -353,10 +353,11 @@ public class Assignment {
 		
 		try{
 			Executor result_Karim=new Executor().withProblemClass(CompetenceMulti2_problem.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
-					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05);
+					.withMaxEvaluations(GA_Problem_Parameter.nfe).withProperty("populationSize",GA_Problem_Parameter.population)
+					.withProperty("operator", "UX").withProperty("UX.rate", GA_Problem_Parameter.one_x_rate).withProperty("operator", "UM")
+					.withProperty("pm.rate", GA_Problem_Parameter.um_rate);
 			Executor result_me=new Executor().withProblemClass(InformationDifussion.class).withAlgorithm("NSGAII")
-					.withMaxEvaluations(30000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
+					.withMaxEvaluations(50000).withProperty("populationSize",GA_Problem_Parameter.population).withProperty("operator", "UX")
 					.withProperty("UX.rate", 0.9).withProperty("operator", "UM").withProperty("pm.rate", 0.05);
 			
 			System.out.println("finished Competence-multi2 one");

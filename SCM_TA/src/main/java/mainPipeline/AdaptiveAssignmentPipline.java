@@ -267,21 +267,29 @@ public class AdaptiveAssignmentPipline {
 				insert_bus_factor_zones(roundNum, bus_factor_zones);
 				
 				
-				
 				if (roundNum % FeatureInitializationV1.windowSize == 0 && roundNum > 3) {
 					/* made the following line commented to use a fixed churnrate all over the other rounds*/
 					//FeatureInitializationV1.churnRate = FeatureInitializationV1.churnRate + 1;
 					
 					//pass num of developer who will be added
-					Environment_s1.nodeAttachment(FeatureInitializationV1.churnRate);
+					int count_attach = Environment_s1.nodeAttachment(FeatureInitializationV1.churnRate, totalsOverTime);
 					
 					//true as the second argument indicates random deletion
-					Environment_s1.nodeDeletion(FeatureInitializationV1.churnRate, true);
+					int count_del = Environment_s1.nodeDeletion(FeatureInitializationV1.churnRate, true, totalsOverTime);
 					//Environment_s1.updateDevNetwork();
+					if (count_attach == count_del) {
+						totalsOverTime.get("churnRate").add((double)count_attach);
+						//System.out.println("horrrrayyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy");
+					}
+					else {
+						System.out.println("There are inconsistancies in the number of develoepre who have been added and removed");
+					}
+					
 				}
-				//add churn rate over time
-				totalsOverTime.get("churnRate").add((double) FeatureInitializationV1.churnRate);
-				
+				else {
+					//add churn rate over time
+					totalsOverTime.get("churnRate").add(0.0);
+				}
 				//update over time dev profile
 				if(roundNum % 10 == 0)
 					Environment_s1.interRoundProfileUpdate();
