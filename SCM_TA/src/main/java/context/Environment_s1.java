@@ -316,7 +316,7 @@ public class Environment_s1 extends Environment {
 		numOfShouldBeDeleted = 0;
 		
 		//int numOfShouldBeAdded = numberOfDevs;
-		int numOfShouldBeAdded = (numberOfDevs / 100) * GA_Problem_Parameter.devListId.size();
+		int numOfShouldBeAdded = (int) ((numberOfDevs * 0.01) * GA_Problem_Parameter.devListId.size());
 		ArrayList<Integer> shuffeledReadyForAttachment = (ArrayList<Integer>) readyForAttachment.clone();
 		Collections.shuffle(shuffeledReadyForAttachment);
 		
@@ -334,13 +334,13 @@ public class Environment_s1 extends Environment {
 				GA_Problem_Parameter.devListId.add(i);
 				addedRecently.add(i);
 				shouldBeDeleted.add(i);
-				numOfShouldBeDeleted--;
+				numOfShouldBeDeleted++;
 				count++;
 			}
 		}
 		
 		//remove nodes from readyForAttachment after added to the devNetwork
-		for(Integer i:shouldBeDeleted){
+		for(Integer i : shouldBeDeleted){
 			readyForAttachment.remove(i);
 		}
 		
