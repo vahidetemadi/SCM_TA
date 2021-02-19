@@ -229,7 +229,8 @@ public class Environment_s1 extends Environment {
 				+ File.separator + "devs_deleted.txt");
 		file.getParentFile().mkdirs();
 		/* set num of devs should be deleted*/
-		numOfDevs = (numOfDevs / 100) * GA_Problem_Parameter.devListId.size();
+		numOfDevs = (int) (numOfDevs * 0.01) * GA_Problem_Parameter.devListId.size();
+		//int numOfShouldBeAdded = (int) ((numberOfDevs * 0.01) * GA_Problem_Parameter.devListId.size());
 		
 		PrintWriter pw = new PrintWriter(new FileOutputStream(file, true));
 		//report total changed
