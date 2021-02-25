@@ -610,7 +610,7 @@ public class GA_Problem_Parameter {
 	public static void cutTasks(double portion, HashMap<Integer, Bug> bugs) {
 		System.out.println("Tasks size----------------" + bugs.entrySet().size());
 		System.out.println("portion--------" + portion);
-		int length = (int) (bugs.size() * (portion / 100));
+		int length = (int) (bugs.size() * (portion * 0.01));
 		System.out.println("Tasks to be cut----------------" + length);
 		Random r = new Random();
 		List<Integer> keys;
