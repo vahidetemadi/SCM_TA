@@ -318,7 +318,6 @@ public class Driver {
 												((ArrayList<Double>)tempSolution.getAttribute("idPerRound_adaptive")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("EoT_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("EoT_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
-												((ArrayList<Double>)tempSolution.getAttribute("ExoTperRound_static")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("ExoTperRound_adaptive")).stream().map(x -> String.format("%.4f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("actionProbVector")).stream().map(x -> String.format("%.2f", x)).collect(Collectors.toList()).toString(),
 												((ArrayList<Double>)tempSolution.getAttribute("churnRate")).stream().map(x -> String.format("%.0f", x)).collect(Collectors.toList()).toString(),

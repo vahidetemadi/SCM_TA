@@ -509,7 +509,7 @@ public class GATaskAssignment {
 		totalsOverTime.get("costPerRound_static").add(staticSolution.getObjective(0));
 		totalsOverTime.get("idPerRound_static").add((Double)staticSolution.getAttribute("diffusedKnowledge"));
 		totalsOverTime.get("EoT_static").add(Environment_s1.getEntropy_static());
-		totalsOverTime.get("ExoTperRound_static").add(Environment_s1.getEntropy().get("Ex"));
+		//totalsOverTime.get("ExoTperRound_static").add(Environment_s1.getEntropy().get("Ex"));
 		//TID+=(Double)staticSolution.getAttribute("diffusedKnowledge");
 		//}	
 		
