@@ -78,7 +78,7 @@ public class GA_Problem_Parameter {
 	public static TopologicalOrderIterator<Zone, DefaultEdge> tso_Zone;
 	public static ArrayList<HashMap<Integer, Bug>> listOfSubBugs = new ArrayList<HashMap<Integer, Bug>>();
 	public static int numberOfTimesMakingProfileComparison = 2;
-	public static int earlyDevListSize = 7;
+	public static int earlyDevListSize = 5;
 	public static HashMap<Zone, Double> knowledgeSoFar = new HashMap<Zone, Double>();
 	public static Set<Zone> allZones = new HashSet<Zone>();
 	public static double totalKnowledge = 0;
