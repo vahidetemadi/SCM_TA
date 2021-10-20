@@ -73,7 +73,7 @@ public class AdaptiveAssignmentPipline {
 	};
 	
 	private AdaptiveAssignmentPipline() {
-		test=GATaskAssignment.getInstance();
+		test = GATaskAssignment.getInstance();
 	}
 
 	public static AdaptiveAssignmentPipline getInstance() {
